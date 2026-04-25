@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <meta name="generator" content="pandoc + UNLu/DCB template">
+  <title>Práctica I — Automatización Web con Selenium (MercadoLibre) —
+UNLu DCB</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+
+<header class="unlu-header">
+  <div class="brand">
+    <img src="assets/unlu_escudo.png" alt="Universidad Nacional de Luján" class="logo unlu">
+    <div class="brand-text">
+      <div class="institution">Universidad Nacional de Luján</div>
+      <div class="department">Departamento de Ciencias Básicas</div>
+    </div>
+    <img src="assets/logo_dcb.png" alt="Departamento de Ciencias Básicas" class="logo dcb">
+  </div>
+  <div class="course-bar">
+    <span class="course">Seminario de Integración Profesional</span>
+    <span class="year">2026</span>
+    <span class="instructor">Dr. David Petrocelli</span>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="toc-sidebar">
+    <div class="toc-title">Contenidos</div>
+    <ul>
+    <li><a href="#trabajo-práctico--automatización-web-con-selenium"
+    id="toc-trabajo-práctico--automatización-web-con-selenium">Trabajo
+    Práctico — Automatización Web con Selenium</a>
+    <ul>
+    <li><a href="#pruebas-e2e-multi-browser-sobre-mercadolibre"
+    id="toc-pruebas-e2e-multi-browser-sobre-mercadolibre">Pruebas E2E
+    multi-browser sobre MercadoLibre</a></li>
+    <li><a href="#requisitos-consideraciones-y-formato-de-entrega"
+    id="toc-requisitos-consideraciones-y-formato-de-entrega">Requisitos,
+    consideraciones y formato de entrega</a></li>
+    <li><a href="#contenidos-del-programa-relacionados"
+    id="toc-contenidos-del-programa-relacionados">Contenidos del
+    programa relacionados</a></li>
+    <li><a href="#práctica" id="toc-práctica">Práctica</a>
+    <ul>
+    <li><a href="#hit-1" id="toc-hit-1">Hit #1</a></li>
+    <li><a href="#hit-2" id="toc-hit-2">Hit #2</a></li>
+    <li><a href="#hit-3" id="toc-hit-3">Hit #3</a></li>
+    <li><a href="#hit-4" id="toc-hit-4">Hit #4</a></li>
+    <li><a href="#hit-5" id="toc-hit-5">Hit #5</a></li>
+    <li><a href="#hit-6" id="toc-hit-6">Hit #6</a></li>
+    <li><a href="#hit-7" id="toc-hit-7">Hit #7</a></li>
+    <li><a href="#hit-8-bonus" id="toc-hit-8-bonus">Hit #8
+    (Bonus)</a></li>
+    </ul></li>
+    <li><a href="#criterios-de-evaluación"
+    id="toc-criterios-de-evaluación">Criterios de evaluación</a></li>
+    <li><a href="#referencias-y-bibliografía"
+    id="toc-referencias-y-bibliografía">Referencias y
+    Bibliografía</a></li>
+    </ul></li>
+    </ul>
+    <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
+      <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div style="display:inline-block;background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:12px;letter-spacing:0.6px;margin-bottom:14px;">TP
+1</div>
+
+<h1 id="trabajo-práctico--automatización-web-con-selenium">Trabajo
+Práctico — Automatización Web con Selenium</h1>
+<h2 id="pruebas-e2e-multi-browser-sobre-mercadolibre">Pruebas E2E
+multi-browser sobre MercadoLibre</h2>
+<p><strong>Fecha de Entrega: a definir</strong></p>
+<hr />
+<h2 id="requisitos-consideraciones-y-formato-de-entrega">Requisitos,
+consideraciones y formato de entrega</h2>
+<ul>
+<li><strong>Integrar herramientas de IA en su ciclo de vida de
+desarrollo</strong> (Cursor, ChatGPT/Codex, Claude, GitHub Copilot,
+etc.). Se espera que las utilicen como asistentes para codificar,
+depurar y documentar. En el informe, mencionen qué herramientas usaron y
+cómo les ayudaron.</li>
+<li><strong>Se puede implementar con cualquier lenguaje que tenga
+binding oficial de Selenium</strong>: Python, Java o
+TypeScript/Node.js.</li>
+<li><strong>Deben incluir una grabación en video</strong> que se debe
+subir al repositorio donde se muestre la ejecución del scraper en ambos
+navegadores y se expliquen las decisiones de diseño (selectores
+elegidos, manejo de waits, estrategia de extracción).</li>
+<li><strong>Pruebas Unitarias y de Integración:</strong> Incluir un
+conjunto mínimo de pruebas automatizadas (<code>pytest</code> /
+<code>JUnit</code> / <code>Jest</code>) que validen que el flujo de
+scraping extrae al menos N resultados y que los datos cumplen el schema
+esperado.</li>
+<li>Generar un <strong>informe detallado</strong> que incluya:
+estrategia de selectores, manejo de timeouts y elementos faltantes,
+comparación entre Chrome y Firefox (diferencias encontradas, si las
+hubo), métricas de tiempo de ejecución por browser, y conclusiones.</li>
+<li>Mantener un <strong>repositorio público</strong> en un servicio de
+control de versiones como GitHub, Bitbucket o GitLab. Cada ejercicio
+(Hit #) debe contar con una carpeta y un README.md explicativo.
+<ul>
+<li>El README.md de cada Hit debe incluir como mínimo: instrucciones
+para ejecutar el proyecto, requisitos previos (drivers, versiones), y
+decisiones de diseño tomadas.</li>
+</ul></li>
+<li>Compilar la aplicación para ejecución desde la terminal, con
+recursos preparados para ser desplegados directamente sin necesidad de
+abrir un IDE.</li>
+<li>Implementar un <strong>pipeline de CI/CD</strong> que automatice la
+ejecución del scraping con cada nueva versión de código (GitHub
+Actions). El pipeline debe correr el scraper en modo headless contra
+ambos browsers y publicar los artefactos generados (JSON/CSV +
+screenshots).</li>
+<li>Proporcionar un <strong>endpoint público o reporte público</strong>
+(puede ser una página de GitHub Pages generada por el pipeline) que
+muestre los últimos resultados extraídos.</li>
+<li>Gestionar y mantener <strong>registros de actividades
+(logs)</strong> en consola y archivo, con niveles INFO/WARN/ERROR.</li>
+<li><strong>Seguridad:</strong>
+<ul>
+<li>No commitear <code>.env</code>, credenciales ni secrets al
+repositorio. Configurar <code>.gitignore</code> apropiado desde el
+inicio.</li>
+<li>Si el ejercicio requiere autenticación contra MercadoLibre (no es el
+caso para esta consigna), gestionar credenciales por GitHub
+Secrets.</li>
+<li>Incluir <a href="https://github.com/gitleaks/gitleaks">gitleaks</a>
+en el pipeline de CI — si detecta un secret hardcodeado, el pipeline
+debe fallar.</li>
+<li>Respetar el <code>robots.txt</code> del sitio y aplicar throttling
+razonable entre requests para no generar carga indebida.</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="contenidos-del-programa-relacionados">Contenidos del programa
+relacionados</h2>
+<ul>
+<li>Automatización de navegadores web y testing E2E.</li>
+<li>Protocolo WebDriver (W3C) y arquitectura cliente/servidor de
+Selenium.</li>
+<li>DOM, selectores CSS y XPath.</li>
+<li>Manejo de asincronía en la web: explicit waits vs implicit waits vs
+sleeps.</li>
+<li>Patrones de diseño aplicados a testing: Page Object Model, Browser
+Factory.</li>
+<li>Headless browsing y ejecución en pipelines CI/CD.</li>
+</ul>
+<hr />
+<h2 id="práctica">Práctica</h2>
+<p>La automatización de navegadores es una técnica fundamental para
+validar aplicaciones web end-to-end, generar datasets a partir de sitios
+públicos, y verificar el comportamiento de un mismo sistema sobre
+distintos motores de renderizado.</p>
+<p><strong>Selenium WebDriver</strong> se ha convertido en el estándar
+de facto: define un protocolo (W3C WebDriver) que cualquier navegador
+puede implementar, y expone bindings en múltiples lenguajes para
+controlar el navegador como si fuera un usuario real.</p>
+<p>En este TP vamos a construir, de forma incremental, un scraper
+multi-browser que busque productos en MercadoLibre Argentina, aplique
+filtros, y extraiga los resultados de forma estructurada.</p>
+<p>El sitio elegido (mercadolibre.com.ar) es público, no requiere
+autenticación para buscar, y presenta los desafíos clásicos del scraping
+moderno: contenido renderizado por JavaScript, selectores que cambian,
+lazy loading, y diferencias sutiles entre navegadores.</p>
+<p><strong>Productos objetivo:</strong></p>
+<ol type="1">
+<li><code>Bicicleta rodado 29</code></li>
+<li><code>iPhone 16 Pro Max</code></li>
+<li><code>GeForce RTX 5090</code></li>
+</ol>
+<hr />
+<h3 id="hit-1">Hit #1</h3>
+<p>Configure un proyecto en el lenguaje de su elección con Selenium
+WebDriver y los drivers correspondientes (<code>chromedriver</code> y
+<code>geckodriver</code>, o usar <code>webdriver-manager</code> /
+<code>Selenium Manager</code>).</p>
+<p>Escriba un script que abra <strong>Chrome</strong>, navegue a
+<code>https://www.mercadolibre.com.ar</code>, busque el producto
+<code>bicicleta rodado 29</code>, espere a que cargue la página de
+resultados, e imprima por consola el título de los primeros 5 productos
+listados.</p>
+<p>Use <strong>explicit waits</strong> (<code>WebDriverWait</code> +
+<code>expected_conditions</code>). Está prohibido el uso de
+<code>time.sleep()</code> (o equivalentes) como mecanismo principal de
+sincronización.</p>
+<hr />
+<h3 id="hit-2">Hit #2</h3>
+<p>Refactorice el código del Hit #1 para introducir una <strong>Browser
+Factory</strong>: una función o clase que reciba como parámetro el
+nombre del navegador (<code>chrome</code> o <code>firefox</code>) y
+devuelva una instancia de WebDriver correctamente configurada.</p>
+<p>El parámetro debe poder pasarse por línea de comandos o variable de
+entorno (<code>BROWSER=firefox python scraper.py</code>).</p>
+<p>Verifique que el script funcione exactamente igual contra
+<strong>Chrome</strong> y <strong>Firefox</strong>. Documente en el
+informe cualquier diferencia encontrada (selectores que se rompen,
+comportamiento distinto de waits, etc.).</p>
+<hr />
+<h3 id="hit-3">Hit #3</h3>
+<p>Modifique el scraper para aplicar los siguientes
+<strong>filtros</strong> sobre la página de resultados, después de la
+búsqueda:</p>
+<ul>
+<li><strong>Condición</strong>: <code>Nuevo</code></li>
+<li><strong>Tienda oficial</strong>: <code>Sí</code> (solo productos
+vendidos por tiendas oficiales)</li>
+<li><strong>Ordenar por</strong>: <code>Más relevantes</code></li>
+</ul>
+<p>La interacción con los filtros debe hacerse navegando el DOM (clicks
+reales sobre los links/checkboxes), <strong>no</strong> modificando la
+URL a mano. Esto valida que el flujo funciona como lo haría un
+usuario.</p>
+<p>Capture un <strong>screenshot</strong> de la página de resultados ya
+filtrada y guárdelo como
+<code>screenshots/&lt;producto&gt;_&lt;browser&gt;.png</code>.</p>
+<hr />
+<h3 id="hit-4">Hit #4</h3>
+<p>Generalice el flujo del Hit #3 para que reciba como entrada una lista
+de productos (los 3 del enunciado: bicicleta rodado 29, iPhone 16 Pro
+Max, GeForce RTX 5090) y los procese todos.</p>
+<p>Para cada producto, extraiga los <strong>primeros 10
+resultados</strong> filtrados y, por cada uno, capture los siguientes
+campos:</p>
+<ul>
+<li><code>titulo</code> — título del producto</li>
+<li><code>precio</code> — precio en ARS (numérico, sin símbolo
+<code>$</code> ni separadores)</li>
+<li><code>link</code> — URL completa al detalle del producto</li>
+<li><code>tienda_oficial</code> — nombre de la tienda oficial (si
+aparece, sino <code>null</code>)</li>
+<li><code>envio_gratis</code> — booleano</li>
+<li><code>cuotas_sin_interes</code> — string con la oferta de cuotas (si
+aparece, sino <code>null</code>)</li>
+</ul>
+<p>Guarde la salida en archivos separados por producto, en formato
+JSON:</p>
+<ul>
+<li><code>output/bicicleta_rodado_29.json</code></li>
+<li><code>output/iphone_16_pro_max.json</code></li>
+<li><code>output/geforce_5090.json</code></li>
+</ul>
+<p>El JSON debe ser un array de objetos, uno por resultado, con los
+campos definidos arriba.</p>
+<hr />
+<h3 id="hit-5">Hit #5</h3>
+<p>Endurezca el scraper para que sea <strong>robusto frente a fallos
+parciales</strong>:</p>
+<ol type="1">
+<li>Si un campo opcional no aparece en un resultado (ej: producto sin
+cuotas), el scraper debe registrar <code>null</code> y continuar — no
+debe romper la ejecución.</li>
+<li>Si un selector falla por timeout, registre el error en el log con
+contexto (qué producto, qué browser, qué selector) y continúe con el
+siguiente resultado.</li>
+<li>Implemente un mecanismo de <strong>reintentos con backoff</strong>
+ante fallos transitorios de carga (ej: 3 intentos con 2s, 4s, 8s).</li>
+<li>Estructure los selectores en un módulo aparte (constantes con
+nombres semánticos), de modo que un cambio de DOM en MercadoLibre se
+arregle en un solo lugar.</li>
+</ol>
+<hr />
+<h3 id="hit-6">Hit #6</h3>
+<p>Agregue <strong>modo headless</strong> controlable por variable de
+entorno (<code>HEADLESS=true</code>).</p>
+<p>Escriba un set de <strong>tests automatizados</strong>
+(<code>pytest</code> / <code>JUnit</code> / <code>Jest</code>) que
+validen:</p>
+<ul>
+<li>Que el scraper extrae al menos 10 resultados por producto.</li>
+<li>Que el JSON generado cumple un schema mínimo (todos los campos
+requeridos, tipos correctos).</li>
+<li>Que los precios extraídos son números positivos.</li>
+<li>Que todos los links son URLs absolutas válidas.</li>
+</ul>
+<p>Los tests deben correr en CI tanto en Chrome como en Firefox.</p>
+<hr />
+<h3 id="hit-7">Hit #7</h3>
+<p>Construya un <strong>Dockerfile</strong> que empaquete el scraper
+junto con Chrome, Firefox y los drivers, de modo que se pueda ejecutar
+con un único comando:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-v</span> <span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span>/output:/app/output ml-scraper:latest <span class="at">--browser</span> firefox</span></code></pre></div>
+<p>Configure un <strong>GitHub Actions workflow</strong>
+(<code>.github/workflows/scrape.yml</code>) que:</p>
+<ol type="1">
+<li>Construya la imagen Docker.</li>
+<li>Corra el scraper en headless contra Chrome y Firefox (jobs en
+paralelo, matriz).</li>
+<li>Ejecute los tests del Hit #6.</li>
+<li>Publique los JSON y screenshots como <strong>artifacts</strong> del
+workflow.</li>
+<li>Falle si gitleaks detecta secrets hardcodeados.</li>
+</ol>
+<hr />
+<h3 id="hit-8-bonus">Hit #8 (Bonus)</h3>
+<p>Extienda el scraper con cualquiera (o varias) de las siguientes
+capacidades:</p>
+<ol type="1">
+<li><strong>Paginación</strong>: traer los primeros 30 resultados en
+lugar de 10, navegando hasta 3 páginas.</li>
+<li><strong>Comparación de precios</strong>: para cada producto,
+calcular precio mínimo, máximo, mediana y desvío estándar entre los
+resultados extraídos. Imprimir tabla resumen.</li>
+<li><strong>Histórico</strong>: guardar los resultados en una base de
+datos liviana (SQLite) con timestamp, para detectar cambios de precio si
+el scraper se ejecuta periódicamente.</li>
+<li><strong>Reporte HTML</strong>: generar una página estática (con
+GitHub Pages publicada por el pipeline) que muestre los resultados de la
+última corrida en una tabla navegable.</li>
+<li><strong>Page Object Model</strong>: refactorizar el scraper para
+separar el código de navegación (<code>SearchPage</code>,
+<code>ResultsPage</code>) del código de extracción y de los tests.</li>
+</ol>
+<hr />
+<h2 id="criterios-de-evaluación">Criterios de evaluación</h2>
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>Peso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Funciona en Chrome <strong>y</strong> Firefox sin cambios de código
+(solo config)</td>
+<td>20 %</td>
+</tr>
+<tr>
+<td>Filtros aplicados correctamente vía DOM (nuevo + tienda
+oficial)</td>
+<td>15 %</td>
+</tr>
+<tr>
+<td>Datos extraídos completos, bien tipados y serializados</td>
+<td>15 %</td>
+</tr>
+<tr>
+<td>Manejo robusto de errores (selectores faltantes, timeouts,
+retries)</td>
+<td>15 %</td>
+</tr>
+<tr>
+<td>Tests automatizados cubriendo el flujo crítico</td>
+<td>10 %</td>
+</tr>
+<tr>
+<td>Pipeline CI/CD funcional con matriz de browsers</td>
+<td>10 %</td>
+</tr>
+<tr>
+<td>Calidad de código (waits explícitos, selectores en módulo aparte,
+sin sleeps)</td>
+<td>10 %</td>
+</tr>
+<tr>
+<td>Informe y video explicativo</td>
+<td>5 %</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="referencias-y-bibliografía">Referencias y Bibliografía</h2>
+<ul>
+<li><strong>[SEL]</strong> Selenium Documentation. <a
+href="https://www.selenium.dev/documentation/">https://www.selenium.dev/documentation/</a></li>
+<li><strong>[W3C-WD]</strong> W3C WebDriver Specification. <a
+href="https://www.w3.org/TR/webdriver2/">https://www.w3.org/TR/webdriver2/</a></li>
+<li><strong>[POM]</strong> Page Object Model — Selenium Wiki. <a
+href="https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/">https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/</a></li>
+<li><strong>[CSS-SEL]</strong> MDN — CSS Selectors. <a
+href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors">https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors</a></li>
+<li><strong>[XPATH]</strong> MDN — XPath. <a
+href="https://developer.mozilla.org/en-US/docs/Web/XPath">https://developer.mozilla.org/en-US/docs/Web/XPath</a></li>
+<li><strong>[GH-ACTIONS]</strong> GitHub Actions Documentation. <a
+href="https://docs.github.com/en/actions">https://docs.github.com/en/actions</a></li>
+<li><strong>[GITLEAKS]</strong> gitleaks — Protect and discover secrets
+using Gitleaks. <a
+href="https://github.com/gitleaks/gitleaks">https://github.com/gitleaks/gitleaks</a></li>
+<li><strong>[ROBOTS]</strong> The Robots Exclusion Protocol. <a
+href="https://www.rfc-editor.org/rfc/rfc9309">https://www.rfc-editor.org/rfc/rfc9309</a></li>
+<li><strong>[ML]</strong> MercadoLibre Argentina. <a
+href="https://www.mercadolibre.com.ar">https://www.mercadolibre.com.ar</a></li>
+</ul>
+  </main>
+</div>
+
+<footer class="unlu-footer">
+  <div>
+    UNLu · Departamento de Ciencias Básicas · Seminario de Integración Profesional <strong>2026</strong>
+    · Dr. David Petrocelli
+  </div>
+</footer>
+
+</body>
+</html>
