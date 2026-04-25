@@ -11,7 +11,7 @@
 - **Integrar herramientas de IA en su ciclo de vida de desarrollo** (Cursor, ChatGPT/Codex, Claude, GitHub Copilot, etc.). Se espera que las utilicen como asistentes para codificar, depurar y documentar. En el informe, mencionen qué herramientas usaron y cómo les ayudaron.
 - **Se puede implementar con cualquier lenguaje que tenga binding oficial de Selenium**: Python, Java o TypeScript/Node.js.
 - **Deben incluir una grabación en video** que se debe subir al repositorio donde se muestre la ejecución del scraper en ambos navegadores y se expliquen las decisiones de diseño (selectores elegidos, manejo de waits, estrategia de extracción).
-- **Pruebas Unitarias y de Integración:** Incluir un conjunto mínimo de pruebas automatizadas (`pytest` / `JUnit` / `Jest`) que validen que el flujo de scraping extrae al menos N resultados y que los datos cumplen el schema esperado.
+- **Pruebas:** Incluir un conjunto mínimo de pruebas automatizadas (`pytest` / `JUnit` / `Jest`) que validen que el flujo de scraping extrae al menos N resultados y que los datos cumplen el schema esperado.
 - Generar un **informe detallado** que incluya: estrategia de selectores, manejo de timeouts y elementos faltantes, comparación entre Chrome y Firefox (diferencias encontradas, si las hubo), métricas de tiempo de ejecución por browser, y conclusiones.
 - Mantener un **repositorio público** en un servicio de control de versiones como GitHub, Bitbucket o GitLab. Cada ejercicio (Hit #) debe contar con una carpeta y un README.md explicativo.
   - El README.md de cada Hit debe incluir como mínimo: instrucciones para ejecutar el proyecto, requisitos previos (drivers, versiones), y decisiones de diseño tomadas.
