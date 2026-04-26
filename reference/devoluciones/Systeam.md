@@ -17,7 +17,7 @@
 | Hit #1 — setup, navegación, búsqueda, 5 títulos | 15 % | 15 | 15 |
 | Hit #2 — Browser Factory Chrome+Firefox | 25 % | 25 | 25 |
 | Hit #3 — filtros DOM + screenshot | 30 % | 25 | 30 |
-| Infra base (calidad código + README/informe/video + Dockerfile opcional) | 30 % | 19 | 30 |
+| Infra base (calidad código + README/informe/video + Dockerfile deseable Parte 1 / obligatorio Parte 2) | 30 % | 19 | 30 |
 | **Total** | **100 %** | **84** | **100** |
 
 ## Cumplimiento punto por punto de la consigna
@@ -49,7 +49,7 @@ Selectores: ✅ centralizados con multi-fallback (esto está mejor que la consig
 
 🟡 **Falta README raíz** que liste integrantes (lo único que tiene es los READMEs por hit, que están bien). Video y comparativa Chrome vs Firefox — verificar si están en el repo o solo planeados.
 
-### Dockerfile (5% deseable)
+### Dockerfile + docker-compose (deseable Parte 1, obligatorio Parte 2)
 ❌ **No entregaron Dockerfile**. Pierden los 5 pts de bonus de Parte 1, **pero en Parte 2 es obligatorio**.
 
 ---
@@ -67,7 +67,7 @@ Selectores: ✅ centralizados con multi-fallback (esto está mejor que la consig
 1. **Implementar Hit #4** (extracción JSON estructurada de los 3 productos). Es el punto de partida de toda Parte 2.
 2. **Sacar el `setTimeout(600)`** de `FiltersPage.js:274`. Es el único antipattern que les queda.
 3. **README raíz con tabla de integrantes**. G-ONE lo hizo y es el ejemplo a seguir.
-4. **Dockerfile multi-stage** — ya tenés CI armado, ahora le sumás Docker para que la imagen se publique como artifact.
+4. **Dockerfile multi-stage + docker-compose.yml** — ya tenés CI armado, ahora le sumás Docker para que la imagen se publique como artifact.
 5. **Compartir código entre HIT1/HIT2/HIT3** — hay duplicación. Considerá `npm workspaces` o un paquete `core/` compartido.
 
 **Bonus**: tu CI tiene componentes que el resto del curso no entregó. Para Parte 2 podés crecerlo con Helm chart (k8s del Hit #8) y Page Object Model formalizado.
@@ -81,7 +81,7 @@ Selectores: ✅ centralizados con multi-fallback (esto está mejor que la consig
 | Sacar el `setTimeout(600)` de `FiltersPage.js:274` | 15 min |
 | README raíz con tabla de integrantes | 10 min |
 | Ya tenés CI + tests + multi-browser → Hit #4 (extracción JSON) sobre la base actual | 2-3 h |
-| Dockerfile multi-stage (sumá Chrome+Firefox+drivers) | 1 h |
+| Dockerfile multi-stage + docker-compose.yml (sumá Chrome+Firefox+drivers) | 1 h |
 | 3 ADRs (`docs/adr/`) | 30 min |
 | Manifests k8s + cluster k3d local + checklist TP 0 | 2 h |
 | Hit #9 bonus (1 ítem cualquiera) | 1-2 h |

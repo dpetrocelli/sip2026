@@ -18,7 +18,7 @@
 | Hit #1 — setup, navegación, búsqueda, 5 títulos | 15 % | 15 | 15 |
 | Hit #2 — Browser Factory Chrome+Firefox | 25 % | 25 | 25 |
 | Hit #3 — filtros DOM + screenshot (solo Chrome) | 30 % | 24 | 30 |
-| Infra base (calidad código + README/informe/video + Dockerfile opcional) | 30 % | 20 | 30 |
+| Infra base (calidad código + README/informe/video + Dockerfile deseable Parte 1 / obligatorio Parte 2) | 30 % | 20 | 30 |
 | **Penalización** `target/` commiteado | -2 | -2 | — |
 | **Total** | **100 %** | **82** | **100** |
 
@@ -46,7 +46,7 @@
 
 🟡 **Falta video**. Confirmar si está subido al repo o solo planeado.
 
-### Dockerfile (5% deseable)
+### Dockerfile + docker-compose (deseable Parte 1, obligatorio Parte 2)
 ❌ No entregaron.
 
 ### Requisitos generales — **PROBLEMA OPERATIVO IMPORTANTE**
@@ -63,7 +63,7 @@
 2. **Centralizar selectores** en una clase `Locators.java` o `PageObjects/` siguiendo Page Object Model.
 3. **Migrar `System.out.println` → SLF4J** (`Logger logger = LoggerFactory.getLogger(...)`) con appenders a archivo.
 4. **JUnit 5 tests** en `src/test/java/` con cobertura ≥ 70 % medida por `jacoco-maven-plugin`.
-5. **Dockerfile multi-stage** con Maven build + runtime layer (JRE 17 + browsers + drivers).
+5. **Dockerfile multi-stage + docker-compose.yml** con Maven build + runtime layer (JRE 17 + browsers + drivers).
 6. **GitHub Actions** matriz Chrome/Firefox.
 7. **Implementar Hit #4** + screenshot también de Firefox.
 
@@ -81,7 +81,7 @@
 | Hit #4 (extracción JSON estructurada de los 3 productos) | 4-5 h (Java es más verboso) |
 | Hit #5 (retries con backoff — usá `failsafe-rs` o `resilience4j`) | 2 h |
 | Hit #6 (JUnit 5 + JaCoCo coverage ≥ 70 %) | 2-3 h |
-| Hit #7 (Dockerfile multi-stage Maven + JRE + browsers) | 2 h |
+| Hit #7 (Dockerfile multi-stage + docker-compose.yml Maven + JRE + browsers) | 2 h |
 | Hit #8 (k8s) + TP 0 (cluster k3s) | 3 h |
 | 3 ADRs | 30 min |
 

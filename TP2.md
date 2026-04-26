@@ -17,7 +17,7 @@
 Aplican los mismos requisitos generales de la Parte 1, **más** los siguientes:
 
 - **Pipeline de CI/CD obligatorio** (GitHub Actions). Debe correr el scraper en headless contra Chrome y Firefox y publicar los artefactos generados (JSON + screenshots).
-- **Dockerfile obligatorio**. La solución debe poder ejecutarse íntegramente desde un contenedor sin necesidad de instalar drivers ni navegadores en la máquina host.
+- **Dockerfile obligatorio + `docker-compose.yml` obligatorio**. La solución debe poder ejecutarse íntegramente desde un contenedor sin necesidad de instalar drivers ni navegadores en la máquina host. El `docker-compose.yml` debe levantar el scraper con `docker compose up` (al menos un servicio para correr los 3 productos contra Chrome o Firefox según env var); facilita la evaluación uniforme entre proyectos en distintos lenguajes.
 - **Tests automatizados obligatorios** (`pytest` / `JUnit` / `Jest`) corriendo en CI sobre matriz de browsers, con **cobertura ≥ 70 %** medida por la herramienta estándar del lenguaje (`coverage.py`, `jest --coverage`, `jacoco`). El pipeline debe **fallar** si la cobertura cae debajo del umbral.
 - **Pre-commit hooks obligatorios** (`pre-commit` framework o equivalente nativo del lenguaje). Como mínimo: `gitleaks` para detectar secrets, y el linter del lenguaje (`ruff` para Python, `eslint` para Node, `checkstyle`/`spotless` para Java). Esto fuerza que los problemas se detecten **antes** de pushear, no recién en CI.
 - **Mínimo 3 ADRs** (Architecture Decision Records) en `docs/adr/`, formato Markdown corto (1 página máx cada uno). Como mínimo:
@@ -110,6 +110,14 @@ Construya un **Dockerfile** que empaquete el scraper junto con Chrome, Firefox y
 
 ```bash
 docker run --rm -v $(pwd)/output:/app/output ml-scraper:latest --browser firefox
+```
+
+Construya además un **`docker-compose.yml`** que levante el scraper con un solo comando, sin tener que recordar los flags de `docker run`. Como mínimo debe definir un servicio `scraper` (con `BROWSER` y `HEADLESS` parametrizables vía env) y mapear `./output:/app/output` para persistir los JSON. Idealmente también un servicio `lint` (`ruff check` / `eslint`) que se invoque con `docker compose run --rm lint`:
+
+```bash
+docker compose up scraper          # corre los 3 productos contra el browser default
+BROWSER=firefox docker compose up scraper
+docker compose run --rm lint       # lint sin instalar nada local
 ```
 
 Configure un **GitHub Actions workflow** (`.github/workflows/scrape.yml`) que:
@@ -637,7 +645,7 @@ Total: 100 puntos (Hits #4–#8 + extras obligatorios). El Hit #9 es **bonus** y
 | Hit #4 — extracción estructurada a JSON de los 3 productos con todos los campos | 20 % |
 | Hit #5 — manejo robusto de errores (selectores faltantes, timeouts, retries con backoff) | 10 % |
 | Hit #6 — tests automatizados + cobertura ≥ 70 % validada en CI | 13 % |
-| Hit #7 — Dockerfile funcional con Chrome + Firefox + drivers | 10 % |
+| Hit #7 — Dockerfile + `docker-compose.yml` funcionales con Chrome + Firefox + drivers | 10 % |
 | Hit #7 — pipeline CI/CD con matriz de browsers, artifacts y gate de cobertura | 12 % |
 | Hit #7 — pre-commit hooks (gitleaks + linter + formatter) configurados y documentados | 5 % |
 | Hit #8 — `Job` + `CronJob` + `ConfigMap` + `PVC` corriendo en k3s/k3d | 15 % |
