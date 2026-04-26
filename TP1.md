@@ -309,7 +309,7 @@ cd hit3 && BROWSER=chrome python scraper.py
 3. **Video** subido a YouTube (unlisted) o equivalente, mostrando los 3 hits en ejecución y comentando las decisiones. Link en el README.
 4. **Mensaje en el canal Discord de la materia** con el link al repo.
 
-> 📡 **Canal Discord de la materia (consultas + entregas):** [pegar invite acá]
+> 📡 **Canal Discord de la materia (consultas + entregas):** <https://discord.com/channels/1482135908508500148/1482135909456679139>
 > Antes de preguntar, revisá la sección **Common pitfalls** — el 70 % de las dudas están resueltas ahí.
 
 ---
