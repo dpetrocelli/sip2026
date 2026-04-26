@@ -244,7 +244,7 @@ Esto es lo mínimo que esperamos ver al clonar el repo:
 
 ### README raíz — esqueleto sugerido
 
-```markdown
+````markdown
 # TP 1 — Selenium MercadoLibre — <Nombre del equipo>
 
 ## Integrantes
@@ -294,7 +294,7 @@ cd hit3 && BROWSER=chrome python scraper.py
 
 ## Limitaciones conocidas
 - ...
-```
+````
 
 ---
 

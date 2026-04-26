@@ -477,6 +477,54 @@ img {
   .content { padding: 20px 16px 40px; }
 }
 
+/* ============ SIDEBAR TOGGLE ============ */
+.toc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.toc-header .toc-title { margin: 0; }
+
+.sidebar-toggle-btn {
+  font-family: inherit;
+  cursor: pointer;
+  background: white;
+  border: 1px solid var(--light-gray);
+  color: var(--gray);
+  border-radius: 4px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  transition: all 0.12s ease;
+}
+.sidebar-toggle-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Floating "show" button — only visible when sidebar is hidden */
+.sidebar-toggle-btn.sidebar-show {
+  position: fixed;
+  top: 96px;
+  left: 14px;
+  z-index: 50;
+  display: none;
+  background: white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.sidebar-toggle-btn.sidebar-show.visible { display: inline-flex; }
+
+/* When sidebar is hidden, collapse the layout grid */
+.layout.sidebar-hidden { grid-template-columns: 1fr !important; }
+.layout.sidebar-hidden .toc-sidebar { display: none; }
+
 /* ============ INLINE TOC (Índice del documento) ============ */
 .toc-inline {
   background: #f7faff;

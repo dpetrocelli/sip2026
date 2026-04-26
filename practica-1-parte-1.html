@@ -91,9 +91,14 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
   </div>
 </header>
 
+<button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
+
 <div class="layout">
-  <aside class="toc-sidebar">
-    <div class="toc-title">Contenidos</div>
+  <aside class="toc-sidebar" id="toc-sidebar">
+    <div class="toc-header">
+      <div class="toc-title">Contenidos</div>
+      <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
+    </div>
     <ul>
     <li><a href="#trabajo-práctico-nº-1--parte-1"
     id="toc-trabajo-práctico-nº-1--parte-1">Trabajo Práctico Nº 1 —
@@ -172,18 +177,14 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     id="toc-readme-raíz--esqueleto-sugerido">README raíz — esqueleto
     sugerido</a></li>
     </ul></li>
-    <li><a href="#decisiones-de-diseño"
-    id="toc-decisiones-de-diseño">Decisiones de diseño</a></li>
-    <li><a href="#comparativa-chrome-vs-firefox"
-    id="toc-comparativa-chrome-vs-firefox">Comparativa Chrome vs
-    Firefox</a></li>
-    <li><a href="#herramientas-de-ia-usadas"
-    id="toc-herramientas-de-ia-usadas">Herramientas de IA
-    usadas</a></li>
-    <li><a href="#video-explicativo" id="toc-video-explicativo">Video
-    explicativo</a></li>
-    <li><a href="#limitaciones-conocidas"
-    id="toc-limitaciones-conocidas">Limitaciones conocidas</a></li>
+    <li><a href="#cómo-entregar" id="toc-cómo-entregar">Cómo
+    entregar</a></li>
+    <li><a href="#criterios-de-evaluación--parte-1"
+    id="toc-criterios-de-evaluación--parte-1">Criterios de evaluación —
+    Parte 1</a></li>
+    <li><a href="#referencias-y-bibliografía"
+    id="toc-referencias-y-bibliografía">Referencias y
+    Bibliografía</a></li>
     </ul></li>
     </ul>
     <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
@@ -275,18 +276,14 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       id="toc-readme-raíz--esqueleto-sugerido">README raíz — esqueleto
       sugerido</a></li>
       </ul></li>
-      <li><a href="#decisiones-de-diseño"
-      id="toc-decisiones-de-diseño">Decisiones de diseño</a></li>
-      <li><a href="#comparativa-chrome-vs-firefox"
-      id="toc-comparativa-chrome-vs-firefox">Comparativa Chrome vs
-      Firefox</a></li>
-      <li><a href="#herramientas-de-ia-usadas"
-      id="toc-herramientas-de-ia-usadas">Herramientas de IA
-      usadas</a></li>
-      <li><a href="#video-explicativo" id="toc-video-explicativo">Video
-      explicativo</a></li>
-      <li><a href="#limitaciones-conocidas"
-      id="toc-limitaciones-conocidas">Limitaciones conocidas</a></li>
+      <li><a href="#cómo-entregar" id="toc-cómo-entregar">Cómo
+      entregar</a></li>
+      <li><a href="#criterios-de-evaluación--parte-1"
+      id="toc-criterios-de-evaluación--parte-1">Criterios de evaluación
+      — Parte 1</a></li>
+      <li><a href="#referencias-y-bibliografía"
+      id="toc-referencias-y-bibliografía">Referencias y
+      Bibliografía</a></li>
       </ul></li>
       </ul>
       <div class="toc-controls">
@@ -677,83 +674,104 @@ class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb7-1"><
 <span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> hit2 <span class="kw">&amp;&amp;</span> <span class="va">BROWSER</span><span class="op">=</span>firefox <span class="ex">python</span> scraper.py</span>
 <span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Hit 3</span></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> hit3 <span class="kw">&amp;&amp;</span> <span class="va">BROWSER</span><span class="op">=</span>chrome <span class="ex">python</span> scraper.py</span></code></pre></div>
-<h2 id="decisiones-de-diseño">Decisiones de diseño</h2>
-<p>… (qué eligieron y por qué — ej: por qué <code>WebDriverWait</code>
-con timeout 15s, por qué <code>data-*</code> no aplicaba)</p>
-<h2 id="comparativa-chrome-vs-firefox">Comparativa Chrome vs
-Firefox</h2>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> hit3 <span class="kw">&amp;&amp;</span> <span class="va">BROWSER</span><span class="op">=</span>chrome <span class="ex">python</span> scraper.py</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decisiones de diseño</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>... (qué eligieron y por qué — ej: por qué <span class="in">`WebDriverWait`</span> con timeout 15s, por qué <span class="in">`data-*`</span> no aplicaba)</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparativa Chrome vs Firefox</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Aspecto <span class="pp">|</span> Chrome <span class="pp">|</span> Firefox <span class="pp">|</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="pp">|---------|--------|---------|</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Tiempo del Hit #3 <span class="pp">|</span> ... <span class="pp">|</span> ... <span class="pp">|</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Diferencias en selectores <span class="pp">|</span> ... <span class="pp">|</span> ... <span class="pp">|</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="fu">## Herramientas de IA usadas</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Cursor / Claude / Copilot — para qué la usamos: ...</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Prompts no triviales documentados en <span class="in">`docs/ai-usage.md`</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="fu">## Video explicativo</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Link YouTube unlisted</span><span class="co">]</span></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a><span class="fu">## Limitaciones conocidas</span></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>...</span></code></pre></div>
+<hr />
+<h2 id="cómo-entregar">Cómo entregar</h2>
+<ol type="1">
+<li><strong>Push final al repo público</strong> (GitHub/GitLab) antes
+del 25/04/2026 23:59 ART.</li>
+<li><strong>README raíz</strong> completo siguiendo el esqueleto de
+arriba.</li>
+<li><strong>Video</strong> subido a YouTube (unlisted) o equivalente,
+mostrando los 3 hits en ejecución y comentando las decisiones. Link en
+el README.</li>
+<li><strong>Mensaje en el canal Discord de la materia</strong> con el
+link al repo.</li>
+</ol>
+<blockquote>
+<p>📡 <strong>Canal Discord de la materia (consultas +
+entregas):</strong> [pegar invite acá] Antes de preguntar, revisá la
+sección <strong>Common pitfalls</strong> — el 70 % de las dudas están
+resueltas ahí.</p>
+</blockquote>
+<hr />
+<h2 id="criterios-de-evaluación--parte-1">Criterios de evaluación —
+Parte 1</h2>
 <table>
 <thead>
 <tr>
-<th>Aspecto</th>
-<th>Chrome</th>
-<th>Firefox</th>
+<th>Criterio</th>
+<th>Peso</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Tiempo del Hit #3</td>
-<td>…</td>
-<td>…</td>
+<td>Hit #1 — setup, navegación, búsqueda y lectura de títulos</td>
+<td>15 %</td>
 </tr>
 <tr>
-<td>Diferencias en selectores</td>
-<td>…</td>
-<td>…</td>
+<td>Hit #2 — Browser Factory funcionando contra Chrome
+<strong>y</strong> Firefox sin cambios de código</td>
+<td>25 %</td>
+</tr>
+<tr>
+<td>Hit #3 — filtros aplicados correctamente vía DOM (nuevo + tienda
+oficial) y screenshot</td>
+<td>30 %</td>
+</tr>
+<tr>
+<td>Calidad de código (waits explícitos, selectores en módulo aparte,
+sin <code>time.sleep</code>)</td>
+<td>15 %</td>
+</tr>
+<tr>
+<td>README, informe y video explicativo</td>
+<td>10 %</td>
+</tr>
+<tr>
+<td>Dockerfile básico (deseable, suma puntos)</td>
+<td>5 %</td>
 </tr>
 </tbody>
 </table>
-<h2 id="herramientas-de-ia-usadas">Herramientas de IA usadas</h2>
+<hr />
+<h2 id="referencias-y-bibliografía">Referencias y Bibliografía</h2>
 <ul>
-<li>Cursor / Claude / Copilot — para qué la usamos: …</li>
-<li>Prompts no triviales documentados en
-<code>docs/ai-usage.md</code></li>
+<li><strong>[SEL]</strong> Selenium Documentation. <a
+href="https://www.selenium.dev/documentation/">https://www.selenium.dev/documentation/</a></li>
+<li><strong>[W3C-WD]</strong> W3C WebDriver Specification. <a
+href="https://www.w3.org/TR/webdriver2/">https://www.w3.org/TR/webdriver2/</a></li>
+<li><strong>[CSS-SEL]</strong> MDN — CSS Selectors. <a
+href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors">https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors</a></li>
+<li><strong>[XPATH]</strong> MDN — XPath. <a
+href="https://developer.mozilla.org/en-US/docs/Web/XPath">https://developer.mozilla.org/en-US/docs/Web/XPath</a></li>
+<li><strong>[GITLEAKS]</strong> gitleaks. <a
+href="https://github.com/gitleaks/gitleaks">https://github.com/gitleaks/gitleaks</a></li>
+<li><strong>[ROBOTS]</strong> The Robots Exclusion Protocol. <a
+href="https://www.rfc-editor.org/rfc/rfc9309">https://www.rfc-editor.org/rfc/rfc9309</a></li>
+<li><strong>[ML]</strong> MercadoLibre Argentina. <a
+href="https://www.mercadolibre.com.ar">https://www.mercadolibre.com.ar</a></li>
 </ul>
-<h2 id="video-explicativo">Video explicativo</h2>
-<p>[Link YouTube unlisted]</p>
-<h2 id="limitaciones-conocidas">Limitaciones conocidas</h2>
-<ul>
-<li>…</li>
-</ul>
-<pre><code>
----
-
-## Cómo entregar
-
-1. **Push final al repo público** (GitHub/GitLab) antes del 25/04/2026 23:59 ART.
-2. **README raíz** completo siguiendo el esqueleto de arriba.
-3. **Video** subido a YouTube (unlisted) o equivalente, mostrando los 3 hits en ejecución y comentando las decisiones. Link en el README.
-4. **Mensaje en el canal Discord de la materia** con el link al repo.
-
-&gt; 📡 **Canal Discord de la materia (consultas + entregas):** [pegar invite acá]
-&gt; Antes de preguntar, revisá la sección **Common pitfalls** — el 70 % de las dudas están resueltas ahí.
-
----
-
-## Criterios de evaluación — Parte 1
-
-| Criterio | Peso |
-|----------|------|
-| Hit #1 — setup, navegación, búsqueda y lectura de títulos | 15 % |
-| Hit #2 — Browser Factory funcionando contra Chrome **y** Firefox sin cambios de código | 25 % |
-| Hit #3 — filtros aplicados correctamente vía DOM (nuevo + tienda oficial) y screenshot | 30 % |
-| Calidad de código (waits explícitos, selectores en módulo aparte, sin `time.sleep`) | 15 % |
-| README, informe y video explicativo | 10 % |
-| Dockerfile básico (deseable, suma puntos) | 5 % |
-
----
-
-## Referencias y Bibliografía
-
-- **[SEL]** Selenium Documentation. &lt;https://www.selenium.dev/documentation/&gt;
-- **[W3C-WD]** W3C WebDriver Specification. &lt;https://www.w3.org/TR/webdriver2/&gt;
-- **[CSS-SEL]** MDN — CSS Selectors. &lt;https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors&gt;
-- **[XPATH]** MDN — XPath. &lt;https://developer.mozilla.org/en-US/docs/Web/XPath&gt;
-- **[GITLEAKS]** gitleaks. &lt;https://github.com/gitleaks/gitleaks&gt;
-- **[ROBOTS]** The Robots Exclusion Protocol. &lt;https://www.rfc-editor.org/rfc/rfc9309&gt;
-- **[ML]** MercadoLibre Argentina. &lt;https://www.mercadolibre.com.ar&gt;
-</code></pre>
   </main>
 </div>
 
@@ -765,6 +783,33 @@ Firefox</h2>
 </footer>
 
 <script>
+// Sidebar show/hide toggle (preference persisted in localStorage)
+(function () {
+  const sidebar = document.getElementById('toc-sidebar');
+  const layout = document.querySelector('.layout');
+  const hideBtn = document.getElementById('sidebar-hide');
+  const showBtn = document.getElementById('sidebar-show');
+  if (!sidebar || !layout || !hideBtn || !showBtn) return;
+
+  const KEY = 'unlu.dcb.sidebar.hidden';
+
+  function apply(hidden) {
+    layout.classList.toggle('sidebar-hidden', hidden);
+    showBtn.classList.toggle('visible', hidden);
+  }
+
+  apply(localStorage.getItem(KEY) === '1');
+
+  hideBtn.addEventListener('click', () => {
+    localStorage.setItem(KEY, '1');
+    apply(true);
+  });
+  showBtn.addEventListener('click', () => {
+    localStorage.removeItem(KEY);
+    apply(false);
+  });
+})();
+
 // Wrap each H2 (and its following content until the next H2) in a <details open>
 // element so users can collapse/expand sections.
 (function () {
