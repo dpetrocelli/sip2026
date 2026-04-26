@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
   <meta name="generator" content="pandoc + UNLu/DCB template">
-  <title>Práctica I · Parte 2 — Robustez, Tests, Docker y CI/CD — UNLu
-DCB</title>
+  <title>Práctica I · Parte 2 — Robustez, Tests, Docker, k3s y CI/CD —
+UNLu DCB</title>
   <link rel="stylesheet" href="assets/style.css">
   <style type="text/css">
 html { -webkit-text-size-adjust: 100%; }
@@ -100,9 +100,10 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     Parte 2</a>
     <ul>
     <li><a
-    href="#robustez-tests-docker-y-cicd-sobre-el-scraper-de-mercadolibre"
-    id="toc-robustez-tests-docker-y-cicd-sobre-el-scraper-de-mercadolibre">Robustez,
-    Tests, Docker y CI/CD sobre el scraper de MercadoLibre</a></li>
+    href="#robustez-tests-docker-kubernetes-y-cicd-sobre-el-scraper-de-mercadolibre"
+    id="toc-robustez-tests-docker-kubernetes-y-cicd-sobre-el-scraper-de-mercadolibre">Robustez,
+    Tests, Docker, Kubernetes y CI/CD sobre el scraper de
+    MercadoLibre</a></li>
     <li><a href="#requisitos-consideraciones-y-formato-de-entrega"
     id="toc-requisitos-consideraciones-y-formato-de-entrega">Requisitos,
     consideraciones y formato de entrega</a></li>
@@ -115,7 +116,10 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     <li><a href="#hit-5" id="toc-hit-5">Hit #5</a></li>
     <li><a href="#hit-6" id="toc-hit-6">Hit #6</a></li>
     <li><a href="#hit-7" id="toc-hit-7">Hit #7</a></li>
-    <li><a href="#hit-8-bonus" id="toc-hit-8-bonus">Hit #8
+    <li><a href="#hit-8--despliegue-en-kubernetes-k3s"
+    id="toc-hit-8--despliegue-en-kubernetes-k3s">Hit #8 — Despliegue en
+    Kubernetes (k3s)</a></li>
+    <li><a href="#hit-9-bonus" id="toc-hit-9-bonus">Hit #9
     (Bonus)</a></li>
     </ul></li>
     <li><a href="#criterios-de-evaluación--parte-2"
@@ -138,13 +142,19 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <h1 id="trabajo-práctico-nº-1--parte-2">Trabajo Práctico Nº 1 — Parte
 2</h1>
 <h2
-id="robustez-tests-docker-y-cicd-sobre-el-scraper-de-mercadolibre">Robustez,
-Tests, Docker y CI/CD sobre el scraper de MercadoLibre</h2>
+id="robustez-tests-docker-kubernetes-y-cicd-sobre-el-scraper-de-mercadolibre">Robustez,
+Tests, Docker, Kubernetes y CI/CD sobre el scraper de MercadoLibre</h2>
 <p><strong>Fecha de Entrega: 02/05/2026</strong></p>
-<p><strong>Pre-requisito:</strong> Haber entregado la <strong>Parte
-1</strong> (Hits #1–#3). Esta segunda parte continúa el mismo proyecto y
-arranca con el Hit #4 (extracción estructurada a JSON), que es la base
-sobre la que se construye el resto.</p>
+<p><strong>Pre-requisitos:</strong></p>
+<ul>
+<li>Haber entregado la <strong>Parte 1</strong> (Hits #1–#3). Esta
+segunda parte continúa el mismo proyecto y arranca con el Hit #4
+(extracción estructurada a JSON), que es la base sobre la que se
+construye el resto.</li>
+<li>Haber completado la guía del <strong>TP 0 — Prerrequisitos
+(k3s)</strong> antes de empezar el Hit #8. Sin un cluster k3s/k3d
+funcional no podés cumplir esa parte.</li>
+</ul>
 <hr />
 <h2 id="requisitos-consideraciones-y-formato-de-entrega">Requisitos,
 consideraciones y formato de entrega</h2>
@@ -159,7 +169,31 @@ ejecutarse íntegramente desde un contenedor sin necesidad de instalar
 drivers ni navegadores en la máquina host.</li>
 <li><strong>Tests automatizados obligatorios</strong>
 (<code>pytest</code> / <code>JUnit</code> / <code>Jest</code>) corriendo
-en CI sobre matriz de browsers.</li>
+en CI sobre matriz de browsers, con <strong>cobertura ≥ 70 %</strong>
+medida por la herramienta estándar del lenguaje
+(<code>coverage.py</code>, <code>jest --coverage</code>,
+<code>jacoco</code>). El pipeline debe <strong>fallar</strong> si la
+cobertura cae debajo del umbral.</li>
+<li><strong>Pre-commit hooks obligatorios</strong>
+(<code>pre-commit</code> framework o equivalente nativo del lenguaje).
+Como mínimo: <code>gitleaks</code> para detectar secrets, y el linter
+del lenguaje (<code>ruff</code> para Python, <code>eslint</code> para
+Node, <code>checkstyle</code>/<code>spotless</code> para Java). Esto
+fuerza que los problemas se detecten <strong>antes</strong> de pushear,
+no recién en CI.</li>
+<li><strong>Mínimo 3 ADRs</strong> (Architecture Decision Records) en
+<code>docs/adr/</code>, formato Markdown corto (1 página máx cada uno).
+Como mínimo:
+<ul>
+<li><code>0001-selenium-vs-playwright.md</code> — por qué eligieron
+Selenium (y no Playwright/Puppeteer/Cypress).</li>
+<li><code>0002-multi-browser.md</code> — por qué se exige soporte de
+Chrome <strong>y</strong> Firefox simultáneo.</li>
+<li><code>0003-k8s-job-vs-docker-compose.md</code> — por qué Kubernetes
+Job y no <code>docker-compose</code> para el scraping programado.</li>
+<li>Plantilla recomendada: <a
+href="https://github.com/joelparkerhenderson/architecture-decision-record/blob/main/locales/en/templates/decision-record-template-by-michael-nygard/index.md">https://github.com/joelparkerhenderson/architecture-decision-record/blob/main/locales/en/templates/decision-record-template-by-michael-nygard/index.md</a></li>
+</ul></li>
 <li>Mantener las <strong>buenas prácticas</strong> ya exigidas en Parte
 1: explicit waits, selectores en módulo aparte, logs estructurados, no
 commitear secrets, gitleaks en CI.</li>
@@ -171,8 +205,13 @@ relacionados</h2>
 <li>Robustez en automatización: timeouts, retries, manejo de fallos
 parciales.</li>
 <li>Headless browsing y empaquetado en contenedores.</li>
-<li>Testing de software: integración, contratos de datos, schemas.</li>
+<li>Testing de software: integración, contratos de datos, schemas,
+cobertura.</li>
 <li>Pipelines de CI/CD y matrices de ejecución.</li>
+<li>Orquestación de containers con Kubernetes: Job, CronJob, ConfigMap,
+PVC.</li>
+<li>Calidad de código: pre-commit hooks, linters, ADRs como
+documentación viva.</li>
 <li>Patrones avanzados: Page Object Model.</li>
 </ul>
 <hr />
@@ -250,6 +289,11 @@ requeridos, tipos correctos).</li>
 <li>Que todos los links son URLs absolutas válidas.</li>
 </ul>
 <p>Los tests deben correr en CI tanto en Chrome como en Firefox.</p>
+<p><strong>Cobertura mínima: 70 %.</strong> Configure el reporte de
+cobertura (<code>coverage.py</code> + <code>pytest-cov</code>,
+<code>jest --coverage</code>, <code>jacoco</code>) y agregue una etapa
+al pipeline de CI que <strong>falle si la cobertura cae debajo del 70
+%</strong>. Publique el reporte HTML como artifact del workflow.</p>
 <hr />
 <h3 id="hit-7">Hit #7</h3>
 <p>Construya un <strong>Dockerfile</strong> que empaquete el scraper
@@ -263,13 +307,184 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="
 <li>Construya la imagen Docker.</li>
 <li>Corra el scraper en headless contra Chrome y Firefox (jobs en
 paralelo, matriz).</li>
-<li>Ejecute los tests del Hit #6.</li>
-<li>Publique los JSON y screenshots como <strong>artifacts</strong> del
-workflow.</li>
+<li>Ejecute los tests del Hit #6 y verifique cobertura ≥ 70 %.</li>
+<li>Publique los JSON, screenshots y reporte de cobertura como
+<strong>artifacts</strong> del workflow.</li>
 <li>Falle si gitleaks detecta secrets hardcodeados.</li>
 </ol>
+<p><strong>Pre-commit hooks locales obligatorios.</strong> Agregue un
+archivo <code>.pre-commit-config.yaml</code> (o equivalente) con, como
+mínimo:</p>
+<ul>
+<li><code>gitleaks</code> — bloquea commits con secrets.</li>
+<li>Linter del lenguaje (<code>ruff</code> / <code>eslint</code> /
+<code>checkstyle</code>).</li>
+<li>Formatter (<code>black</code> / <code>prettier</code> /
+<code>spotless</code>).</li>
+</ul>
+<p>Documente en el README cómo activarlos:
+<code>pre-commit install</code> (Python/Node) o el equivalente del
+stack.</p>
 <hr />
-<h3 id="hit-8-bonus">Hit #8 (Bonus)</h3>
+<h3 id="hit-8--despliegue-en-kubernetes-k3s">Hit #8 — Despliegue en
+Kubernetes (k3s)</h3>
+<p><strong>Pre-requisito:</strong> haber completado el <a
+href="practica-0.html">TP 0</a> y tener un cluster k3s o k3d
+funcional.</p>
+<p>Empaquete el scraper construido en el Hit #7 como una carga de
+trabajo de Kubernetes. El objetivo es ir más allá de “corre en mi
+máquina con Docker” y demostrar que la solución se puede desplegar en un
+orquestador.</p>
+<h4 id="81--job-one-off">8.1 — <code>Job</code> one-off</h4>
+<p>Cree <code>k8s/job.yaml</code> que ejecute el scraper <strong>una
+vez</strong> contra los 3 productos en headless Chrome, escribiendo los
+JSON en un volumen persistente.</p>
+<h4 id="82--cronjob-programado">8.2 — <code>CronJob</code>
+programado</h4>
+<p>Cree <code>k8s/cronjob.yaml</code> que ejecute el mismo scraping
+<strong>cada hora</strong> (<code>0 * * * *</code>), conservando un
+histórico en el volumen persistente.</p>
+<h4 id="83--configmap-con-configuración">8.3 — <code>ConfigMap</code>
+con configuración</h4>
+<p>Externaliza <code>BROWSER</code>, <code>HEADLESS</code>,
+<code>LOG_LEVEL</code> y la lista de productos a buscar en un
+<code>k8s/configmap.yaml</code>. Tanto el <code>Job</code> como el
+<code>CronJob</code> deben leer su configuración desde ahí.</p>
+<h4 id="84--persistentvolumeclaim-para-los-outputs">8.4 —
+<code>PersistentVolumeClaim</code> para los outputs</h4>
+<p>Cree <code>k8s/pvc.yaml</code> que solicite 1 GB con la storage class
+<code>local-path</code> (que k3s trae out-of-the-box). Los JSON y
+screenshots se escriben acá.</p>
+<h4 id="esqueleto-orientativo">Esqueleto orientativo</h4>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># k8s/configmap.yaml</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> v1</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">kind</span><span class="kw">:</span><span class="at"> ConfigMap</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">metadata</span><span class="kw">:</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> scraper-config</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span><span class="kw">:</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">BROWSER</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;chrome&quot;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">HEADLESS</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;true&quot;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">LOG_LEVEL</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;INFO&quot;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">  PRODUCTS</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    bicicleta rodado 29</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    iPhone 16 Pro Max</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    GeForce RTX 5090</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># k8s/pvc.yaml</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> v1</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="fu">kind</span><span class="kw">:</span><span class="at"> PersistentVolumeClaim</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">metadata</span><span class="kw">:</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> scraper-output</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">accessModes</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">ReadWriteOnce</span><span class="kw">]</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">storageClassName</span><span class="kw">:</span><span class="at"> local-path</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">resources</span><span class="kw">:</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">requests</span><span class="kw">:</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">storage</span><span class="kw">:</span><span class="at"> 1Gi</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co"># k8s/job.yaml</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> batch/v1</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="fu">kind</span><span class="kw">:</span><span class="at"> Job</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="fu">metadata</span><span class="kw">:</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> scraper-once</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">backoffLimit</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">template</span><span class="kw">:</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">restartPolicy</span><span class="kw">:</span><span class="at"> OnFailure</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">containers</span><span class="kw">:</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> scraper</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">image</span><span class="kw">:</span><span class="at"> ml-scraper:latest</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">imagePullPolicy</span><span class="kw">:</span><span class="at"> IfNotPresent</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">envFrom</span><span class="kw">:</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="kw">-</span><span class="at"> </span><span class="fu">configMapRef</span><span class="kw">:</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">name</span><span class="kw">:</span><span class="at"> scraper-config</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">volumeMounts</span><span class="kw">:</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> output</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">mountPath</span><span class="kw">:</span><span class="at"> /app/output</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> output</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">persistentVolumeClaim</span><span class="kw">:</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">claimName</span><span class="kw">:</span><span class="at"> scraper-output</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="co"># k8s/cronjob.yaml</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> batch/v1</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="fu">kind</span><span class="kw">:</span><span class="at"> CronJob</span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="fu">metadata</span><span class="kw">:</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> scraper-hourly</span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">schedule</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;0 * * * *&quot;</span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">successfulJobsHistoryLimit</span><span class="kw">:</span><span class="at"> </span><span class="dv">3</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">failedJobsHistoryLimit</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">jobTemplate</span><span class="kw">:</span></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">backoffLimit</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">template</span><span class="kw">:</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">restartPolicy</span><span class="kw">:</span><span class="at"> OnFailure</span></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">containers</span><span class="kw">:</span></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> scraper</span></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">image</span><span class="kw">:</span><span class="at"> ml-scraper:latest</span></span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">imagePullPolicy</span><span class="kw">:</span><span class="at"> IfNotPresent</span></span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">envFrom</span><span class="kw">:</span></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="kw">-</span><span class="at"> </span><span class="fu">configMapRef</span><span class="kw">:</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="at">                </span><span class="fu">name</span><span class="kw">:</span><span class="at"> scraper-config</span></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">volumeMounts</span><span class="kw">:</span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> output</span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">mountPath</span><span class="kw">:</span><span class="at"> /app/output</span></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> output</span></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">persistentVolumeClaim</span><span class="kw">:</span></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">claimName</span><span class="kw">:</span><span class="at"> scraper-output</span></span></code></pre></div>
+<h4 id="recetario-de-ejecución">Recetario de ejecución</h4>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Construir la imagen Docker (igual que en Hit #7)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">-t</span> ml-scraper:latest .</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Cargar la imagen en el cluster</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Si usás k3s nativo:</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> save ml-scraper:latest <span class="at">-o</span> ml-scraper.tar</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> k3s ctr images import ml-scraper.tar</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> ml-scraper.tar</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Si usás k3d:</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="ex">k3d</span> image import ml-scraper:latest <span class="at">-c</span> scraper</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Aplicar todos los manifiestos</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> k8s/</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Disparar el Job one-off y seguir los logs</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get jobs</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> logs <span class="at">-l</span> job-name=scraper-once <span class="at">-f</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Inspeccionar el PVC y verificar los JSON</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pvc</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> exec <span class="at">-it</span> <span class="va">$(</span><span class="ex">kubectl</span> get pod <span class="at">-l</span> job-name=scraper-once <span class="at">-o</span> jsonpath=<span class="st">&#39;{.items[0].metadata.name}&#39;</span><span class="va">)</span> <span class="at">--</span> ls /app/output</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. Verificar el CronJob</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get cronjobs</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get jobs <span class="at">--watch</span>  <span class="co"># vas a ver corridas cada hora</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. Cleanup</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> delete <span class="at">-f</span> k8s/</span></code></pre></div>
+<h4 id="entregables-del-hit-8">Entregables del Hit #8</h4>
+<ul>
+<li>Carpeta <code>k8s/</code> con los 4 YAMLs.</li>
+<li>Sección en el README explicando: cómo levantar el cluster
+(referenciando TP 0), cómo cargar la imagen, cómo aplicar los
+manifiestos, cómo verificar.</li>
+<li>Captura de pantalla (o asciinema) de <code>kubectl get jobs</code>
+mostrando un Job completado y <code>kubectl get cronjobs</code>
+mostrando el cron activo.</li>
+<li>Bonus: agregar al pipeline de CI una etapa que valide la sintaxis de
+los YAMLs con <code>kubectl apply --dry-run=client -f k8s/</code>.</li>
+</ul>
+<hr />
+<h3 id="hit-9-bonus">Hit #9 (Bonus)</h3>
 <p>Extienda el scraper con cualquiera (o varias) de las siguientes
 capacidades:</p>
 <ol type="1">
@@ -278,15 +493,17 @@ lugar de 10, navegando hasta 3 páginas.</li>
 <li><strong>Comparación de precios</strong>: para cada producto,
 calcular precio mínimo, máximo, mediana y desvío estándar entre los
 resultados extraídos. Imprimir tabla resumen.</li>
-<li><strong>Histórico</strong>: guardar los resultados en una base de
-datos liviana (SQLite) con timestamp, para detectar cambios de precio si
-el scraper se ejecuta periódicamente.</li>
+<li><strong>Histórico con SQLite</strong>: guardar los resultados en una
+base liviana con timestamp, para detectar cambios de precio entre
+corridas del CronJob (Hit #8).</li>
 <li><strong>Reporte HTML</strong>: generar una página estática (con
 GitHub Pages publicada por el pipeline) que muestre los resultados de la
 última corrida en una tabla navegable.</li>
 <li><strong>Page Object Model</strong>: refactorizar el scraper para
 separar el código de navegación (<code>SearchPage</code>,
 <code>ResultsPage</code>) del código de extracción y de los tests.</li>
+<li><strong>Helm Chart</strong>: empaquetar los manifiestos del Hit #8
+como un chart con <code>values.yaml</code> parametrizable.</li>
 </ol>
 <hr />
 <h2 id="criterios-de-evaluación--parte-2">Criterios de evaluación —
@@ -302,34 +519,46 @@ Parte 2</h2>
 <tr>
 <td>Hit #4 — extracción estructurada a JSON de los 3 productos con todos
 los campos</td>
-<td>20 %</td>
+<td>18 %</td>
 </tr>
 <tr>
 <td>Hit #5 — manejo robusto de errores (selectores faltantes, timeouts,
 retries con backoff)</td>
-<td>15 %</td>
-</tr>
-<tr>
-<td>Hit #6 — tests automatizados cubriendo el flujo crítico, corriendo
-en CI</td>
-<td>15 %</td>
-</tr>
-<tr>
-<td>Hit #7 — Dockerfile funcional con Chrome + Firefox + drivers,
-multi-stage si aplica</td>
-<td>15 %</td>
-</tr>
-<tr>
-<td>Hit #7 — pipeline CI/CD funcional con matriz de browsers y artifacts
-publicados</td>
-<td>15 %</td>
-</tr>
-<tr>
-<td>Modo headless configurable y operativo</td>
 <td>10 %</td>
 </tr>
 <tr>
-<td>Hit #8 (al menos uno de los bonus)</td>
+<td>Hit #6 — tests automatizados + cobertura ≥ 70 % validada en CI</td>
+<td>12 %</td>
+</tr>
+<tr>
+<td>Hit #7 — Dockerfile funcional con Chrome + Firefox + drivers</td>
+<td>10 %</td>
+</tr>
+<tr>
+<td>Hit #7 — pipeline CI/CD con matriz de browsers, artifacts y gate de
+cobertura</td>
+<td>10 %</td>
+</tr>
+<tr>
+<td>Hit #7 — pre-commit hooks (gitleaks + linter + formatter)
+configurados y documentados</td>
+<td>5 %</td>
+</tr>
+<tr>
+<td>Hit #8 — <code>Job</code> + <code>CronJob</code> +
+<code>ConfigMap</code> + <code>PVC</code> corriendo en k3s/k3d</td>
+<td>15 %</td>
+</tr>
+<tr>
+<td>ADRs (mínimo 3, en <code>docs/adr/</code>)</td>
+<td>5 %</td>
+</tr>
+<tr>
+<td>Modo headless configurable y operativo</td>
+<td>5 %</td>
+</tr>
+<tr>
+<td>Hit #9 (al menos uno de los bonus)</td>
 <td>10 %</td>
 </tr>
 </tbody>
@@ -348,6 +577,19 @@ Dockerfiles. <a
 href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/">https://docs.docker.com/develop/develop-images/dockerfile_best-practices/</a></li>
 <li><strong>[GITLEAKS]</strong> gitleaks. <a
 href="https://github.com/gitleaks/gitleaks">https://github.com/gitleaks/gitleaks</a></li>
+<li><strong>[PRECOMMIT]</strong> pre-commit framework. <a
+href="https://pre-commit.com/">https://pre-commit.com/</a></li>
+<li><strong>[K3S]</strong> k3s — Lightweight Kubernetes. <a
+href="https://docs.k3s.io/">https://docs.k3s.io/</a></li>
+<li><strong>[K3D]</strong> k3d — k3s in Docker. <a
+href="https://k3d.io/">https://k3d.io/</a></li>
+<li><strong>[K8S-JOB]</strong> Kubernetes Jobs. <a
+href="https://kubernetes.io/docs/concepts/workloads/controllers/job/">https://kubernetes.io/docs/concepts/workloads/controllers/job/</a></li>
+<li><strong>[K8S-CRON]</strong> Kubernetes CronJob. <a
+href="https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/">https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/</a></li>
+<li><strong>[ADR]</strong> Architecture Decision Records — Michael
+Nygard. <a
+href="https://github.com/joelparkerhenderson/architecture-decision-record">https://github.com/joelparkerhenderson/architecture-decision-record</a></li>
 <li><strong>[ML]</strong> MercadoLibre Argentina. <a
 href="https://www.mercadolibre.com.ar">https://www.mercadolibre.com.ar</a></li>
 </ul>

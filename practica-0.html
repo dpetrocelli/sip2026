@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <meta name="generator" content="pandoc + UNLu/DCB template">
+  <title>Práctica 0 — Prerrequisitos: k3s + Kubernetes básico — UNLu
+DCB</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+
+<header class="unlu-header">
+  <div class="brand">
+    <img src="assets/unlu_escudo.png" alt="Universidad Nacional de Luján" class="logo unlu">
+    <div class="brand-text">
+      <div class="institution">Universidad Nacional de Luján</div>
+      <div class="department">Departamento de Ciencias Básicas</div>
+    </div>
+    <img src="assets/logo_dcb.png" alt="Departamento de Ciencias Básicas" class="logo dcb">
+  </div>
+  <div class="course-bar">
+    <span class="course">Seminario de Integración Profesional</span>
+    <span class="year">2026</span>
+    <span class="instructor">Dr. David Petrocelli</span>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="toc-sidebar">
+    <div class="toc-title">Contenidos</div>
+    <ul>
+    <li><a href="#tp-0--prerrequisitos" id="toc-tp-0--prerrequisitos">TP
+    0 — Prerrequisitos</a>
+    <ul>
+    <li><a href="#instalación-de-k3s-y-primeros-pasos-con-kubernetes"
+    id="toc-instalación-de-k3s-y-primeros-pasos-con-kubernetes">Instalación
+    de k3s y primeros pasos con Kubernetes</a></li>
+    <li><a href="#por-qué-kubernetes-y-por-qué-k3s"
+    id="toc-por-qué-kubernetes-y-por-qué-k3s">¿Por qué Kubernetes y por
+    qué k3s?</a></li>
+    <li><a href="#requisitos-previos"
+    id="toc-requisitos-previos">Requisitos previos</a></li>
+    <li><a href="#camino-a--linux-nativo-o-wsl2-instalación-de-k3s"
+    id="toc-camino-a--linux-nativo-o-wsl2-instalación-de-k3s">Camino A —
+    Linux nativo o WSL2 (instalación de k3s)</a>
+    <ul>
+    <li><a href="#paso-1-instalar-k3s" id="toc-paso-1-instalar-k3s">Paso
+    1: Instalar k3s</a></li>
+    <li><a href="#paso-2-verificar-que-el-cluster-está-vivo"
+    id="toc-paso-2-verificar-que-el-cluster-está-vivo">Paso 2: Verificar
+    que el cluster está vivo</a></li>
+    <li><a href="#paso-3-configurar-kubectl-para-no-necesitar-sudo"
+    id="toc-paso-3-configurar-kubectl-para-no-necesitar-sudo">Paso 3:
+    Configurar <code>kubectl</code> para no necesitar
+    <code>sudo</code></a></li>
+    <li><a href="#paso-4-cómo-cargar-una-imagen-docker-en-k3s"
+    id="toc-paso-4-cómo-cargar-una-imagen-docker-en-k3s">Paso 4: Cómo
+    cargar una imagen Docker en k3s</a></li>
+    <li><a href="#paso-5-tirar-abajo-k3s-cuando-termines-el-tp"
+    id="toc-paso-5-tirar-abajo-k3s-cuando-termines-el-tp">Paso 5: Tirar
+    abajo k3s cuando termines el TP</a></li>
+    </ul></li>
+    <li><a href="#camino-b--macos-o-windows-k3d"
+    id="toc-camino-b--macos-o-windows-k3d">Camino B — macOS o Windows
+    (k3d)</a>
+    <ul>
+    <li><a href="#paso-1-instalar-k3d" id="toc-paso-1-instalar-k3d">Paso
+    1: Instalar k3d</a></li>
+    <li><a href="#paso-2-crear-un-cluster-k3s-adentro-de-docker"
+    id="toc-paso-2-crear-un-cluster-k3s-adentro-de-docker">Paso 2: Crear
+    un cluster k3s adentro de Docker</a></li>
+    <li><a href="#paso-3-verificar-el-cluster"
+    id="toc-paso-3-verificar-el-cluster">Paso 3: Verificar el
+    cluster</a></li>
+    <li><a href="#paso-4-cargar-una-imagen-docker-en-k3d"
+    id="toc-paso-4-cargar-una-imagen-docker-en-k3d">Paso 4: Cargar una
+    imagen Docker en k3d</a></li>
+    <li><a href="#paso-5-tirar-abajo-el-cluster-cuando-termines"
+    id="toc-paso-5-tirar-abajo-el-cluster-cuando-termines">Paso 5: Tirar
+    abajo el cluster cuando termines</a></li>
+    </ul></li>
+    <li><a
+    href="#comandos-básicos-de-kubectl-que-vas-a-usar-todo-el-tiempo"
+    id="toc-comandos-básicos-de-kubectl-que-vas-a-usar-todo-el-tiempo">Comandos
+    básicos de kubectl que vas a usar todo el tiempo</a></li>
+    <li><a
+    href="#hello-world-deployar-nginx-para-validar-que-todo-funciona"
+    id="toc-hello-world-deployar-nginx-para-validar-que-todo-funciona">Hello
+    world: deployar nginx para validar que todo funciona</a></li>
+    <li><a href="#conceptos-mínimos-que-vas-a-usar-en-el-hit-8"
+    id="toc-conceptos-mínimos-que-vas-a-usar-en-el-hit-8">Conceptos
+    mínimos que vas a usar en el Hit #8</a></li>
+    <li><a href="#troubleshooting-frecuente"
+    id="toc-troubleshooting-frecuente">Troubleshooting frecuente</a>
+    <ul>
+    <li><a href="#el-pod-queda-en-pending-y-no-arranca"
+    id="toc-el-pod-queda-en-pending-y-no-arranca">“El pod queda en
+    <code>Pending</code> y no arranca”</a></li>
+    <li><a href="#el-pod-arranca-pero-falla-con-crashloopbackoff"
+    id="toc-el-pod-arranca-pero-falla-con-crashloopbackoff">“El pod
+    arranca pero falla con <code>CrashLoopBackOff</code>”</a></li>
+    <li><a
+    href="#kubectl-no-encuentra-el-cluster-the-connection-to-the-server-localhost8080-was-refused"
+    id="toc-kubectl-no-encuentra-el-cluster-the-connection-to-the-server-localhost8080-was-refused">“kubectl
+    no encuentra el cluster
+    (<code>The connection to the server localhost:8080 was refused</code>)”</a></li>
+    <li><a href="#k3s-consume-mucha-ram"
+    id="toc-k3s-consume-mucha-ram">“k3s consume mucha RAM”</a></li>
+    </ul></li>
+    <li><a href="#lectura-recomendada-no-obligatoria"
+    id="toc-lectura-recomendada-no-obligatoria">Lectura recomendada (NO
+    obligatoria)</a></li>
+    <li><a href="#validación-previa-al-hit-8"
+    id="toc-validación-previa-al-hit-8">Validación previa al Hit
+    #8</a></li>
+    </ul></li>
+    </ul>
+    <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
+      <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div style="display:inline-block;background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:12px;letter-spacing:0.6px;margin-bottom:14px;">TP
+0</div>
+
+<h1 id="tp-0--prerrequisitos">TP 0 — Prerrequisitos</h1>
+<h2 id="instalación-de-k3s-y-primeros-pasos-con-kubernetes">Instalación
+de k3s y primeros pasos con Kubernetes</h2>
+<p><strong>Fecha de Entrega: no aplica (preparación)</strong></p>
+<blockquote>
+<p>Esta guía es <strong>prerrequisito de la Parte 2 del TP 1</strong>.
+No se entrega — pero si llegan al Hit #8 sin haberla seguido, no van a
+poder cumplir la consigna.</p>
+</blockquote>
+<hr />
+<h2 id="por-qué-kubernetes-y-por-qué-k3s">¿Por qué Kubernetes y por qué
+k3s?</h2>
+<p><strong>Kubernetes (k8s)</strong> es el orquestador de contenedores
+estándar de la industria. Te permite declarar “quiero que esto corra
+cada hora”, “esto necesita 2 réplicas”, “este job tiene que reintentarse
+hasta 3 veces si falla”, y el cluster se encarga.</p>
+<p><strong>k3s</strong> es una distribución liviana de Kubernetes (~70
+MB de binario) creada por Rancher y donada al CNCF. Es
+<strong>Kubernetes real</strong> (certificado), no una versión
+recortada. Lo eligieron porque es lo más simple de levantar localmente
+sin depender de snap (microk8s) ni de máquinas virtuales (minikube).</p>
+<p>Para este TP vamos a usar k3s en <strong>dos sabores</strong> según
+el sistema operativo:</p>
+<table>
+<thead>
+<tr>
+<th>Tu sistema</th>
+<th>Qué instalás</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linux nativo o WSL2</td>
+<td><strong>k3s</strong> (instalación directa)</td>
+</tr>
+<tr>
+<td>macOS o Windows sin WSL</td>
+<td><strong>k3d</strong> — que es k3s corriendo adentro de Docker</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Los manifiestos YAML son idénticos</strong> entre ambos. Solo
+cambia cómo levantás el cluster y cómo cargás imágenes Docker.</p>
+<hr />
+<h2 id="requisitos-previos">Requisitos previos</h2>
+<ul>
+<li>Tener <strong>Docker</strong> instalado y funcionando (lo necesitan
+para el Hit #7 igual).
+<ul>
+<li>Verificá con: <code>docker version</code> y
+<code>docker ps</code>.</li>
+</ul></li>
+<li>Tener <strong>kubectl</strong> instalado (CLI oficial de
+Kubernetes).
+<ul>
+<li>macOS: <code>brew install kubectl</code></li>
+<li>Linux:
+<code>curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" &amp;&amp; chmod +x kubectl &amp;&amp; sudo mv kubectl /usr/local/bin/</code></li>
+<li>Windows: <code>choco install kubernetes-cli</code> o
+<code>scoop install kubectl</code></li>
+<li>Verificá: <code>kubectl version --client</code></li>
+</ul></li>
+<li>4 GB de RAM libres. 2 GB de disco libres.</li>
+</ul>
+<hr />
+<h2 id="camino-a--linux-nativo-o-wsl2-instalación-de-k3s">Camino A —
+Linux nativo o WSL2 (instalación de k3s)</h2>
+<h3 id="paso-1-instalar-k3s">Paso 1: Instalar k3s</h3>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sfL</span> https://get.k3s.io <span class="kw">|</span> <span class="fu">sh</span> <span class="at">-</span></span></code></pre></div>
+<p>Esto te baja el binario, lo deja en <code>/usr/local/bin/k3s</code>,
+lo registra como servicio <code>systemd</code>, y lo arranca. Duración:
+~30 segundos.</p>
+<h3 id="paso-2-verificar-que-el-cluster-está-vivo">Paso 2: Verificar que
+el cluster está vivo</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> k3s kubectl get nodes</span></code></pre></div>
+<p>Tenés que ver algo así:</p>
+<pre><code>NAME            STATUS   ROLES                  AGE   VERSION
+mi-laptop       Ready    control-plane,master   12s   v1.32.x+k3s1</code></pre>
+<h3 id="paso-3-configurar-kubectl-para-no-necesitar-sudo">Paso 3:
+Configurar <code>kubectl</code> para no necesitar <code>sudo</code></h3>
+<p>k3s deja el kubeconfig en <code>/etc/rancher/k3s/k3s.yaml</code> con
+permisos restrictivos. Para usar <code>kubectl</code> sin
+<code>sudo</code>:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/.kube</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> cp /etc/rancher/k3s/k3s.yaml ~/.kube/config</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> chown <span class="va">$(</span><span class="fu">id</span> <span class="at">-u</span><span class="va">)</span>:<span class="va">$(</span><span class="fu">id</span> <span class="at">-g</span><span class="va">)</span> ~/.kube/config</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> 600 ~/.kube/config</span></code></pre></div>
+<p>Verificá:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get nodes</span></code></pre></div>
+<p>Si te devuelve el nodo sin pedir <code>sudo</code>, ya está.</p>
+<h3 id="paso-4-cómo-cargar-una-imagen-docker-en-k3s">Paso 4: Cómo cargar
+una imagen Docker en k3s</h3>
+<p>k3s no usa Docker como runtime — usa <strong>containerd</strong>. Por
+eso, una imagen que construiste con <code>docker build</code> no la “ve”
+k3s automáticamente. Hay que importarla:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> save mi-imagen:latest <span class="at">-o</span> mi-imagen.tar</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> k3s ctr images import mi-imagen.tar</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> mi-imagen.tar</span></code></pre></div>
+<p>Para verificar que la imagen está cargada:</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> k3s ctr images list <span class="kw">|</span> <span class="fu">grep</span> mi-imagen</span></code></pre></div>
+<h3 id="paso-5-tirar-abajo-k3s-cuando-termines-el-tp">Paso 5: Tirar
+abajo k3s cuando termines el TP</h3>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> /usr/local/bin/k3s-uninstall.sh</span></code></pre></div>
+<p>Limpia todo: binario, servicio systemd, datos del cluster, redes.
+Limpio.</p>
+<hr />
+<h2 id="camino-b--macos-o-windows-k3d">Camino B — macOS o Windows
+(k3d)</h2>
+<h3 id="paso-1-instalar-k3d">Paso 1: Instalar k3d</h3>
+<p><strong>macOS:</strong></p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install k3d</span></code></pre></div>
+<p><strong>Windows (con Chocolatey):</strong></p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>choco install k3d</span></code></pre></div>
+<p><strong>Windows (con Scoop):</strong></p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>scoop install k3d</span></code></pre></div>
+<p>Verificá:</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">k3d</span> version</span></code></pre></div>
+<h3 id="paso-2-crear-un-cluster-k3s-adentro-de-docker">Paso 2: Crear un
+cluster k3s adentro de Docker</h3>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">k3d</span> cluster create scraper</span></code></pre></div>
+<p>Esto levanta:</p>
+<ul>
+<li>Un container Docker llamado <code>k3d-scraper-server-0</code>
+corriendo k3s.</li>
+<li>Te configura <code>~/.kube/config</code> automáticamente para
+apuntar a este cluster.</li>
+</ul>
+<p>Duración: ~30 segundos.</p>
+<h3 id="paso-3-verificar-el-cluster">Paso 3: Verificar el cluster</h3>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get nodes</span></code></pre></div>
+<p>Debería mostrar <code>k3d-scraper-server-0</code> en estado
+<code>Ready</code>.</p>
+<h3 id="paso-4-cargar-una-imagen-docker-en-k3d">Paso 4: Cargar una
+imagen Docker en k3d</h3>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">-t</span> mi-imagen:latest .</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">k3d</span> image import mi-imagen:latest <span class="at">-c</span> scraper</span></code></pre></div>
+<p><code>k3d image import</code> se encarga de empaquetar la imagen y
+enviarla al cluster. Mucho más cómodo que el flujo de k3s nativo.</p>
+<h3 id="paso-5-tirar-abajo-el-cluster-cuando-termines">Paso 5: Tirar
+abajo el cluster cuando termines</h3>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">k3d</span> cluster delete scraper</span></code></pre></div>
+<hr />
+<h2
+id="comandos-básicos-de-kubectl-que-vas-a-usar-todo-el-tiempo">Comandos
+básicos de kubectl que vas a usar todo el tiempo</h2>
+<table>
+<thead>
+<tr>
+<th>Comando</th>
+<th>Qué hace</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kubectl get nodes</code></td>
+<td>Lista los nodos del cluster</td>
+</tr>
+<tr>
+<td><code>kubectl get pods</code></td>
+<td>Lista los pods en el namespace actual</td>
+</tr>
+<tr>
+<td><code>kubectl get pods -A</code></td>
+<td>Lista los pods de TODOS los namespaces</td>
+</tr>
+<tr>
+<td><code>kubectl get jobs</code></td>
+<td>Lista los Jobs (tareas one-off)</td>
+</tr>
+<tr>
+<td><code>kubectl get cronjobs</code></td>
+<td>Lista los CronJobs (tareas programadas)</td>
+</tr>
+<tr>
+<td><code>kubectl describe pod &lt;nombre&gt;</code></td>
+<td>Muestra detalles + eventos de un pod (útil cuando algo no
+arranca)</td>
+</tr>
+<tr>
+<td><code>kubectl logs &lt;pod&gt;</code></td>
+<td>Logs del pod</td>
+</tr>
+<tr>
+<td><code>kubectl logs -f &lt;pod&gt;</code></td>
+<td>Logs en streaming</td>
+</tr>
+<tr>
+<td><code>kubectl logs -l app=mi-app</code></td>
+<td>Logs de todos los pods con el label <code>app=mi-app</code></td>
+</tr>
+<tr>
+<td><code>kubectl apply -f archivo.yaml</code></td>
+<td>Crea/actualiza recursos del archivo</td>
+</tr>
+<tr>
+<td><code>kubectl delete -f archivo.yaml</code></td>
+<td>Borra los recursos del archivo</td>
+</tr>
+<tr>
+<td><code>kubectl exec -it &lt;pod&gt; -- /bin/sh</code></td>
+<td>Te abre un shell adentro del pod</td>
+</tr>
+<tr>
+<td><code>kubectl get events --sort-by='.lastTimestamp'</code></td>
+<td>Eventos del cluster ordenados por fecha (golden para debug)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="hello-world-deployar-nginx-para-validar-que-todo-funciona">Hello
+world: deployar nginx para validar que todo funciona</h2>
+<p>Creá un archivo <code>nginx-test.yaml</code>:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> v1</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kind</span><span class="kw">:</span><span class="at"> Pod</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">metadata</span><span class="kw">:</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> nginx-test</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">labels</span><span class="kw">:</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">app</span><span class="kw">:</span><span class="at"> nginx-test</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">containers</span><span class="kw">:</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> nginx</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> nginx:alpine</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">containerPort</span><span class="kw">:</span><span class="at"> </span><span class="dv">80</span></span></code></pre></div>
+<p>Aplicalo:</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> nginx-test.yaml</span></code></pre></div>
+<p>Esperá a que esté corriendo:</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pod nginx-test <span class="at">--watch</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># salí con Ctrl+C cuando veas STATUS=Running</span></span></code></pre></div>
+<p>Hacé port-forward para probarlo:</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> port-forward pod/nginx-test 8080:80</span></code></pre></div>
+<p>En otra terminal:</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> http://localhost:8080</span></code></pre></div>
+<p>Tenés que ver el HTML de bienvenida de nginx. Si lo ves,
+<strong>felicitaciones — tu cluster funciona</strong>.</p>
+<p>Limpieza:</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> delete <span class="at">-f</span> nginx-test.yaml</span></code></pre></div>
+<hr />
+<h2 id="conceptos-mínimos-que-vas-a-usar-en-el-hit-8">Conceptos mínimos
+que vas a usar en el Hit #8</h2>
+<table>
+<thead>
+<tr>
+<th>Concepto</th>
+<th>Para qué sirve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Pod</strong></td>
+<td>La unidad mínima — uno o más containers que comparten red y
+storage</td>
+</tr>
+<tr>
+<td><strong>Job</strong></td>
+<td>Una tarea one-off: corre hasta completarse y termina (ideal para el
+scraper one-shot)</td>
+</tr>
+<tr>
+<td><strong>CronJob</strong></td>
+<td>Una tarea programada: corre cada X tiempo (ideal para “scrapear cada
+hora”)</td>
+</tr>
+<tr>
+<td><strong>ConfigMap</strong></td>
+<td>Configuración no-secreta inyectada como env vars o archivos (ej:
+<code>BROWSER=chrome</code>, <code>HEADLESS=true</code>)</td>
+</tr>
+<tr>
+<td><strong>Secret</strong></td>
+<td>Lo mismo pero para datos sensibles (en este TP no necesitan, pero
+conviene saber que existe)</td>
+</tr>
+<tr>
+<td><strong>PersistentVolumeClaim (PVC)</strong></td>
+<td>Pedido de almacenamiento persistente — k3s te asigna espacio en
+disco automático con <code>local-path</code></td>
+</tr>
+<tr>
+<td><strong>Namespace</strong></td>
+<td>Carpeta lógica del cluster — usen <code>default</code> o creen
+<code>scraper</code> para aislar</td>
+</tr>
+</tbody>
+</table>
+<p>No hace falta entender todo de Kubernetes. Para el Hit #8 alcanza con
+saber qué hace cada uno de estos 6.</p>
+<hr />
+<h2 id="troubleshooting-frecuente">Troubleshooting frecuente</h2>
+<h3 id="el-pod-queda-en-pending-y-no-arranca">“El pod queda en
+<code>Pending</code> y no arranca”</h3>
+<p>Casi siempre es porque la imagen no está disponible. En k3s tenés que
+importar la imagen con <code>sudo k3s ctr images import</code>. En k3d
+con <code>k3d image import</code>. Después en el manifiesto del pod usá
+<code>imagePullPolicy: IfNotPresent</code> para que no intente bajarla
+de Docker Hub.</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> describe pod <span class="op">&lt;</span>nombre<span class="op">&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># leé la sección &quot;Events&quot; — ahí dice qué está fallando</span></span></code></pre></div>
+<h3 id="el-pod-arranca-pero-falla-con-crashloopbackoff">“El pod arranca
+pero falla con <code>CrashLoopBackOff</code>”</h3>
+<p>Es un error del proceso adentro del container. Mirá los logs:</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> logs <span class="op">&lt;</span>pod<span class="op">&gt;</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> logs <span class="op">&lt;</span>pod<span class="op">&gt;</span> --previous   <span class="co"># logs de la corrida anterior si ya reinició</span></span></code></pre></div>
+<h3
+id="kubectl-no-encuentra-el-cluster-the-connection-to-the-server-localhost8080-was-refused">“kubectl
+no encuentra el cluster
+(<code>The connection to the server localhost:8080 was refused</code>)”</h3>
+<p>Tu <code>~/.kube/config</code> no apunta al cluster correcto. En k3s
+seguí el Paso 3 del Camino A. En k3d corré
+<code>k3d kubeconfig merge scraper --kubeconfig-switch-context</code>.</p>
+<h3 id="k3s-consume-mucha-ram">“k3s consume mucha RAM”</h3>
+<p>k3s idle anda en ~400-500 MB. Si tenés problemas, asegurate de no
+tener microk8s, minikube ni Docker Desktop con su Kubernetes activo en
+paralelo.</p>
+<hr />
+<h2 id="lectura-recomendada-no-obligatoria">Lectura recomendada (NO
+obligatoria)</h2>
+<ul>
+<li><strong>k3s docs</strong> — <a
+href="https://docs.k3s.io/">https://docs.k3s.io/</a></li>
+<li><strong>k3d docs</strong> — <a
+href="https://k3d.io/">https://k3d.io/</a></li>
+<li><strong>Kubernetes Patterns</strong> (Bilgin Ibryam, Roland Huß) —
+Capítulos 1, 2, 7 (Job/CronJob), 9 (ConfigMap)</li>
+<li><strong>Kubernetes en una hoja</strong> — <a
+href="https://kubernetes.io/docs/reference/kubectl/quick-reference/">https://kubernetes.io/docs/reference/kubectl/quick-reference/</a></li>
+</ul>
+<hr />
+<h2 id="validación-previa-al-hit-8">Validación previa al Hit #8</h2>
+<p>Antes de empezar el Hit #8 de la Parte 2, tenés que poder responder
+afirmativamente a las 4 preguntas:</p>
+<ul class="task-list">
+<li><label><input type="checkbox" /><code>kubectl get nodes</code> me
+devuelve un nodo en <code>Ready</code>.</label></li>
+<li><label><input type="checkbox" />Pude correr el nginx-test y abrirlo
+con <code>curl localhost:8080</code>.</label></li>
+<li><label><input type="checkbox" />Sé importar una imagen Docker al
+cluster (k3s ctr import / k3d image import).</label></li>
+<li><label><input type="checkbox" />Entiendo qué es un Pod, un Job, un
+CronJob, un ConfigMap y un PVC (al menos a nivel “para qué
+sirve”).</label></li>
+</ul>
+<p>Si las 4 son sí, estás listo para el Hit #8.</p>
+  </main>
+</div>
+
+<footer class="unlu-footer">
+  <div>
+    UNLu · Departamento de Ciencias Básicas · Seminario de Integración Profesional <strong>2026</strong>
+    · Dr. David Petrocelli
+  </div>
+</footer>
+
+</body>
+</html>

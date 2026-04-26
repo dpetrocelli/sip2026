@@ -32,7 +32,29 @@
       Material de cursada — Seminario de Integración Profesional · 2026 · Cátedra Petrocelli.
     </p>
 
-    <h2 style="margin-top: 32px;">Práctica I — Automatización Web</h2>
+    <h2 style="margin-top: 32px;">Práctica 0 — Prerrequisitos</h2>
+    <p style="margin-top: 4px; color: var(--gray); font-size: 14px;">
+      Guía paso a paso para instalar k3s (o k3d) y dar los primeros pasos con Kubernetes.
+      No se entrega — pero es prerrequisito del Hit #8 de la Parte 2.
+    </p>
+
+    <div class="tp-grid">
+      <a href="practica-0.html" class="tp-card" style="border-left-color: var(--gray);">
+        <span class="tp-num" style="background: var(--gray);">TP 0</span>
+        <h3>Prerrequisitos: k3s + kubectl</h3>
+        <p class="tp-desc">
+          Instalación de k3s en Linux/WSL o k3d en macOS/Windows, comandos básicos de
+          kubectl, hello-world con nginx, y conceptos mínimos (Pod, Job, CronJob,
+          ConfigMap, PVC) para encarar el Hit #8.
+        </p>
+        <div class="tp-meta">
+          <span>Entrega: <strong>no aplica</strong></span>
+          <span>→ Ver guía</span>
+        </div>
+      </a>
+    </div>
+
+    <h2 style="margin-top: 48px;">Práctica I — Automatización Web</h2>
     <p style="margin-top: 4px; color: var(--gray); font-size: 14px;">
       Pruebas E2E multi-browser sobre MercadoLibre con Selenium WebDriver.
     </p>
@@ -53,11 +75,11 @@
 
       <a href="practica-1-parte-2.html" class="tp-card">
         <span class="tp-num">TP 1 · PARTE 2</span>
-        <h3>Extracción JSON, Tests, Docker y CI/CD</h3>
+        <h3>JSON, Tests, Docker, k3s y CI/CD</h3>
         <p class="tp-desc">
-          Hits #4–#8: extracción estructurada a JSON de los 3 productos, scraper resiliente
-          con retries y backoff, modo headless, tests automatizados, Dockerfile multi-browser,
-          pipeline GitHub Actions con matriz, y bonus (paginación, POM, reportes HTML).
+          Hits #4–#9: extracción estructurada a JSON, scraper resiliente, tests con
+          cobertura ≥ 70 %, Dockerfile multi-browser, pre-commit hooks, despliegue en
+          k3s/k3d (Job + CronJob + ConfigMap + PVC), ADRs y bonus (paginación, POM, Helm).
         </p>
         <div class="tp-meta">
           <span>Entrega: <strong>02/05/2026</strong></span>

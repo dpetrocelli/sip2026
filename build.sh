@@ -33,16 +33,22 @@ render() {
 
 # ============ Render targets ============
 
-# --- TP 1 · Parte 1 — Selenium + MercadoLibre (Hits 1-4) ---
+# --- TP 0 — Prerrequisitos: k3s ---
+render "TP0.md" \
+  "practica-0.html" \
+  "Práctica 0 — Prerrequisitos: k3s + Kubernetes básico" \
+  "TP 0"
+
+# --- TP 1 · Parte 1 — Selenium + MercadoLibre (Hits 1-3) ---
 render "TP1.md" \
   "practica-1-parte-1.html" \
   "Práctica I · Parte 1 — Selenium + MercadoLibre" \
   "TP 1 · PARTE 1"
 
-# --- TP 1 · Parte 2 — Robustez, Tests, Docker, CI/CD (Hits 5-8) ---
+# --- TP 1 · Parte 2 — Robustez, Tests, Docker, k3s, CI/CD (Hits 4-9) ---
 render "TP2.md" \
   "practica-1-parte-2.html" \
-  "Práctica I · Parte 2 — Robustez, Tests, Docker y CI/CD" \
+  "Práctica I · Parte 2 — Robustez, Tests, Docker, k3s y CI/CD" \
   "TP 1 · PARTE 2"
 
 echo ""
