@@ -65,6 +65,13 @@ PRODUCTS = [
 
 OUTPUT_DIR = Path(__file__).parent.parent / "output"
 
+# Mapping explícito producto → filename (la consigna pide geforce_5090, no geforce_rtx_5090)
+PRODUCT_FILENAMES = {
+    "bicicleta rodado 29": "bicicleta_rodado_29",
+    "iPhone 16 Pro Max": "iphone_16_pro_max",
+    "GeForce RTX 5090": "geforce_5090",
+}
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Scraper MercadoLibre — Hit #5")
@@ -75,6 +82,8 @@ def parse_args() -> argparse.Namespace:
 
 
 def slugify(product: str) -> str:
+    if product in PRODUCT_FILENAMES:
+        return PRODUCT_FILENAMES[product]
     return product.lower().replace(" ", "_").replace("/", "_")
 
 
@@ -92,14 +101,26 @@ def search_and_filter(driver, query: str) -> None:
 
 
 def collect_results(driver, limit: int) -> list[dict]:
-    """Extrae hasta `limit` resultados de la página actual."""
+    """Extrae hasta `limit` resultados únicos de la página actual.
+
+    Dedup por link (clave estable); fallback a titulo si link es null.
+    Ignora cards que solo tienen título sin precio (anuncios sponsoreados).
+    """
     cards = driver.find_elements(By.CSS_SELECTOR, RESULT_CARD_CSS)
     out = []
-    for card in cards[:limit]:
+    seen_keys = set()
+    for card in cards:
+        if len(out) >= limit:
+            break
         try:
             data = extract_result(card)
-            if data["titulo"]:
-                out.append(data)
+            if not data["titulo"]:
+                continue
+            key = data["link"] or data["titulo"]
+            if key in seen_keys:
+                continue
+            seen_keys.add(key)
+            out.append(data)
         except Exception as exc:  # noqa: BLE001
             logger.warning("Error extrayendo card: %s", exc)
     return out

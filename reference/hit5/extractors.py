@@ -17,16 +17,16 @@ from selenium.webdriver.common.by import By
 logger = logging.getLogger(__name__)
 
 # Selectores por campo dentro de una card de resultado
-SEL_TITLE = "h2.ui-search-item__title, h2.poly-component__title, a.poly-component__title"
-SEL_PRICE_FRACTION = "span.andes-money-amount__fraction"
-SEL_LINK = "a.ui-search-link, a.poly-component__title-wrapper, h2 a"
-SEL_OFFICIAL_STORE = (
-    "span.poly-component__official, "
-    "span.ui-search-official-store-label, "
-    "span[class*='official-store']"
+# (DOM de ML — actualizado tras inspección del 26-04-2026)
+SEL_TITLE = "a.poly-component__title, h2.poly-component__title, h2.ui-search-item__title"
+SEL_PRICE_FRACTION = "div.poly-component__price span.andes-money-amount__fraction"
+SEL_LINK = "a.poly-component__title, a.ui-search-link, h2 a"
+SEL_OFFICIAL_STORE = "span.poly-component__seller"
+SEL_OFFICIAL_BADGE = "svg[aria-label='Tienda oficial'], span.poly-component__official"
+SEL_FREE_SHIPPING = "span.poly-component__shipping, p.ui-search-item__shipping, [class*='shipping']"
+SEL_INSTALLMENTS = (
+    "span.poly-price__installments, span.ui-search-installments, [class*='installments']"
 )
-SEL_FREE_SHIPPING = "p.ui-search-item__shipping, p[class*='shipping'], span[class*='shipping']"
-SEL_INSTALLMENTS = "span.ui-search-installments, span[class*='installments']"
 
 
 def extract_titulo(card) -> str | None:
@@ -60,9 +60,20 @@ def extract_link(card) -> str | None:
 
 
 def extract_tienda_oficial(card) -> str | None:
-    """Extrae el nombre de la tienda oficial si aparece, sino None."""
+    """Extrae el nombre de la tienda oficial si aparece, sino None.
+
+    En el DOM actual de ML, una card es "tienda oficial" si dentro del
+    `span.poly-component__seller` hay un `svg[aria-label='Tienda oficial']`.
+    El nombre de la tienda es el texto del span (excluyendo el SVG).
+    """
     try:
-        text = card.find_element(By.CSS_SELECTOR, SEL_OFFICIAL_STORE).text.strip()
+        seller = card.find_element(By.CSS_SELECTOR, SEL_OFFICIAL_STORE)
+        # Solo devolvemos texto si hay badge de tienda oficial
+        try:
+            seller.find_element(By.CSS_SELECTOR, SEL_OFFICIAL_BADGE)
+        except NoSuchElementException:
+            return None
+        text = seller.text.strip()
         return text or None
     except NoSuchElementException:
         return None

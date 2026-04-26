@@ -17,7 +17,7 @@ SEARCH_BOX_CSS = "input.nav-search-input"
 # Listado de resultados
 # ──────────────────────────────────────────────
 
-RESULT_CARD_CSS = "li.ui-search-layout__item, div.ui-search-result__wrapper"
+RESULT_CARD_CSS = "li.ui-search-layout__item"
 
 # ──────────────────────────────────────────────
 # Campos por card de resultado
