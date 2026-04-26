@@ -387,9 +387,11 @@ herramienta más usada en la industria para QA.
 
 Esto es un punto de partida. Adapten al lenguaje. La idea es **multi-stage** para que la imagen final sea lo más chica posible (no necesitan compiladores ni headers en runtime).
 
+> **🔒 Pin de versiones obligatorio.** Nunca usen `:latest` en una imagen base — cada `docker build` puede traer bytes distintos y rompe la reproducibilidad. Mínimo aceptable: pin a `MAJOR.MINOR-<distro>` (ej: `python:3.13-slim-trixie`). Mejor: pin a `MAJOR.MINOR.PATCH`. Production-grade: pin por digest sha256 (`@sha256:...`). En 2026 **usen las versiones LTS más nuevas**: Python 3.13, Node 24 (LTS Oct 2025), Java 25 (LTS Sept 2025).
+
 ```dockerfile
 # ============ Stage 1: builder (deps + compile) ============
-FROM python:3.13-slim AS builder
+FROM python:3.13-slim-trixie AS builder
 WORKDIR /app
 
 # System deps para compilar wheels si hace falta
@@ -401,23 +403,32 @@ COPY requirements.txt .
 RUN pip install --user --no-cache-dir -r requirements.txt
 
 # ============ Stage 2: runtime (browsers + app) ============
-FROM python:3.13-slim AS runtime
+FROM python:3.13-slim-trixie AS runtime
 WORKDIR /app
 
-# Instalar Chrome, Firefox y deps mínimas
+# Instalar Google Chrome stable + Firefox + deps mínimas
+# Nota: NO uses `chromium` de Debian trixie (bug de crashpad en headless).
+# Usá google-chrome-stable del repo oficial.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    chromium \
-    chromium-driver \
+    ca-certificates curl gnupg \
     firefox-esr \
     fonts-liberation \
+    && curl -fsSL https://dl.google.com/linux/linux_signing_key.pub \
+       | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
+       > /etc/apt/sources.list.d/google-chrome.list \
+    && apt-get update && apt-get install -y --no-install-recommends \
+       google-chrome-stable \
+    && apt-get purge -y curl gnupg \
+    && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiar deps de Python desde el builder
 COPY --from=builder /root/.local /root/.local
 ENV PATH=/root/.local/bin:$PATH
 
-# Usuario no-root (mejor práctica)
-RUN useradd -m -u 1000 scraper
+# Usuario no-root con HOME (Chrome necesita ~/.local para crashpad)
+RUN useradd --create-home --uid 1000 scraper
 USER scraper
 
 COPY --chown=scraper:scraper . .
@@ -430,9 +441,14 @@ ENTRYPOINT ["python", "scraper.py"]
 CMD ["--browser", "chrome"]
 ```
 
-**Equivalentes para otros stacks:**
-- **Node**: `FROM node:20-slim AS builder` → `npm ci --only=production` → stage runtime con `node:20-slim` + browsers, `USER node`
-- **Java**: `FROM maven:3.9-eclipse-temurin-17 AS builder` → `mvn -B package -DskipTests` → stage runtime con `eclipse-temurin:17-jre` + browsers, copiar `.jar`
+**Equivalentes para otros stacks** (pinear MAJOR.MINOR + distro como mínimo, usar versiones LTS más nuevas de 2026):
+
+- **Node 24 LTS (Active LTS desde Oct 2025)**:
+  - Builder: `FROM node:24-trixie-slim AS builder` → `npm ci --omit=dev`
+  - Runtime: `FROM node:24-trixie-slim AS runtime` + browsers (mismo bloque de Chrome de arriba) + `USER node`
+- **Java 25 LTS (LTS desde Sept 2025)**:
+  - Builder: `FROM maven:3.9-eclipse-temurin-25-noble AS builder` → `mvn -B package -DskipTests`
+  - Runtime: `FROM eclipse-temurin:25-jre-noble AS runtime` + browsers + copiar `.jar` desde builder + `USER 1000`
 
 > **⚠️ User-Agent custom obligatorio en headless.** MercadoLibre detecta Chrome/Firefox headless con UA por defecto y devuelve la página **sin resultados**. En el código del scraper (no en el Dockerfile) hay que setear:
 >
@@ -637,13 +653,13 @@ Si el Job termina en `Complete` y los logs muestran los 3 JSON generados, están
 
 ---
 
-### Hit #9 (Bonus)
+### Hit #9 — Capacidad extendida (obligatorio, mínimo 1 de 6)
 
-Extienda el scraper con cualquiera (o varias) de las siguientes capacidades:
+Extienda el scraper con **al menos una** de las siguientes capacidades. Hacer más de una suma puntos extra (hasta 2 ítems sumando), pero la entrega NO se acepta sin al menos 1.
 
 1. **Paginación**: traer los primeros 30 resultados en lugar de 10, navegando hasta 3 páginas.
 2. **Comparación de precios**: para cada producto, calcular precio mínimo, máximo, mediana y desvío estándar entre los resultados extraídos. Imprimir tabla resumen.
-3. **Histórico con SQLite**: guardar los resultados en una base liviana con timestamp, para detectar cambios de precio entre corridas del CronJob (Hit #8).
+3. **Histórico con PostgreSQL**: guardar los resultados en una instancia PostgreSQL con timestamp, para detectar cambios de precio entre corridas del CronJob (Hit #8). Implementación esperada: deployment de Postgres en el mismo cluster k3s (StatefulSet + PVC + Service), credenciales via `Secret`, schema migrations (Alembic / Flyway / Liquibase / SQL files versionados). Tabla mínima: `(producto, titulo, precio, link, tienda_oficial, scraped_at)`.
 4. **Reporte HTML**: generar una página estática (con GitHub Pages publicada por el pipeline) que muestre los resultados de la última corrida en una tabla navegable.
 5. **Page Object Model**: refactorizar el scraper para separar el código de navegación (`SearchPage`, `ResultsPage`) del código de extracción y de los tests.
 6. **Helm Chart**: empaquetar los manifiestos del Hit #8 como un chart con `values.yaml` parametrizable.
@@ -652,20 +668,21 @@ Extienda el scraper con cualquiera (o varias) de las siguientes capacidades:
 
 ## Criterios de evaluación — Parte 2
 
-Total: 100 puntos (Hits #4–#8 + extras obligatorios). El Hit #9 es **bonus** y suma hasta 10 puntos extra sobre el total.
+Total: 100 puntos (Hits #4–#9, todos obligatorios). Implementar más de 1 ítem del Hit #9 puede sumar hasta +5 puntos extra sobre el total.
 
 | Criterio | Peso |
 |----------|------|
-| Hit #4 — extracción estructurada a JSON de los 3 productos con todos los campos | 20 % |
-| Hit #5 — manejo robusto de errores (selectores faltantes, timeouts, retries con backoff) | 10 % |
-| Hit #6 — tests automatizados + cobertura ≥ 70 % validada en CI | 13 % |
-| Hit #7 — Dockerfile + `docker-compose.yml` funcionales con Chrome + Firefox + drivers | 10 % |
-| Hit #7 — pipeline CI/CD con matriz de browsers, artifacts y gate de cobertura | 12 % |
-| Hit #7 — pre-commit hooks (gitleaks + linter + formatter) configurados y documentados | 5 % |
-| Hit #8 — `Job` + `CronJob` + `ConfigMap` + `PVC` corriendo en k3s/k3d | 15 % |
+| Hit #4 — extracción estructurada a JSON de los 3 productos con todos los campos | 18 % |
+| Hit #5 — manejo robusto de errores (selectores faltantes, timeouts, retries con backoff) | 9 % |
+| Hit #6 — tests automatizados + cobertura ≥ 70 % validada en CI | 12 % |
+| Hit #7 — Dockerfile + `docker-compose.yml` funcionales con Chrome + Firefox + drivers (versiones pineadas) | 9 % |
+| Hit #7 — pipeline CI/CD con matriz de browsers, artifacts y gate de cobertura | 10 % |
+| Hit #7 — pre-commit hooks (gitleaks + linter + formatter) configurados y documentados | 4 % |
+| Hit #8 — `Job` + `CronJob` + `ConfigMap` + `PVC` corriendo en k3s/k3d | 13 % |
 | ADRs (mínimo 4 en `docs/adr/` — 2 del menú propuesto + 2 de elección propia) | 5 % |
 | Modo headless configurable y operativo + checklist de auto-verificación cumplido | 10 % |
-| **Hit #9 (bonus, opcional)** — al menos uno de los 6 ítems del Hit #9 | **+10 %** |
+| **Hit #9 — al menos 1 capacidad extendida implementada** (paginación, stats, PostgreSQL, HTML report, POM o Helm) | **10 %** |
+| _Bonus opcional: implementar un 2º ítem del Hit #9_ | _+5 %_ |
 
 ---
 
