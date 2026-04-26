@@ -668,19 +668,29 @@ Extienda el scraper con **al menos una** de las siguientes capacidades. Hacer m�
 
 ## Criterios de evaluación — Parte 2
 
-Total: 100 puntos (Hits #4–#9, todos obligatorios). Implementar más de 1 ítem del Hit #9 puede sumar hasta +5 puntos extra sobre el total.
+### Requisitos bloqueantes (no se acepta la entrega sin estos)
+
+Estos no suman puntos — son condición necesaria para que la entrega sea **corregible**. Si falta cualquiera de los 4, la nota es 0.
+
+- **TP 0 cumplido** — checklist de prerrequisitos k3s con evidencia en el README (`kubectl get nodes` Ready, nginx-test corrió, sé importar imágenes al cluster).
+- **Hit #7 — Infra base** completa y funcional:
+  - `Dockerfile` multi-stage con versiones pineadas (no `:latest`).
+  - `docker-compose.yml` que levanta el scraper con un solo comando.
+  - Pipeline GitHub Actions corriendo en verde con matriz Chrome/Firefox + gate de cobertura ≥ 70 % + gitleaks + artifacts publicados.
+  - `.pre-commit-config.yaml` con gitleaks + linter + formatter, documentado en el README cómo activarlo.
+- **Modo headless** configurable por env (`HEADLESS=true`) y operativo en CI sin abrir display gráfico.
+- **Auto-verificación** ejecutada antes del push final ([checklist completo abajo](#auto-verificación-previa-a-la-entrega)) — los 7 comandos pasaron.
+
+### Tabla de puntaje (100 %)
 
 | Criterio | Peso |
 |----------|------|
-| **Hit #4** — extracción estructurada a JSON de los 3 productos con todos los campos | 20 % |
-| **Hit #5** — manejo robusto de errores (selectores faltantes, timeouts, retries con backoff) | 10 % |
-| **Hit #6** — tests automatizados + cobertura ≥ 70 % validada en CI | 10 % |
-| **Hit #7** — Dockerfile + `docker-compose.yml` (con versiones pineadas) + pipeline CI/CD con matriz de browsers, artifacts y gate de cobertura + pre-commit hooks (gitleaks + linter + formatter) | 25 % |
-| **Hit #8** — `Job` + `CronJob` + `ConfigMap` + `PVC` corriendo en k3s/k3d | 15 % |
-| **Hit #9** — al menos 1 capacidad extendida implementada (paginación, stats, PostgreSQL, HTML report, POM o Helm) | 10 % |
-| **ADRs** (mínimo 4 en `docs/adr/` — 2 del menú propuesto + 2 de elección propia) | 5 % |
-| **Modo headless** configurable y operativo + checklist de auto-verificación cumplido | 5 % |
-| _Bonus opcional: implementar un 2º ítem del Hit #9_ | _+5 %_ |
+| **Hit #4** — extracción estructurada a JSON de los 3 productos con todos los campos | 25 % |
+| **Hit #5** — manejo robusto de errores (selectores faltantes, timeouts, retries con backoff) | 15 % |
+| **Hit #6** — tests automatizados + cobertura ≥ 70 % validada en CI | 15 % |
+| **Hit #8** — `Job` + `CronJob` + `ConfigMap` + `PVC` corriendo en k3s/k3d | 20 % |
+| **Hit #9** — al menos 1 capacidad extendida implementada (paginación, stats, PostgreSQL, HTML report, POM o Helm) | 15 % |
+| **ADRs** (mínimo 4 en `docs/adr/` — 2 del menú propuesto + 2 de elección propia) | 10 % |
 
 ---
 
