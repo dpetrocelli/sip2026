@@ -25,6 +25,39 @@ Para este TP vamos a usar k3s en **dos sabores** según el sistema operativo:
 
 ---
 
+## Aviso importante: cómo va a vivir este cluster en tu máquina
+
+Lo que vamos a montar acá es la forma **más simple posible** de tener Kubernetes corriendo. Es perfecto para aprender, pero tiene implicaciones que conviene entender **antes** de empezar:
+
+- **Tu máquina cumple los dos roles a la vez:**
+  - **Control plane** — el cerebro del cluster: API server, scheduler, controllers, etcd. Es el que recibe tus `kubectl apply`, decide dónde corre cada pod, y mantiene el "estado deseado" del sistema.
+  - **Worker node** — donde efectivamente corren los containers de tus pods.
+
+  En un cluster de producción estos roles están **separados** en máquinas distintas, con varios nodos cada uno, para tener tolerancia a fallos y poder escalar. Acá los junta uno solo: tu laptop.
+
+- **El cluster se muere si apagás la máquina.** k3s queda registrado como servicio `systemd` y arranca solo al boot, pero si suspendés el equipo, hibernás, o reiniciás bruscamente, los pods se pierden hasta que vuelva el servicio. Los Jobs/CronJobs se reanudan recién cuando el cluster vuelva a estar arriba. **Esto NO es una limitación de Kubernetes** — es la limitación de correrlo sobre un solo nodo, en tu máquina, sin alta disponibilidad.
+
+- **No es producción, pero es Kubernetes real.** Los manifiestos que vas a escribir (`Deployment`, `Service`, `Job`, `CronJob`, `ConfigMap`, `PVC`) son **idénticos** a los que usarías en GKE / EKS / AKS o en un k3s multi-nodo desplegado en VPSs. La única diferencia es que en producción ese mismo `kubectl apply -f` lo recibe un cluster distribuido y replicado, en lugar de tu notebook.
+
+### Por qué este TP exige esto y no un `docker-compose`
+
+El objetivo no es "que el scraper corra en algún lado". Es que empiecen a **pensar en términos de Kubernetes**, que es donde la industria está parada hoy. Eso significa entender la diferencia entre:
+
+| Mundo Docker / docker-compose | Mundo Kubernetes |
+|------------------------------|------------------|
+| `docker run` | `Pod` (la unidad mínima — uno o varios containers que comparten red y storage) |
+| `restart: always` en compose | `Deployment` (mantiene N réplicas vivas) |
+| `docker run --rm scraper` | `Job` (one-off batch que corre hasta completarse) |
+| `cron` en el host disparando `docker run` | `CronJob` (cron nativo del cluster) |
+| `volumes:` en compose | `PersistentVolumeClaim` (PVC) — un pedido de almacenamiento desacoplado del nodo |
+| Archivo `.env` montado | `ConfigMap` (configuración) + `Secret` (datos sensibles) |
+| `ports:` en compose | `Service` (abstracción de red estable sobre pods que pueden morir y revivir) |
+| `docker network` | `Namespace` + políticas de red |
+
+Cuando en el **Hit #8** conviertan el `docker run` del Hit #7 en un `Job` + `CronJob` + `ConfigMap` + `PVC`, **ese ejercicio mental es el verdadero aprendizaje del TP** — más que los YAMLs en sí. Pasar de "tengo un Dockerfile y un compose" a "tengo manifiestos declarativos que cualquier cluster Kubernetes puede ejecutar" es el salto profesional que se les pide.
+
+---
+
 ## Requisitos previos
 
 - Tener **Docker** instalado y funcionando (lo necesitan para el Hit #7 igual).
