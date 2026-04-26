@@ -17,7 +17,7 @@
 | Hit #1 — setup, navegación, búsqueda, 5 títulos | 15 % | 15 | 15 |
 | Hit #2 — Browser Factory Chrome+Firefox | 25 % | 25 | 25 |
 | Hit #3 — filtros DOM + screenshot | 30 % | 28 | 30 |
-| Infra base (calidad código + README/informe/video + Dockerfile deseable Parte 1 / obligatorio Parte 2) | 30 % | 14.5 | 30 |
+| Infra base (calidad código + README/informe/video + Dockerfile + docker-compose obligatorios) | 30 % | 14.5 | 30 |
 | **Total** | **100 %** | **82.5** | **100** |
 
 ## Cumplimiento punto por punto de la consigna
@@ -43,8 +43,8 @@
 - README raíz: `# TP1-Selenium\nTP1 Selenium` — vacío. **No hay tabla de integrantes con legajo, no hay link al video, no hay sección de herramientas de IA usadas, no hay comparativa Chrome vs Firefox.**
 - READMEs por hit: estos sí están bien.
 
-### Dockerfile + docker-compose (deseable Parte 1, obligatorio Parte 2)
-❌ No entregaron.
+### Dockerfile + docker-compose (obligatorios — no entregados)
+❌ No entregaron Dockerfile ni `docker-compose.yml`. Ambos son obligatorios desde Parte 1 (la consigna: "facilita la evaluación uniforme entre proyectos en distintos lenguajes"). En Parte 2 son bloqueantes para los Hits #7 y #8.
 
 ### Requisitos generales (resto del 100%)
 - ❌ **`__pycache__/` commiteado** — `.gitignore` mínimo (solo `/.venv`).

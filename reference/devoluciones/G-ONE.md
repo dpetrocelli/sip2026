@@ -18,7 +18,7 @@
 | Hit #1 — setup, navegación, búsqueda, 5 títulos | 15 % | 15 | 15 |
 | Hit #2 — Browser Factory Chrome+Firefox | 25 % | 25 | 25 |
 | Hit #3 — filtros DOM + screenshot (solo Chrome) | 30 % | 24 | 30 |
-| Infra base (calidad código + README/informe/video + Dockerfile deseable Parte 1 / obligatorio Parte 2) | 30 % | 20 | 30 |
+| Infra base (calidad código + README/informe/video + Dockerfile + docker-compose obligatorios) | 30 % | 20 | 30 |
 | **Penalización** `target/` commiteado | -2 | -2 | — |
 | **Total** | **100 %** | **82** | **100** |
 
@@ -46,8 +46,8 @@
 
 🟡 **Falta video**. Confirmar si está subido al repo o solo planeado.
 
-### Dockerfile + docker-compose (deseable Parte 1, obligatorio Parte 2)
-❌ No entregaron.
+### Dockerfile + docker-compose (obligatorios — no entregados)
+❌ No entregaron Dockerfile ni `docker-compose.yml`. Ambos son obligatorios desde Parte 1 (la consigna: "facilita la evaluación uniforme entre proyectos en distintos lenguajes"). En Parte 2 son bloqueantes para los Hits #7 y #8.
 
 ### Requisitos generales — **PROBLEMA OPERATIVO IMPORTANTE**
 - ❌ **`target/` commiteado al repo** — verificado con `git ls-files`. Hay 4-5 commits con `.class` files compilados. **Esto es un blooper grande** — agrega ruido al diff, pesa MB innecesarios, y revela que falta `.gitignore`.

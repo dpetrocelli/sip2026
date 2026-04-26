@@ -687,13 +687,12 @@ details.section-collapsible > p:first-of-type {
 /* ============ PAGE NAV (back to menu) ============ */
 .page-nav-top {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
   margin-bottom: 18px;
   padding-bottom: 14px;
   border-bottom: 1px solid var(--light-gray);
-  flex-wrap: wrap;
 }
 
 .page-nav-bottom {
