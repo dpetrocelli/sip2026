@@ -201,6 +201,125 @@ k3d cluster delete scraper
 
 ---
 
+## Camino C — Cargar la imagen vía registry público (recomendado para entrega)
+
+Los Pasos 4 de los Caminos A y B (`k3s ctr import` / `k3d image import`) sirven para **vos en tu máquina**. Pero para que **los profesores puedan correr tu Hit #8 sin tener tu imagen local**, necesitás que la imagen esté en algún lugar público que cualquiera pueda hacer `docker pull`.
+
+La forma más simple: pushear la imagen a **GitHub Container Registry** (`ghcr.io`) o **Docker Hub**, ambos tienen tier gratis para imágenes públicas.
+
+> ⚠️ **Esto es solo para la demo / entrega del TP.** En producción real las imágenes nunca van a un registry público — van a uno **privado / interno** del equipo (cobertura de seguridad, control de qué se puede pull/push, no exponer el código vía las layers, evitar dependencia de un servicio externo). Más abajo hay una tabla con las opciones de registry profesional 2026.
+
+### Opción 1 — GitHub Container Registry (`ghcr.io`)
+
+Es el más cómodo si ya tenés el repo en GitHub: la autenticación reusa el `GITHUB_TOKEN` y no necesitás cuenta extra.
+
+```bash
+# 1. Login a ghcr.io (Personal Access Token con scope write:packages)
+echo $GHCR_PAT | docker login ghcr.io -u <tu-usuario-github> --password-stdin
+
+# 2. Tagear la imagen con el path completo
+docker tag ml-scraper:latest ghcr.io/<tu-usuario>/ml-scraper:latest
+
+# 3. Push
+docker push ghcr.io/<tu-usuario>/ml-scraper:latest
+
+# 4. En GitHub: ir a la pestaña "Packages" del repo → click en el package →
+#    "Package settings" → "Change visibility" → Public.
+#    (las imágenes son privadas por default; sin esto, kubectl no podrá pull)
+```
+
+En el manifest del Hit #8, cambiás:
+
+```yaml
+containers:
+  - name: scraper
+    image: ghcr.io/<tu-usuario>/ml-scraper:latest
+    imagePullPolicy: Always   # importante: ahora sí queremos que k8s vaya al registry
+```
+
+Y eliminás el paso de `k3s ctr import` / `k3d image import` — k8s va a bajar la imagen directo del registry.
+
+### Opción 2 — Docker Hub público
+
+```bash
+# 1. Crear cuenta en hub.docker.com (free tier permite imágenes públicas ilimitadas)
+
+# 2. Login local
+docker login
+
+# 3. Tagear y push
+docker tag ml-scraper:latest <tu-usuario-docker>/ml-scraper:latest
+docker push <tu-usuario-docker>/ml-scraper:latest
+```
+
+Manifest:
+
+```yaml
+image: <tu-usuario-docker>/ml-scraper:latest
+imagePullPolicy: Always
+```
+
+> 🚨 **Limit del free tier de Docker Hub (importante en CI):** las cuentas anónimas tienen 100 pulls / 6h por IP, las autenticadas free 200/6h. Si tu pipeline de CI corre seguido contra Docker Hub vas a sentirlo. `ghcr.io` no tiene rate limit equivalente para imágenes públicas.
+
+### CI auto-push de la imagen al registry
+
+En lugar de pushear a mano, el workflow del Hit #7 puede empujar la imagen en cada merge a `main`:
+
+```yaml
+# .github/workflows/scrape.yml — extracto
+- name: Login to ghcr.io
+  uses: docker/login-action@v3
+  with:
+    registry: ghcr.io
+    username: ${{ github.actor }}
+    password: ${{ secrets.GITHUB_TOKEN }}   # provisto por GH Actions, sin setup
+
+- name: Build and push
+  uses: docker/build-push-action@v6
+  with:
+    context: .
+    push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    tags: |
+      ghcr.io/${{ github.repository_owner }}/ml-scraper:latest
+      ghcr.io/${{ github.repository_owner }}/ml-scraper:${{ github.sha }}
+```
+
+Después de merguear a main, la imagen está disponible automáticamente para `kubectl apply`.
+
+---
+
+## Container registries — el panorama 2026
+
+Para que tengan idea de cómo se hace esto en la industria, no solo en el TP:
+
+| Registry | Tipo | Cuándo se elige | Free tier para públicas |
+|---|---|---|:---:|
+| **GitHub Container Registry** (`ghcr.io`) | Cloud, integrado con GitHub | Stack basado en GitHub Actions, OSS, ergonomía top | ✅ ilimitado |
+| **Docker Hub** (`docker.io`) | Cloud, el original | Imágenes que vas a publicar al mundo (oficiales de proyectos) | ✅ ilimitado, con [rate limits](https://docs.docker.com/docker-hub/usage/) |
+| **Amazon ECR** | Cloud, AWS-native | Workloads en EKS / ECS / Fargate; necesitás IAM-based auth | ❌ pago (pricing por GB-mes + transferencia) |
+| **Google Artifact Registry** (reemplazó GCR) | Cloud, GCP-native | GKE / Cloud Run; soporta OCI + Maven + npm en un mismo registry | ❌ pago |
+| **Azure Container Registry** | Cloud, Azure-native | AKS, integración con Azure DevOps | ❌ pago (3 tiers: Basic / Standard / Premium) |
+| **GitLab Container Registry** | Cloud o self-hosted | Stack basado en GitLab CI | ✅ con cuenta GitLab |
+| **Harbor** | **Self-hosted, OSS** (CNCF graduated) | El estándar on-prem corporativo: replicación, vulnerability scan, RBAC | N/A — vos lo hosteás |
+| **JFrog Artifactory** | Self-hosted o cloud, enterprise | Multi-format (Docker + Maven + npm + Helm + Conda + ...) en un solo lugar | ❌ pago (excepto OSS edition) |
+| **Quay.io** (Red Hat) | Cloud o self-hosted, OSS-friendly | Open source projects que quieren OSS-aligned hosting | ✅ públicas |
+| **Sonatype Nexus Repository** | Self-hosted | Alternativa a Artifactory; multi-format | ✅ OSS edition |
+
+**Reglas de decisión rápidas (2026):**
+
+- **¿Imagen pública para que cualquiera la use?** → `ghcr.io` (si es OSS en GitHub) o Docker Hub (si querés discoverability máxima).
+- **¿Workload en una sola nube?** → el registry nativo de esa nube (ECR / GAR / ACR). Ahorra latencia y a veces dinero en transferencia.
+- **¿On-prem / multi-nube / requisitos de soberanía?** → **Harbor** es la respuesta más común. Es CNCF graduated, tiene replicación, escaneo de vulnerabilidades (Trivy / Clair), RBAC, GC, signing.
+- **¿Stack monorepo Maven + npm + Docker + Helm?** → Artifactory o Nexus.
+
+**Lecturas útiles:**
+- [The 2024 State of Container Registries — CNCF](https://www.cncf.io/reports/state-of-container-registries/) (la edición 2026 sale a fin de año)
+- [Harbor docs](https://goharbor.io/docs/) — para entender qué hace un registry de producción que un public hub no
+- [OCI Distribution Spec](https://github.com/opencontainers/distribution-spec) — el protocolo HTTP estándar que hablan todos los registries OCI-compliant (saber esto te abre el mercado entero)
+- [Sigstore / cosign](https://docs.sigstore.dev/) — firma criptográfica de imágenes (lo que viene como **estándar 2026** para supply chain security; ya es parte de SLSA Level 3)
+
+---
+
 ## Comandos básicos de kubectl que vas a usar todo el tiempo
 
 | Comando | Qué hace |

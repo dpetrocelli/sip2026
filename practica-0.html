@@ -160,6 +160,25 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     abajo el cluster cuando termines</a></li>
     </ul></li>
     <li><a
+    href="#camino-c--cargar-la-imagen-vía-registry-público-recomendado-para-entrega"
+    id="toc-camino-c--cargar-la-imagen-vía-registry-público-recomendado-para-entrega">Camino
+    C — Cargar la imagen vía registry público (recomendado para
+    entrega)</a>
+    <ul>
+    <li><a href="#opción-1--github-container-registry-ghcrio"
+    id="toc-opción-1--github-container-registry-ghcrio">Opción 1 —
+    GitHub Container Registry (<code>ghcr.io</code>)</a></li>
+    <li><a href="#opción-2--docker-hub-público"
+    id="toc-opción-2--docker-hub-público">Opción 2 — Docker Hub
+    público</a></li>
+    <li><a href="#ci-auto-push-de-la-imagen-al-registry"
+    id="toc-ci-auto-push-de-la-imagen-al-registry">CI auto-push de la
+    imagen al registry</a></li>
+    </ul></li>
+    <li><a href="#container-registries--el-panorama-2026"
+    id="toc-container-registries--el-panorama-2026">Container registries
+    — el panorama 2026</a></li>
+    <li><a
     href="#comandos-básicos-de-kubectl-que-vas-a-usar-todo-el-tiempo"
     id="toc-comandos-básicos-de-kubectl-que-vas-a-usar-todo-el-tiempo">Comandos
     básicos de kubectl que vas a usar todo el tiempo</a></li>
@@ -282,6 +301,25 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       id="toc-paso-5-tirar-abajo-el-cluster-cuando-termines">Paso 5:
       Tirar abajo el cluster cuando termines</a></li>
       </ul></li>
+      <li><a
+      href="#camino-c--cargar-la-imagen-vía-registry-público-recomendado-para-entrega"
+      id="toc-camino-c--cargar-la-imagen-vía-registry-público-recomendado-para-entrega">Camino
+      C — Cargar la imagen vía registry público (recomendado para
+      entrega)</a>
+      <ul>
+      <li><a href="#opción-1--github-container-registry-ghcrio"
+      id="toc-opción-1--github-container-registry-ghcrio">Opción 1 —
+      GitHub Container Registry (<code>ghcr.io</code>)</a></li>
+      <li><a href="#opción-2--docker-hub-público"
+      id="toc-opción-2--docker-hub-público">Opción 2 — Docker Hub
+      público</a></li>
+      <li><a href="#ci-auto-push-de-la-imagen-al-registry"
+      id="toc-ci-auto-push-de-la-imagen-al-registry">CI auto-push de la
+      imagen al registry</a></li>
+      </ul></li>
+      <li><a href="#container-registries--el-panorama-2026"
+      id="toc-container-registries--el-panorama-2026">Container
+      registries — el panorama 2026</a></li>
       <li><a
       href="#comandos-básicos-de-kubectl-que-vas-a-usar-todo-el-tiempo"
       id="toc-comandos-básicos-de-kubectl-que-vas-a-usar-todo-el-tiempo">Comandos
@@ -597,6 +635,212 @@ abajo el cluster cuando termines</h3>
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">k3d</span> cluster delete scraper</span></code></pre></div>
 <hr />
 <h2
+id="camino-c--cargar-la-imagen-vía-registry-público-recomendado-para-entrega">Camino
+C — Cargar la imagen vía registry público (recomendado para
+entrega)</h2>
+<p>Los Pasos 4 de los Caminos A y B (<code>k3s ctr import</code> /
+<code>k3d image import</code>) sirven para <strong>vos en tu
+máquina</strong>. Pero para que <strong>los profesores puedan correr tu
+Hit #8 sin tener tu imagen local</strong>, necesitás que la imagen esté
+en algún lugar público que cualquiera pueda hacer
+<code>docker pull</code>.</p>
+<p>La forma más simple: pushear la imagen a <strong>GitHub Container
+Registry</strong> (<code>ghcr.io</code>) o <strong>Docker Hub</strong>,
+ambos tienen tier gratis para imágenes públicas.</p>
+<blockquote>
+<p>⚠️ <strong>Esto es solo para la demo / entrega del TP.</strong> En
+producción real las imágenes nunca van a un registry público — van a uno
+<strong>privado / interno</strong> del equipo (cobertura de seguridad,
+control de qué se puede pull/push, no exponer el código vía las layers,
+evitar dependencia de un servicio externo). Más abajo hay una tabla con
+las opciones de registry profesional 2026.</p>
+</blockquote>
+<h3 id="opción-1--github-container-registry-ghcrio">Opción 1 — GitHub
+Container Registry (<code>ghcr.io</code>)</h3>
+<p>Es el más cómodo si ya tenés el repo en GitHub: la autenticación
+reusa el <code>GITHUB_TOKEN</code> y no necesitás cuenta extra.</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Login a ghcr.io (Personal Access Token con scope write:packages)</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$GHCR_PAT</span> <span class="kw">|</span> <span class="ex">docker</span> login ghcr.io <span class="at">-u</span> <span class="op">&lt;</span>tu-usuario-github<span class="op">&gt;</span> --password-stdin</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Tagear la imagen con el path completo</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> tag ml-scraper:latest ghcr.io/<span class="op">&lt;</span>tu-usuario<span class="op">&gt;</span>/ml-scraper:latest</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Push</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> push ghcr.io/<span class="op">&lt;</span>tu-usuario<span class="op">&gt;</span>/ml-scraper:latest</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. En GitHub: ir a la pestaña &quot;Packages&quot; del repo → click en el package →</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co">#    &quot;Package settings&quot; → &quot;Change visibility&quot; → Public.</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co">#    (las imágenes son privadas por default; sin esto, kubectl no podrá pull)</span></span></code></pre></div>
+<p>En el manifest del Hit #8, cambiás:</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">containers</span><span class="kw">:</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> scraper</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> ghcr.io/&lt;tu-usuario&gt;/ml-scraper:latest</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">imagePullPolicy</span><span class="kw">:</span><span class="at"> Always</span><span class="co">   # importante: ahora sí queremos que k8s vaya al registry</span></span></code></pre></div>
+<p>Y eliminás el paso de <code>k3s ctr import</code> /
+<code>k3d image import</code> — k8s va a bajar la imagen directo del
+registry.</p>
+<h3 id="opción-2--docker-hub-público">Opción 2 — Docker Hub público</h3>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Crear cuenta en hub.docker.com (free tier permite imágenes públicas ilimitadas)</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Login local</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> login</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Tagear y push</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> tag ml-scraper:latest <span class="op">&lt;</span>tu-usuario-docker<span class="op">&gt;</span>/ml-scraper:latest</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> push <span class="op">&lt;</span>tu-usuario-docker<span class="op">&gt;</span>/ml-scraper:latest</span></code></pre></div>
+<p>Manifest:</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">image</span><span class="kw">:</span><span class="at"> &lt;tu-usuario-docker&gt;/ml-scraper:latest</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">imagePullPolicy</span><span class="kw">:</span><span class="at"> Always</span></span></code></pre></div>
+<blockquote>
+<p>🚨 <strong>Limit del free tier de Docker Hub (importante en
+CI):</strong> las cuentas anónimas tienen 100 pulls / 6h por IP, las
+autenticadas free 200/6h. Si tu pipeline de CI corre seguido contra
+Docker Hub vas a sentirlo. <code>ghcr.io</code> no tiene rate limit
+equivalente para imágenes públicas.</p>
+</blockquote>
+<h3 id="ci-auto-push-de-la-imagen-al-registry">CI auto-push de la imagen
+al registry</h3>
+<p>En lugar de pushear a mano, el workflow del Hit #7 puede empujar la
+imagen en cada merge a <code>main</code>:</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># .github/workflows/scrape.yml — extracto</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Login to ghcr.io</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> docker/login-action@v3</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">registry</span><span class="kw">:</span><span class="at"> ghcr.io</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">username</span><span class="kw">:</span><span class="at"> ${{ github.actor }}</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">password</span><span class="kw">:</span><span class="at"> ${{ secrets.GITHUB_TOKEN }}</span><span class="co">   # provisto por GH Actions, sin setup</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Build and push</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> docker/build-push-action@v6</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">context</span><span class="kw">:</span><span class="at"> .</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">push</span><span class="kw">:</span><span class="at"> ${{ github.event_name == &#39;push&#39; &amp;&amp; github.ref == &#39;refs/heads/main&#39; }}</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="fu">    tags</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>      ghcr.io/${{ github.repository_owner }}/ml-scraper:latest</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>      ghcr.io/${{ github.repository_owner }}/ml-scraper:${{ github.sha }}</span></code></pre></div>
+<p>Después de merguear a main, la imagen está disponible automáticamente
+para <code>kubectl apply</code>.</p>
+<hr />
+<h2 id="container-registries--el-panorama-2026">Container registries —
+el panorama 2026</h2>
+<p>Para que tengan idea de cómo se hace esto en la industria, no solo en
+el TP:</p>
+<table>
+<thead>
+<tr>
+<th>Registry</th>
+<th>Tipo</th>
+<th>Cuándo se elige</th>
+<th style="text-align: center;">Free tier para públicas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GitHub Container Registry</strong>
+(<code>ghcr.io</code>)</td>
+<td>Cloud, integrado con GitHub</td>
+<td>Stack basado en GitHub Actions, OSS, ergonomía top</td>
+<td style="text-align: center;">✅ ilimitado</td>
+</tr>
+<tr>
+<td><strong>Docker Hub</strong> (<code>docker.io</code>)</td>
+<td>Cloud, el original</td>
+<td>Imágenes que vas a publicar al mundo (oficiales de proyectos)</td>
+<td style="text-align: center;">✅ ilimitado, con <a
+href="https://docs.docker.com/docker-hub/usage/">rate limits</a></td>
+</tr>
+<tr>
+<td><strong>Amazon ECR</strong></td>
+<td>Cloud, AWS-native</td>
+<td>Workloads en EKS / ECS / Fargate; necesitás IAM-based auth</td>
+<td style="text-align: center;">❌ pago (pricing por GB-mes +
+transferencia)</td>
+</tr>
+<tr>
+<td><strong>Google Artifact Registry</strong> (reemplazó GCR)</td>
+<td>Cloud, GCP-native</td>
+<td>GKE / Cloud Run; soporta OCI + Maven + npm en un mismo registry</td>
+<td style="text-align: center;">❌ pago</td>
+</tr>
+<tr>
+<td><strong>Azure Container Registry</strong></td>
+<td>Cloud, Azure-native</td>
+<td>AKS, integración con Azure DevOps</td>
+<td style="text-align: center;">❌ pago (3 tiers: Basic / Standard /
+Premium)</td>
+</tr>
+<tr>
+<td><strong>GitLab Container Registry</strong></td>
+<td>Cloud o self-hosted</td>
+<td>Stack basado en GitLab CI</td>
+<td style="text-align: center;">✅ con cuenta GitLab</td>
+</tr>
+<tr>
+<td><strong>Harbor</strong></td>
+<td><strong>Self-hosted, OSS</strong> (CNCF graduated)</td>
+<td>El estándar on-prem corporativo: replicación, vulnerability scan,
+RBAC</td>
+<td style="text-align: center;">N/A — vos lo hosteás</td>
+</tr>
+<tr>
+<td><strong>JFrog Artifactory</strong></td>
+<td>Self-hosted o cloud, enterprise</td>
+<td>Multi-format (Docker + Maven + npm + Helm + Conda + …) en un solo
+lugar</td>
+<td style="text-align: center;">❌ pago (excepto OSS edition)</td>
+</tr>
+<tr>
+<td><strong>Quay.io</strong> (Red Hat)</td>
+<td>Cloud o self-hosted, OSS-friendly</td>
+<td>Open source projects que quieren OSS-aligned hosting</td>
+<td style="text-align: center;">✅ públicas</td>
+</tr>
+<tr>
+<td><strong>Sonatype Nexus Repository</strong></td>
+<td>Self-hosted</td>
+<td>Alternativa a Artifactory; multi-format</td>
+<td style="text-align: center;">✅ OSS edition</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Reglas de decisión rápidas (2026):</strong></p>
+<ul>
+<li><strong>¿Imagen pública para que cualquiera la use?</strong> →
+<code>ghcr.io</code> (si es OSS en GitHub) o Docker Hub (si querés
+discoverability máxima).</li>
+<li><strong>¿Workload en una sola nube?</strong> → el registry nativo de
+esa nube (ECR / GAR / ACR). Ahorra latencia y a veces dinero en
+transferencia.</li>
+<li><strong>¿On-prem / multi-nube / requisitos de soberanía?</strong> →
+<strong>Harbor</strong> es la respuesta más común. Es CNCF graduated,
+tiene replicación, escaneo de vulnerabilidades (Trivy / Clair), RBAC,
+GC, signing.</li>
+<li><strong>¿Stack monorepo Maven + npm + Docker + Helm?</strong> →
+Artifactory o Nexus.</li>
+</ul>
+<p><strong>Lecturas útiles:</strong></p>
+<ul>
+<li><a
+href="https://www.cncf.io/reports/state-of-container-registries/">The
+2024 State of Container Registries — CNCF</a> (la edición 2026 sale a
+fin de año)</li>
+<li><a href="https://goharbor.io/docs/">Harbor docs</a> — para entender
+qué hace un registry de producción que un public hub no</li>
+<li><a href="https://github.com/opencontainers/distribution-spec">OCI
+Distribution Spec</a> — el protocolo HTTP estándar que hablan todos los
+registries OCI-compliant (saber esto te abre el mercado entero)</li>
+<li><a href="https://docs.sigstore.dev/">Sigstore / cosign</a> — firma
+criptográfica de imágenes (lo que viene como <strong>estándar
+2026</strong> para supply chain security; ya es parte de SLSA Level
+3)</li>
+</ul>
+<hr />
+<h2
 id="comandos-básicos-de-kubectl-que-vas-a-usar-todo-el-tiempo">Comandos
 básicos de kubectl que vas a usar todo el tiempo</h2>
 <table>
@@ -666,37 +910,37 @@ arranca)</td>
 <h2 id="hello-world-deployar-nginx-para-validar-que-todo-funciona">Hello
 world: deployar nginx para validar que todo funciona</h2>
 <p>Creá un archivo <code>nginx-test.yaml</code>:</p>
-<div class="sourceCode" id="cb17"><pre
-class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> v1</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kind</span><span class="kw">:</span><span class="at"> Pod</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">metadata</span><span class="kw">:</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> nginx-test</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">labels</span><span class="kw">:</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">app</span><span class="kw">:</span><span class="at"> nginx-test</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">containers</span><span class="kw">:</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> nginx</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> nginx:alpine</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">containerPort</span><span class="kw">:</span><span class="at"> </span><span class="dv">80</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> v1</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kind</span><span class="kw">:</span><span class="at"> Pod</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">metadata</span><span class="kw">:</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> nginx-test</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">labels</span><span class="kw">:</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">app</span><span class="kw">:</span><span class="at"> nginx-test</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">containers</span><span class="kw">:</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> nginx</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> nginx:alpine</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">containerPort</span><span class="kw">:</span><span class="at"> </span><span class="dv">80</span></span></code></pre></div>
 <p>Aplicalo:</p>
-<div class="sourceCode" id="cb18"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> nginx-test.yaml</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> nginx-test.yaml</span></code></pre></div>
 <p>Esperá a que esté corriendo:</p>
-<div class="sourceCode" id="cb19"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pod nginx-test <span class="at">--watch</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># salí con Ctrl+C cuando veas STATUS=Running</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pod nginx-test <span class="at">--watch</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># salí con Ctrl+C cuando veas STATUS=Running</span></span></code></pre></div>
 <p>Hacé port-forward para probarlo:</p>
-<div class="sourceCode" id="cb20"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> port-forward pod/nginx-test 8080:80</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> port-forward pod/nginx-test 8080:80</span></code></pre></div>
 <p>En otra terminal:</p>
-<div class="sourceCode" id="cb21"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> http://localhost:8080</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> http://localhost:8080</span></code></pre></div>
 <p>Tenés que ver el HTML de bienvenida de nginx. Si lo ves,
 <strong>felicitaciones — tu cluster funciona</strong>.</p>
 <p>Limpieza:</p>
-<div class="sourceCode" id="cb22"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> delete <span class="at">-f</span> nginx-test.yaml</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> delete <span class="at">-f</span> nginx-test.yaml</span></code></pre></div>
 <hr />
 <h2 id="conceptos-mínimos-que-vas-a-usar-en-el-hit-8">Conceptos mínimos
 que vas a usar en el Hit #8</h2>
@@ -756,15 +1000,15 @@ importar la imagen con <code>sudo k3s ctr images import</code>. En k3d
 con <code>k3d image import</code>. Después en el manifiesto del pod usá
 <code>imagePullPolicy: IfNotPresent</code> para que no intente bajarla
 de Docker Hub.</p>
-<div class="sourceCode" id="cb23"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> describe pod <span class="op">&lt;</span>nombre<span class="op">&gt;</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># leé la sección &quot;Events&quot; — ahí dice qué está fallando</span></span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> describe pod <span class="op">&lt;</span>nombre<span class="op">&gt;</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># leé la sección &quot;Events&quot; — ahí dice qué está fallando</span></span></code></pre></div>
 <h3 id="el-pod-arranca-pero-falla-con-crashloopbackoff">“El pod arranca
 pero falla con <code>CrashLoopBackOff</code>”</h3>
 <p>Es un error del proceso adentro del container. Mirá los logs:</p>
-<div class="sourceCode" id="cb24"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> logs <span class="op">&lt;</span>pod<span class="op">&gt;</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> logs <span class="op">&lt;</span>pod<span class="op">&gt;</span> --previous   <span class="co"># logs de la corrida anterior si ya reinició</span></span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> logs <span class="op">&lt;</span>pod<span class="op">&gt;</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> logs <span class="op">&lt;</span>pod<span class="op">&gt;</span> --previous   <span class="co"># logs de la corrida anterior si ya reinició</span></span></code></pre></div>
 <h3
 id="kubectl-no-encuentra-el-cluster-the-connection-to-the-server-localhost8080-was-refused">“kubectl
 no encuentra el cluster
