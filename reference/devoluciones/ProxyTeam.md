@@ -17,7 +17,7 @@
 | Hit #1 — setup, navegación, búsqueda, 5 títulos | 15 % | 14 | 15 |
 | Hit #2 — Browser Factory (con bug `getoption`) | 25 % | 16 | 25 |
 | Hit #3 — filtros DOM (test débil + solo Chrome) | 30 % | 16 | 30 |
-| Infra base (calidad código + README/informe/video + Dockerfile opcional) | 30 % | 16 | 30 |
+| Infra base (calidad código + README/informe/video + Dockerfile deseable Parte 1 / obligatorio Parte 2) | 30 % | 16 | 30 |
 | Bonus `.gitignore` impecable + UA workaround descubierto | +6.7 | +6.7 | — |
 | **Total** | **100 %** | **68.7** | **100** |
 
@@ -65,7 +65,7 @@ def test_filtros_aplicados(driver):
 ### README + informe + video (10%)
 🟠 READMEs por hit están bien, pero **falta README raíz** con integrantes + legajos. Sin video confirmado, sin informe consolidado, sin comparativa Chrome vs Firefox.
 
-### Dockerfile (5% deseable)
+### Dockerfile + docker-compose (deseable Parte 1, obligatorio Parte 2)
 ❌ No entregaron.
 
 ### Requisitos generales
@@ -99,7 +99,7 @@ def test_filtros_aplicados(driver):
 | Hit #4 (extracción JSON estructurada de los 3 productos) | 3-4 h |
 | Hit #5 (retries + backoff + selectores centralizados) | 2 h |
 | Hit #6 (tests + coverage ≥ 70 %) | 2 h |
-| Hit #7 (Dockerfile + CI + pre-commit + gitleaks) | 3 h |
+| Hit #7 (Dockerfile + docker-compose + CI + pre-commit + gitleaks) | 3 h |
 | Hit #8 (k8s) + TP 0 (cluster k3s) | 3 h |
 | 3 ADRs | 30 min |
 
