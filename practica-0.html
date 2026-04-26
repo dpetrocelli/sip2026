@@ -176,9 +176,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     <li><a href="#lectura-recomendada-no-obligatoria"
     id="toc-lectura-recomendada-no-obligatoria">Lectura recomendada (NO
     obligatoria)</a></li>
-    <li><a href="#validación-previa-al-hit-8"
-    id="toc-validación-previa-al-hit-8">Validación previa al Hit
-    #8</a></li>
+    <li><a href="#validación-obligatoria-previa-al-hit-8"
+    id="toc-validación-obligatoria-previa-al-hit-8">Validación
+    obligatoria previa al Hit #8</a></li>
     </ul></li>
     </ul>
     <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
@@ -193,11 +193,13 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <h1 id="tp-0--prerrequisitos">TP 0 — Prerrequisitos</h1>
 <h2 id="instalación-de-k3s-y-primeros-pasos-con-kubernetes">Instalación
 de k3s y primeros pasos con Kubernetes</h2>
-<p><strong>Fecha de Entrega: no aplica (preparación)</strong></p>
+<p><strong>Requisito obligatorio para entregar la Parte 2 del TP 1
+(entrega 02/05/2026)</strong></p>
 <blockquote>
-<p>Esta guía es <strong>prerrequisito de la Parte 2 del TP 1</strong>.
-No se entrega — pero si llegan al Hit #8 sin haberla seguido, no van a
-poder cumplir la consigna.</p>
+<p>Esta guía es <strong>prerrequisito obligatorio de la Parte 2 del TP
+1</strong>. Sin haber completado el TP 0 (cluster k3s/k3d funcional +
+checklist de validación al final), no se acepta la entrega del Hit
+#8.</p>
 </blockquote>
 <hr />
 <h2 id="por-qué-kubernetes-y-por-qué-k3s">¿Por qué Kubernetes y por qué
@@ -541,21 +543,25 @@ Capítulos 1, 2, 7 (Job/CronJob), 9 (ConfigMap)</li>
 href="https://kubernetes.io/docs/reference/kubectl/quick-reference/">https://kubernetes.io/docs/reference/kubectl/quick-reference/</a></li>
 </ul>
 <hr />
-<h2 id="validación-previa-al-hit-8">Validación previa al Hit #8</h2>
-<p>Antes de empezar el Hit #8 de la Parte 2, tenés que poder responder
-afirmativamente a las 4 preguntas:</p>
+<h2 id="validación-obligatoria-previa-al-hit-8">Validación obligatoria
+previa al Hit #8</h2>
+<p>Para que la entrega de la Parte 2 sea aceptada, tienen que poder
+responder afirmativamente a las 4 preguntas. <strong>Documenten en el
+README de la Parte 2 (sección “Prerrequisitos cumplidos”) la evidencia
+de cada checkpoint</strong> (output del comando o screenshot).</p>
 <ul class="task-list">
 <li><label><input type="checkbox" /><code>kubectl get nodes</code> me
 devuelve un nodo en <code>Ready</code>.</label></li>
 <li><label><input type="checkbox" />Pude correr el nginx-test y abrirlo
 con <code>curl localhost:8080</code>.</label></li>
 <li><label><input type="checkbox" />Sé importar una imagen Docker al
-cluster (k3s ctr import / k3d image import).</label></li>
+cluster (<code>k3s ctr images import</code> /
+<code>k3d image import</code>).</label></li>
 <li><label><input type="checkbox" />Entiendo qué es un Pod, un Job, un
 CronJob, un ConfigMap y un PVC (al menos a nivel “para qué
 sirve”).</label></li>
 </ul>
-<p>Si las 4 son sí, estás listo para el Hit #8.</p>
+<p>Si las 4 son sí, están listos para el Hit #8.</p>
   </main>
 </div>
 

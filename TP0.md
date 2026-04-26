@@ -2,9 +2,9 @@
 
 ## Instalación de k3s y primeros pasos con Kubernetes
 
-**Fecha de Entrega: no aplica (preparación)**
+**Requisito obligatorio para entregar la Parte 2 del TP 1 (entrega 02/05/2026)**
 
-> Esta guía es **prerrequisito de la Parte 2 del TP 1**. No se entrega — pero si llegan al Hit #8 sin haberla seguido, no van a poder cumplir la consigna.
+> Esta guía es **prerrequisito obligatorio de la Parte 2 del TP 1**. Sin haber completado el TP 0 (cluster k3s/k3d funcional + checklist de validación al final), no se acepta la entrega del Hit #8.
 
 ---
 
@@ -297,13 +297,13 @@ k3s idle anda en ~400-500 MB. Si tenés problemas, asegurate de no tener microk8
 
 ---
 
-## Validación previa al Hit #8
+## Validación obligatoria previa al Hit #8
 
-Antes de empezar el Hit #8 de la Parte 2, tenés que poder responder afirmativamente a las 4 preguntas:
+Para que la entrega de la Parte 2 sea aceptada, tienen que poder responder afirmativamente a las 4 preguntas. **Documenten en el README de la Parte 2 (sección "Prerrequisitos cumplidos") la evidencia de cada checkpoint** (output del comando o screenshot).
 
 - [ ] `kubectl get nodes` me devuelve un nodo en `Ready`.
 - [ ] Pude correr el nginx-test y abrirlo con `curl localhost:8080`.
-- [ ] Sé importar una imagen Docker al cluster (k3s ctr import / k3d image import).
+- [ ] Sé importar una imagen Docker al cluster (`k3s ctr images import` / `k3d image import`).
 - [ ] Entiendo qué es un Pod, un Job, un CronJob, un ConfigMap y un PVC (al menos a nivel "para qué sirve").
 
-Si las 4 son sí, estás listo para el Hit #8.
+Si las 4 son sí, están listos para el Hit #8.
