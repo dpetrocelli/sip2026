@@ -205,27 +205,31 @@ k3d cluster delete scraper
 
 Los Pasos 4 de los Caminos A y B (`k3s ctr import` / `k3d image import`) sirven para **vos en tu máquina**. Pero para que **los profesores puedan correr tu Hit #8 sin tener tu imagen local**, necesitás que la imagen esté en algún lugar público que cualquiera pueda hacer `docker pull`.
 
-La forma más simple: pushear la imagen a **GitHub Container Registry** (`ghcr.io`) o **Docker Hub**, ambos tienen tier gratis para imágenes públicas.
+Para este TP usamos **GitHub Container Registry** (`ghcr.io`): es gratis para imágenes públicas, **no tiene rate limit de pulls** (al contrario de Docker Hub free tier que limita a 100-200/6h y se siente en CI), y la autenticación reusa el `GITHUB_TOKEN` que ya viene con cualquier repo en GitHub.
 
-> ⚠️ **Esto es solo para la demo / entrega del TP.** En producción real las imágenes nunca van a un registry público — van a uno **privado / interno** del equipo (cobertura de seguridad, control de qué se puede pull/push, no exponer el código vía las layers, evitar dependencia de un servicio externo). Más abajo hay una tabla con las opciones de registry profesional 2026.
+> ⚠️ **Esto es solo para la demo / entrega del TP.** En producción real las imágenes nunca van a un registry público — van a uno **privado / interno** del equipo (control de seguridad, control de quién hace pull/push, no exponer el código vía las layers, evitar dependencia de un servicio externo). Más abajo hay una tabla con las opciones de registry profesional 2026.
 
-### Opción 1 — GitHub Container Registry (`ghcr.io`)
-
-Es el más cómodo si ya tenés el repo en GitHub: la autenticación reusa el `GITHUB_TOKEN` y no necesitás cuenta extra.
+### Push manual a `ghcr.io` (la primera vez)
 
 ```bash
-# 1. Login a ghcr.io (Personal Access Token con scope write:packages)
+# 1. Generá un Personal Access Token (PAT) con scope write:packages:
+#    GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token
+#    Tildá: write:packages, read:packages, delete:packages
+#    Copiá el token (lo vas a ver una sola vez).
+
+# 2. Login a ghcr.io con el PAT
+export GHCR_PAT=<pegá-el-token>
 echo $GHCR_PAT | docker login ghcr.io -u <tu-usuario-github> --password-stdin
 
-# 2. Tagear la imagen con el path completo
+# 3. Tagear la imagen con el path completo
 docker tag ml-scraper:latest ghcr.io/<tu-usuario>/ml-scraper:latest
 
-# 3. Push
+# 4. Push
 docker push ghcr.io/<tu-usuario>/ml-scraper:latest
 
-# 4. En GitHub: ir a la pestaña "Packages" del repo → click en el package →
+# 5. En GitHub: ir a la pestaña "Packages" del repo → click en el package →
 #    "Package settings" → "Change visibility" → Public.
-#    (las imágenes son privadas por default; sin esto, kubectl no podrá pull)
+#    (las imágenes son privadas por default; sin esto, kubectl no podrá pull desde el cluster)
 ```
 
 En el manifest del Hit #8, cambiás:
@@ -239,29 +243,7 @@ containers:
 
 Y eliminás el paso de `k3s ctr import` / `k3d image import` — k8s va a bajar la imagen directo del registry.
 
-### Opción 2 — Docker Hub público
-
-```bash
-# 1. Crear cuenta en hub.docker.com (free tier permite imágenes públicas ilimitadas)
-
-# 2. Login local
-docker login
-
-# 3. Tagear y push
-docker tag ml-scraper:latest <tu-usuario-docker>/ml-scraper:latest
-docker push <tu-usuario-docker>/ml-scraper:latest
-```
-
-Manifest:
-
-```yaml
-image: <tu-usuario-docker>/ml-scraper:latest
-imagePullPolicy: Always
-```
-
-> 🚨 **Limit del free tier de Docker Hub (importante en CI):** las cuentas anónimas tienen 100 pulls / 6h por IP, las autenticadas free 200/6h. Si tu pipeline de CI corre seguido contra Docker Hub vas a sentirlo. `ghcr.io` no tiene rate limit equivalente para imágenes públicas.
-
-### CI auto-push de la imagen al registry
+### CI auto-push de la imagen al registry (recomendado)
 
 En lugar de pushear a mano, el workflow del Hit #7 puede empujar la imagen en cada merge a `main`:
 
@@ -295,7 +277,7 @@ Para que tengan idea de cómo se hace esto en la industria, no solo en el TP:
 | Registry | Tipo | Cuándo se elige | Free tier para públicas |
 |---|---|---|:---:|
 | **GitHub Container Registry** (`ghcr.io`) | Cloud, integrado con GitHub | Stack basado en GitHub Actions, OSS, ergonomía top | ✅ ilimitado |
-| **Docker Hub** (`docker.io`) | Cloud, el original | Imágenes que vas a publicar al mundo (oficiales de proyectos) | ✅ ilimitado, con [rate limits](https://docs.docker.com/docker-hub/usage/) |
+| **Docker Hub** (`docker.io`) | Cloud, el original | Imágenes oficiales para discoverability máxima | ⚠️ free tier limita pulls a 100/6h anónimo, 200/6h autenticado — **se siente en CI**, por eso para este TP usamos `ghcr.io` |
 | **Amazon ECR** | Cloud, AWS-native | Workloads en EKS / ECS / Fargate; necesitás IAM-based auth | ❌ pago (pricing por GB-mes + transferencia) |
 | **Google Artifact Registry** (reemplazó GCR) | Cloud, GCP-native | GKE / Cloud Run; soporta OCI + Maven + npm en un mismo registry | ❌ pago |
 | **Azure Container Registry** | Cloud, Azure-native | AKS, integración con Azure DevOps | ❌ pago (3 tiers: Basic / Standard / Premium) |

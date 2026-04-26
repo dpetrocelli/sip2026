@@ -683,3 +683,52 @@ details.section-collapsible > p:first-of-type {
   details.section-collapsible > summary { list-style: none; pointer-events: none; }
   details.section-collapsible > summary::after { display: none; }
 }
+
+/* ============ PAGE NAV (back to menu) ============ */
+.page-nav-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--light-gray);
+  flex-wrap: wrap;
+}
+
+.page-nav-bottom {
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 2px solid var(--light-gray);
+  text-align: center;
+}
+
+.back-to-menu {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--navy);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.15s ease;
+}
+
+.back-to-menu:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.banner-pill {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 12px;
+  letter-spacing: 0.6px;
+}
