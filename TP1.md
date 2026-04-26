@@ -2,7 +2,11 @@
 
 ## Automatización Web con Selenium — Pruebas E2E multi-browser sobre MercadoLibre
 
-**Fecha de Entrega: 25/04/2026**
+**Fecha de Entrega: 25/04/2026 (entrega cerrada)**
+
+> ✅ **Entrega cerrada.** Esta consigna queda como referencia. El trabajo continúa en la [Parte 2](practica-1-parte-2.html) (Hits #4–#9, entrega 02/05/2026), que **requiere** haber completado el [TP 0 — Prerrequisitos k3s](practica-0.html) antes del Hit #8.
+>
+> 📚 La cátedra publicó la **implementación de referencia** completa de los 8 hits en <https://github.com/dpetrocelli/sip2026/tree/main/reference>, junto con un comparador automático (`tooling/compare.py`) que pueden usar para auto-evaluarse antes de entregar la Parte 2.
 
 ---
 

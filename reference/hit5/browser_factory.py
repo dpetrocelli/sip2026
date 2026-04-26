@@ -86,10 +86,7 @@ def create_driver(browser: str | None = None) -> webdriver.Remote:
     Raises:
         ValueError: Si el browser no es soportado.
     """
-    if browser is None:
-        resolved = os.getenv("BROWSER", "chrome")
-    else:
-        resolved = browser
+    resolved = os.getenv("BROWSER", "chrome") if browser is None else browser
     resolved = resolved.lower().strip()
 
     if not resolved or resolved not in SUPPORTED_BROWSERS:

@@ -412,9 +412,8 @@ def compute_score(
     # Dockerfile (5%)
     s["Dockerfile (deseable)"] = (5 if quality.has_dockerfile else 0, 5)
 
-    total_won = sum(v[0] for v in s.values())
     total_max = sum(v[1] for v in s.values())
-    return s, total_max  # actually return (won/max ratio later)
+    return s, total_max
 
 
 # ────────────────────────────────────────────────
@@ -474,13 +473,12 @@ def render_report(c: ComparisonResult) -> str:
         )
         for j in c.json_outputs:
             f = j.fields_complete
-            check = lambda k: f.get(k, 0)
             lines.append(
                 f"| `{j.file}` | {'✅' if j.found else '❌'} | "
                 f"{'✅' if j.is_array else '❌'} | {j.count} | "
                 f"{'✅' if j.schema_ok else '❌'} | "
-                f"{check('titulo')} | {check('precio')} | {check('link')} | "
-                f"{check('tienda_oficial')} | {check('envio_gratis')} | {check('cuotas_sin_interes')} |"
+                f"{f.get('titulo', 0)} | {f.get('precio', 0)} | {f.get('link', 0)} | "
+                f"{f.get('tienda_oficial', 0)} | {f.get('envio_gratis', 0)} | {f.get('cuotas_sin_interes', 0)} |"
             )
         for j in c.json_outputs:
             if j.schema_errors:

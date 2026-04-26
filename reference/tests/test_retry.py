@@ -98,9 +98,11 @@ class TestWithBackoffFalloTotal:
         def mi_funcion():
             return mock_fn()
 
-        with patch("retry.time.sleep"):
-            with pytest.raises(TimeoutException, match="timeout persistente"):
-                mi_funcion()
+        with (
+            patch("retry.time.sleep"),
+            pytest.raises(TimeoutException, match="timeout persistente"),
+        ):
+            mi_funcion()
 
     def test_fallo_total_intenta_max_veces(self) -> None:
         """La función se llama exactamente max_attempts veces antes de rendirse."""
@@ -110,9 +112,8 @@ class TestWithBackoffFalloTotal:
         def mi_funcion():
             return mock_fn()
 
-        with patch("retry.time.sleep"):
-            with pytest.raises(WebDriverException):
-                mi_funcion()
+        with patch("retry.time.sleep"), pytest.raises(WebDriverException):
+            mi_funcion()
 
         assert mock_fn.call_count == 4
 
@@ -124,9 +125,8 @@ class TestWithBackoffFalloTotal:
         def mi_funcion():
             return mock_fn()
 
-        with patch("retry.time.sleep") as mock_sleep:
-            with pytest.raises(TimeoutException):
-                mi_funcion()
+        with patch("retry.time.sleep") as mock_sleep, pytest.raises(TimeoutException):
+            mi_funcion()
 
         # Intento 1 falla → sleep(2.0 * 2^0 = 2.0)
         # Intento 2 falla → sleep(2.0 * 2^1 = 4.0)
@@ -144,9 +144,8 @@ class TestWithBackoffFalloTotal:
         def mi_funcion():
             return mock_fn()
 
-        with patch("retry.time.sleep"):
-            with pytest.raises(StaleElementReferenceException):
-                mi_funcion()
+        with patch("retry.time.sleep"), pytest.raises(StaleElementReferenceException):
+            mi_funcion()
 
         assert mock_fn.call_count == 2
 
@@ -200,9 +199,8 @@ class TestWithBackoffExcepcionNoRetryable:
         def mi_funcion():
             return mock_fn()
 
-        with patch("retry.time.sleep"):
-            with pytest.raises(MiErrorTransitorio):
-                mi_funcion()
+        with patch("retry.time.sleep"), pytest.raises(MiErrorTransitorio):
+            mi_funcion()
 
         assert mock_fn.call_count == 2
 
