@@ -321,12 +321,60 @@ k3s idle anda en ~400-500 MB. Si tenés problemas, asegurate de no tener microk8
 
 ---
 
-## Lectura recomendada (NO obligatoria)
+## Lectura recomendada y referencias
 
+> No es lectura obligatoria, pero si van en serio con esto, las primeras 4-5 referencias les van a ahorrar meses.
+
+### Documentación oficial (lo que conviene tener bookmarkeado)
+
+- **Kubernetes — sitio oficial** — <https://kubernetes.io/>
+- **Conceptos de Kubernetes** — <https://kubernetes.io/docs/concepts/> (Pod, Deployment, Service, Job, CronJob, ConfigMap, PVC explicados por la fuente)
+- **API Reference** — <https://kubernetes.io/docs/reference/kubernetes-api/> (todos los campos de cada manifiesto)
+- **kubectl cheatsheet** — <https://kubernetes.io/docs/reference/kubectl/quick-reference/>
 - **k3s docs** — <https://docs.k3s.io/>
 - **k3d docs** — <https://k3d.io/>
-- **Kubernetes Patterns** (Bilgin Ibryam, Roland Huß) — Capítulos 1, 2, 7 (Job/CronJob), 9 (ConfigMap)
-- **Kubernetes en una hoja** — <https://kubernetes.io/docs/reference/kubectl/quick-reference/>
+- **CNCF Landscape** — <https://landscape.cncf.io/> (mapa de ~1500 proyectos del ecosistema cloud-native — útil para ubicar herramientas en contexto)
+- **KEPs (Kubernetes Enhancement Proposals)** — <https://github.com/kubernetes/enhancements/tree/master/keps> (cómo evoluciona Kubernetes — útil cuando quieren entender por qué algo funciona como funciona)
+
+### Libros — ordenados de "primer contacto" a "producción/avanzado"
+
+| Libro | Autores | Editorial / Año | Cuándo leerlo |
+|-------|---------|-----------------|---------------|
+| [The Kubernetes Book (3rd ed)](https://www.oreilly.com/library/view/the-kubernetes-book/9781805806639/) | Nigel Poulton, Pushkar Joglekar | O'Reilly · 2024 | El más amigable — primer contacto, lectura de fin de semana |
+| [Kubernetes: Up and Running (3rd ed)](https://www.oreilly.com/library/view/kubernetes-up-and/9781098110192/) | Brendan Burns (co-creador de k8s), Joe Beda, Kelsey Hightower, Lachlan Evenson | O'Reilly · 2022 | Intro canónica — escrita por quienes diseñaron k8s |
+| [Kubernetes in Action (2nd ed)](https://www.manning.com/books/kubernetes-in-action-second-edition) | Marko Lukša, Kevin Conner | Manning · 2026 | El **best of class** para deep-dive. ⭐ Recomendación principal si solo van a leer uno |
+| [Kubernetes Patterns (2nd ed)](https://www.oreilly.com/library/view/kubernetes-patterns-2nd/9781098131678/) | Bilgin Ibryam, Roland Huß | O'Reilly · 2023 | Patterns reutilizables — Cap. 7 (Batch Job), 8 (Periodic Job) son **directamente** lo que van a hacer en el Hit #8 |
+| [Kubernetes Best Practices (2nd ed)](https://www.oreilly.com/library/view/kubernetes-best-practices/9781098142155/) | Brendan Burns et al | O'Reilly · 2024 | Operación en producción: RBAC, observabilidad, GitOps, networking |
+| [Cloud Native Patterns](https://www.manning.com/books/cloud-native-patterns) | Cornelia Davis | Manning · 2019 | Patrones cloud-native independientes de k8s — útil para entender el "por qué" detrás de los manifiestos |
+| [GitOps and Kubernetes](https://www.manning.com/books/gitops-and-kubernetes) | Billy Yuen, Alexander Matyushentsev, Todd Ekenstam, Jesse Suen | Manning · 2021 | Si después quieren hacer GitOps con Argo CD / Flux |
+| [Programming Kubernetes](https://www.oreilly.com/library/view/programming-kubernetes/9781492047094/) | Michael Hausenblas (AWS), Stefan Schimanski (Red Hat) | O'Reilly · 2019 | Cuando quieran escribir Operators / CRDs propios |
+| [CKA Study Guide (2nd ed)](https://www.oreilly.com/library/view/cka-study-guide/9781098140502/) | Benjamin Muschko | O'Reilly · enero 2026 (v1.33) | Si apuntan a la certificación CKA — el primer libro alineado al examen actualizado |
+
+### Papers fundacionales — el ADN intelectual de Kubernetes
+
+Los conceptos de Job, CronJob, scheduling, PVC, etc. no salieron de la nada — vienen de 15 años de investigación y operación a escala en Google con sus sistemas Borg y Omega. Estos 4 papers son **lectura obligatoria conceptual** para cualquiera que quiera entender el "por qué" detrás de Kubernetes:
+
+- **Burns, Grant, Oppenheimer, Brewer, Wilkes (2016).** "Borg, Omega, and Kubernetes: Lessons learned from three container-management systems over a decade". *ACM Queue / Communications of the ACM*. — <https://queue.acm.org/detail.cfm?id=2898444>
+  > El paper que conecta los puntos: por qué Kubernetes es como es. **Léanlo aunque sea uno solo.**
+
+- **Verma, Pedrosa, Korupolu, Oppenheimer, Tune, Wilkes (2015).** "Large-scale cluster management at Google with Borg". *EuroSys 2015*. — <https://research.google.com/pubs/archive/43438.pdf>
+  > El paper original de Borg, el sistema interno de Google que inspiró Kubernetes. Estructura de control plane, scheduling, admission control.
+
+- **Schwarzkopf, Konwinski, Abd-El-Malek, Wilkes (2013).** "Omega: flexible, scalable schedulers for large compute clusters". *EuroSys 2013*. — <https://research.google/pubs/omega-flexible-scalable-schedulers-for-large-compute-clusters/>
+  > Schedulers paralelos optimistic — la base conceptual del scheduler de Kubernetes.
+
+- **Tirmazi, Barker, Deng, Haque, Qin, Hand, Harchol-Balter, Wilkes (2020).** "Borg: the Next Generation". *EuroSys 2020*. — <https://dl.acm.org/doi/10.1145/3342195.3387517>
+  > Análisis empírico de cómo evolucionó Borg después de 5 años más de operación. Datos de utilización, mix de workloads, lecciones aprendidas.
+
+### Recursos comunitarios
+
+- **Kubernetes the Hard Way** — Kelsey Hightower — <https://github.com/kelsey-hightower/kubernetes-the-hard-way>
+  > Tutorial canónico para construir un cluster Kubernetes "desde cero" sin instaladores. **No lo necesitan para el TP**, pero si después quieren entender qué hace k3s por debajo, este es el camino.
+
+- **Awesome Kubernetes** — <https://github.com/ramitsurana/awesome-kubernetes> (lista curada de herramientas, charlas, libros)
+- **CNCF YouTube** — <https://www.youtube.com/@cncf> (KubeCon talks gratis — buscá "Job", "CronJob", "k3s" para charlas específicas)
+- **Learnk8s blog** — <https://learnk8s.io/blog> (artículos técnicos profundos, gratuitos)
+- **Killercoda** — <https://killercoda.com/playgrounds/scenario/kubernetes> (sandbox interactivo en el navegador para practicar `kubectl` sin instalar nada)
 
 ---
 
