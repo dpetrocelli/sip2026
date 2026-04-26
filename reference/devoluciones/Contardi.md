@@ -1,12 +1,26 @@
 # Devolución — Contardi (Gustavo Contardi)
 
 **Repo:** [GustavoContardi/TP1-Selenium](https://github.com/GustavoContardi/TP1-Selenium)
+**Commit evaluado:** [`8221268`](https://github.com/GustavoContardi/TP1-Selenium/commit/8221268f753f) (2026-04-25 17:04 UTC)
 **Stack:** Python 3 + Selenium
+**Próxima entrega:** Parte 2 — 02/05/2026. [Consigna](https://dpetrocelli.github.io/sip2026/practica-1-parte-2.html) · [TP 0 Prerrequisitos](https://dpetrocelli.github.io/sip2026/practica-0.html)
 **Score final:** **82.5 / 100** (auto: 90 · manual: 75)
 
 > Ranking: 🥈 2°. Código limpio, anti-patterns ausentes, pero el envoltorio (README raíz, video, .gitignore) flojea.
 
 ---
+
+## Nota desglosada por criterio
+
+| Criterio | Peso | Tu nota | Nota máx |
+|---|---:|---:|---:|
+| Hit #1 — setup, navegación, búsqueda, 5 títulos | 15 % | 15 | 15 |
+| Hit #2 — Browser Factory Chrome+Firefox | 25 % | 25 | 25 |
+| Hit #3 — filtros DOM + screenshot | 30 % | 28 | 30 |
+| Calidad de código (waits, selectores, sin sleep) | 15 % | 11.5 | 15 |
+| README + informe + video | 10 % | 3 | 10 |
+| Dockerfile (deseable) | 5 % | 0 | 5 |
+| **Total** | **100 %** | **82.5** | **100** |
 
 ## Cumplimiento punto por punto de la consigna
 
@@ -50,3 +64,28 @@
 4. **`.gitignore` completo**: agregar `__pycache__/`, `output/`, `screenshots/`, `logs/`, `.env`.
 5. **Renombrar** `requeriments.txt` → `requirements.txt` y verificar que el typo no rompió nada.
 6. **Implementar Hit #4** + tests con coverage ≥ 70 % + Dockerfile + CI.
+
+---
+
+## Tiempo estimado de arreglos pendientes
+
+| Tarea | Estimado |
+|---|---:|
+| README raíz completo (integrantes + decisiones + Chrome vs Firefox + IA) | 30 min |
+| `selectors.py` con todos los selectores movidos | 45 min |
+| Migrar `print` → `logging` (todos los archivos) | 30 min |
+| `.gitignore` + renombrar `requeriments.txt` | 10 min |
+| Hit #4 (extracción JSON estructurada de los 3 productos) | 3-4 h |
+| Hit #5 (retries + backoff + selectores centralizados — ya parte ahí) | 2 h |
+| Hit #6 (tests + coverage ≥ 70 %) | 2 h |
+| Hit #7 (Dockerfile + CI + pre-commit) | 3 h |
+| Hit #8 (k8s) + TP 0 (cluster k3s) | 3 h |
+| 3 ADRs | 30 min |
+
+**Total Parte 2:** ~14-16 h. Tenés 6 días → ~2.5 h/día.
+
+## Recursos cátedra para Parte 2
+
+- [Implementación de referencia completa](https://github.com/dpetrocelli/sip2026/tree/main/reference) — Python 3.13 + Selenium, así que la podés seguir bastante de cerca como estructura.
+- [`tooling/compare.py`](https://github.com/dpetrocelli/sip2026/blob/main/reference/tooling/compare.py) — comparador automático que ya pasó tu repo a 90/100 auto. Volvé a correrlo sobre Parte 2 antes de entregar.
+- [Sección "Auto-verificación previa a la entrega"](https://dpetrocelli.github.io/sip2026/practica-1-parte-2.html#auto-verificacion-previa-a-la-entrega).

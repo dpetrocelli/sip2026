@@ -78,14 +78,16 @@ spec:
 
           # Recursos: requests = lo que el scheduler garantiza,
           # limits = el techo que el kernel enforce (OOMKill si se supera memoria).
-          # Chrome headless es intensivo en memoria; 512Mi es el mínimo viable.
+          # Chrome headless con 3 productos consume ~700-900 MB. 512Mi era OOMKill seguro:
+          # el contenedor moría con exit 137 ni bien Selenium intentaba renderizar la página.
+          # 1.5 GiB da margen para retries.
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
-              memory: "512Mi"
+              memory: "768Mi"
               cpu: "500m"
+            limits:
+              memory: "1536Mi"
+              cpu: "1000m"
 
           volumeMounts:
             # El scraper escribe los JSON y screenshots en /app/output.

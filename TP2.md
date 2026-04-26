@@ -8,6 +8,8 @@
 - Haber entregado la **Parte 1** (Hits #1–#3). Esta segunda parte continúa el mismo proyecto y arranca con el Hit #4 (extracción estructurada a JSON), que es la base sobre la que se construye el resto.
 - Haber completado la guía del **TP 0 — Prerrequisitos (k3s)** antes de empezar el Hit #8. Sin un cluster k3s/k3d funcional no podés cumplir esa parte.
 
+> 📚 **Implementación de referencia disponible.** La cátedra publicó una implementación completa que cubre los 8 hits + ADRs + pre-commit + CI + manifests k8s en <https://github.com/dpetrocelli/sip2026/tree/main/reference>. Sirve como vara de corrección y como ejemplo de buenas prácticas (no la copien tal cual — adaptenla a su stack y decisiones).
+
 ---
 
 ## Requisitos, consideraciones y formato de entrega
@@ -410,6 +412,17 @@ CMD ["--browser", "chrome"]
 - **Node**: `FROM node:20-slim AS builder` → `npm ci --only=production` → stage runtime con `node:20-slim` + browsers, `USER node`
 - **Java**: `FROM maven:3.9-eclipse-temurin-17 AS builder` → `mvn -B package -DskipTests` → stage runtime con `eclipse-temurin:17-jre` + browsers, copiar `.jar`
 
+> **⚠️ User-Agent custom obligatorio en headless.** MercadoLibre detecta Chrome/Firefox headless con UA por defecto y devuelve la página **sin resultados**. En el código del scraper (no en el Dockerfile) hay que setear:
+>
+> ```python
+> options.add_argument(
+>   '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 '
+>   '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+> )
+> ```
+>
+> Equivalente Java: `options.addArguments("--user-agent=...")`. Equivalente JS: `options.addArguments('--user-agent=...')` o `setUserAgent()` en Puppeteer/Playwright. Sin esto, el pipeline de CI funciona pero los JSON salen vacíos.
+
 ### Esqueleto del workflow de CI (`.github/workflows/scrape.yml`, Hit #7)
 
 ```yaml
@@ -521,6 +534,87 @@ Activar local: `pip install pre-commit && pre-commit install`. Documenten el com
 
 ---
 
+## Auto-verificación previa a la entrega
+
+Antes de pushear el commit final, corré estos comandos en tu repo. Si **algo de esta lista falla, todavía no entregues** — vas a perder puntos seguros que se evitan con 2 minutos de checklist.
+
+### 1) Tests + cobertura ≥ 70 %
+
+```bash
+# Python
+pytest --cov=. --cov-fail-under=70
+
+# Node
+npm test -- --coverage --coverageThreshold='{"global":{"lines":70}}'
+
+# Java
+mvn verify   # con jacoco-maven-plugin configurado con minimum 0.70
+```
+
+### 2) Linter + formatter (los mismos que corren en pre-commit)
+
+```bash
+ruff check . && ruff format --check .          # Python
+npx eslint . && npx prettier --check .          # Node
+mvn spotless:check && mvn checkstyle:check      # Java
+```
+
+### 3) Detección de secrets
+
+```bash
+gitleaks detect --no-git --verbose
+# alternativa si ya está configurado pre-commit:
+pre-commit run gitleaks --all-files
+```
+
+### 4) Manifests Kubernetes válidos
+
+```bash
+for f in k8s/*.yaml; do
+  kubectl apply --dry-run=client -f "$f" || echo "❌ $f rompe"
+done
+```
+
+### 5) Build de la imagen Docker
+
+```bash
+docker build -t ml-scraper:test .
+docker run --rm -e HEADLESS=true -e BROWSER=chrome \
+  -v $(pwd)/output:/app/output \
+  ml-scraper:test --limit 3
+# Verificá que se generen los 3 JSON en output/
+```
+
+### 6) Comparación contra el golden master (opcional pero recomendado)
+
+La cátedra publicó la implementación de referencia con un `tooling/compare.py` que valida estructura, schema, presencia de hits, anti-patterns y secrets. Pueden correrla contra su propio repo para tener feedback antes de entregar:
+
+```bash
+git clone https://github.com/dpetrocelli/sip2026.git /tmp/sip-ref
+python /tmp/sip-ref/reference/tooling/compare.py \
+  --student . --out /tmp/mi-evaluacion.md
+cat /tmp/mi-evaluacion.md
+```
+
+El reporte indica qué hits encuentra, qué anti-patterns detecta (`time.sleep`, selectores hardcodeados, secrets, etc.) y un score estimado. **No reemplaza la corrección humana**, pero detecta los errores estructurales más comunes.
+
+### 7) E2E completo en cluster local
+
+```bash
+# Cargá la imagen al cluster (k3s o k3d)
+docker save ml-scraper:test -o /tmp/img.tar && sudo k3s ctr images import /tmp/img.tar
+# o:  k3d image import ml-scraper:test -c <tu-cluster>
+
+kubectl apply -f k8s/namespace.yaml
+kubectl apply -f k8s/
+kubectl wait --for=condition=complete job/scraper-once --timeout=600s -n ml-scraper
+kubectl logs -l job-name=scraper-once -n ml-scraper
+```
+
+Si el Job termina en `Complete` y los logs muestran los 3 JSON generados, están listos para entregar.
+
+---
+
 ### Hit #9 (Bonus)
 
 Extienda el scraper con cualquiera (o varias) de las siguientes capacidades:
@@ -536,18 +630,20 @@ Extienda el scraper con cualquiera (o varias) de las siguientes capacidades:
 
 ## Criterios de evaluación — Parte 2
 
+Total: 100 puntos (Hits #4–#8 + extras obligatorios). El Hit #9 es **bonus** y suma hasta 10 puntos extra sobre el total.
+
 | Criterio | Peso |
 |----------|------|
-| Hit #4 — extracción estructurada a JSON de los 3 productos con todos los campos | 18 % |
+| Hit #4 — extracción estructurada a JSON de los 3 productos con todos los campos | 20 % |
 | Hit #5 — manejo robusto de errores (selectores faltantes, timeouts, retries con backoff) | 10 % |
-| Hit #6 — tests automatizados + cobertura ≥ 70 % validada en CI | 12 % |
+| Hit #6 — tests automatizados + cobertura ≥ 70 % validada en CI | 13 % |
 | Hit #7 — Dockerfile funcional con Chrome + Firefox + drivers | 10 % |
-| Hit #7 — pipeline CI/CD con matriz de browsers, artifacts y gate de cobertura | 10 % |
+| Hit #7 — pipeline CI/CD con matriz de browsers, artifacts y gate de cobertura | 12 % |
 | Hit #7 — pre-commit hooks (gitleaks + linter + formatter) configurados y documentados | 5 % |
 | Hit #8 — `Job` + `CronJob` + `ConfigMap` + `PVC` corriendo en k3s/k3d | 15 % |
 | ADRs (mínimo 3, en `docs/adr/`) | 5 % |
-| Modo headless configurable y operativo | 5 % |
-| Hit #9 (al menos uno de los bonus) | 10 % |
+| Modo headless configurable y operativo + checklist de auto-verificación cumplido | 10 % |
+| **Hit #9 (bonus, opcional)** — al menos uno de los 6 ítems del Hit #9 | **+10 %** |
 
 ---
 

@@ -85,14 +85,14 @@ spec:
                 - configMapRef:
                     name: scraper-config
 
-              # Mismos límites de recursos que el Job one-off.
+              # Mismos límites de recursos que el Job one-off (Chrome headless ~700-900 MB).
               resources:
                 requests:
-                  memory: "256Mi"
-                  cpu: "250m"
-                limits:
-                  memory: "512Mi"
+                  memory: "768Mi"
                   cpu: "500m"
+                limits:
+                  memory: "1536Mi"
+                  cpu: "1000m"
 
               volumeMounts:
                 - name: output

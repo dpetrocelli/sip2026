@@ -143,14 +143,23 @@ Y el código del scraper tiene que leer un índice (`$JOB_COMPLETION_INDEX`) par
 
 ## Validación de referencia (cátedra)
 
-El test E2E en `k3d` ejecutado por la cátedra:
+Test E2E real ejecutado contra MercadoLibre desde el cluster `k3d-scraper-ref`, con la imagen `ml-scraper:latest` construida desde este Dockerfile (Google Chrome 147 + chromedriver 147 + firefox-esr + geckodriver 0.36):
 
 | Step | Resultado |
 |------|----------:|
 | Cluster `k3d-scraper-ref` creado | ✅ |
-| Imagen stub `ml-scraper:latest` importada | ✅ |
+| Imagen real `ml-scraper:latest` construida e importada | ✅ |
 | `kubectl apply -f hit8/k8s/` | ✅ 5/5 recursos |
-| `Job scraper-once` `Complete 1/1` en 9 s | ✅ |
+| `Job scraper-once` ejecutado con scraping real contra ML | ✅ |
+| 3 productos × 10 resultados scrapeados → JSON en PVC | ✅ |
 | `CronJob scraper-hourly` registrado con schedule `0 * * * *` | ✅ |
-| JSON escrito en PVC (`/app/output/test.json`) | ✅ |
 | Cleanup `kubectl delete -f hit8/k8s/` | ✅ |
+
+### Lecciones aprendidas en la validación
+
+| Síntoma | Causa raíz | Fix aplicado |
+|---|---|---|
+| Pod `OOMKilled` con `exit 137` ni bien arrancaba Chrome | `resources.limits.memory: 512Mi` insuficiente para Chrome headless con 3 productos | Subido a `requests: 768Mi / limits: 1536Mi` |
+| `chrome_crashpad_handler: --database is required` | Bug del paquete `chromium` de Debian trixie con headless | Reemplazado por `google-chrome-stable` desde el repo oficial de Google |
+| `cannot touch '/home/scraper/.local/share/applications/mimeapps.list'` | Usuario `scraper` creado con `--no-create-home` → Chrome no podía inicializar | `useradd --create-home` + `chown -R` del home dir |
+| Filtros `nuevo` / `tienda_oficial` / `mas_relevantes` no aparecen en algunas búsquedas | ML ajusta los filtros del sidebar según la query (no es bug, es comportamiento real del sitio) | El scraper loggea WARNING y continúa — el JSON se escribe igual con todos los resultados sin filtrar |

@@ -1,12 +1,26 @@
 # Devolución — Systeam (Ulises Casal)
 
 **Repo:** [UlisesCasal/SIP-Selenium-Systeam](https://github.com/UlisesCasal/SIP-Selenium-Systeam)
+**Commit evaluado:** [`d6e8592`](https://github.com/UlisesCasal/SIP-Selenium-Systeam/commit/d6e8592e11c1) (2026-04-25 17:21 UTC)
 **Stack:** Node.js 20 + Selenium WebDriver 4.27 + Jest 29 + winston
+**Próxima entrega:** Parte 2 — 02/05/2026. [Consigna](https://dpetrocelli.github.io/sip2026/practica-1-parte-2.html) · [TP 0 Prerrequisitos](https://dpetrocelli.github.io/sip2026/practica-0.html)
 **Score final:** **84 / 100** (auto: 82 · manual: 86.3)
 
 > Ranking: 🥇 1° — la entrega más sólida del curso. Felicitaciones por el nivel.
 
 ---
+
+## Nota desglosada por criterio
+
+| Criterio | Peso | Tu nota | Nota máx |
+|---|---:|---:|---:|
+| Hit #1 — setup, navegación, búsqueda, 5 títulos | 15 % | 15 | 15 |
+| Hit #2 — Browser Factory Chrome+Firefox | 25 % | 25 | 25 |
+| Hit #3 — filtros DOM + screenshot | 30 % | 25 | 30 |
+| Calidad de código (waits, selectores, sin sleep) | 15 % | 12 | 15 |
+| README + informe + video | 10 % | 7 | 10 |
+| Dockerfile (deseable) | 5 % | 0 | 5 |
+| **Total** | **100 %** | **84** | **100** |
 
 ## Cumplimiento punto por punto de la consigna
 
@@ -59,3 +73,25 @@ Selectores: ✅ centralizados con multi-fallback (esto está mejor que la consig
 5. **Compartir código entre HIT1/HIT2/HIT3** — hay duplicación. Considerá `npm workspaces` o un paquete `core/` compartido.
 
 **Bonus**: tu CI tiene componentes que el resto del curso no entregó. Para Parte 2 podés crecerlo con Helm chart (k8s del Hit #8) y Page Object Model formalizado.
+
+---
+
+## Tiempo estimado de arreglos pendientes
+
+| Tarea | Estimado |
+|---|---:|
+| Sacar el `setTimeout(600)` de `FiltersPage.js:274` | 15 min |
+| README raíz con tabla de integrantes | 10 min |
+| Ya tenés CI + tests + multi-browser → Hit #4 (extracción JSON) sobre la base actual | 2-3 h |
+| Dockerfile multi-stage (sumá Chrome+Firefox+drivers) | 1 h |
+| 3 ADRs (`docs/adr/`) | 30 min |
+| Manifests k8s + cluster k3d local + checklist TP 0 | 2 h |
+| Hit #9 bonus (1 ítem cualquiera) | 1-2 h |
+
+**Total Parte 2:** ~7-9 h. Tenés 6 días → margen cómodo.
+
+## Recursos cátedra para Parte 2
+
+- [Implementación de referencia completa](https://github.com/dpetrocelli/sip2026/tree/main/reference) — los 8 hits + ADRs + CI + manifests k8s, listos para inspirarse (no copiar tal cual).
+- [`tooling/compare.py`](https://github.com/dpetrocelli/sip2026/blob/main/reference/tooling/compare.py) — comparador automático que pueden correr contra su repo antes de entregar (`python tooling/compare.py --student . --out mi-eval.md`).
+- [Sección "Auto-verificación previa a la entrega"](https://dpetrocelli.github.io/sip2026/practica-1-parte-2.html#auto-verificacion-previa-a-la-entrega) en la consigna de Parte 2.

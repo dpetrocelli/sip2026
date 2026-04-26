@@ -33,25 +33,56 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     WDM_LOG_LEVEL=0
 
 # Instalar dependencias del sistema:
-#   - chromium + chromium-driver: Chrome headless + chromedriver del sistema
-#   - firefox-esr: Firefox headless
+#   - google-chrome-stable + chromedriver-matching: Chrome estable de Google
+#     (evitamos chromium de Debian trixie por bug de crashpad sin --database, ver
+#     https://bugs.launchpad.net/ubuntu/+source/chromium-browser/+bug/2102771)
+#   - firefox-esr + geckodriver: Firefox headless de Debian
 #   - fonts-liberation + fontconfig: fuentes para renderizado correcto en headless
-#   - ca-certificates: TLS para que Selenium hable con sitios HTTPS
+#   - ca-certificates, curl, gnupg: requeridos para agregar el repo de Google
 #   Limpiamos cache de apt en la misma capa para reducir tamaño de imagen
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        chromium \
-        chromium-driver \
+        ca-certificates \
+        curl \
+        gnupg \
         firefox-esr \
         fonts-liberation \
         fontconfig \
-        ca-certificates \
+    && curl -fsSL https://dl.google.com/linux/linux_signing_key.pub \
+        | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
+    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
+        > /etc/apt/sources.list.d/google-chrome.list \
+    && apt-get update && apt-get install -y --no-install-recommends \
+        google-chrome-stable \
+    && CHROME_VERSION=$(google-chrome --version | awk '{print $3}') \
+    && CHROME_MAJOR=$(echo "$CHROME_VERSION" | cut -d. -f1) \
+    && curl -fsSL "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json" \
+        | python3 -c "import json,sys,urllib.request; d=json.load(sys.stdin); m='${CHROME_MAJOR}'; \
+versions=[v for v in d['versions'] if v['version'].startswith(m+'.')]; \
+v=versions[-1] if versions else None; \
+url=next((c['url'] for c in v['downloads']['chromedriver'] if c['platform']=='linux64'), None) if v else None; \
+print(url or '')" > /tmp/cd_url \
+    && CD_URL=$(cat /tmp/cd_url) \
+    && curl -fsSL "$CD_URL" -o /tmp/chromedriver.zip \
+    && python3 -c "import zipfile; zipfile.ZipFile('/tmp/chromedriver.zip').extractall('/tmp/cd')" \
+    && find /tmp/cd -name chromedriver -type f -exec mv {} /usr/local/bin/chromedriver \; \
+    && chmod 0755 /usr/local/bin/chromedriver \
+    && rm -rf /tmp/cd /tmp/chromedriver.zip /tmp/cd_url \
+    && apt-get install -y --no-install-recommends firefox-esr \
+    && curl -fsSL "https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-linux64.tar.gz" \
+        | tar -xz -C /usr/local/bin/ \
+    && chmod 0755 /usr/local/bin/geckodriver \
+    && apt-get purge -y curl gnupg \
+    && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
     && fc-cache -fv
 
-# Crear usuario non-root "scraper" con uid 1000
-# Se usa addgroup + adduser para compatibilidad con Debian/Ubuntu slim
+# Crear usuario non-root "scraper" con uid 1000 + home dir
+# Chrome/Chromium necesitan $HOME para crashpad y user-data-dir.
+# Sin home dir, fallan con "chrome_crashpad_handler: --database is required".
 RUN groupadd --gid 1000 scraper \
-    && useradd --uid 1000 --gid 1000 --no-create-home --shell /bin/bash scraper
+    && useradd --uid 1000 --gid 1000 --create-home --shell /bin/bash scraper \
+    && mkdir -p /home/scraper/.cache /home/scraper/.config \
+    && chown -R scraper:scraper /home/scraper
 
 # Crear directorios de trabajo con permisos para el usuario scraper
 # /app         → código de la aplicación
