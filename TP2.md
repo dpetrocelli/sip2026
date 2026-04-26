@@ -529,7 +529,7 @@ Activar local: `pip install pre-commit && pre-commit install`. Documenten el com
 4. **Video** mostrando: Hit #4 corriendo (con JSON resultante), pipeline de CI verde con coverage ≥ 70 %, `kubectl apply -f k8s/` con Job completado y CronJob activo.
 5. **Mensaje en el canal Discord de la materia** con el link al repo y al video.
 
-> 📡 **Canal Discord (consultas + entregas):** [pegar invite acá]
+> 📡 **Canal Discord (consultas + entregas):** <https://discord.com/channels/1482135908508500148/1482135909456679139>
 > Antes de pedir ayuda con k3s, revisá el [TP 0](practica-0.html) y la sección de troubleshooting que ya tiene los 4 errores típicos.
 
 ---
