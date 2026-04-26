@@ -18,7 +18,7 @@
 - Mantener un **repositorio público** en GitHub/GitLab/Bitbucket. Cada Hit debe contar con una carpeta y un README.md explicativo.
   - El README.md debe incluir como mínimo: instrucciones para ejecutar el proyecto, requisitos previos (drivers, versiones), y decisiones de diseño tomadas.
 - Compilar la aplicación para ejecución desde la terminal, con recursos preparados para ser desplegados directamente sin necesidad de abrir un IDE.
-- **Empaquetar la solución en un Dockerfile** que permita ejecutar el scraper con `docker run` (deseable desde Parte 1, obligatorio en Parte 2). Esto facilita la evaluación uniforme entre proyectos en distintos lenguajes.
+- **Empaquetar la solución en un `Dockerfile` + `docker-compose.yml` obligatorios desde Parte 1.** El scraper debe poder ejecutarse con un solo comando (`docker compose up scraper` o equivalente), sin que el evaluador tenga que instalar Python/Node/Java ni los drivers de los browsers en su máquina. Esto facilita la evaluación uniforme entre proyectos en distintos lenguajes (Python, Node, Java).
 - Gestionar y mantener **registros de actividades (logs)** en consola y archivo, con niveles INFO/WARN/ERROR.
 - **Seguridad:**
   - No commitear `.env`, credenciales ni secrets al repositorio. Configurar `.gitignore` apropiado desde el inicio.
@@ -319,7 +319,7 @@ cd hit3 && BROWSER=chrome python scraper.py
 | Hit #1 — setup, navegación, búsqueda y lectura de títulos | 15 % |
 | Hit #2 — Browser Factory funcionando contra Chrome **y** Firefox sin cambios de código | 25 % |
 | Hit #3 — filtros aplicados correctamente vía DOM (nuevo + tienda oficial) y screenshot | 30 % |
-| Infra base — calidad de código (waits explícitos, selectores en módulo aparte, sin `time.sleep`) + README/informe/video explicativo + Dockerfile básico (deseable en Parte 1, **obligatorio en Parte 2**) | 30 % |
+| Infra base — calidad de código (waits explícitos, selectores en módulo aparte, sin `time.sleep`) + README/informe/video explicativo + **Dockerfile + docker-compose.yml obligatorios** | 30 % |
 
 ---
 

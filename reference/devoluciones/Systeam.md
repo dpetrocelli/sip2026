@@ -17,7 +17,7 @@
 | Hit #1 — setup, navegación, búsqueda, 5 títulos | 15 % | 15 | 15 |
 | Hit #2 — Browser Factory Chrome+Firefox | 25 % | 25 | 25 |
 | Hit #3 — filtros DOM + screenshot | 30 % | 25 | 30 |
-| Infra base (calidad código + README/informe/video + Dockerfile deseable Parte 1 / obligatorio Parte 2) | 30 % | 19 | 30 |
+| Infra base (calidad código + README/informe/video + Dockerfile + docker-compose obligatorios) | 30 % | 19 | 30 |
 | **Total** | **100 %** | **84** | **100** |
 
 ## Cumplimiento punto por punto de la consigna
@@ -49,8 +49,8 @@ Selectores: ✅ centralizados con multi-fallback (esto está mejor que la consig
 
 🟡 **Falta README raíz** que liste integrantes (lo único que tiene es los READMEs por hit, que están bien). Video y comparativa Chrome vs Firefox — verificar si están en el repo o solo planeados.
 
-### Dockerfile + docker-compose (deseable Parte 1, obligatorio Parte 2)
-❌ **No entregaron Dockerfile**. Pierden los 5 pts de bonus de Parte 1, **pero en Parte 2 es obligatorio**.
+### Dockerfile + docker-compose (obligatorios — no entregados)
+❌ No entregaron Dockerfile ni `docker-compose.yml`. Ambos son obligatorios desde Parte 1 (la consigna: "facilita la evaluación uniforme entre proyectos en distintos lenguajes"). En Parte 2 son bloqueantes para los Hits #7 y #8.
 
 ---
 

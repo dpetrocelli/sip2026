@@ -342,10 +342,13 @@ diseño tomadas.</li>
 <li>Compilar la aplicación para ejecución desde la terminal, con
 recursos preparados para ser desplegados directamente sin necesidad de
 abrir un IDE.</li>
-<li><strong>Empaquetar la solución en un Dockerfile</strong> que permita
-ejecutar el scraper con <code>docker run</code> (deseable desde Parte 1,
-obligatorio en Parte 2). Esto facilita la evaluación uniforme entre
-proyectos en distintos lenguajes.</li>
+<li><strong>Empaquetar la solución en un <code>Dockerfile</code> +
+<code>docker-compose.yml</code> obligatorios desde Parte 1.</strong> El
+scraper debe poder ejecutarse con un solo comando
+(<code>docker compose up scraper</code> o equivalente), sin que el
+evaluador tenga que instalar Python/Node/Java ni los drivers de los
+browsers en su máquina. Esto facilita la evaluación uniforme entre
+proyectos en distintos lenguajes (Python, Node, Java).</li>
 <li>Gestionar y mantener <strong>registros de actividades
 (logs)</strong> en consola y archivo, con niveles INFO/WARN/ERROR.</li>
 <li><strong>Seguridad:</strong>
@@ -753,8 +756,8 @@ oficial) y screenshot</td>
 <tr>
 <td>Infra base — calidad de código (waits explícitos, selectores en
 módulo aparte, sin <code>time.sleep</code>) + README/informe/video
-explicativo + Dockerfile básico (deseable en Parte 1,
-<strong>obligatorio en Parte 2</strong>)</td>
+explicativo + <strong>Dockerfile + docker-compose.yml
+obligatorios</strong></td>
 <td>30 %</td>
 </tr>
 </tbody>

@@ -17,7 +17,7 @@
 | Hit #1 — setup, navegación, búsqueda, 5 títulos | 15 % | 14 | 15 |
 | Hit #2 — Browser Factory (con bug `getoption`) | 25 % | 16 | 25 |
 | Hit #3 — filtros DOM (test débil + solo Chrome) | 30 % | 16 | 30 |
-| Infra base (calidad código + README/informe/video + Dockerfile deseable Parte 1 / obligatorio Parte 2) | 30 % | 16 | 30 |
+| Infra base (calidad código + README/informe/video + Dockerfile + docker-compose obligatorios) | 30 % | 16 | 30 |
 | Bonus `.gitignore` impecable + UA workaround descubierto | +6.7 | +6.7 | — |
 | **Total** | **100 %** | **68.7** | **100** |
 
@@ -65,8 +65,8 @@ def test_filtros_aplicados(driver):
 ### README + informe + video (10%)
 🟠 READMEs por hit están bien, pero **falta README raíz** con integrantes + legajos. Sin video confirmado, sin informe consolidado, sin comparativa Chrome vs Firefox.
 
-### Dockerfile + docker-compose (deseable Parte 1, obligatorio Parte 2)
-❌ No entregaron.
+### Dockerfile + docker-compose (obligatorios — no entregados)
+❌ No entregaron Dockerfile ni `docker-compose.yml`. Ambos son obligatorios desde Parte 1 (la consigna: "facilita la evaluación uniforme entre proyectos en distintos lenguajes"). En Parte 2 son bloqueantes para los Hits #7 y #8.
 
 ### Requisitos generales
 ✅ **`.gitignore` correcto**, sin secrets, sin `__pycache__/` commiteado, sin `.venv` adentro. **Esto es lo más limpio del curso.**
