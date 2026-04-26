@@ -4,7 +4,7 @@
 
 **Requisito obligatorio para entregar la Parte 2 del TP 1 (entrega 02/05/2026)**
 
-> Esta guía es **prerrequisito obligatorio de la Parte 2 del TP 1**. Sin haber completado el TP 0 (cluster k3s/k3d funcional + checklist de validación al final), no se acepta la entrega del Hit #8.
+> Esta guía es **prerrequisito obligatorio de la Parte 2 del TP 1**. Sin haber completado el TP 0 (cluster k3s/k3d funcional + checklist de validación al final), no se acepta la entrega del Hit #7.
 
 ---
 
@@ -54,13 +54,13 @@ El objetivo no es "que el scraper corra en algún lado". Es que empiecen a **pen
 | `ports:` en compose | `Service` (abstracción de red estable sobre pods que pueden morir y revivir) |
 | `docker network` | `Namespace` + políticas de red |
 
-Cuando en el **Hit #8** conviertan el `docker run` del Hit #7 en un `Job` + `CronJob` + `ConfigMap` + `PVC`, **ese ejercicio mental es el verdadero aprendizaje del TP** — más que los YAMLs en sí. Pasar de "tengo un Dockerfile y un compose" a "tengo manifiestos declarativos que cualquier cluster Kubernetes puede ejecutar" es el salto profesional que se les pide.
+Cuando en el **Hit #7** conviertan el `docker run` de la Infra base en un `Job` + `CronJob` + `ConfigMap` + `PVC`, **ese ejercicio mental es el verdadero aprendizaje del TP** — más que los YAMLs en sí. Pasar de "tengo un Dockerfile y un compose" a "tengo manifiestos declarativos que cualquier cluster Kubernetes puede ejecutar" es el salto profesional que se les pide.
 
 ---
 
 ## Requisitos previos
 
-- Tener **Docker** instalado y funcionando (lo necesitan para el Hit #7 igual).
+- Tener **Docker** instalado y funcionando (lo necesitan para la Infra base igual).
   - Verificá con: `docker version` y `docker ps`.
 - Tener **kubectl** instalado (CLI oficial de Kubernetes).
   - macOS: `brew install kubectl`
@@ -203,7 +203,7 @@ k3d cluster delete scraper
 
 ## Camino C — Cargar la imagen vía registry público (recomendado para entrega)
 
-Los Pasos 4 de los Caminos A y B (`k3s ctr import` / `k3d image import`) sirven para **vos en tu máquina**. Pero para que **los profesores puedan correr tu Hit #8 sin tener tu imagen local**, necesitás que la imagen esté en algún lugar público que cualquiera pueda hacer `docker pull`.
+Los Pasos 4 de los Caminos A y B (`k3s ctr import` / `k3d image import`) sirven para **vos en tu máquina**. Pero para que **los profesores puedan correr tu Hit #7 sin tener tu imagen local**, necesitás que la imagen esté en algún lugar público que cualquiera pueda hacer `docker pull`.
 
 Para este TP usamos **GitHub Container Registry** (`ghcr.io`): es gratis para imágenes públicas, **no tiene rate limit de pulls** (al contrario de Docker Hub free tier que limita a 100-200/6h y se siente en CI), y la autenticación reusa el `GITHUB_TOKEN` que ya viene con cualquier repo en GitHub.
 
@@ -232,7 +232,7 @@ docker push ghcr.io/<tu-usuario>/ml-scraper:latest
 #    (las imágenes son privadas por default; sin esto, kubectl no podrá pull desde el cluster)
 ```
 
-En el manifest del Hit #8, cambiás:
+En el manifest del Hit #7, cambiás:
 
 ```yaml
 containers:
@@ -245,7 +245,7 @@ Y eliminás el paso de `k3s ctr import` / `k3d image import` — k8s va a bajar 
 
 ### CI auto-push de la imagen al registry (recomendado)
 
-En lugar de pushear a mano, el workflow del Hit #7 puede empujar la imagen en cada merge a `main`:
+En lugar de pushear a mano, el workflow de la Infra base puede empujar la imagen en cada merge a `main`:
 
 ```yaml
 # .github/workflows/scrape.yml — extracto
@@ -376,7 +376,7 @@ kubectl delete -f nginx-test.yaml
 
 ---
 
-## Conceptos mínimos que vas a usar en el Hit #8
+## Conceptos mínimos que vas a usar en el Hit #7
 
 | Concepto | Para qué sirve |
 |----------|----------------|
@@ -388,7 +388,7 @@ kubectl delete -f nginx-test.yaml
 | **PersistentVolumeClaim (PVC)** | Pedido de almacenamiento persistente — k3s te asigna espacio en disco automático con `local-path` |
 | **Namespace** | Carpeta lógica del cluster — usen `default` o creen `scraper` para aislar |
 
-No hace falta entender todo de Kubernetes. Para el Hit #8 alcanza con saber qué hace cada uno de estos 6.
+No hace falta entender todo de Kubernetes. Para el Hit #7 alcanza con saber qué hace cada uno de estos 6.
 
 ---
 
@@ -444,7 +444,7 @@ k3s idle anda en ~400-500 MB. Si tenés problemas, asegurate de no tener microk8
 | [The Kubernetes Book (3rd ed)](https://www.oreilly.com/library/view/the-kubernetes-book/9781805806639/) | Nigel Poulton, Pushkar Joglekar | O'Reilly · 2024 | El más amigable — primer contacto, lectura de fin de semana |
 | [Kubernetes: Up and Running (3rd ed)](https://www.oreilly.com/library/view/kubernetes-up-and/9781098110192/) | Brendan Burns (co-creador de k8s), Joe Beda, Kelsey Hightower, Lachlan Evenson | O'Reilly · 2022 | Intro canónica — escrita por quienes diseñaron k8s |
 | [Kubernetes in Action (2nd ed)](https://www.manning.com/books/kubernetes-in-action-second-edition) | Marko Lukša, Kevin Conner | Manning · 2026 | El **best of class** para deep-dive. ⭐ Recomendación principal si solo van a leer uno |
-| [Kubernetes Patterns (2nd ed)](https://www.oreilly.com/library/view/kubernetes-patterns-2nd/9781098131678/) | Bilgin Ibryam, Roland Huß | O'Reilly · 2023 | Patterns reutilizables — Cap. 7 (Batch Job), 8 (Periodic Job) son **directamente** lo que van a hacer en el Hit #8 |
+| [Kubernetes Patterns (2nd ed)](https://www.oreilly.com/library/view/kubernetes-patterns-2nd/9781098131678/) | Bilgin Ibryam, Roland Huß | O'Reilly · 2023 | Patterns reutilizables — Cap. 7 (Batch Job), 8 (Periodic Job) son **directamente** lo que van a hacer en el Hit #7 |
 | [Kubernetes Best Practices (2nd ed)](https://www.oreilly.com/library/view/kubernetes-best-practices/9781098142155/) | Brendan Burns et al | O'Reilly · 2024 | Operación en producción: RBAC, observabilidad, GitOps, networking |
 | [Cloud Native Patterns](https://www.manning.com/books/cloud-native-patterns) | Cornelia Davis | Manning · 2019 | Patrones cloud-native independientes de k8s — útil para entender el "por qué" detrás de los manifiestos |
 | [GitOps and Kubernetes](https://www.manning.com/books/gitops-and-kubernetes) | Billy Yuen, Alexander Matyushentsev, Todd Ekenstam, Jesse Suen | Manning · 2021 | Si después quieren hacer GitOps con Argo CD / Flux |
@@ -479,7 +479,7 @@ Los conceptos de Job, CronJob, scheduling, PVC, etc. no salieron de la nada — 
 
 ---
 
-## Validación obligatoria previa al Hit #8
+## Validación obligatoria previa al Hit #7
 
 Para que la entrega de la Parte 2 sea aceptada, tienen que poder responder afirmativamente a las 4 preguntas. **Documenten en el README de la Parte 2 (sección "Prerrequisitos cumplidos") la evidencia de cada checkpoint** (output del comando o screenshot).
 
@@ -488,4 +488,4 @@ Para que la entrega de la Parte 2 sea aceptada, tienen que poder responder afirm
 - [ ] Sé importar una imagen Docker al cluster (`k3s ctr images import` / `k3d image import`).
 - [ ] Entiendo qué es un Pod, un Job, un CronJob, un ConfigMap y un PVC (al menos a nivel "para qué sirve").
 
-Si las 4 son sí, están listos para el Hit #8.
+Si las 4 son sí, están listos para el Hit #7.

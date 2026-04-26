@@ -120,9 +120,13 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     <li><a href="#hit-4" id="toc-hit-4">Hit #4</a></li>
     <li><a href="#hit-5" id="toc-hit-5">Hit #5</a></li>
     <li><a href="#hit-6" id="toc-hit-6">Hit #6</a></li>
-    <li><a href="#hit-7" id="toc-hit-7">Hit #7</a></li>
-    <li><a href="#hit-8--despliegue-en-kubernetes-k3s"
-    id="toc-hit-8--despliegue-en-kubernetes-k3s">Hit #8 — Despliegue en
+    <li><a
+    href="#infra-base-obligatoria--dockerfile--docker-compose--cicd--pre-commit"
+    id="toc-infra-base-obligatoria--dockerfile--docker-compose--cicd--pre-commit">Infra
+    base obligatoria — Dockerfile + docker-compose + CI/CD +
+    pre-commit</a></li>
+    <li><a href="#hit-7--despliegue-en-kubernetes-k3s"
+    id="toc-hit-7--despliegue-en-kubernetes-k3s">Hit #7 — Despliegue en
     Kubernetes (k3s)</a></li>
     </ul></li>
     <li><a href="#material-de-apoyo" id="toc-material-de-apoyo">Material
@@ -134,14 +138,14 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     <li><a href="#plantilla-de-adr-docsadr0000-templatemd"
     id="toc-plantilla-de-adr-docsadr0000-templatemd">Plantilla de ADR
     (<code>docs/adr/0000-template.md</code>)</a></li>
-    <li><a href="#esqueleto-del-dockerfile-multi-stage-hit-7"
-    id="toc-esqueleto-del-dockerfile-multi-stage-hit-7">Esqueleto del
-    Dockerfile multi-stage (Hit #7)</a></li>
+    <li><a href="#esqueleto-del-dockerfile-multi-stage-infra-base"
+    id="toc-esqueleto-del-dockerfile-multi-stage-infra-base">Esqueleto
+    del Dockerfile multi-stage (Infra base)</a></li>
     <li><a
-    href="#esqueleto-del-workflow-de-ci-githubworkflowsscrapeyml-hit-7"
-    id="toc-esqueleto-del-workflow-de-ci-githubworkflowsscrapeyml-hit-7">Esqueleto
-    del workflow de CI (<code>.github/workflows/scrape.yml</code>, Hit
-    #7)</a></li>
+    href="#esqueleto-del-workflow-de-ci-githubworkflowsscrapeyml-infra-base"
+    id="toc-esqueleto-del-workflow-de-ci-githubworkflowsscrapeyml-infra-base">Esqueleto
+    del workflow de CI (<code>.github/workflows/scrape.yml</code>, Infra
+    base)</a></li>
     <li><a href="#esqueleto-de-pre-commit-pre-commit-configyaml"
     id="toc-esqueleto-de-pre-commit-pre-commit-configyaml">Esqueleto de
     pre-commit (<code>.pre-commit-config.yaml</code>)</a></li>
@@ -175,8 +179,8 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     <li><a href="#7-e2e-completo-en-cluster-local"
     id="toc-7-e2e-completo-en-cluster-local">7) E2E completo en cluster
     local</a></li>
-    <li><a href="#hit-9--capacidad-extendida-obligatorio-mínimo-1-de-6"
-    id="toc-hit-9--capacidad-extendida-obligatorio-mínimo-1-de-6">Hit #9
+    <li><a href="#hit-8--capacidad-extendida-obligatorio-mínimo-1-de-6"
+    id="toc-hit-8--capacidad-extendida-obligatorio-mínimo-1-de-6">Hit #8
     — Capacidad extendida (obligatorio, mínimo 1 de 6)</a></li>
     </ul></li>
     <li><a href="#criterios-de-evaluación--parte-2"
@@ -229,9 +233,13 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       <li><a href="#hit-4" id="toc-hit-4">Hit #4</a></li>
       <li><a href="#hit-5" id="toc-hit-5">Hit #5</a></li>
       <li><a href="#hit-6" id="toc-hit-6">Hit #6</a></li>
-      <li><a href="#hit-7" id="toc-hit-7">Hit #7</a></li>
-      <li><a href="#hit-8--despliegue-en-kubernetes-k3s"
-      id="toc-hit-8--despliegue-en-kubernetes-k3s">Hit #8 — Despliegue
+      <li><a
+      href="#infra-base-obligatoria--dockerfile--docker-compose--cicd--pre-commit"
+      id="toc-infra-base-obligatoria--dockerfile--docker-compose--cicd--pre-commit">Infra
+      base obligatoria — Dockerfile + docker-compose + CI/CD +
+      pre-commit</a></li>
+      <li><a href="#hit-7--despliegue-en-kubernetes-k3s"
+      id="toc-hit-7--despliegue-en-kubernetes-k3s">Hit #7 — Despliegue
       en Kubernetes (k3s)</a></li>
       </ul></li>
       <li><a href="#material-de-apoyo"
@@ -243,14 +251,14 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       <li><a href="#plantilla-de-adr-docsadr0000-templatemd"
       id="toc-plantilla-de-adr-docsadr0000-templatemd">Plantilla de ADR
       (<code>docs/adr/0000-template.md</code>)</a></li>
-      <li><a href="#esqueleto-del-dockerfile-multi-stage-hit-7"
-      id="toc-esqueleto-del-dockerfile-multi-stage-hit-7">Esqueleto del
-      Dockerfile multi-stage (Hit #7)</a></li>
+      <li><a href="#esqueleto-del-dockerfile-multi-stage-infra-base"
+      id="toc-esqueleto-del-dockerfile-multi-stage-infra-base">Esqueleto
+      del Dockerfile multi-stage (Infra base)</a></li>
       <li><a
-      href="#esqueleto-del-workflow-de-ci-githubworkflowsscrapeyml-hit-7"
-      id="toc-esqueleto-del-workflow-de-ci-githubworkflowsscrapeyml-hit-7">Esqueleto
-      del workflow de CI (<code>.github/workflows/scrape.yml</code>, Hit
-      #7)</a></li>
+      href="#esqueleto-del-workflow-de-ci-githubworkflowsscrapeyml-infra-base"
+      id="toc-esqueleto-del-workflow-de-ci-githubworkflowsscrapeyml-infra-base">Esqueleto
+      del workflow de CI (<code>.github/workflows/scrape.yml</code>,
+      Infra base)</a></li>
       <li><a href="#esqueleto-de-pre-commit-pre-commit-configyaml"
       id="toc-esqueleto-de-pre-commit-pre-commit-configyaml">Esqueleto
       de pre-commit (<code>.pre-commit-config.yaml</code>)</a></li>
@@ -285,9 +293,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       id="toc-7-e2e-completo-en-cluster-local">7) E2E completo en
       cluster local</a></li>
       <li><a
-      href="#hit-9--capacidad-extendida-obligatorio-mínimo-1-de-6"
-      id="toc-hit-9--capacidad-extendida-obligatorio-mínimo-1-de-6">Hit
-      #9 — Capacidad extendida (obligatorio, mínimo 1 de 6)</a></li>
+      href="#hit-8--capacidad-extendida-obligatorio-mínimo-1-de-6"
+      id="toc-hit-8--capacidad-extendida-obligatorio-mínimo-1-de-6">Hit
+      #8 — Capacidad extendida (obligatorio, mínimo 1 de 6)</a></li>
       </ul></li>
       <li><a href="#criterios-de-evaluación--parte-2"
       id="toc-criterios-de-evaluación--parte-2">Criterios de evaluación
@@ -324,7 +332,7 @@ segunda parte continúa el mismo proyecto y arranca con el Hit #4
 (extracción estructurada a JSON), que es la base sobre la que se
 construye el resto.</li>
 <li>Haber completado la guía del <strong>TP 0 — Prerrequisitos
-(k3s)</strong> antes de empezar el Hit #8. Sin un cluster k3s/k3d
+(k3s)</strong> antes de empezar el Hit #7. Sin un cluster k3s/k3d
 funcional no podés cumplir esa parte.</li>
 </ul>
 <hr />
@@ -520,7 +528,16 @@ cobertura (<code>coverage.py</code> + <code>pytest-cov</code>,
 al pipeline de CI que <strong>falle si la cobertura cae debajo del 70
 %</strong>. Publique el reporte HTML como artifact del workflow.</p>
 <hr />
-<h3 id="hit-7">Hit #7</h3>
+<h3
+id="infra-base-obligatoria--dockerfile--docker-compose--cicd--pre-commit">Infra
+base obligatoria — Dockerfile + docker-compose + CI/CD + pre-commit</h3>
+<blockquote>
+<p>🚧 <strong>Sin esto no se puede evaluar la entrega.</strong> El resto
+de los hits se valida <strong>a través</strong> de esta infra (la
+cátedra corre tu pipeline + tu <code>docker compose up</code> + tu Job
+en k8s para evaluar). Es requisito bloqueante (no suma puntos en la
+rúbrica, pero sin esto la nota es 0).</p>
+</blockquote>
 <p>Construya un <strong>Dockerfile</strong> que empaquete el scraper
 junto con Chrome, Firefox y los drivers, de modo que se pueda ejecutar
 con un único comando:</p>
@@ -563,12 +580,12 @@ mínimo:</p>
 <code>pre-commit install</code> (Python/Node) o el equivalente del
 stack.</p>
 <hr />
-<h3 id="hit-8--despliegue-en-kubernetes-k3s">Hit #8 — Despliegue en
+<h3 id="hit-7--despliegue-en-kubernetes-k3s">Hit #7 — Despliegue en
 Kubernetes (k3s)</h3>
 <p><strong>Pre-requisito:</strong> haber completado el <a
 href="practica-0.html">TP 0</a> y tener un cluster k3s o k3d
 funcional.</p>
-<p>Empaquete el scraper construido en el Hit #7 como una carga de
+<p>Empaquete el scraper construido en la Infra base como una carga de
 trabajo de Kubernetes. El objetivo es ir más allá de “corre en mi
 máquina con Docker” y demostrar que la solución se puede desplegar en un
 orquestador.</p>
@@ -679,7 +696,7 @@ class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="
 <span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">claimName</span><span class="kw">:</span><span class="at"> scraper-output</span></span></code></pre></div>
 <h4 id="recetario-de-ejecución">Recetario de ejecución</h4>
 <div class="sourceCode" id="cb4"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Construir la imagen Docker (igual que en Hit #7)</span></span>
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Construir la imagen Docker (igual que en Infra base)</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">-t</span> ml-scraper:latest .</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Cargar la imagen en el cluster</span></span>
@@ -708,7 +725,7 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="
 <span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. Cleanup</span></span>
 <span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> delete <span class="at">-f</span> k8s/</span></code></pre></div>
-<h4 id="entregables-del-hit-8">Entregables del Hit #8</h4>
+<h4 id="entregables-del-hit-7">Entregables del Hit #7</h4>
 <ul>
 <li>Carpeta <code>k8s/</code> con los 4 YAMLs.</li>
 <li>Sección en el README explicando: cómo levantar el cluster
@@ -844,8 +861,8 @@ class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb6-1"><
 <span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>W3C WebDriver spec: https://www.w3.org/TR/webdriver2/</span>
 <span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Selenium docs: https://www.selenium.dev/documentation/</span></code></pre></div>
-<h3 id="esqueleto-del-dockerfile-multi-stage-hit-7">Esqueleto del
-Dockerfile multi-stage (Hit #7)</h3>
+<h3 id="esqueleto-del-dockerfile-multi-stage-infra-base">Esqueleto del
+Dockerfile multi-stage (Infra base)</h3>
 <p>Esto es un punto de partida. Adapten al lenguaje. La idea es
 <strong>multi-stage</strong> para que la imagen final sea lo más chica
 posible (no necesitan compiladores ni headers en runtime).</p>
@@ -947,9 +964,9 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a hr
 pipeline de CI funciona pero los JSON salen vacíos.</p>
 </blockquote>
 <h3
-id="esqueleto-del-workflow-de-ci-githubworkflowsscrapeyml-hit-7">Esqueleto
-del workflow de CI (<code>.github/workflows/scrape.yml</code>, Hit
-#7)</h3>
+id="esqueleto-del-workflow-de-ci-githubworkflowsscrapeyml-infra-base">Esqueleto
+del workflow de CI (<code>.github/workflows/scrape.yml</code>, Infra
+base)</h3>
 <div class="sourceCode" id="cb9"><pre
 class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> Scraper CI</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -1048,7 +1065,7 @@ Documenten el comando en el README.</p>
 <li>Sección “Prerrequisitos cumplidos” mostrando evidencia del checklist
 del <a href="practica-0.html">TP 0</a>.</li>
 <li>Cómo correr Parte 1 + Parte 2 (Docker, k3s/k3d).</li>
-<li>Comandos exactos para reproducir el demo del Hit #8.</li>
+<li>Comandos exactos para reproducir el demo del Hit #7.</li>
 </ul></li>
 <li><strong>Carpeta <code>docs/adr/</code></strong> con mínimo 4 ADRs (2
 elegidos del menú + 2 de su elección).</li>
@@ -1136,7 +1153,7 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href=
 <p>Si el Job termina en <code>Complete</code> y los logs muestran los 3
 JSON generados, están listos para entregar.</p>
 <hr />
-<h3 id="hit-9--capacidad-extendida-obligatorio-mínimo-1-de-6">Hit #9 —
+<h3 id="hit-8--capacidad-extendida-obligatorio-mínimo-1-de-6">Hit #8 —
 Capacidad extendida (obligatorio, mínimo 1 de 6)</h3>
 <p>Extienda el scraper con <strong>al menos una</strong> de las
 siguientes capacidades. Hacer más de una suma puntos extra (hasta 2
@@ -1149,7 +1166,7 @@ calcular precio mínimo, máximo, mediana y desvío estándar entre los
 resultados extraídos. Imprimir tabla resumen.</li>
 <li><strong>Histórico con PostgreSQL</strong>: guardar los resultados en
 una instancia PostgreSQL con timestamp, para detectar cambios de precio
-entre corridas del CronJob (Hit #8). Implementación esperada: deployment
+entre corridas del CronJob (Hit #7). Implementación esperada: deployment
 de Postgres en el mismo cluster k3s (StatefulSet + PVC + Service),
 credenciales via <code>Secret</code>, schema migrations (Alembic /
 Flyway / Liquibase / SQL files versionados). Tabla mínima:
@@ -1160,7 +1177,7 @@ GitHub Pages publicada por el pipeline) que muestre los resultados de la
 <li><strong>Page Object Model</strong>: refactorizar el scraper para
 separar el código de navegación (<code>SearchPage</code>,
 <code>ResultsPage</code>) del código de extracción y de los tests.</li>
-<li><strong>Helm Chart</strong>: empaquetar los manifiestos del Hit #8
+<li><strong>Helm Chart</strong>: empaquetar los manifiestos del Hit #7
 como un chart con <code>values.yaml</code> parametrizable.</li>
 </ol>
 <hr />
@@ -1176,7 +1193,7 @@ es 0.</p>
 <li><strong>TP 0 cumplido</strong> — checklist de prerrequisitos k3s con
 evidencia en el README (<code>kubectl get nodes</code> Ready, nginx-test
 corrió, sé importar imágenes al cluster).</li>
-<li><strong>Hit #7 — Infra base</strong> completa y funcional:
+<li><strong>Infra base</strong> completa y funcional:
 <ul>
 <li><code>Dockerfile</code> multi-stage con versiones pineadas (no
 <code>:latest</code>).</li>
@@ -1219,12 +1236,12 @@ validada en CI</td>
 <td>15 %</td>
 </tr>
 <tr>
-<td><strong>Hit #8</strong> — <code>Job</code> + <code>CronJob</code> +
+<td><strong>Hit #7</strong> — <code>Job</code> + <code>CronJob</code> +
 <code>ConfigMap</code> + <code>PVC</code> corriendo en k3s/k3d</td>
 <td>20 %</td>
 </tr>
 <tr>
-<td><strong>Hit #9</strong> — al menos 1 capacidad extendida
+<td><strong>Hit #8</strong> — al menos 1 capacidad extendida
 implementada (paginación, stats, PostgreSQL, HTML report, POM o
 Helm)</td>
 <td>15 %</td>
