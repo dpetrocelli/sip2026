@@ -672,16 +672,14 @@ Total: 100 puntos (Hits #4–#9, todos obligatorios). Implementar más de 1 íte
 
 | Criterio | Peso |
 |----------|------|
-| Hit #4 — extracción estructurada a JSON de los 3 productos con todos los campos | 18 % |
-| Hit #5 — manejo robusto de errores (selectores faltantes, timeouts, retries con backoff) | 9 % |
-| Hit #6 — tests automatizados + cobertura ≥ 70 % validada en CI | 12 % |
-| Hit #7 — Dockerfile + `docker-compose.yml` funcionales con Chrome + Firefox + drivers (versiones pineadas) | 9 % |
-| Hit #7 — pipeline CI/CD con matriz de browsers, artifacts y gate de cobertura | 10 % |
-| Hit #7 — pre-commit hooks (gitleaks + linter + formatter) configurados y documentados | 4 % |
-| Hit #8 — `Job` + `CronJob` + `ConfigMap` + `PVC` corriendo en k3s/k3d | 13 % |
-| ADRs (mínimo 4 en `docs/adr/` — 2 del menú propuesto + 2 de elección propia) | 5 % |
-| Modo headless configurable y operativo + checklist de auto-verificación cumplido | 10 % |
-| **Hit #9 — al menos 1 capacidad extendida implementada** (paginación, stats, PostgreSQL, HTML report, POM o Helm) | **10 %** |
+| **Hit #4** — extracción estructurada a JSON de los 3 productos con todos los campos | 20 % |
+| **Hit #5** — manejo robusto de errores (selectores faltantes, timeouts, retries con backoff) | 10 % |
+| **Hit #6** — tests automatizados + cobertura ≥ 70 % validada en CI | 10 % |
+| **Hit #7** — Dockerfile + `docker-compose.yml` (con versiones pineadas) + pipeline CI/CD con matriz de browsers, artifacts y gate de cobertura + pre-commit hooks (gitleaks + linter + formatter) | 25 % |
+| **Hit #8** — `Job` + `CronJob` + `ConfigMap` + `PVC` corriendo en k3s/k3d | 15 % |
+| **Hit #9** — al menos 1 capacidad extendida implementada (paginación, stats, PostgreSQL, HTML report, POM o Helm) | 10 % |
+| **ADRs** (mínimo 4 en `docs/adr/` — 2 del menú propuesto + 2 de elección propia) | 5 % |
+| **Modo headless** configurable y operativo + checklist de auto-verificación cumplido | 5 % |
 | _Bonus opcional: implementar un 2º ítem del Hit #9_ | _+5 %_ |
 
 ---
