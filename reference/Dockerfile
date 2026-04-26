@@ -14,7 +14,7 @@
 # =============================================================================
 # Stage base: Python 3.13-slim + Chromium + Firefox + usuario non-root
 # =============================================================================
-FROM python:3.13-slim AS base
+FROM python:3.13-slim-trixie AS base
 
 # Metadatos de la imagen
 LABEL maintainer="SIP 2026" \

@@ -175,8 +175,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     <li><a href="#7-e2e-completo-en-cluster-local"
     id="toc-7-e2e-completo-en-cluster-local">7) E2E completo en cluster
     local</a></li>
-    <li><a href="#hit-9-bonus" id="toc-hit-9-bonus">Hit #9
-    (Bonus)</a></li>
+    <li><a href="#hit-9--capacidad-extendida-obligatorio-mínimo-1-de-6"
+    id="toc-hit-9--capacidad-extendida-obligatorio-mínimo-1-de-6">Hit #9
+    — Capacidad extendida (obligatorio, mínimo 1 de 6)</a></li>
     </ul></li>
     <li><a href="#criterios-de-evaluación--parte-2"
     id="toc-criterios-de-evaluación--parte-2">Criterios de evaluación —
@@ -275,8 +276,10 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       <li><a href="#7-e2e-completo-en-cluster-local"
       id="toc-7-e2e-completo-en-cluster-local">7) E2E completo en
       cluster local</a></li>
-      <li><a href="#hit-9-bonus" id="toc-hit-9-bonus">Hit #9
-      (Bonus)</a></li>
+      <li><a
+      href="#hit-9--capacidad-extendida-obligatorio-mínimo-1-de-6"
+      id="toc-hit-9--capacidad-extendida-obligatorio-mínimo-1-de-6">Hit
+      #9 — Capacidad extendida (obligatorio, mínimo 1 de 6)</a></li>
       </ul></li>
       <li><a href="#criterios-de-evaluación--parte-2"
       id="toc-criterios-de-evaluación--parte-2">Criterios de evaluación
@@ -830,9 +833,20 @@ Dockerfile multi-stage (Hit #7)</h3>
 <p>Esto es un punto de partida. Adapten al lenguaje. La idea es
 <strong>multi-stage</strong> para que la imagen final sea lo más chica
 posible (no necesitan compiladores ni headers en runtime).</p>
+<blockquote>
+<p><strong>🔒 Pin de versiones obligatorio.</strong> Nunca usen
+<code>:latest</code> en una imagen base — cada <code>docker build</code>
+puede traer bytes distintos y rompe la reproducibilidad. Mínimo
+aceptable: pin a <code>MAJOR.MINOR-&lt;distro&gt;</code> (ej:
+<code>python:3.13-slim-trixie</code>). Mejor: pin a
+<code>MAJOR.MINOR.PATCH</code>. Production-grade: pin por digest sha256
+(<code>@sha256:...</code>). En 2026 <strong>usen las versiones LTS más
+nuevas</strong>: Python 3.13, Node 24 (LTS Oct 2025), Java 25 (LTS Sept
+2025).</p>
+</blockquote>
 <div class="sourceCode" id="cb7"><pre
 class="sourceCode dockerfile"><code class="sourceCode dockerfile"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ============ Stage 1: builder (deps + compile) ============</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> python:3.13-slim <span class="kw">AS</span> builder</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> python:3.13-slim-trixie <span class="kw">AS</span> builder</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WORKDIR</span> /app</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># System deps para compilar wheels si hace falta</span></span>
@@ -844,43 +858,61 @@ class="sourceCode dockerfile"><code class="sourceCode dockerfile"><span id="cb7-
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">pip</span> install <span class="at">--user</span> <span class="at">--no-cache-dir</span> <span class="at">-r</span> requirements.txt</span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ============ Stage 2: runtime (browsers + app) ============</span></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> python:3.13-slim <span class="kw">AS</span> runtime</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> python:3.13-slim-trixie <span class="kw">AS</span> runtime</span>
 <span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="kw">WORKDIR</span> /app</span>
 <span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Instalar Chrome, Firefox y deps mínimas</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">apt-get</span> update <span class="kw">&amp;&amp;</span> <span class="ex">apt-get</span> install <span class="at">-y</span> <span class="at">--no-install-recommends</span> <span class="dt">\</span></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    chromium <span class="dt">\</span></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    chromium-driver <span class="dt">\</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    firefox-esr <span class="dt">\</span></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    fonts-liberation <span class="dt">\</span></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&amp;&amp;</span> <span class="fu">rm</span> <span class="at">-rf</span> /var/lib/apt/lists/<span class="pp">*</span></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Copiar deps de Python desde el builder</span></span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> <span class="op">--from=builder</span> /root/.local /root/.local</span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="kw">ENV</span> PATH=/root/.local/bin:$PATH</span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Usuario no-root (mejor práctica)</span></span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">useradd</span> <span class="at">-m</span> <span class="at">-u</span> 1000 scraper</span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="kw">USER</span> scraper</span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> <span class="op">--chown=scraper:scraper</span> . .</span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Healthcheck — opcional pero recomendado</span></span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="kw">HEALTHCHECK</span> <span class="op">--interval=30s</span> <span class="op">--timeout=5s</span> \</span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>  <span class="kw">CMD</span> <span class="ex">python</span> <span class="at">-c</span> <span class="st">&quot;import selenium; print(&#39;ok&#39;)&quot;</span> <span class="kw">||</span> <span class="bu">exit</span> 1</span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="kw">ENTRYPOINT</span> [<span class="st">&quot;python&quot;</span>, <span class="st">&quot;scraper.py&quot;</span>]</span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="kw">CMD</span> [<span class="st">&quot;--browser&quot;</span>, <span class="st">&quot;chrome&quot;</span>]</span></code></pre></div>
-<p><strong>Equivalentes para otros stacks:</strong></p>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Instalar Google Chrome stable + Firefox + deps mínimas</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Nota: NO uses `chromium` de Debian trixie (bug de crashpad en headless).</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Usá google-chrome-stable del repo oficial.</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">apt-get</span> update <span class="kw">&amp;&amp;</span> <span class="ex">apt-get</span> install <span class="at">-y</span> <span class="at">--no-install-recommends</span> <span class="dt">\</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    ca-certificates curl gnupg <span class="dt">\</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    firefox-esr <span class="dt">\</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    fonts-liberation <span class="dt">\</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&amp;&amp;</span> <span class="ex">curl</span> <span class="at">-fsSL</span> https://dl.google.com/linux/linux_signing_key.pub <span class="dt">\</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>       <span class="kw">|</span> <span class="ex">gpg</span> <span class="at">--dearmor</span> <span class="at">-o</span> /usr/share/keyrings/google-chrome.gpg <span class="dt">\</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> <span class="st">&quot;deb [signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main&quot;</span> <span class="dt">\</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>       <span class="op">&gt;</span> /etc/apt/sources.list.d/google-chrome.list <span class="dt">\</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&amp;&amp;</span> <span class="ex">apt-get</span> update <span class="kw">&amp;&amp;</span> <span class="ex">apt-get</span> install <span class="at">-y</span> <span class="at">--no-install-recommends</span> <span class="dt">\</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>       google-chrome-stable <span class="dt">\</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&amp;&amp;</span> <span class="ex">apt-get</span> purge <span class="at">-y</span> curl gnupg <span class="dt">\</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&amp;&amp;</span> <span class="ex">apt-get</span> autoremove <span class="at">-y</span> <span class="dt">\</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&amp;&amp;</span> <span class="fu">rm</span> <span class="at">-rf</span> /var/lib/apt/lists/<span class="pp">*</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Copiar deps de Python desde el builder</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> <span class="op">--from=builder</span> /root/.local /root/.local</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="kw">ENV</span> PATH=/root/.local/bin:$PATH</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Usuario no-root con HOME (Chrome necesita ~/.local para crashpad)</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">useradd</span> <span class="at">--create-home</span> <span class="at">--uid</span> 1000 scraper</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="kw">USER</span> scraper</span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> <span class="op">--chown=scraper:scraper</span> . .</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Healthcheck — opcional pero recomendado</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="kw">HEALTHCHECK</span> <span class="op">--interval=30s</span> <span class="op">--timeout=5s</span> \</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>  <span class="kw">CMD</span> <span class="ex">python</span> <span class="at">-c</span> <span class="st">&quot;import selenium; print(&#39;ok&#39;)&quot;</span> <span class="kw">||</span> <span class="bu">exit</span> 1</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a><span class="kw">ENTRYPOINT</span> [<span class="st">&quot;python&quot;</span>, <span class="st">&quot;scraper.py&quot;</span>]</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="kw">CMD</span> [<span class="st">&quot;--browser&quot;</span>, <span class="st">&quot;chrome&quot;</span>]</span></code></pre></div>
+<p><strong>Equivalentes para otros stacks</strong> (pinear MAJOR.MINOR +
+distro como mínimo, usar versiones LTS más nuevas de 2026):</p>
 <ul>
-<li><strong>Node</strong>: <code>FROM node:20-slim AS builder</code> →
-<code>npm ci --only=production</code> → stage runtime con
-<code>node:20-slim</code> + browsers, <code>USER node</code></li>
-<li><strong>Java</strong>:
-<code>FROM maven:3.9-eclipse-temurin-17 AS builder</code> →
-<code>mvn -B package -DskipTests</code> → stage runtime con
-<code>eclipse-temurin:17-jre</code> + browsers, copiar
-<code>.jar</code></li>
+<li><strong>Node 24 LTS (Active LTS desde Oct 2025)</strong>:
+<ul>
+<li>Builder: <code>FROM node:24-trixie-slim AS builder</code> →
+<code>npm ci --omit=dev</code></li>
+<li>Runtime: <code>FROM node:24-trixie-slim AS runtime</code> + browsers
+(mismo bloque de Chrome de arriba) + <code>USER node</code></li>
+</ul></li>
+<li><strong>Java 25 LTS (LTS desde Sept 2025)</strong>:
+<ul>
+<li>Builder:
+<code>FROM maven:3.9-eclipse-temurin-25-noble AS builder</code> →
+<code>mvn -B package -DskipTests</code></li>
+<li>Runtime: <code>FROM eclipse-temurin:25-jre-noble AS runtime</code> +
+browsers + copiar <code>.jar</code> desde builder +
+<code>USER 1000</code></li>
+</ul></li>
 </ul>
 <blockquote>
 <p><strong>⚠️ User-Agent custom obligatorio en headless.</strong>
@@ -1088,18 +1120,24 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href=
 <p>Si el Job termina en <code>Complete</code> y los logs muestran los 3
 JSON generados, están listos para entregar.</p>
 <hr />
-<h3 id="hit-9-bonus">Hit #9 (Bonus)</h3>
-<p>Extienda el scraper con cualquiera (o varias) de las siguientes
-capacidades:</p>
+<h3 id="hit-9--capacidad-extendida-obligatorio-mínimo-1-de-6">Hit #9 —
+Capacidad extendida (obligatorio, mínimo 1 de 6)</h3>
+<p>Extienda el scraper con <strong>al menos una</strong> de las
+siguientes capacidades. Hacer más de una suma puntos extra (hasta 2
+ítems sumando), pero la entrega NO se acepta sin al menos 1.</p>
 <ol type="1">
 <li><strong>Paginación</strong>: traer los primeros 30 resultados en
 lugar de 10, navegando hasta 3 páginas.</li>
 <li><strong>Comparación de precios</strong>: para cada producto,
 calcular precio mínimo, máximo, mediana y desvío estándar entre los
 resultados extraídos. Imprimir tabla resumen.</li>
-<li><strong>Histórico con SQLite</strong>: guardar los resultados en una
-base liviana con timestamp, para detectar cambios de precio entre
-corridas del CronJob (Hit #8).</li>
+<li><strong>Histórico con PostgreSQL</strong>: guardar los resultados en
+una instancia PostgreSQL con timestamp, para detectar cambios de precio
+entre corridas del CronJob (Hit #8). Implementación esperada: deployment
+de Postgres en el mismo cluster k3s (StatefulSet + PVC + Service),
+credenciales via <code>Secret</code>, schema migrations (Alembic /
+Flyway / Liquibase / SQL files versionados). Tabla mínima:
+<code>(producto, titulo, precio, link, tienda_oficial, scraped_at)</code>.</li>
 <li><strong>Reporte HTML</strong>: generar una página estática (con
 GitHub Pages publicada por el pipeline) que muestre los resultados de la
 última corrida en una tabla navegable.</li>
@@ -1112,8 +1150,9 @@ como un chart con <code>values.yaml</code> parametrizable.</li>
 <hr />
 <h2 id="criterios-de-evaluación--parte-2">Criterios de evaluación —
 Parte 2</h2>
-<p>Total: 100 puntos (Hits #4–#8 + extras obligatorios). El Hit #9 es
-<strong>bonus</strong> y suma hasta 10 puntos extra sobre el total.</p>
+<p>Total: 100 puntos (Hits #4–#9, todos obligatorios). Implementar más
+de 1 ítem del Hit #9 puede sumar hasta +5 puntos extra sobre el
+total.</p>
 <table>
 <thead>
 <tr>
@@ -1125,36 +1164,36 @@ Parte 2</h2>
 <tr>
 <td>Hit #4 — extracción estructurada a JSON de los 3 productos con todos
 los campos</td>
-<td>20 %</td>
+<td>18 %</td>
 </tr>
 <tr>
 <td>Hit #5 — manejo robusto de errores (selectores faltantes, timeouts,
 retries con backoff)</td>
-<td>10 %</td>
+<td>9 %</td>
 </tr>
 <tr>
 <td>Hit #6 — tests automatizados + cobertura ≥ 70 % validada en CI</td>
-<td>13 %</td>
+<td>12 %</td>
 </tr>
 <tr>
 <td>Hit #7 — Dockerfile + <code>docker-compose.yml</code> funcionales
-con Chrome + Firefox + drivers</td>
-<td>10 %</td>
+con Chrome + Firefox + drivers (versiones pineadas)</td>
+<td>9 %</td>
 </tr>
 <tr>
 <td>Hit #7 — pipeline CI/CD con matriz de browsers, artifacts y gate de
 cobertura</td>
-<td>12 %</td>
+<td>10 %</td>
 </tr>
 <tr>
 <td>Hit #7 — pre-commit hooks (gitleaks + linter + formatter)
 configurados y documentados</td>
-<td>5 %</td>
+<td>4 %</td>
 </tr>
 <tr>
 <td>Hit #8 — <code>Job</code> + <code>CronJob</code> +
 <code>ConfigMap</code> + <code>PVC</code> corriendo en k3s/k3d</td>
-<td>15 %</td>
+<td>13 %</td>
 </tr>
 <tr>
 <td>ADRs (mínimo 4 en <code>docs/adr/</code> — 2 del menú propuesto + 2
@@ -1167,9 +1206,14 @@ auto-verificación cumplido</td>
 <td>10 %</td>
 </tr>
 <tr>
-<td><strong>Hit #9 (bonus, opcional)</strong> — al menos uno de los 6
-ítems del Hit #9</td>
-<td><strong>+10 %</strong></td>
+<td><strong>Hit #9 — al menos 1 capacidad extendida
+implementada</strong> (paginación, stats, PostgreSQL, HTML report, POM o
+Helm)</td>
+<td><strong>10 %</strong></td>
+</tr>
+<tr>
+<td><em>Bonus opcional: implementar un 2º ítem del Hit #9</em></td>
+<td><em>+5 %</em></td>
 </tr>
 </tbody>
 </table>
