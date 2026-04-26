@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <meta name="generator" content="pandoc + UNLu/DCB template">
+  <title>Implementación de referencia — Hit #7 — Dockerfile multi-stage
++ docker-compose + CI/CD — UNLu DCB</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+
+<header class="unlu-header">
+  <div class="brand">
+    <img src="assets/unlu_escudo.png" alt="Universidad Nacional de Luján" class="logo unlu">
+    <div class="brand-text">
+      <div class="institution">Universidad Nacional de Luján</div>
+      <div class="department">Departamento de Ciencias Básicas</div>
+    </div>
+    <img src="assets/logo_dcb.png" alt="Departamento de Ciencias Básicas" class="logo dcb">
+  </div>
+  <div class="course-bar">
+    <span class="course">Seminario de Integración Profesional</span>
+    <span class="year">2026</span>
+    <span class="instructor">Dr. David Petrocelli</span>
+  </div>
+</header>
+
+<button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
+
+<div class="layout">
+  <aside class="toc-sidebar" id="toc-sidebar">
+    <div class="toc-header">
+      <div class="toc-title">Contenidos</div>
+      <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
+    </div>
+    <ul>
+    <li><a href="#hit-7--dockerfile-multi-stage--docker-compose--cicd"
+    id="toc-hit-7--dockerfile-multi-stage--docker-compose--cicd">Hit #7
+    — Dockerfile multi-stage + docker-compose + CI/CD</a>
+    <ul>
+    <li><a href="#artefactos" id="toc-artefactos">Artefactos</a></li>
+    <li><a href="#construcción-de-imágenes"
+    id="toc-construcción-de-imágenes">Construcción de imágenes</a>
+    <ul>
+    <li><a href="#tamaños-de-imagen-referencia-última-corrida"
+    id="toc-tamaños-de-imagen-referencia-última-corrida">Tamaños de
+    imagen (referencia última corrida)</a></li>
+    </ul></li>
+    <li><a href="#ejecución-con-docker"
+    id="toc-ejecución-con-docker">Ejecución con Docker</a></li>
+    <li><a href="#ejecución-con-docker-compose"
+    id="toc-ejecución-con-docker-compose">Ejecución con
+    docker-compose</a></li>
+    <li><a href="#pre-commit-hooks-corren-antes-de-cada-commit-local"
+    id="toc-pre-commit-hooks-corren-antes-de-cada-commit-local">Pre-commit
+    hooks (corren ANTES de cada commit local)</a></li>
+    <li><a href="#pipeline-de-ci-githubworkflowsscrapeyml"
+    id="toc-pipeline-de-ci-githubworkflowsscrapeyml">Pipeline de CI
+    (<code>.github/workflows/scrape.yml</code>)</a></li>
+    <li><a href="#conexión-con-hit-8-kubernetes"
+    id="toc-conexión-con-hit-8-kubernetes">Conexión con Hit #8
+    (Kubernetes)</a></li>
+    </ul></li>
+    </ul>
+    <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
+      <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <nav class="page-nav-top">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+      <span class="banner-pill">REF · HIT 7</span>
+    </nav>
+
+    <details class="toc-inline" open>
+      <summary>📑 Índice del documento</summary>
+      <ul>
+      <li><a href="#hit-7--dockerfile-multi-stage--docker-compose--cicd"
+      id="toc-hit-7--dockerfile-multi-stage--docker-compose--cicd">Hit
+      #7 — Dockerfile multi-stage + docker-compose + CI/CD</a>
+      <ul>
+      <li><a href="#artefactos" id="toc-artefactos">Artefactos</a></li>
+      <li><a href="#construcción-de-imágenes"
+      id="toc-construcción-de-imágenes">Construcción de imágenes</a>
+      <ul>
+      <li><a href="#tamaños-de-imagen-referencia-última-corrida"
+      id="toc-tamaños-de-imagen-referencia-última-corrida">Tamaños de
+      imagen (referencia última corrida)</a></li>
+      </ul></li>
+      <li><a href="#ejecución-con-docker"
+      id="toc-ejecución-con-docker">Ejecución con Docker</a></li>
+      <li><a href="#ejecución-con-docker-compose"
+      id="toc-ejecución-con-docker-compose">Ejecución con
+      docker-compose</a></li>
+      <li><a href="#pre-commit-hooks-corren-antes-de-cada-commit-local"
+      id="toc-pre-commit-hooks-corren-antes-de-cada-commit-local">Pre-commit
+      hooks (corren ANTES de cada commit local)</a></li>
+      <li><a href="#pipeline-de-ci-githubworkflowsscrapeyml"
+      id="toc-pipeline-de-ci-githubworkflowsscrapeyml">Pipeline de CI
+      (<code>.github/workflows/scrape.yml</code>)</a></li>
+      <li><a href="#conexión-con-hit-8-kubernetes"
+      id="toc-conexión-con-hit-8-kubernetes">Conexión con Hit #8
+      (Kubernetes)</a></li>
+      </ul></li>
+      </ul>
+      <div class="toc-controls">
+        <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
+        <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
+      </div>
+    </details>
+
+<h1 id="hit-7--dockerfile-multi-stage--docker-compose--cicd">Hit #7 —
+Dockerfile multi-stage + docker-compose + CI/CD</h1>
+<p>Empaquetado del scraper como imagen Docker (multi-stage por hit),
+orquestación con <code>docker-compose</code>, y pipeline de CI con
+matriz Chrome/Firefox + gate de cobertura + pre-commit hooks.</p>
+<h2 id="artefactos">Artefactos</h2>
+<table>
+<thead>
+<tr>
+<th>Archivo</th>
+<th>Qué hace</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../Dockerfile"><code>../Dockerfile</code></a></td>
+<td>Multi-stage. Targets: <code>base</code> + <code>hit1</code>,
+<code>hit2</code>, <code>hit3</code>, <code>hit4</code>,
+<code>hit5</code>. Default: <code>hit5</code></td>
+</tr>
+<tr>
+<td><a
+href="../docker-compose.yml"><code>../docker-compose.yml</code></a></td>
+<td>5 servicios (uno por hit) + <code>dev</code> (mount local para hot
+reload) + <code>lint</code> (ruff check)</td>
+</tr>
+<tr>
+<td><a href="../.dockerignore"><code>../.dockerignore</code></a></td>
+<td>Excluye <code>.git/</code>, <code>__pycache__/</code>,
+<code>output/</code>, <code>logs/</code>, <code>.venv/</code>, etc.</td>
+</tr>
+<tr>
+<td><a
+href="../.github/workflows/scrape.yml"><code>../.github/workflows/scrape.yml</code></a></td>
+<td>Pipeline GitHub Actions con matriz + gitleaks + coverage + dry-run
+k8s</td>
+</tr>
+<tr>
+<td><a
+href="../.pre-commit-config.yaml"><code>../.pre-commit-config.yaml</code></a></td>
+<td>Hooks locales: gitleaks + ruff + checks varios</td>
+</tr>
+</tbody>
+</table>
+<h2 id="construcción-de-imágenes">Construcción de imágenes</h2>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imagen del Hit 5 (default)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">-t</span> ml-scraper:hit5 .</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Imagen de un hit específico</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">--target</span> hit3 <span class="at">-t</span> ml-scraper:hit3 .</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Todas a la vez via compose</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose build</span></code></pre></div>
+<h3 id="tamaños-de-imagen-referencia-última-corrida">Tamaños de imagen
+(referencia última corrida)</h3>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th style="text-align: right;">Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ml-scraper:hit1</code></td>
+<td style="text-align: right;">1.62 GB</td>
+</tr>
+<tr>
+<td><code>ml-scraper:hit5</code></td>
+<td style="text-align: right;">1.62 GB</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Nota</strong>: el peso lo dominan Chromium (~250 MB) +
+Firefox (~130 MB) + sus drivers + fonts. Bajar de 1 GB requiere usar
+<strong>una sola imagen por browser</strong> (variantes
+<code>hit5-chrome</code> y <code>hit5-firefox</code> con un solo motor
+cada una), o usar imágenes oficiales
+<code>selenium/standalone-chrome</code> que vienen pre-armadas. Para
+Parte 2 dejamos la imagen “todo en uno” porque simplifica el deploy en
+k3s (Hit #8) — un solo <code>imagePullPolicy: IfNotPresent</code>, una
+sola línea de import en el cluster.</p>
+</blockquote>
+<h2 id="ejecución-con-docker">Ejecución con Docker</h2>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hit 5 directo</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="dt">\</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-v</span> <span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span>/output:/app/output <span class="dt">\</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-v</span> <span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span>/screenshots:/app/screenshots <span class="dt">\</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">-e</span> BROWSER=chrome <span class="dt">\</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">-e</span> HEADLESS=true <span class="dt">\</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  ml-scraper:hit5</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Sobreescribir productos por CLI</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-v</span> <span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span>/output:/app/output ml-scraper:hit5 <span class="dt">\</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--browser</span> firefox <span class="at">--products</span> <span class="st">&quot;iPhone 16 Pro Max&quot;</span> <span class="at">--limit</span> 5</span></code></pre></div>
+<h2 id="ejecución-con-docker-compose">Ejecución con docker-compose</h2>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Levantar el Hit 5 (default service)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up hit5</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Cualquier otro hit</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up hit3</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Modo dev: monta el código local, no rebuild en cada cambio</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose run <span class="at">--rm</span> dev python hit3/main.py</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Lint</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose run <span class="at">--rm</span> lint</span></code></pre></div>
+<h2 id="pre-commit-hooks-corren-antes-de-cada-commit-local">Pre-commit
+hooks (corren ANTES de cada commit local)</h2>
+<p><a
+href="../.pre-commit-config.yaml"><code>.pre-commit-config.yaml</code></a>
+configura:</p>
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>Qué bloquea</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gitleaks</code></td>
+<td>Secrets hardcodeados (API keys, tokens, claves)</td>
+</tr>
+<tr>
+<td><code>ruff</code></td>
+<td>Errores de lint Python</td>
+</tr>
+<tr>
+<td><code>ruff-format</code></td>
+<td>Código mal formateado</td>
+</tr>
+<tr>
+<td><code>trailing-whitespace</code></td>
+<td>Espacios al final de línea</td>
+</tr>
+<tr>
+<td><code>end-of-file-fixer</code></td>
+<td>Archivos sin newline final</td>
+</tr>
+<tr>
+<td><code>check-yaml</code></td>
+<td>YAML malformado</td>
+</tr>
+<tr>
+<td><code>check-added-large-files</code></td>
+<td>Archivos &gt; 500 KB (evita commitear binarios pesados por
+error)</td>
+</tr>
+</tbody>
+</table>
+<p>Activación local (1 vez por clone):</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install pre-commit</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pre-commit</span> install</span></code></pre></div>
+<p>A partir de ahí, cada <code>git commit</code> corre todos los hooks.
+Si alguno falla, el commit no se concreta.</p>
+<h2 id="pipeline-de-ci-githubworkflowsscrapeyml">Pipeline de CI
+(<code>.github/workflows/scrape.yml</code>)</h2>
+<p>Triggers: push a <code>main</code>, PRs a <code>main</code>,
+<code>workflow_dispatch</code> manual.</p>
+<pre><code>┌─────────────────────────────────────────────────────┐
+│                    push / PR                        │
+└─────────────────────────────────────────────────────┘
+              │
+       ┌──────┼──────┬─────────────┐
+       ▼      ▼      ▼             ▼
+    ┌──────┬─────────┬──────────┬───────────┐
+    │ lint │ secrets │ unit-    │ k8s-      │
+    │ ruff │gitleaks │ tests    │ validate  │
+    └──┬───┴────┬────┴────┬─────┴─────┬─────┘
+       │        │         │           │
+       └────────┴────┬────┘           │
+                     ▼                │
+              ┌──────────────┐        │
+              │ integration- │        │
+              │ tests        │        │
+              │ (matrix:     │        │
+              │  chrome/ff)  │        │
+              └──────┬───────┘        │
+                     ▼                │
+              ┌──────────────┐        │
+              │ artifacts    │ ◄──────┘
+              │ JSON +       │
+              │ screenshots +│
+              │ coverage     │
+              └──────────────┘</code></pre>
+<p><strong>Detalles por job:</strong></p>
+<ul>
+<li><code>lint</code>: <code>ruff check</code> +
+<code>ruff format --check</code></li>
+<li><code>secrets</code>: <code>gitleaks-action@v2</code> con
+<code>fetch-depth: 0</code> (escanea todo el history)</li>
+<li><code>unit-tests</code>: instala deps, corre <code>pytest</code> con
+<code>--cov-fail-under=70</code>. Sube <code>htmlcov/</code> como
+artifact</li>
+<li><code>integration-tests</code>: matriz
+<code>[chrome, firefox]</code>. Construye la imagen, corre el scraper en
+headless con <code>--limit 3</code> (1 producto, 3 resultados — smoke
+test, no full scrape para no martillar ML)</li>
+<li><code>k8s-validation</code>:
+<code>kubectl apply --dry-run=client</code> sobre los manifiestos del
+Hit #8</li>
+</ul>
+<h2 id="conexión-con-hit-8-kubernetes">Conexión con Hit #8
+(Kubernetes)</h2>
+<p>La imagen <code>ml-scraper:latest</code> es <strong>la misma
+imagen</strong> que se importa al cluster k3s/k3d en el Hit #8. Esto
+significa que cualquier optimización aplicada acá (multi-stage, non-root
+user, healthcheck) se hereda directamente al despliegue Kubernetes.</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build local</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">--target</span> hit5 <span class="at">-t</span> ml-scraper:latest .</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Importar a k3d (Mac/Windows o cross-platform)</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ex">k3d</span> image import ml-scraper:latest <span class="at">-c</span> <span class="op">&lt;</span>nombre-cluster<span class="op">&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Importar a k3s nativo (Linux)</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> save ml-scraper:latest <span class="at">-o</span> ml-scraper.tar</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> k3s ctr images import ml-scraper.tar</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicar manifiestos del Hit 8</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> hit8/k8s/</span></code></pre></div>
+
+    <nav class="page-nav-bottom">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+    </nav>
+  </main>
+</div>
+
+<footer class="unlu-footer">
+  <div>
+    UNLu · Departamento de Ciencias Básicas · Seminario de Integración Profesional <strong>2026</strong>
+    · Dr. David Petrocelli
+  </div>
+</footer>
+
+<script>
+// Sidebar show/hide toggle (preference persisted in localStorage)
+(function () {
+  const sidebar = document.getElementById('toc-sidebar');
+  const layout = document.querySelector('.layout');
+  const hideBtn = document.getElementById('sidebar-hide');
+  const showBtn = document.getElementById('sidebar-show');
+  if (!sidebar || !layout || !hideBtn || !showBtn) return;
+
+  const KEY = 'unlu.dcb.sidebar.hidden';
+
+  function apply(hidden) {
+    layout.classList.toggle('sidebar-hidden', hidden);
+    showBtn.classList.toggle('visible', hidden);
+  }
+
+  apply(localStorage.getItem(KEY) === '1');
+
+  hideBtn.addEventListener('click', () => {
+    localStorage.setItem(KEY, '1');
+    apply(true);
+  });
+  showBtn.addEventListener('click', () => {
+    localStorage.removeItem(KEY);
+    apply(false);
+  });
+})();
+
+// Wrap each H2 (and its following content until the next H2) in a <details open>
+// element so users can collapse/expand sections.
+(function () {
+  const main = document.querySelector('main.content');
+  if (!main) return;
+
+  // Collect direct-child H2 headings so we don't touch nested ones (e.g., inside details we'll create)
+  const headings = Array.from(main.children).filter(el => el.tagName === 'H2');
+
+  headings.forEach(h2 => {
+    const details = document.createElement('details');
+    details.open = true;
+    details.className = 'section-collapsible';
+
+    const summary = document.createElement('summary');
+    // Move heading content (incl. anchor) into the summary so anchors keep working
+    summary.innerHTML = h2.innerHTML;
+    if (h2.id) summary.id = h2.id;
+    details.appendChild(summary);
+
+    // Move siblings until next H2 into details
+    const parent = h2.parentNode;
+    let next = h2.nextSibling;
+    parent.replaceChild(details, h2);
+    while (next && !(next.nodeType === 1 && next.tagName === 'H2')) {
+      const node = next;
+      next = next.nextSibling;
+      details.appendChild(node);
+    }
+  });
+
+  // If there's a hash in the URL, ensure the target's <details> is open
+  function openDetailsForHash(hash) {
+    if (!hash) return;
+    const target = document.getElementById(hash.replace(/^#/, ''));
+    if (!target) return;
+    let p = target.closest('details');
+    while (p) { p.open = true; p = p.parentElement && p.parentElement.closest('details'); }
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  openDetailsForHash(window.location.hash);
+  window.addEventListener('hashchange', () => openDetailsForHash(window.location.hash));
+
+  // Wire up "Expand all" / "Collapse all" controls in the inline TOC
+  document.querySelectorAll('.toc-controls [data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const action = btn.getAttribute('data-action');
+      const open = action === 'expand-all';
+      document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

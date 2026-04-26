@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <meta name="generator" content="pandoc + UNLu/DCB template">
+  <title>Implementación de referencia — ADR 0001 — Selenium WebDriver
+(no Playwright/Puppeteer/Cypress) — UNLu DCB</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="unlu-header">
+  <div class="brand">
+    <img src="assets/unlu_escudo.png" alt="Universidad Nacional de Luján" class="logo unlu">
+    <div class="brand-text">
+      <div class="institution">Universidad Nacional de Luján</div>
+      <div class="department">Departamento de Ciencias Básicas</div>
+    </div>
+    <img src="assets/logo_dcb.png" alt="Departamento de Ciencias Básicas" class="logo dcb">
+  </div>
+  <div class="course-bar">
+    <span class="course">Seminario de Integración Profesional</span>
+    <span class="year">2026</span>
+    <span class="instructor">Dr. David Petrocelli</span>
+  </div>
+</header>
+
+<button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
+
+<div class="layout">
+  <aside class="toc-sidebar" id="toc-sidebar">
+    <div class="toc-header">
+      <div class="toc-title">Contenidos</div>
+      <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
+    </div>
+    <ul>
+    <li><a
+    href="#0001--usar-selenium-webdriver-y-no-playwrightpuppeteercypress"
+    id="toc-0001--usar-selenium-webdriver-y-no-playwrightpuppeteercypress">0001
+    — Usar Selenium WebDriver y no Playwright/Puppeteer/Cypress</a>
+    <ul>
+    <li><a href="#contexto" id="toc-contexto">Contexto</a></li>
+    <li><a href="#decisión" id="toc-decisión">Decisión</a></li>
+    <li><a href="#consecuencias"
+    id="toc-consecuencias">Consecuencias</a></li>
+    <li><a href="#referencias" id="toc-referencias">Referencias</a></li>
+    </ul></li>
+    </ul>
+    <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
+      <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <nav class="page-nav-top">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+      <span class="banner-pill">REF · ADR 0001</span>
+    </nav>
+
+    <details class="toc-inline" open>
+      <summary>📑 Índice del documento</summary>
+      <ul>
+      <li><a
+      href="#0001--usar-selenium-webdriver-y-no-playwrightpuppeteercypress"
+      id="toc-0001--usar-selenium-webdriver-y-no-playwrightpuppeteercypress">0001
+      — Usar Selenium WebDriver y no Playwright/Puppeteer/Cypress</a>
+      <ul>
+      <li><a href="#contexto" id="toc-contexto">Contexto</a></li>
+      <li><a href="#decisión" id="toc-decisión">Decisión</a></li>
+      <li><a href="#consecuencias"
+      id="toc-consecuencias">Consecuencias</a></li>
+      <li><a href="#referencias"
+      id="toc-referencias">Referencias</a></li>
+      </ul></li>
+      </ul>
+      <div class="toc-controls">
+        <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
+        <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
+      </div>
+    </details>
+
+<h1
+id="0001--usar-selenium-webdriver-y-no-playwrightpuppeteercypress">0001
+— Usar Selenium WebDriver y no Playwright/Puppeteer/Cypress</h1>
+<ul>
+<li><strong>Date:</strong> 2026-04-26</li>
+<li><strong>Status:</strong> Accepted</li>
+<li><strong>Deciders:</strong> Cátedra SIP 2026</li>
+</ul>
+<h2 id="contexto">Contexto</h2>
+<p>El TP exige automatizar un browser para scrapear MercadoLibre desde
+código, soportando los 3 productos definidos en el enunciado (bicicleta
+rodado 29, iPhone 16 Pro Max, GeForce RTX 5090). Las herramientas
+razonables del mercado, en abril de 2026, son cuatro:</p>
+<ul>
+<li><strong>Selenium WebDriver 4.x</strong> — implementación de
+referencia del estándar W3C WebDriver, con bindings oficiales para
+Python/Java/JavaScript/Ruby/C#. Drivers nativos para Chrome, Firefox,
+Edge y Safari. Es la herramienta más usada en QA empresarial y la más
+demandada en búsquedas laborales del rubro testing/automation.</li>
+<li><strong>Playwright</strong> — más rápido, mejor DX, multi-browser
+nativo (Chromium/WebKit/Gecko), context isolation incorporada,
+auto-wait. Alternativa moderna y técnicamente superior en muchos
+aspectos.</li>
+<li><strong>Puppeteer</strong> — atado a Chromium, descartado de entrada
+porque la consigna del TP exige multi-browser (ver ADR 0002).</li>
+<li><strong>Cypress</strong> — diseñado para E2E de aplicaciones
+propias, no para scraping de sitios de terceros. Limitaciones de
+cross-origin y de control del browser que lo vuelven inadecuado para
+este caso.</li>
+</ul>
+<p>Hay un trade-off real: Playwright es objetivamente más cómodo y más
+rápido. Pero el TP es una <strong>herramienta de aprendizaje</strong>,
+no un proyecto de producción a optimizar. La consigna pide
+explícitamente Selenium porque es la herramienta canónica del rubro y
+porque trabajar con su API verbosa fuerza al alumno a entender los
+conceptos subyacentes (waits explícitos, manejo de stale elements, By
+locators) en lugar de que la abstracción los oculte.</p>
+<h2 id="decisión">Decisión</h2>
+<p>Usamos <strong>Selenium 4.x</strong> con los bindings oficiales de
+Python, contra <code>chromedriver</code> y <code>geckodriver</code>
+instalados localmente o vía contenedor.</p>
+<h2 id="consecuencias">Consecuencias</h2>
+<ul>
+<li><strong>Más fácil:</strong> estándar W3C WebDriver garantiza
+portabilidad entre browsers; ecosistema enorme con respuestas en
+StackOverflow para virtualmente cualquier problema; bindings en 5
+lenguajes permite que el aprendizaje sea transferible más allá de
+Python; la herramienta más usada en entrevistas técnicas de QA.</li>
+<li><strong>Más difícil:</strong> la API es más verbosa que Playwright
+(waits explícitos manuales en vez de auto-wait); no hay context
+isolation nativo entre tests; los scripts son más frágiles ante cambios
+del DOM porque no hay locators auto-healing.</li>
+<li><strong>Riesgo (selectores frágiles):</strong> mitigado en el Hit #5
+mediante centralización de selectores en un módulo aparte
+(<code>selectors.py</code>) con nombres semánticos, y con un mecanismo
+de retries con backoff ante fallos transitorios. Un cambio de DOM en
+MercadoLibre se arregla en un solo archivo en lugar de propagarse.</li>
+<li><strong>Riesgo (drivers desalineados):</strong> mitigado usando
+Selenium Manager (incluido en Selenium 4.6+), que descarga el driver
+compatible con la versión del browser instalado automáticamente.</li>
+</ul>
+<h2 id="referencias">Referencias</h2>
+<ul>
+<li>W3C WebDriver Specification: <a
+href="https://www.w3.org/TR/webdriver2/">https://www.w3.org/TR/webdriver2/</a></li>
+<li>Selenium Documentation: <a
+href="https://www.selenium.dev/documentation/">https://www.selenium.dev/documentation/</a></li>
+<li>Selenium Manager: <a
+href="https://www.selenium.dev/documentation/selenium_manager/">https://www.selenium.dev/documentation/selenium_manager/</a></li>
+<li>Comparativa Selenium vs Playwright (BrowserStack, 2025): <a
+href="https://www.browserstack.com/guide/playwright-vs-selenium">https://www.browserstack.com/guide/playwright-vs-selenium</a></li>
+<li>ADR 0002 (multi-browser) — esta decisión es prerrequisito de
+aquélla.</li>
+</ul>
+
+    <nav class="page-nav-bottom">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+    </nav>
+  </main>
+</div>
+
+<footer class="unlu-footer">
+  <div>
+    UNLu · Departamento de Ciencias Básicas · Seminario de Integración Profesional <strong>2026</strong>
+    · Dr. David Petrocelli
+  </div>
+</footer>
+
+<script>
+// Sidebar show/hide toggle (preference persisted in localStorage)
+(function () {
+  const sidebar = document.getElementById('toc-sidebar');
+  const layout = document.querySelector('.layout');
+  const hideBtn = document.getElementById('sidebar-hide');
+  const showBtn = document.getElementById('sidebar-show');
+  if (!sidebar || !layout || !hideBtn || !showBtn) return;
+
+  const KEY = 'unlu.dcb.sidebar.hidden';
+
+  function apply(hidden) {
+    layout.classList.toggle('sidebar-hidden', hidden);
+    showBtn.classList.toggle('visible', hidden);
+  }
+
+  apply(localStorage.getItem(KEY) === '1');
+
+  hideBtn.addEventListener('click', () => {
+    localStorage.setItem(KEY, '1');
+    apply(true);
+  });
+  showBtn.addEventListener('click', () => {
+    localStorage.removeItem(KEY);
+    apply(false);
+  });
+})();
+
+// Wrap each H2 (and its following content until the next H2) in a <details open>
+// element so users can collapse/expand sections.
+(function () {
+  const main = document.querySelector('main.content');
+  if (!main) return;
+
+  // Collect direct-child H2 headings so we don't touch nested ones (e.g., inside details we'll create)
+  const headings = Array.from(main.children).filter(el => el.tagName === 'H2');
+
+  headings.forEach(h2 => {
+    const details = document.createElement('details');
+    details.open = true;
+    details.className = 'section-collapsible';
+
+    const summary = document.createElement('summary');
+    // Move heading content (incl. anchor) into the summary so anchors keep working
+    summary.innerHTML = h2.innerHTML;
+    if (h2.id) summary.id = h2.id;
+    details.appendChild(summary);
+
+    // Move siblings until next H2 into details
+    const parent = h2.parentNode;
+    let next = h2.nextSibling;
+    parent.replaceChild(details, h2);
+    while (next && !(next.nodeType === 1 && next.tagName === 'H2')) {
+      const node = next;
+      next = next.nextSibling;
+      details.appendChild(node);
+    }
+  });
+
+  // If there's a hash in the URL, ensure the target's <details> is open
+  function openDetailsForHash(hash) {
+    if (!hash) return;
+    const target = document.getElementById(hash.replace(/^#/, ''));
+    if (!target) return;
+    let p = target.closest('details');
+    while (p) { p.open = true; p = p.parentElement && p.parentElement.closest('details'); }
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  openDetailsForHash(window.location.hash);
+  window.addEventListener('hashchange', () => openDetailsForHash(window.location.hash));
+
+  // Wire up "Expand all" / "Collapse all" controls in the inline TOC
+  document.querySelectorAll('.toc-controls [data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const action = btn.getAttribute('data-action');
+      const open = action === 'expand-all';
+      document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
