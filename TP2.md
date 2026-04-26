@@ -8,8 +8,6 @@
 - Haber entregado la **Parte 1** (Hits #1–#3). Esta segunda parte continúa el mismo proyecto y arranca con el Hit #4 (extracción estructurada a JSON), que es la base sobre la que se construye el resto.
 - Haber completado la guía del **TP 0 — Prerrequisitos (k3s)** antes de empezar el Hit #8. Sin un cluster k3s/k3d funcional no podés cumplir esa parte.
 
-> 📚 **Implementación de referencia disponible.** La cátedra publicó una implementación completa que cubre los 8 hits + ADRs + pre-commit + CI + manifests k8s en <https://github.com/dpetrocelli/sip2026/tree/main/reference>. Sirve como vara de corrección y como ejemplo de buenas prácticas (no la copien tal cual — adaptenla a su stack y decisiones).
-
 ---
 
 ## Requisitos, consideraciones y formato de entrega
