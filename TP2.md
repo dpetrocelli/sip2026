@@ -4,7 +4,7 @@
 
 **Fecha de Entrega: 02/05/2026**
 
-**Pre-requisito:** Haber entregado la **Parte 1** (Hits #1–#4). Esta segunda parte continúa el mismo proyecto.
+**Pre-requisito:** Haber entregado la **Parte 1** (Hits #1–#3). Esta segunda parte continúa el mismo proyecto y arranca con el Hit #4 (extracción estructurada a JSON), que es la base sobre la que se construye el resto.
 
 ---
 
@@ -31,15 +31,36 @@ Aplican los mismos requisitos generales de la Parte 1, **más** los siguientes:
 
 ## Práctica
 
-En la **Parte 1** construyeron un scraper que extrae 10 resultados filtrados por producto, multi-browser, con datos estructurados en JSON. Funciona, pero es frágil: cualquier cambio en el DOM de MercadoLibre lo rompe, no hay forma de garantizar que el output sea válido sin abrir los archivos a mano, y no se puede correr en un servidor sin display gráfico.
-
-En esta **Parte 2** vamos a llevarlo a calidad de producción: robustez ante fallos, modo headless, tests automatizados, empaquetado en Docker, y pipeline de CI/CD que ejecute todo con cada push.
+En la **Parte 1** construyeron un scraper multi-browser que busca productos en MercadoLibre y aplica filtros vía DOM (Hits #1–#3). En esta **Parte 2** lo llevamos a calidad de producción: empezamos por la **extracción estructurada a JSON de los 3 productos** (Hit #4), y luego sumamos robustez ante fallos, modo headless, tests automatizados, empaquetado en Docker, y pipeline de CI/CD que ejecute todo con cada push.
 
 Continuamos con los mismos productos:
 
 1. `Bicicleta rodado 29`
 2. `iPhone 16 Pro Max`
 3. `GeForce RTX 5090`
+
+---
+
+### Hit #4
+
+Generalice el flujo del Hit #3 para que reciba como entrada una lista de productos (los 3 del enunciado: bicicleta rodado 29, iPhone 16 Pro Max, GeForce RTX 5090) y los procese todos.
+
+Para cada producto, extraiga los **primeros 10 resultados** filtrados y, por cada uno, capture los siguientes campos:
+
+- `titulo` — título del producto
+- `precio` — precio en ARS (numérico, sin símbolo `$` ni separadores)
+- `link` — URL completa al detalle del producto
+- `tienda_oficial` — nombre de la tienda oficial (si aparece, sino `null`)
+- `envio_gratis` — booleano
+- `cuotas_sin_interes` — string con la oferta de cuotas (si aparece, sino `null`)
+
+Guarde la salida en archivos separados por producto, en formato JSON:
+
+- `output/bicicleta_rodado_29.json`
+- `output/iphone_16_pro_max.json`
+- `output/geforce_5090.json`
+
+El JSON debe ser un array de objetos, uno por resultado, con los campos definidos arriba.
 
 ---
 
@@ -103,10 +124,11 @@ Extienda el scraper con cualquiera (o varias) de las siguientes capacidades:
 
 | Criterio | Peso |
 |----------|------|
-| Manejo robusto de errores (selectores faltantes, timeouts, retries con backoff) | 20 % |
-| Tests automatizados cubriendo el flujo crítico, corriendo en CI | 20 % |
-| Dockerfile funcional con Chrome + Firefox + drivers, multi-stage si aplica | 20 % |
-| Pipeline CI/CD funcional con matriz de browsers y artifacts publicados | 20 % |
+| Hit #4 — extracción estructurada a JSON de los 3 productos con todos los campos | 20 % |
+| Hit #5 — manejo robusto de errores (selectores faltantes, timeouts, retries con backoff) | 15 % |
+| Hit #6 — tests automatizados cubriendo el flujo crítico, corriendo en CI | 15 % |
+| Hit #7 — Dockerfile funcional con Chrome + Firefox + drivers, multi-stage si aplica | 15 % |
+| Hit #7 — pipeline CI/CD funcional con matriz de browsers y artifacts publicados | 15 % |
 | Modo headless configurable y operativo | 10 % |
 | Hit #8 (al menos uno de los bonus) | 10 % |
 

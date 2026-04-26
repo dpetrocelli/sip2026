@@ -41,7 +41,7 @@ La automatización de navegadores es una técnica fundamental para validar aplic
 
 **Selenium WebDriver** se ha convertido en el estándar de facto: define un protocolo (W3C WebDriver) que cualquier navegador puede implementar, y expone bindings en múltiples lenguajes para controlar el navegador como si fuera un usuario real.
 
-En esta **Parte 1** vamos a construir, de forma incremental, las bases del scraper multi-browser sobre MercadoLibre Argentina: setup, multi-browser, filtros, y extracción estructurada.
+En esta **Parte 1** vamos a construir, de forma incremental, las bases del scraper multi-browser sobre MercadoLibre Argentina: setup de Selenium, Browser Factory para Chrome y Firefox, y aplicación de filtros vía DOM con captura de screenshots.
 
 El sitio elegido (mercadolibre.com.ar) es público, no requiere autenticación para buscar, y presenta los desafíos clásicos del scraping moderno: contenido renderizado por JavaScript, selectores que cambian, lazy loading, y diferencias sutiles entre navegadores.
 
@@ -87,37 +87,14 @@ Capture un **screenshot** de la página de resultados ya filtrada y guárdelo co
 
 ---
 
-### Hit #4
-
-Generalice el flujo del Hit #3 para que reciba como entrada una lista de productos (los 3 del enunciado: bicicleta rodado 29, iPhone 16 Pro Max, GeForce RTX 5090) y los procese todos.
-
-Para cada producto, extraiga los **primeros 10 resultados** filtrados y, por cada uno, capture los siguientes campos:
-
-- `titulo` — título del producto
-- `precio` — precio en ARS (numérico, sin símbolo `$` ni separadores)
-- `link` — URL completa al detalle del producto
-- `tienda_oficial` — nombre de la tienda oficial (si aparece, sino `null`)
-- `envio_gratis` — booleano
-- `cuotas_sin_interes` — string con la oferta de cuotas (si aparece, sino `null`)
-
-Guarde la salida en archivos separados por producto, en formato JSON:
-
-- `output/bicicleta_rodado_29.json`
-- `output/iphone_16_pro_max.json`
-- `output/geforce_5090.json`
-
-El JSON debe ser un array de objetos, uno por resultado, con los campos definidos arriba.
-
----
-
 ## Criterios de evaluación — Parte 1
 
 | Criterio | Peso |
 |----------|------|
-| Funciona en Chrome **y** Firefox sin cambios de código (solo config) | 25 % |
-| Filtros aplicados correctamente vía DOM (nuevo + tienda oficial) | 20 % |
-| Datos extraídos completos, bien tipados y serializados a JSON | 25 % |
-| Calidad de código (waits explícitos, selectores en módulo aparte, sin sleeps) | 15 % |
+| Hit #1 — setup, navegación, búsqueda y lectura de títulos | 15 % |
+| Hit #2 — Browser Factory funcionando contra Chrome **y** Firefox sin cambios de código | 25 % |
+| Hit #3 — filtros aplicados correctamente vía DOM (nuevo + tienda oficial) y screenshot | 30 % |
+| Calidad de código (waits explícitos, selectores en módulo aparte, sin `time.sleep`) | 15 % |
 | README, informe y video explicativo | 10 % |
 | Dockerfile básico (deseable, suma puntos) | 5 % |
 

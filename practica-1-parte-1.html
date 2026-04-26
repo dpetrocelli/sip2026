@@ -50,7 +50,6 @@ DCB</title>
     <li><a href="#hit-1" id="toc-hit-1">Hit #1</a></li>
     <li><a href="#hit-2" id="toc-hit-2">Hit #2</a></li>
     <li><a href="#hit-3" id="toc-hit-3">Hit #3</a></li>
-    <li><a href="#hit-4" id="toc-hit-4">Hit #4</a></li>
     </ul></li>
     <li><a href="#criterios-de-evaluación--parte-1"
     id="toc-criterios-de-evaluación--parte-1">Criterios de evaluación —
@@ -151,7 +150,8 @@ puede implementar, y expone bindings en múltiples lenguajes para
 controlar el navegador como si fuera un usuario real.</p>
 <p>En esta <strong>Parte 1</strong> vamos a construir, de forma
 incremental, las bases del scraper multi-browser sobre MercadoLibre
-Argentina: setup, multi-browser, filtros, y extracción estructurada.</p>
+Argentina: setup de Selenium, Browser Factory para Chrome y Firefox, y
+aplicación de filtros vía DOM con captura de screenshots.</p>
 <p>El sitio elegido (mercadolibre.com.ar) es público, no requiere
 autenticación para buscar, y presenta los desafíos clásicos del scraping
 moderno: contenido renderizado por JavaScript, selectores que cambian,
@@ -208,34 +208,6 @@ usuario.</p>
 filtrada y guárdelo como
 <code>screenshots/&lt;producto&gt;_&lt;browser&gt;.png</code>.</p>
 <hr />
-<h3 id="hit-4">Hit #4</h3>
-<p>Generalice el flujo del Hit #3 para que reciba como entrada una lista
-de productos (los 3 del enunciado: bicicleta rodado 29, iPhone 16 Pro
-Max, GeForce RTX 5090) y los procese todos.</p>
-<p>Para cada producto, extraiga los <strong>primeros 10
-resultados</strong> filtrados y, por cada uno, capture los siguientes
-campos:</p>
-<ul>
-<li><code>titulo</code> — título del producto</li>
-<li><code>precio</code> — precio en ARS (numérico, sin símbolo
-<code>$</code> ni separadores)</li>
-<li><code>link</code> — URL completa al detalle del producto</li>
-<li><code>tienda_oficial</code> — nombre de la tienda oficial (si
-aparece, sino <code>null</code>)</li>
-<li><code>envio_gratis</code> — booleano</li>
-<li><code>cuotas_sin_interes</code> — string con la oferta de cuotas (si
-aparece, sino <code>null</code>)</li>
-</ul>
-<p>Guarde la salida en archivos separados por producto, en formato
-JSON:</p>
-<ul>
-<li><code>output/bicicleta_rodado_29.json</code></li>
-<li><code>output/iphone_16_pro_max.json</code></li>
-<li><code>output/geforce_5090.json</code></li>
-</ul>
-<p>El JSON debe ser un array de objetos, uno por resultado, con los
-campos definidos arriba.</p>
-<hr />
 <h2 id="criterios-de-evaluación--parte-1">Criterios de evaluación —
 Parte 1</h2>
 <table>
@@ -247,22 +219,22 @@ Parte 1</h2>
 </thead>
 <tbody>
 <tr>
-<td>Funciona en Chrome <strong>y</strong> Firefox sin cambios de código
-(solo config)</td>
+<td>Hit #1 — setup, navegación, búsqueda y lectura de títulos</td>
+<td>15 %</td>
+</tr>
+<tr>
+<td>Hit #2 — Browser Factory funcionando contra Chrome
+<strong>y</strong> Firefox sin cambios de código</td>
 <td>25 %</td>
 </tr>
 <tr>
-<td>Filtros aplicados correctamente vía DOM (nuevo + tienda
-oficial)</td>
-<td>20 %</td>
-</tr>
-<tr>
-<td>Datos extraídos completos, bien tipados y serializados a JSON</td>
-<td>25 %</td>
+<td>Hit #3 — filtros aplicados correctamente vía DOM (nuevo + tienda
+oficial) y screenshot</td>
+<td>30 %</td>
 </tr>
 <tr>
 <td>Calidad de código (waits explícitos, selectores en módulo aparte,
-sin sleeps)</td>
+sin <code>time.sleep</code>)</td>
 <td>15 %</td>
 </tr>
 <tr>
