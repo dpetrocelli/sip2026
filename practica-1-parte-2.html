@@ -181,7 +181,15 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     </ul></li>
     <li><a href="#criterios-de-evaluación--parte-2"
     id="toc-criterios-de-evaluación--parte-2">Criterios de evaluación —
-    Parte 2</a></li>
+    Parte 2</a>
+    <ul>
+    <li><a
+    href="#requisitos-bloqueantes-no-se-acepta-la-entrega-sin-estos"
+    id="toc-requisitos-bloqueantes-no-se-acepta-la-entrega-sin-estos">Requisitos
+    bloqueantes (no se acepta la entrega sin estos)</a></li>
+    <li><a href="#tabla-de-puntaje-100-"
+    id="toc-tabla-de-puntaje-100-">Tabla de puntaje (100 %)</a></li>
+    </ul></li>
     <li><a href="#referencias-y-bibliografía"
     id="toc-referencias-y-bibliografía">Referencias y
     Bibliografía</a></li>
@@ -283,7 +291,15 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       </ul></li>
       <li><a href="#criterios-de-evaluación--parte-2"
       id="toc-criterios-de-evaluación--parte-2">Criterios de evaluación
-      — Parte 2</a></li>
+      — Parte 2</a>
+      <ul>
+      <li><a
+      href="#requisitos-bloqueantes-no-se-acepta-la-entrega-sin-estos"
+      id="toc-requisitos-bloqueantes-no-se-acepta-la-entrega-sin-estos">Requisitos
+      bloqueantes (no se acepta la entrega sin estos)</a></li>
+      <li><a href="#tabla-de-puntaje-100-"
+      id="toc-tabla-de-puntaje-100-">Tabla de puntaje (100 %)</a></li>
+      </ul></li>
       <li><a href="#referencias-y-bibliografía"
       id="toc-referencias-y-bibliografía">Referencias y
       Bibliografía</a></li>
@@ -1150,9 +1166,35 @@ como un chart con <code>values.yaml</code> parametrizable.</li>
 <hr />
 <h2 id="criterios-de-evaluación--parte-2">Criterios de evaluación —
 Parte 2</h2>
-<p>Total: 100 puntos (Hits #4–#9, todos obligatorios). Implementar más
-de 1 ítem del Hit #9 puede sumar hasta +5 puntos extra sobre el
-total.</p>
+<h3
+id="requisitos-bloqueantes-no-se-acepta-la-entrega-sin-estos">Requisitos
+bloqueantes (no se acepta la entrega sin estos)</h3>
+<p>Estos no suman puntos — son condición necesaria para que la entrega
+sea <strong>corregible</strong>. Si falta cualquiera de los 4, la nota
+es 0.</p>
+<ul>
+<li><strong>TP 0 cumplido</strong> — checklist de prerrequisitos k3s con
+evidencia en el README (<code>kubectl get nodes</code> Ready, nginx-test
+corrió, sé importar imágenes al cluster).</li>
+<li><strong>Hit #7 — Infra base</strong> completa y funcional:
+<ul>
+<li><code>Dockerfile</code> multi-stage con versiones pineadas (no
+<code>:latest</code>).</li>
+<li><code>docker-compose.yml</code> que levanta el scraper con un solo
+comando.</li>
+<li>Pipeline GitHub Actions corriendo en verde con matriz Chrome/Firefox
++ gate de cobertura ≥ 70 % + gitleaks + artifacts publicados.</li>
+<li><code>.pre-commit-config.yaml</code> con gitleaks + linter +
+formatter, documentado en el README cómo activarlo.</li>
+</ul></li>
+<li><strong>Modo headless</strong> configurable por env
+(<code>HEADLESS=true</code>) y operativo en CI sin abrir display
+gráfico.</li>
+<li><strong>Auto-verificación</strong> ejecutada antes del push final
+(<a href="#auto-verificación-previa-a-la-entrega">checklist completo
+abajo</a>) — los 7 comandos pasaron.</li>
+</ul>
+<h3 id="tabla-de-puntaje-100-">Tabla de puntaje (100 %)</h3>
 <table>
 <thead>
 <tr>
@@ -1164,49 +1206,33 @@ total.</p>
 <tr>
 <td><strong>Hit #4</strong> — extracción estructurada a JSON de los 3
 productos con todos los campos</td>
-<td>20 %</td>
+<td>25 %</td>
 </tr>
 <tr>
 <td><strong>Hit #5</strong> — manejo robusto de errores (selectores
 faltantes, timeouts, retries con backoff)</td>
-<td>10 %</td>
+<td>15 %</td>
 </tr>
 <tr>
 <td><strong>Hit #6</strong> — tests automatizados + cobertura ≥ 70 %
 validada en CI</td>
-<td>10 %</td>
-</tr>
-<tr>
-<td><strong>Hit #7</strong> — Dockerfile +
-<code>docker-compose.yml</code> (con versiones pineadas) + pipeline
-CI/CD con matriz de browsers, artifacts y gate de cobertura + pre-commit
-hooks (gitleaks + linter + formatter)</td>
-<td>25 %</td>
+<td>15 %</td>
 </tr>
 <tr>
 <td><strong>Hit #8</strong> — <code>Job</code> + <code>CronJob</code> +
 <code>ConfigMap</code> + <code>PVC</code> corriendo en k3s/k3d</td>
-<td>15 %</td>
+<td>20 %</td>
 </tr>
 <tr>
 <td><strong>Hit #9</strong> — al menos 1 capacidad extendida
 implementada (paginación, stats, PostgreSQL, HTML report, POM o
 Helm)</td>
-<td>10 %</td>
+<td>15 %</td>
 </tr>
 <tr>
 <td><strong>ADRs</strong> (mínimo 4 en <code>docs/adr/</code> — 2 del
 menú propuesto + 2 de elección propia)</td>
-<td>5 %</td>
-</tr>
-<tr>
-<td><strong>Modo headless</strong> configurable y operativo + checklist
-de auto-verificación cumplido</td>
-<td>5 %</td>
-</tr>
-<tr>
-<td><em>Bonus opcional: implementar un 2º ítem del Hit #9</em></td>
-<td><em>+5 %</em></td>
+<td>10 %</td>
 </tr>
 </tbody>
 </table>
