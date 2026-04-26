@@ -33,11 +33,17 @@ render() {
 
 # ============ Render targets ============
 
-# --- TP 1 — Automatización Web con Selenium (MercadoLibre) ---
+# --- TP 1 · Parte 1 — Selenium + MercadoLibre (Hits 1-4) ---
 render "TP1.md" \
-  "practica-1.html" \
-  "Práctica I — Automatización Web con Selenium (MercadoLibre)" \
-  "TP 1"
+  "practica-1-parte-1.html" \
+  "Práctica I · Parte 1 — Selenium + MercadoLibre" \
+  "TP 1 · PARTE 1"
+
+# --- TP 1 · Parte 2 — Robustez, Tests, Docker, CI/CD (Hits 5-8) ---
+render "TP2.md" \
+  "practica-1-parte-2.html" \
+  "Práctica I · Parte 2 — Robustez, Tests, Docker y CI/CD" \
+  "TP 1 · PARTE 2"
 
 echo ""
 echo "Done. Open with:"

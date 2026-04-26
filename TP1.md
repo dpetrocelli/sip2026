@@ -1,8 +1,8 @@
-# Trabajo Práctico — Automatización Web con Selenium
+# Trabajo Práctico Nº 1 — Parte 1
 
-## Pruebas E2E multi-browser sobre MercadoLibre
+## Automatización Web con Selenium — Pruebas E2E multi-browser sobre MercadoLibre
 
-**Fecha de Entrega: a definir**
+**Fecha de Entrega: 25/04/2026**
 
 ---
 
@@ -10,20 +10,18 @@
 
 - **Integrar herramientas de IA en su ciclo de vida de desarrollo** (Cursor, ChatGPT/Codex, Claude, GitHub Copilot, etc.). Se espera que las utilicen como asistentes para codificar, depurar y documentar. En el informe, mencionen qué herramientas usaron y cómo les ayudaron.
 - **Se puede implementar con cualquier lenguaje que tenga binding oficial de Selenium**: Python, Java o TypeScript/Node.js.
-- **Deben incluir una grabación en video** que se debe subir al repositorio donde se muestre la ejecución del scraper en ambos navegadores y se expliquen las decisiones de diseño (selectores elegidos, manejo de waits, estrategia de extracción).
-- **Pruebas:** Incluir un conjunto mínimo de pruebas automatizadas (`pytest` / `JUnit` / `Jest`) que validen que el flujo de scraping extrae al menos N resultados y que los datos cumplen el schema esperado.
-- Generar un **informe detallado** que incluya: estrategia de selectores, manejo de timeouts y elementos faltantes, comparación entre Chrome y Firefox (diferencias encontradas, si las hubo), métricas de tiempo de ejecución por browser, y conclusiones.
-- Mantener un **repositorio público** en un servicio de control de versiones como GitHub, Bitbucket o GitLab. Cada ejercicio (Hit #) debe contar con una carpeta y un README.md explicativo.
-  - El README.md de cada Hit debe incluir como mínimo: instrucciones para ejecutar el proyecto, requisitos previos (drivers, versiones), y decisiones de diseño tomadas.
+- **Deben incluir una grabación en video** subida al repositorio donde se muestre la ejecución del scraper en ambos navegadores y se expliquen las decisiones de diseño.
+- **Pruebas Unitarias y de Integración:** incluir un conjunto mínimo de pruebas automatizadas (`pytest` / `JUnit` / `Jest`) que validen que el flujo extrae al menos N resultados y que los datos cumplen el schema esperado.
+- Generar un **informe** que incluya: estrategia de selectores, manejo de timeouts y elementos faltantes, comparación entre Chrome y Firefox, métricas de tiempo de ejecución por browser, y conclusiones.
+- Mantener un **repositorio público** en GitHub/GitLab/Bitbucket. Cada Hit debe contar con una carpeta y un README.md explicativo.
+  - El README.md debe incluir como mínimo: instrucciones para ejecutar el proyecto, requisitos previos (drivers, versiones), y decisiones de diseño tomadas.
 - Compilar la aplicación para ejecución desde la terminal, con recursos preparados para ser desplegados directamente sin necesidad de abrir un IDE.
-- Implementar un **pipeline de CI/CD** que automatice la ejecución del scraping con cada nueva versión de código (GitHub Actions). El pipeline debe correr el scraper en modo headless contra ambos browsers y publicar los artefactos generados (JSON/CSV + screenshots).
-- Proporcionar un **endpoint público o reporte público** (puede ser una página de GitHub Pages generada por el pipeline) que muestre los últimos resultados extraídos.
+- **Empaquetar la solución en un Dockerfile** que permita ejecutar el scraper con `docker run` (deseable desde Parte 1, obligatorio en Parte 2). Esto facilita la evaluación uniforme entre proyectos en distintos lenguajes.
 - Gestionar y mantener **registros de actividades (logs)** en consola y archivo, con niveles INFO/WARN/ERROR.
 - **Seguridad:**
   - No commitear `.env`, credenciales ni secrets al repositorio. Configurar `.gitignore` apropiado desde el inicio.
-  - Si el ejercicio requiere autenticación contra MercadoLibre (no es el caso para esta consigna), gestionar credenciales por GitHub Secrets.
   - Incluir [gitleaks](https://github.com/gitleaks/gitleaks) en el pipeline de CI — si detecta un secret hardcodeado, el pipeline debe fallar.
-  - Respetar el `robots.txt` del sitio y aplicar throttling razonable entre requests para no generar carga indebida.
+  - Respetar el `robots.txt` del sitio y aplicar throttling razonable entre requests.
 
 ---
 
@@ -33,8 +31,7 @@
 - Protocolo WebDriver (W3C) y arquitectura cliente/servidor de Selenium.
 - DOM, selectores CSS y XPath.
 - Manejo de asincronía en la web: explicit waits vs implicit waits vs sleeps.
-- Patrones de diseño aplicados a testing: Page Object Model, Browser Factory.
-- Headless browsing y ejecución en pipelines CI/CD.
+- Patrones de diseño aplicados a testing: Browser Factory.
 
 ---
 
@@ -44,7 +41,7 @@ La automatización de navegadores es una técnica fundamental para validar aplic
 
 **Selenium WebDriver** se ha convertido en el estándar de facto: define un protocolo (W3C WebDriver) que cualquier navegador puede implementar, y expone bindings en múltiples lenguajes para controlar el navegador como si fuera un usuario real.
 
-En este TP vamos a construir, de forma incremental, un scraper multi-browser que busque productos en MercadoLibre Argentina, aplique filtros, y extraiga los resultados de forma estructurada.
+En esta **Parte 1** vamos a construir, de forma incremental, las bases del scraper multi-browser sobre MercadoLibre Argentina: setup, multi-browser, filtros, y extracción estructurada.
 
 El sitio elegido (mercadolibre.com.ar) es público, no requiere autenticación para buscar, y presenta los desafíos clásicos del scraping moderno: contenido renderizado por JavaScript, selectores que cambian, lazy loading, y diferencias sutiles entre navegadores.
 
@@ -113,74 +110,16 @@ El JSON debe ser un array de objetos, uno por resultado, con los campos definido
 
 ---
 
-### Hit #5
-
-Endurezca el scraper para que sea **robusto frente a fallos parciales**:
-
-1. Si un campo opcional no aparece en un resultado (ej: producto sin cuotas), el scraper debe registrar `null` y continuar — no debe romper la ejecución.
-2. Si un selector falla por timeout, registre el error en el log con contexto (qué producto, qué browser, qué selector) y continúe con el siguiente resultado.
-3. Implemente un mecanismo de **reintentos con backoff** ante fallos transitorios de carga (ej: 3 intentos con 2s, 4s, 8s).
-4. Estructure los selectores en un módulo aparte (constantes con nombres semánticos), de modo que un cambio de DOM en MercadoLibre se arregle en un solo lugar.
-
----
-
-### Hit #6
-
-Agregue **modo headless** controlable por variable de entorno (`HEADLESS=true`).
-
-Escriba un set de **tests automatizados** (`pytest` / `JUnit` / `Jest`) que validen:
-
-- Que el scraper extrae al menos 10 resultados por producto.
-- Que el JSON generado cumple un schema mínimo (todos los campos requeridos, tipos correctos).
-- Que los precios extraídos son números positivos.
-- Que todos los links son URLs absolutas válidas.
-
-Los tests deben correr en CI tanto en Chrome como en Firefox.
-
----
-
-### Hit #7
-
-Construya un **Dockerfile** que empaquete el scraper junto con Chrome, Firefox y los drivers, de modo que se pueda ejecutar con un único comando:
-
-```bash
-docker run --rm -v $(pwd)/output:/app/output ml-scraper:latest --browser firefox
-```
-
-Configure un **GitHub Actions workflow** (`.github/workflows/scrape.yml`) que:
-
-1. Construya la imagen Docker.
-2. Corra el scraper en headless contra Chrome y Firefox (jobs en paralelo, matriz).
-3. Ejecute los tests del Hit #6.
-4. Publique los JSON y screenshots como **artifacts** del workflow.
-5. Falle si gitleaks detecta secrets hardcodeados.
-
----
-
-### Hit #8 (Bonus)
-
-Extienda el scraper con cualquiera (o varias) de las siguientes capacidades:
-
-1. **Paginación**: traer los primeros 30 resultados en lugar de 10, navegando hasta 3 páginas.
-2. **Comparación de precios**: para cada producto, calcular precio mínimo, máximo, mediana y desvío estándar entre los resultados extraídos. Imprimir tabla resumen.
-3. **Histórico**: guardar los resultados en una base de datos liviana (SQLite) con timestamp, para detectar cambios de precio si el scraper se ejecuta periódicamente.
-4. **Reporte HTML**: generar una página estática (con GitHub Pages publicada por el pipeline) que muestre los resultados de la última corrida en una tabla navegable.
-5. **Page Object Model**: refactorizar el scraper para separar el código de navegación (`SearchPage`, `ResultsPage`) del código de extracción y de los tests.
-
----
-
-## Criterios de evaluación
+## Criterios de evaluación — Parte 1
 
 | Criterio | Peso |
 |----------|------|
-| Funciona en Chrome **y** Firefox sin cambios de código (solo config) | 20 % |
-| Filtros aplicados correctamente vía DOM (nuevo + tienda oficial) | 15 % |
-| Datos extraídos completos, bien tipados y serializados | 15 % |
-| Manejo robusto de errores (selectores faltantes, timeouts, retries) | 15 % |
-| Tests automatizados cubriendo el flujo crítico | 10 % |
-| Pipeline CI/CD funcional con matriz de browsers | 10 % |
-| Calidad de código (waits explícitos, selectores en módulo aparte, sin sleeps) | 10 % |
-| Informe y video explicativo | 5 % |
+| Funciona en Chrome **y** Firefox sin cambios de código (solo config) | 25 % |
+| Filtros aplicados correctamente vía DOM (nuevo + tienda oficial) | 20 % |
+| Datos extraídos completos, bien tipados y serializados a JSON | 25 % |
+| Calidad de código (waits explícitos, selectores en módulo aparte, sin sleeps) | 15 % |
+| README, informe y video explicativo | 10 % |
+| Dockerfile básico (deseable, suma puntos) | 5 % |
 
 ---
 
@@ -188,10 +127,8 @@ Extienda el scraper con cualquiera (o varias) de las siguientes capacidades:
 
 - **[SEL]** Selenium Documentation. <https://www.selenium.dev/documentation/>
 - **[W3C-WD]** W3C WebDriver Specification. <https://www.w3.org/TR/webdriver2/>
-- **[POM]** Page Object Model — Selenium Wiki. <https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/>
 - **[CSS-SEL]** MDN — CSS Selectors. <https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors>
 - **[XPATH]** MDN — XPath. <https://developer.mozilla.org/en-US/docs/Web/XPath>
-- **[GH-ACTIONS]** GitHub Actions Documentation. <https://docs.github.com/en/actions>
-- **[GITLEAKS]** gitleaks — Protect and discover secrets using Gitleaks. <https://github.com/gitleaks/gitleaks>
+- **[GITLEAKS]** gitleaks. <https://github.com/gitleaks/gitleaks>
 - **[ROBOTS]** The Robots Exclusion Protocol. <https://www.rfc-editor.org/rfc/rfc9309>
 - **[ML]** MercadoLibre Argentina. <https://www.mercadolibre.com.ar>
