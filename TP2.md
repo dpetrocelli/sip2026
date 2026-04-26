@@ -20,11 +20,22 @@ Aplican los mismos requisitos generales de la Parte 1, **más** los siguientes:
 - **Dockerfile obligatorio + `docker-compose.yml` obligatorio**. La solución debe poder ejecutarse íntegramente desde un contenedor sin necesidad de instalar drivers ni navegadores en la máquina host. El `docker-compose.yml` debe levantar el scraper con `docker compose up` (al menos un servicio para correr los 3 productos contra Chrome o Firefox según env var); facilita la evaluación uniforme entre proyectos en distintos lenguajes.
 - **Tests automatizados obligatorios** (`pytest` / `JUnit` / `Jest`) corriendo en CI sobre matriz de browsers, con **cobertura ≥ 70 %** medida por la herramienta estándar del lenguaje (`coverage.py`, `jest --coverage`, `jacoco`). El pipeline debe **fallar** si la cobertura cae debajo del umbral.
 - **Pre-commit hooks obligatorios** (`pre-commit` framework o equivalente nativo del lenguaje). Como mínimo: `gitleaks` para detectar secrets, y el linter del lenguaje (`ruff` para Python, `eslint` para Node, `checkstyle`/`spotless` para Java). Esto fuerza que los problemas se detecten **antes** de pushear, no recién en CI.
-- **Mínimo 3 ADRs** (Architecture Decision Records) en `docs/adr/`, formato Markdown corto (1 página máx cada uno). Como mínimo:
-  - `0001-selenium-vs-playwright.md` — por qué eligieron Selenium (y no Playwright/Puppeteer/Cypress).
-  - `0002-multi-browser.md` — por qué se exige soporte de Chrome **y** Firefox simultáneo.
-  - `0003-k8s-job-vs-docker-compose.md` — por qué Kubernetes Job y no `docker-compose` para el scraping programado.
-  - Plantilla recomendada: <https://github.com/joelparkerhenderson/architecture-decision-record/blob/main/locales/en/templates/decision-record-template-by-michael-nygard/index.md>
+- **Mínimo 4 ADRs** (Architecture Decision Records) en `docs/adr/`, formato Markdown corto (1 página máx cada uno). Composición obligatoria:
+  - **2 ADRs elegidos del menú abajo** (los que más aplican a las decisiones que efectivamente tomaron).
+  - **2 ADRs de su elección** (decisiones reales del equipo que no estén en el menú — por ejemplo: lenguaje del scraper, registry público que usaron, dep manager, esquema de versionado de la imagen, política de logs, manejo de secrets, etc.).
+  - **Formato**: [Michael Nygard template](https://github.com/joelparkerhenderson/architecture-decision-record/blob/main/locales/en/templates/decision-record-template-by-michael-nygard/index.md) (Contexto · Decisión · Consecuencias). Copien a `docs/adr/0000-template.md` como base.
+  - **Más ejemplos y plantillas alternativas**: <https://github.com/joelparkerhenderson/architecture-decision-record> (la colección canónica de Nygard, con 30+ templates y 100+ ejemplos reales de empresas).
+
+  **Menú de ADRs propuestos** (elijan 2):
+
+  | Archivo sugerido | Decisión a documentar |
+  |---|---|
+  | `0001-framework-automatizacion.md` | Por qué Selenium (y no Playwright/Puppeteer/Cypress) — o al revés si eligieron otro. |
+  | `0002-multi-browser.md` | Por qué soportar Chrome **y** Firefox simultáneo, en lugar de uno solo. |
+  | `0003-orquestacion-batch.md` | Por qué Kubernetes Job/CronJob (y no `docker-compose` + cron del host, o un Deployment con sidecar). |
+  | `0004-estrategia-selectores.md` | Por qué la estrategia de selectores que usaron (estructura semántica vs `data-*` vs XPath posicional) y cómo planean adaptarse a cambios de DOM de ML. |
+  | `0005-estrategia-retries.md` | Por qué retries con backoff exponencial (y no circuit breaker, fail-fast, o sin retries). Parámetros elegidos (intentos, base delay) y por qué. |
+  | `0006-pre-commit-vs-ci.md` | Qué se valida en pre-commit local vs CI remoto, y por qué la división. Trade-off de tiempo de feedback vs costo de CI. |
 - Mantener las **buenas prácticas** ya exigidas en Parte 1: explicit waits, selectores en módulo aparte, logs estructurados, no commitear secrets, gitleaks en CI.
 
 ---
@@ -305,7 +316,12 @@ Para que no pierdan tiempo eligiendo, esto es lo que esperamos en cada stack:
 
 ### Plantilla de ADR (`docs/adr/0000-template.md`)
 
-Formato Michael Nygard, 1 página. Copien esto a `docs/adr/0000-template.md` y úsenlo como base para los 3 ADRs obligatorios.
+Formato Michael Nygard, 1 página. Copien esto a `docs/adr/0000-template.md` y úsenlo como base para los **4 ADRs obligatorios** (2 del menú + 2 propios).
+
+**Referencias:**
+- [Plantilla original de Michael Nygard](https://github.com/joelparkerhenderson/architecture-decision-record/blob/main/locales/en/templates/decision-record-template-by-michael-nygard/index.md) — la versión que adoptamos en este TP.
+- [Colección completa de Nygard](https://github.com/joelparkerhenderson/architecture-decision-record) — 30+ plantillas alternativas (MADR, Y-statement, OSSWatch, etc.) y 100+ ADRs reales de empresas para inspirarse.
+- [Documenting Architecture Decisions, Michael Nygard 2011](https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions) — el post original que inició la práctica.
 
 ```markdown
 # 000X — <Título corto, en imperativo>
@@ -334,7 +350,7 @@ Formato Michael Nygard, 1 página. Copien esto a `docs/adr/0000-template.md` y �
 - Links a docs, papers, charlas que informaron la decisión.
 ```
 
-**Ejemplo concreto** del primer ADR (`0001-selenium-vs-playwright.md`):
+**Ejemplo concreto** de un ADR (`0001-framework-automatizacion.md`):
 
 ```markdown
 # 0001 — Usamos Selenium WebDriver y no Playwright
@@ -533,7 +549,7 @@ Activar local: `pip install pre-commit && pre-commit install`. Documenten el com
    - Sección "Prerrequisitos cumplidos" mostrando evidencia del checklist del [TP 0](practica-0.html).
    - Cómo correr Parte 1 + Parte 2 (Docker, k3s/k3d).
    - Comandos exactos para reproducir el demo del Hit #8.
-3. **Carpeta `docs/adr/`** con como mínimo 3 ADRs.
+3. **Carpeta `docs/adr/`** con mínimo 4 ADRs (2 elegidos del menú + 2 de su elección).
 4. **Video** mostrando: Hit #4 corriendo (con JSON resultante), pipeline de CI verde con coverage ≥ 70 %, `kubectl apply -f k8s/` con Job completado y CronJob activo.
 5. **Mensaje en el canal Discord de la materia** con el link al repo y al video.
 
@@ -649,7 +665,7 @@ Total: 100 puntos (Hits #4–#8 + extras obligatorios). El Hit #9 es **bonus** y
 | Hit #7 — pipeline CI/CD con matriz de browsers, artifacts y gate de cobertura | 12 % |
 | Hit #7 — pre-commit hooks (gitleaks + linter + formatter) configurados y documentados | 5 % |
 | Hit #8 — `Job` + `CronJob` + `ConfigMap` + `PVC` corriendo en k3s/k3d | 15 % |
-| ADRs (mínimo 3, en `docs/adr/`) | 5 % |
+| ADRs (mínimo 4 en `docs/adr/` — 2 del menú propuesto + 2 de elección propia) | 5 % |
 | Modo headless configurable y operativo + checklist de auto-verificación cumplido | 10 % |
 | **Hit #9 (bonus, opcional)** — al menos uno de los 6 ítems del Hit #9 | **+10 %** |
 
