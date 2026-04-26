@@ -477,13 +477,131 @@ img {
   .content { padding: 20px 16px 40px; }
 }
 
+/* ============ INLINE TOC (Índice del documento) ============ */
+.toc-inline {
+  background: #f7faff;
+  border: 1px solid var(--light-gray);
+  border-left: 4px solid var(--mid-blue);
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 20px 0 32px;
+  font-size: 14px;
+}
+.toc-inline > summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--navy);
+  font-size: 15px;
+  padding: 4px 0;
+  list-style: none;
+  user-select: none;
+}
+.toc-inline > summary::-webkit-details-marker { display: none; }
+.toc-inline > summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 8px;
+  color: var(--accent);
+  transition: transform 0.15s ease;
+}
+.toc-inline[open] > summary::before { transform: rotate(90deg); }
+.toc-inline ul {
+  margin: 12px 0 4px;
+  padding-left: 20px;
+  list-style: none;
+}
+.toc-inline ul ul { margin: 4px 0; padding-left: 14px; }
+.toc-inline li { margin: 4px 0; }
+.toc-inline a {
+  color: var(--dark-blue);
+  text-decoration: none;
+  border-bottom: 1px dotted transparent;
+}
+.toc-inline a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.toc-inline > ul > li > a { font-weight: 600; }
+
+.toc-controls {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--light-gray);
+}
+.toc-btn {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--dark-blue);
+  background: white;
+  border: 1px solid var(--light-gray);
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.toc-btn:hover {
+  background: var(--mid-blue);
+  color: white;
+  border-color: var(--mid-blue);
+}
+
+/* ============ COLLAPSIBLE H2 SECTIONS ============ */
+details.section-collapsible {
+  margin: 40px 0 16px;
+}
+details.section-collapsible > summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--navy);
+  padding: 6px 0 6px 14px;
+  border-left: 5px solid var(--mid-blue);
+  position: relative;
+  user-select: none;
+}
+details.section-collapsible > summary::-webkit-details-marker { display: none; }
+details.section-collapsible > summary::after {
+  content: '▾';
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: var(--gray);
+  transition: transform 0.15s ease;
+}
+details.section-collapsible:not([open]) > summary::after {
+  transform: translateY(-50%) rotate(-90deg);
+}
+details.section-collapsible > summary:hover {
+  color: var(--accent);
+  border-left-color: var(--accent);
+}
+details.section-collapsible:not([open]) > summary {
+  border-left-color: var(--gray);
+  margin-bottom: 0;
+}
+/* Avoid double-margin on first h3 inside details */
+details.section-collapsible > h3:first-of-type,
+details.section-collapsible > p:first-of-type {
+  margin-top: 16px;
+}
+
 /* ============ PRINT ============ */
 @media print {
   .unlu-header { position: static; box-shadow: none; }
-  .toc-sidebar { display: none; }
+  .toc-sidebar, .toc-inline { display: none; }
   .layout { grid-template-columns: 1fr; }
   .content { padding: 0; max-width: 100%; }
   pre { box-shadow: none; }
   body { background: white; font-size: 11pt; }
   a { color: var(--navy); }
+  /* Force all collapsibles open when printing */
+  details.section-collapsible { display: block !important; }
+  details.section-collapsible > summary { list-style: none; pointer-events: none; }
+  details.section-collapsible > summary::after { display: none; }
 }

@@ -215,6 +215,126 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     <div style="display:inline-block;background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:12px;letter-spacing:0.6px;margin-bottom:14px;">TP
 0</div>
 
+    <details class="toc-inline" open>
+      <summary>📑 Índice del documento</summary>
+      <ul>
+      <li><a href="#tp-0--prerrequisitos"
+      id="toc-tp-0--prerrequisitos">TP 0 — Prerrequisitos</a>
+      <ul>
+      <li><a href="#instalación-de-k3s-y-primeros-pasos-con-kubernetes"
+      id="toc-instalación-de-k3s-y-primeros-pasos-con-kubernetes">Instalación
+      de k3s y primeros pasos con Kubernetes</a></li>
+      <li><a href="#por-qué-kubernetes-y-por-qué-k3s"
+      id="toc-por-qué-kubernetes-y-por-qué-k3s">¿Por qué Kubernetes y
+      por qué k3s?</a></li>
+      <li><a
+      href="#aviso-importante-cómo-va-a-vivir-este-cluster-en-tu-máquina"
+      id="toc-aviso-importante-cómo-va-a-vivir-este-cluster-en-tu-máquina">Aviso
+      importante: cómo va a vivir este cluster en tu máquina</a>
+      <ul>
+      <li><a href="#por-qué-este-tp-exige-esto-y-no-un-docker-compose"
+      id="toc-por-qué-este-tp-exige-esto-y-no-un-docker-compose">Por qué
+      este TP exige esto y no un <code>docker-compose</code></a></li>
+      </ul></li>
+      <li><a href="#requisitos-previos"
+      id="toc-requisitos-previos">Requisitos previos</a></li>
+      <li><a href="#camino-a--linux-nativo-o-wsl2-instalación-de-k3s"
+      id="toc-camino-a--linux-nativo-o-wsl2-instalación-de-k3s">Camino A
+      — Linux nativo o WSL2 (instalación de k3s)</a>
+      <ul>
+      <li><a href="#paso-1-instalar-k3s"
+      id="toc-paso-1-instalar-k3s">Paso 1: Instalar k3s</a></li>
+      <li><a href="#paso-2-verificar-que-el-cluster-está-vivo"
+      id="toc-paso-2-verificar-que-el-cluster-está-vivo">Paso 2:
+      Verificar que el cluster está vivo</a></li>
+      <li><a href="#paso-3-configurar-kubectl-para-no-necesitar-sudo"
+      id="toc-paso-3-configurar-kubectl-para-no-necesitar-sudo">Paso 3:
+      Configurar <code>kubectl</code> para no necesitar
+      <code>sudo</code></a></li>
+      <li><a href="#paso-4-cómo-cargar-una-imagen-docker-en-k3s"
+      id="toc-paso-4-cómo-cargar-una-imagen-docker-en-k3s">Paso 4: Cómo
+      cargar una imagen Docker en k3s</a></li>
+      <li><a href="#paso-5-tirar-abajo-k3s-cuando-termines-el-tp"
+      id="toc-paso-5-tirar-abajo-k3s-cuando-termines-el-tp">Paso 5:
+      Tirar abajo k3s cuando termines el TP</a></li>
+      </ul></li>
+      <li><a href="#camino-b--macos-o-windows-k3d"
+      id="toc-camino-b--macos-o-windows-k3d">Camino B — macOS o Windows
+      (k3d)</a>
+      <ul>
+      <li><a href="#paso-1-instalar-k3d"
+      id="toc-paso-1-instalar-k3d">Paso 1: Instalar k3d</a></li>
+      <li><a href="#paso-2-crear-un-cluster-k3s-adentro-de-docker"
+      id="toc-paso-2-crear-un-cluster-k3s-adentro-de-docker">Paso 2:
+      Crear un cluster k3s adentro de Docker</a></li>
+      <li><a href="#paso-3-verificar-el-cluster"
+      id="toc-paso-3-verificar-el-cluster">Paso 3: Verificar el
+      cluster</a></li>
+      <li><a href="#paso-4-cargar-una-imagen-docker-en-k3d"
+      id="toc-paso-4-cargar-una-imagen-docker-en-k3d">Paso 4: Cargar una
+      imagen Docker en k3d</a></li>
+      <li><a href="#paso-5-tirar-abajo-el-cluster-cuando-termines"
+      id="toc-paso-5-tirar-abajo-el-cluster-cuando-termines">Paso 5:
+      Tirar abajo el cluster cuando termines</a></li>
+      </ul></li>
+      <li><a
+      href="#comandos-básicos-de-kubectl-que-vas-a-usar-todo-el-tiempo"
+      id="toc-comandos-básicos-de-kubectl-que-vas-a-usar-todo-el-tiempo">Comandos
+      básicos de kubectl que vas a usar todo el tiempo</a></li>
+      <li><a
+      href="#hello-world-deployar-nginx-para-validar-que-todo-funciona"
+      id="toc-hello-world-deployar-nginx-para-validar-que-todo-funciona">Hello
+      world: deployar nginx para validar que todo funciona</a></li>
+      <li><a href="#conceptos-mínimos-que-vas-a-usar-en-el-hit-8"
+      id="toc-conceptos-mínimos-que-vas-a-usar-en-el-hit-8">Conceptos
+      mínimos que vas a usar en el Hit #8</a></li>
+      <li><a href="#troubleshooting-frecuente"
+      id="toc-troubleshooting-frecuente">Troubleshooting frecuente</a>
+      <ul>
+      <li><a href="#el-pod-queda-en-pending-y-no-arranca"
+      id="toc-el-pod-queda-en-pending-y-no-arranca">“El pod queda en
+      <code>Pending</code> y no arranca”</a></li>
+      <li><a href="#el-pod-arranca-pero-falla-con-crashloopbackoff"
+      id="toc-el-pod-arranca-pero-falla-con-crashloopbackoff">“El pod
+      arranca pero falla con <code>CrashLoopBackOff</code>”</a></li>
+      <li><a
+      href="#kubectl-no-encuentra-el-cluster-the-connection-to-the-server-localhost8080-was-refused"
+      id="toc-kubectl-no-encuentra-el-cluster-the-connection-to-the-server-localhost8080-was-refused">“kubectl
+      no encuentra el cluster
+      (<code>The connection to the server localhost:8080 was refused</code>)”</a></li>
+      <li><a href="#k3s-consume-mucha-ram"
+      id="toc-k3s-consume-mucha-ram">“k3s consume mucha RAM”</a></li>
+      </ul></li>
+      <li><a href="#lectura-recomendada-y-referencias"
+      id="toc-lectura-recomendada-y-referencias">Lectura recomendada y
+      referencias</a>
+      <ul>
+      <li><a
+      href="#documentación-oficial-lo-que-conviene-tener-bookmarkeado"
+      id="toc-documentación-oficial-lo-que-conviene-tener-bookmarkeado">Documentación
+      oficial (lo que conviene tener bookmarkeado)</a></li>
+      <li><a
+      href="#libros--ordenados-de-primer-contacto-a-producciónavanzado"
+      id="toc-libros--ordenados-de-primer-contacto-a-producciónavanzado">Libros
+      — ordenados de “primer contacto” a “producción/avanzado”</a></li>
+      <li><a
+      href="#papers-fundacionales--el-adn-intelectual-de-kubernetes"
+      id="toc-papers-fundacionales--el-adn-intelectual-de-kubernetes">Papers
+      fundacionales — el ADN intelectual de Kubernetes</a></li>
+      <li><a href="#recursos-comunitarios"
+      id="toc-recursos-comunitarios">Recursos comunitarios</a></li>
+      </ul></li>
+      <li><a href="#validación-obligatoria-previa-al-hit-8"
+      id="toc-validación-obligatoria-previa-al-hit-8">Validación
+      obligatoria previa al Hit #8</a></li>
+      </ul></li>
+      </ul>
+      <div class="toc-controls">
+        <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
+        <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
+      </div>
+    </details>
+
 <h1 id="tp-0--prerrequisitos">TP 0 — Prerrequisitos</h1>
 <h2 id="instalación-de-k3s-y-primeros-pasos-con-kubernetes">Instalación
 de k3s y primeros pasos con Kubernetes</h2>
@@ -874,6 +994,62 @@ sirve”).</label></li>
     · Dr. David Petrocelli
   </div>
 </footer>
+
+<script>
+// Wrap each H2 (and its following content until the next H2) in a <details open>
+// element so users can collapse/expand sections.
+(function () {
+  const main = document.querySelector('main.content');
+  if (!main) return;
+
+  // Collect direct-child H2 headings so we don't touch nested ones (e.g., inside details we'll create)
+  const headings = Array.from(main.children).filter(el => el.tagName === 'H2');
+
+  headings.forEach(h2 => {
+    const details = document.createElement('details');
+    details.open = true;
+    details.className = 'section-collapsible';
+
+    const summary = document.createElement('summary');
+    // Move heading content (incl. anchor) into the summary so anchors keep working
+    summary.innerHTML = h2.innerHTML;
+    if (h2.id) summary.id = h2.id;
+    details.appendChild(summary);
+
+    // Move siblings until next H2 into details
+    const parent = h2.parentNode;
+    let next = h2.nextSibling;
+    parent.replaceChild(details, h2);
+    while (next && !(next.nodeType === 1 && next.tagName === 'H2')) {
+      const node = next;
+      next = next.nextSibling;
+      details.appendChild(node);
+    }
+  });
+
+  // If there's a hash in the URL, ensure the target's <details> is open
+  function openDetailsForHash(hash) {
+    if (!hash) return;
+    const target = document.getElementById(hash.replace(/^#/, ''));
+    if (!target) return;
+    let p = target.closest('details');
+    while (p) { p.open = true; p = p.parentElement && p.parentElement.closest('details'); }
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  openDetailsForHash(window.location.hash);
+  window.addEventListener('hashchange', () => openDetailsForHash(window.location.hash));
+
+  // Wire up "Expand all" / "Collapse all" controls in the inline TOC
+  document.querySelectorAll('.toc-controls [data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const action = btn.getAttribute('data-action');
+      const open = action === 'expand-all';
+      document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
+    });
+  });
+})();
+</script>
 
 </body>
 </html>

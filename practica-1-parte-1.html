@@ -195,6 +195,106 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     <div style="display:inline-block;background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:12px;letter-spacing:0.6px;margin-bottom:14px;">TP
 1 · PARTE 1</div>
 
+    <details class="toc-inline" open>
+      <summary>📑 Índice del documento</summary>
+      <ul>
+      <li><a href="#trabajo-práctico-nº-1--parte-1"
+      id="toc-trabajo-práctico-nº-1--parte-1">Trabajo Práctico Nº 1 —
+      Parte 1</a>
+      <ul>
+      <li><a
+      href="#automatización-web-con-selenium--pruebas-e2e-multi-browser-sobre-mercadolibre"
+      id="toc-automatización-web-con-selenium--pruebas-e2e-multi-browser-sobre-mercadolibre">Automatización
+      Web con Selenium — Pruebas E2E multi-browser sobre
+      MercadoLibre</a></li>
+      <li><a href="#requisitos-consideraciones-y-formato-de-entrega"
+      id="toc-requisitos-consideraciones-y-formato-de-entrega">Requisitos,
+      consideraciones y formato de entrega</a></li>
+      <li><a href="#contenidos-del-programa-relacionados"
+      id="toc-contenidos-del-programa-relacionados">Contenidos del
+      programa relacionados</a></li>
+      <li><a href="#práctica" id="toc-práctica">Práctica</a></li>
+      <li><a href="#conceptos-mínimos-antes-de-empezar"
+      id="toc-conceptos-mínimos-antes-de-empezar">Conceptos mínimos
+      antes de empezar</a>
+      <ul>
+      <li><a href="#1-qué-es-webdriver" id="toc-1-qué-es-webdriver">1)
+      Qué es WebDriver</a></li>
+      <li><a
+      href="#2-explicit-waits-vs-timesleep-esto-te-bajan-la-nota-si-lo-mezclás-mal"
+      id="toc-2-explicit-waits-vs-timesleep-esto-te-bajan-la-nota-si-lo-mezclás-mal">2)
+      Explicit waits vs <code>time.sleep</code> (esto te bajan la nota
+      si lo mezclás mal)</a></li>
+      <li><a href="#3-selectores-estables-vs-frágiles"
+      id="toc-3-selectores-estables-vs-frágiles">3) Selectores estables
+      vs frágiles</a></li>
+      <li><a href="#4-headless-vs-headed"
+      id="toc-4-headless-vs-headed">4) Headless vs headed</a></li>
+      <li><a href="#hit-1" id="toc-hit-1">Hit #1</a></li>
+      <li><a href="#hit-2" id="toc-hit-2">Hit #2</a></li>
+      <li><a href="#hit-3" id="toc-hit-3">Hit #3</a></li>
+      </ul></li>
+      <li><a href="#output-esperado-por-hit-autoverificación"
+      id="toc-output-esperado-por-hit-autoverificación">Output esperado
+      por hit (autoverificación)</a>
+      <ul>
+      <li><a href="#hit-1-1" id="toc-hit-1-1">Hit #1</a></li>
+      <li><a href="#hit-2-1" id="toc-hit-2-1">Hit #2</a></li>
+      <li><a href="#hit-3-1" id="toc-hit-3-1">Hit #3</a></li>
+      </ul></li>
+      <li><a
+      href="#common-pitfalls-cosas-con-las-que-se-choca-todo-el-mundo"
+      id="toc-common-pitfalls-cosas-con-las-que-se-choca-todo-el-mundo">Common
+      pitfalls (cosas con las que se choca todo el mundo)</a>
+      <ul>
+      <li><a
+      href="#mercadolibre-detecta-chrome-headless-y-devuelve-empty-state"
+      id="toc-mercadolibre-detecta-chrome-headless-y-devuelve-empty-state">MercadoLibre
+      detecta Chrome headless y devuelve empty-state</a></li>
+      <li><a href="#banner-de-cookies-intercepta-clicks"
+      id="toc-banner-de-cookies-intercepta-clicks">Banner de cookies
+      intercepta clicks</a></li>
+      <li><a href="#geographic-redirect-a-otros-tlds"
+      id="toc-geographic-redirect-a-otros-tlds">Geographic redirect a
+      otros TLDs</a></li>
+      <li><a href="#lazy-loading-de-resultados"
+      id="toc-lazy-loading-de-resultados">Lazy loading de
+      resultados</a></li>
+      <li><a href="#selectores-que-cambian-al-refresh"
+      id="toc-selectores-que-cambian-al-refresh">Selectores que cambian
+      al refresh</a></li>
+      <li><a href="#timeouts-diferentes-en-chrome-y-firefox"
+      id="toc-timeouts-diferentes-en-chrome-y-firefox">Timeouts
+      diferentes en Chrome y Firefox</a></li>
+      </ul></li>
+      <li><a href="#estructura-del-repositorio-template-obligatorio"
+      id="toc-estructura-del-repositorio-template-obligatorio">Estructura
+      del repositorio (template obligatorio)</a>
+      <ul>
+      <li><a href="#readme-raíz--esqueleto-sugerido"
+      id="toc-readme-raíz--esqueleto-sugerido">README raíz — esqueleto
+      sugerido</a></li>
+      </ul></li>
+      <li><a href="#decisiones-de-diseño"
+      id="toc-decisiones-de-diseño">Decisiones de diseño</a></li>
+      <li><a href="#comparativa-chrome-vs-firefox"
+      id="toc-comparativa-chrome-vs-firefox">Comparativa Chrome vs
+      Firefox</a></li>
+      <li><a href="#herramientas-de-ia-usadas"
+      id="toc-herramientas-de-ia-usadas">Herramientas de IA
+      usadas</a></li>
+      <li><a href="#video-explicativo" id="toc-video-explicativo">Video
+      explicativo</a></li>
+      <li><a href="#limitaciones-conocidas"
+      id="toc-limitaciones-conocidas">Limitaciones conocidas</a></li>
+      </ul></li>
+      </ul>
+      <div class="toc-controls">
+        <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
+        <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
+      </div>
+    </details>
+
 <h1 id="trabajo-práctico-nº-1--parte-1">Trabajo Práctico Nº 1 — Parte
 1</h1>
 <h2
@@ -663,6 +763,62 @@ Firefox</h2>
     · Dr. David Petrocelli
   </div>
 </footer>
+
+<script>
+// Wrap each H2 (and its following content until the next H2) in a <details open>
+// element so users can collapse/expand sections.
+(function () {
+  const main = document.querySelector('main.content');
+  if (!main) return;
+
+  // Collect direct-child H2 headings so we don't touch nested ones (e.g., inside details we'll create)
+  const headings = Array.from(main.children).filter(el => el.tagName === 'H2');
+
+  headings.forEach(h2 => {
+    const details = document.createElement('details');
+    details.open = true;
+    details.className = 'section-collapsible';
+
+    const summary = document.createElement('summary');
+    // Move heading content (incl. anchor) into the summary so anchors keep working
+    summary.innerHTML = h2.innerHTML;
+    if (h2.id) summary.id = h2.id;
+    details.appendChild(summary);
+
+    // Move siblings until next H2 into details
+    const parent = h2.parentNode;
+    let next = h2.nextSibling;
+    parent.replaceChild(details, h2);
+    while (next && !(next.nodeType === 1 && next.tagName === 'H2')) {
+      const node = next;
+      next = next.nextSibling;
+      details.appendChild(node);
+    }
+  });
+
+  // If there's a hash in the URL, ensure the target's <details> is open
+  function openDetailsForHash(hash) {
+    if (!hash) return;
+    const target = document.getElementById(hash.replace(/^#/, ''));
+    if (!target) return;
+    let p = target.closest('details');
+    while (p) { p.open = true; p = p.parentElement && p.parentElement.closest('details'); }
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  openDetailsForHash(window.location.hash);
+  window.addEventListener('hashchange', () => openDetailsForHash(window.location.hash));
+
+  // Wire up "Expand all" / "Collapse all" controls in the inline TOC
+  document.querySelectorAll('.toc-controls [data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const action = btn.getAttribute('data-action');
+      const open = action === 'expand-all';
+      document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
+    });
+  });
+})();
+</script>
 
 </body>
 </html>
