@@ -4,7 +4,7 @@
 
 **Fecha de Entrega: 25/04/2026 (entrega cerrada)**
 
-> ✅ **Entrega cerrada.** Esta consigna queda como referencia. El trabajo continúa en la [Parte 2](practica-1-parte-2.html) (Hits #4–#9, entrega 02/05/2026), que **requiere** haber completado el [TP 0 — Prerrequisitos k3s](practica-0.html) antes del Hit #8.
+> ✅ **Entrega cerrada.** Esta consigna queda como referencia. El trabajo continúa en la [Parte 2](practica-1-parte-2.html) (Hits #4–#8, entrega 02/05/2026), que **requiere** haber completado el [TP 0 — Prerrequisitos k3s](practica-0.html) antes del Hit #7.
 
 ---
 
@@ -263,7 +263,7 @@ Esto es lo mínimo que esperamos ver al clonar el repo:
 ## Cómo correr
 
 ### Requisitos previos
-- Chrome y Firefox instalados (o usar el contenedor del Hit #7 — Parte 2)
+- Chrome y Firefox instalados (o usar el contenedor de la Infra base — Parte 2)
 - Python 3.13 / Node 20 / Java 17
 
 ### Ejecución

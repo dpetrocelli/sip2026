@@ -6,7 +6,7 @@
 
 **Pre-requisitos:**
 - Haber entregado la **Parte 1** (Hits #1–#3). Esta segunda parte continúa el mismo proyecto y arranca con el Hit #4 (extracción estructurada a JSON), que es la base sobre la que se construye el resto.
-- Haber completado la guía del **TP 0 — Prerrequisitos (k3s)** antes de empezar el Hit #8. Sin un cluster k3s/k3d funcional no podés cumplir esa parte.
+- Haber completado la guía del **TP 0 — Prerrequisitos (k3s)** antes de empezar el Hit #7. Sin un cluster k3s/k3d funcional no podés cumplir esa parte.
 
 ---
 
@@ -113,7 +113,9 @@ Los tests deben correr en CI tanto en Chrome como en Firefox.
 
 ---
 
-### Hit #7
+### Infra base obligatoria — Dockerfile + docker-compose + CI/CD + pre-commit
+
+> 🚧 **Sin esto no se puede evaluar la entrega.** El resto de los hits se valida **a través** de esta infra (la cátedra corre tu pipeline + tu `docker compose up` + tu Job en k8s para evaluar). Es requisito bloqueante (no suma puntos en la rúbrica, pero sin esto la nota es 0).
 
 Construya un **Dockerfile** que empaquete el scraper junto con Chrome, Firefox y los drivers, de modo que se pueda ejecutar con un único comando:
 
@@ -147,11 +149,11 @@ Documente en el README cómo activarlos: `pre-commit install` (Python/Node) o el
 
 ---
 
-### Hit #8 — Despliegue en Kubernetes (k3s)
+### Hit #7 — Despliegue en Kubernetes (k3s)
 
 **Pre-requisito:** haber completado el [TP 0](practica-0.html) y tener un cluster k3s o k3d funcional.
 
-Empaquete el scraper construido en el Hit #7 como una carga de trabajo de Kubernetes. El objetivo es ir más allá de "corre en mi máquina con Docker" y demostrar que la solución se puede desplegar en un orquestador.
+Empaquete el scraper construido en la Infra base como una carga de trabajo de Kubernetes. El objetivo es ir más allá de "corre en mi máquina con Docker" y demostrar que la solución se puede desplegar en un orquestador.
 
 #### 8.1 — `Job` one-off
 
@@ -260,7 +262,7 @@ spec:
 #### Recetario de ejecución
 
 ```bash
-# 1. Construir la imagen Docker (igual que en Hit #7)
+# 1. Construir la imagen Docker (igual que en Infra base)
 docker build -t ml-scraper:latest .
 
 # 2. Cargar la imagen en el cluster
@@ -291,7 +293,7 @@ kubectl get jobs --watch  # vas a ver corridas cada hora
 kubectl delete -f k8s/
 ```
 
-#### Entregables del Hit #8
+#### Entregables del Hit #7
 
 - Carpeta `k8s/` con los 4 YAMLs.
 - Sección en el README explicando: cómo levantar el cluster (referenciando TP 0), cómo cargar la imagen, cómo aplicar los manifiestos, cómo verificar.
@@ -383,7 +385,7 @@ herramienta más usada en la industria para QA.
 - Selenium docs: https://www.selenium.dev/documentation/
 ```
 
-### Esqueleto del Dockerfile multi-stage (Hit #7)
+### Esqueleto del Dockerfile multi-stage (Infra base)
 
 Esto es un punto de partida. Adapten al lenguaje. La idea es **multi-stage** para que la imagen final sea lo más chica posible (no necesitan compiladores ni headers en runtime).
 
@@ -461,7 +463,7 @@ CMD ["--browser", "chrome"]
 >
 > Equivalente Java: `options.addArguments("--user-agent=...")`. Equivalente JS: `options.addArguments('--user-agent=...')` o `setUserAgent()` en Puppeteer/Playwright. Sin esto, el pipeline de CI funciona pero los JSON salen vacíos.
 
-### Esqueleto del workflow de CI (`.github/workflows/scrape.yml`, Hit #7)
+### Esqueleto del workflow de CI (`.github/workflows/scrape.yml`, Infra base)
 
 ```yaml
 name: Scraper CI
@@ -562,7 +564,7 @@ Activar local: `pip install pre-commit && pre-commit install`. Documenten el com
 2. **README raíz actualizado** con:
    - Sección "Prerrequisitos cumplidos" mostrando evidencia del checklist del [TP 0](practica-0.html).
    - Cómo correr Parte 1 + Parte 2 (Docker, k3s/k3d).
-   - Comandos exactos para reproducir el demo del Hit #8.
+   - Comandos exactos para reproducir el demo del Hit #7.
 3. **Carpeta `docs/adr/`** con mínimo 4 ADRs (2 elegidos del menú + 2 de su elección).
 4. **Video** mostrando: Hit #4 corriendo (con JSON resultante), pipeline de CI verde con coverage ≥ 70 %, `kubectl apply -f k8s/` con Job completado y CronJob activo.
 5. **Mensaje en el canal Discord de la materia** con el link al repo y al video.
@@ -653,16 +655,16 @@ Si el Job termina en `Complete` y los logs muestran los 3 JSON generados, están
 
 ---
 
-### Hit #9 — Capacidad extendida (obligatorio, mínimo 1 de 6)
+### Hit #8 — Capacidad extendida (obligatorio, mínimo 1 de 6)
 
 Extienda el scraper con **al menos una** de las siguientes capacidades. Hacer más de una suma puntos extra (hasta 2 ítems sumando), pero la entrega NO se acepta sin al menos 1.
 
 1. **Paginación**: traer los primeros 30 resultados en lugar de 10, navegando hasta 3 páginas.
 2. **Comparación de precios**: para cada producto, calcular precio mínimo, máximo, mediana y desvío estándar entre los resultados extraídos. Imprimir tabla resumen.
-3. **Histórico con PostgreSQL**: guardar los resultados en una instancia PostgreSQL con timestamp, para detectar cambios de precio entre corridas del CronJob (Hit #8). Implementación esperada: deployment de Postgres en el mismo cluster k3s (StatefulSet + PVC + Service), credenciales via `Secret`, schema migrations (Alembic / Flyway / Liquibase / SQL files versionados). Tabla mínima: `(producto, titulo, precio, link, tienda_oficial, scraped_at)`.
+3. **Histórico con PostgreSQL**: guardar los resultados en una instancia PostgreSQL con timestamp, para detectar cambios de precio entre corridas del CronJob (Hit #7). Implementación esperada: deployment de Postgres en el mismo cluster k3s (StatefulSet + PVC + Service), credenciales via `Secret`, schema migrations (Alembic / Flyway / Liquibase / SQL files versionados). Tabla mínima: `(producto, titulo, precio, link, tienda_oficial, scraped_at)`.
 4. **Reporte HTML**: generar una página estática (con GitHub Pages publicada por el pipeline) que muestre los resultados de la última corrida en una tabla navegable.
 5. **Page Object Model**: refactorizar el scraper para separar el código de navegación (`SearchPage`, `ResultsPage`) del código de extracción y de los tests.
-6. **Helm Chart**: empaquetar los manifiestos del Hit #8 como un chart con `values.yaml` parametrizable.
+6. **Helm Chart**: empaquetar los manifiestos del Hit #7 como un chart con `values.yaml` parametrizable.
 
 ---
 
@@ -673,7 +675,7 @@ Extienda el scraper con **al menos una** de las siguientes capacidades. Hacer m�
 Estos no suman puntos — son condición necesaria para que la entrega sea **corregible**. Si falta cualquiera de los 4, la nota es 0.
 
 - **TP 0 cumplido** — checklist de prerrequisitos k3s con evidencia en el README (`kubectl get nodes` Ready, nginx-test corrió, sé importar imágenes al cluster).
-- **Hit #7 — Infra base** completa y funcional:
+- **Infra base** completa y funcional:
   - `Dockerfile` multi-stage con versiones pineadas (no `:latest`).
   - `docker-compose.yml` que levanta el scraper con un solo comando.
   - Pipeline GitHub Actions corriendo en verde con matriz Chrome/Firefox + gate de cobertura ≥ 70 % + gitleaks + artifacts publicados.
@@ -688,8 +690,8 @@ Estos no suman puntos — son condición necesaria para que la entrega sea **cor
 | **Hit #4** — extracción estructurada a JSON de los 3 productos con todos los campos | 25 % |
 | **Hit #5** — manejo robusto de errores (selectores faltantes, timeouts, retries con backoff) | 15 % |
 | **Hit #6** — tests automatizados + cobertura ≥ 70 % validada en CI | 15 % |
-| **Hit #8** — `Job` + `CronJob` + `ConfigMap` + `PVC` corriendo en k3s/k3d | 20 % |
-| **Hit #9** — al menos 1 capacidad extendida implementada (paginación, stats, PostgreSQL, HTML report, POM o Helm) | 15 % |
+| **Hit #7** — `Job` + `CronJob` + `ConfigMap` + `PVC` corriendo en k3s/k3d | 20 % |
+| **Hit #8** — al menos 1 capacidad extendida implementada (paginación, stats, PostgreSQL, HTML report, POM o Helm) | 15 % |
 | **ADRs** (mínimo 4 en `docs/adr/` — 2 del menú propuesto + 2 de elección propia) | 10 % |
 
 ---
