@@ -1,0 +1,52 @@
+# Control de versiones
+.git/
+.gitignore
+
+# Cache de Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+ENV/
+
+# Salidas del scraper (se montan como volúmenes en tiempo de ejecución)
+output/
+screenshots/
+logs/
+
+# Cache de herramientas de desarrollo
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE y editors
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Secretos (nunca en la imagen)
+.env
+.env.*
+*.pem
+*.key
+
+# Documentación y archivos de infra de k8s (no necesarios en la imagen)
+docs/
+hit8/
+
+# OS
+.DS_Store
+Thumbs.db

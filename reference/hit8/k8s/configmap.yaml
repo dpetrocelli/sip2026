@@ -1,0 +1,33 @@
+# ConfigMap con toda la configuración del scraper externalizada.
+# Al marcar immutable: true (disponible desde k8s 1.21) el API server
+# deja de vigilar cambios, lo que reduce carga en clusters grandes y
+# previene modificaciones accidentales en runtime.
+# Para cambiar config: borrar y recrear el ConfigMap, luego reiniciar el Job/CronJob.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: scraper-config
+  namespace: ml-scraper
+  labels:
+    app.kubernetes.io/name: ml-scraper
+    app.kubernetes.io/instance: ml-scraper-production
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: config
+    app.kubernetes.io/managed-by: kubectl
+# immutable: true previene cambios en caliente y reduce watch-pressure en etcd.
+# Requiere Kubernetes >= 1.21 (feature gate ImmutableEphemeralVolumes, GA en 1.21).
+immutable: true
+data:
+  # Browser a usar: chrome | firefox
+  BROWSER: "chrome"
+  # Modo headless: true ejecuta sin UI gráfica (obligatorio en contenedores)
+  HEADLESS: "true"
+  # Nivel de log: DEBUG | INFO | WARNING | ERROR
+  LOG_LEVEL: "INFO"
+  # Lista de productos — un producto por línea.
+  # El scraper debe leer esta variable y dividir por \n para obtener la lista.
+  # El bloque literal (|) preserva los saltos de línea.
+  PRODUCTS: |
+    Bicicleta rodado 29
+    iPhone 16 Pro Max
+    GeForce RTX 5090

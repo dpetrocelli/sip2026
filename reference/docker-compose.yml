@@ -1,0 +1,162 @@
+# =============================================================================
+# docker-compose.yml — Scraper Selenium MercadoLibre — SIP 2026
+#
+# Uso rápido:
+#   docker compose run --rm hit5          # corre el hit más completo
+#   docker compose run --rm hit1          # corre hit1
+#   BROWSER=firefox docker compose run --rm hit2
+#
+# Variables de entorno leídas del shell:
+#   BROWSER    chrome|firefox  (default: chrome)
+#   HEADLESS   true|false      (default: true)
+#
+# Para correr todos los hits en secuencia (raramente necesario):
+#   docker compose up
+# =============================================================================
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # hit1 — Scraper básico Chrome hardcodeado
+  # ---------------------------------------------------------------------------
+  hit1:
+    build:
+      context: .
+      target: hit1
+    image: ml-scraper:hit1
+    environment:
+      BROWSER: "${BROWSER:-chrome}"
+      HEADLESS: "${HEADLESS:-true}"
+    volumes:
+      - ./output:/app/output
+      - ./screenshots:/app/screenshots
+      - ./logs:/app/logs
+    # No reiniciar automáticamente — es un job de una sola pasada
+    restart: "no"
+
+  # ---------------------------------------------------------------------------
+  # hit2 — Browser factory + soporte Chrome/Firefox
+  # ---------------------------------------------------------------------------
+  hit2:
+    build:
+      context: .
+      target: hit2
+    image: ml-scraper:hit2
+    environment:
+      BROWSER: "${BROWSER:-chrome}"
+      HEADLESS: "${HEADLESS:-true}"
+    volumes:
+      - ./output:/app/output
+      - ./screenshots:/app/screenshots
+      - ./logs:/app/logs
+    restart: "no"
+
+  # ---------------------------------------------------------------------------
+  # hit3 — Filtros DOM + screenshot
+  # ---------------------------------------------------------------------------
+  hit3:
+    build:
+      context: .
+      target: hit3
+    image: ml-scraper:hit3
+    environment:
+      BROWSER: "${BROWSER:-chrome}"
+      HEADLESS: "${HEADLESS:-true}"
+    volumes:
+      - ./output:/app/output
+      - ./screenshots:/app/screenshots
+      - ./logs:/app/logs
+    restart: "no"
+
+  # ---------------------------------------------------------------------------
+  # hit4 — Extracción estructurada JSON
+  # ---------------------------------------------------------------------------
+  hit4:
+    build:
+      context: .
+      target: hit4
+    image: ml-scraper:hit4
+    environment:
+      BROWSER: "${BROWSER:-chrome}"
+      HEADLESS: "${HEADLESS:-true}"
+    volumes:
+      - ./output:/app/output
+      - ./screenshots:/app/screenshots
+      - ./logs:/app/logs
+    restart: "no"
+
+  # ---------------------------------------------------------------------------
+  # hit5 — Robustez: retries, ml_selectors, logging rotativo
+  # Imagen default (la más completa)
+  # ---------------------------------------------------------------------------
+  hit5:
+    build:
+      context: .
+      target: hit5
+    image: ml-scraper:hit5
+    environment:
+      BROWSER: "${BROWSER:-chrome}"
+      HEADLESS: "${HEADLESS:-true}"
+      LOG_LEVEL: "${LOG_LEVEL:-INFO}"
+    volumes:
+      - ./output:/app/output
+      - ./screenshots:/app/screenshots
+      - ./logs:/app/logs
+    restart: "no"
+
+  # ---------------------------------------------------------------------------
+  # dev — Servicio de desarrollo con hot-reload
+  #
+  # Monta el directorio raíz completo en /app, por lo que cualquier cambio
+  # en el código fuente se refleja sin rebuilds.
+  # Para correr un hit específico:
+  #   docker compose run --rm dev python hit5/main.py
+  #   docker compose run --rm dev python hit3/main.py --browser firefox
+  # ---------------------------------------------------------------------------
+  dev:
+    build:
+      context: .
+      target: base
+    image: ml-scraper:dev
+    environment:
+      BROWSER: "${BROWSER:-chrome}"
+      HEADLESS: "${HEADLESS:-true}"
+      LOG_LEVEL: "${LOG_LEVEL:-DEBUG}"
+      PYTHONPATH: /app
+    volumes:
+      # Montaje del código fuente completo — permite editar sin rebuild
+      - .:/app
+      # Preservar el cache de pip instalado en la imagen (no pisarlo con el mount)
+      - /app/.venv
+    working_dir: /app
+    # Comando por defecto: shell interactivo
+    entrypoint: ["python"]
+    command: ["-c", "print('Contenedor dev listo. Corré: python hit5/main.py')"]
+    restart: "no"
+
+  # ---------------------------------------------------------------------------
+  # lint — Corre ruff check sobre todo el código Python
+  #
+  # Uso:
+  #   docker compose run --rm lint
+  # ---------------------------------------------------------------------------
+  lint:
+    build:
+      context: .
+      target: base
+    image: ml-scraper:dev
+    # ruff no está en requirements.txt (es dev dependency de pyproject.toml),
+    # así que lo instalamos on-the-fly. En un pipeline real se agregaría
+    # al stage base o a un stage lint dedicado.
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        pip install --quiet ruff && \
+        ruff check /app/hit1 /app/hit2 /app/hit3 /app/hit4 /app/hit5 && \
+        echo "Lint OK"
+    volumes:
+      - .:/app:ro
+    working_dir: /app
+    restart: "no"
+    # Ejecutar como root para poder instalar ruff (solo en este servicio utilitario)
+    user: root

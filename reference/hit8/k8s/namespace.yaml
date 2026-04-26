@@ -1,0 +1,14 @@
+# Namespace dedicado para aislar todos los recursos del scraper.
+# Permite aplicar ResourceQuotas y NetworkPolicies por namespace
+# sin afectar otros workloads del cluster.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ml-scraper
+  labels:
+    # Labels oficiales recomendadas por Kubernetes (KEP-2, well-known labels)
+    app.kubernetes.io/name: ml-scraper
+    app.kubernetes.io/instance: ml-scraper-production
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: namespace
+    app.kubernetes.io/managed-by: kubectl

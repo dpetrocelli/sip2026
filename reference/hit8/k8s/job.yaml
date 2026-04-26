@@ -1,0 +1,98 @@
+# Job one-off: ejecuta el scraper una sola vez contra los 3 productos.
+# backoffLimit: 2 → Kubernetes reintentará el Pod hasta 2 veces antes de marcar
+# el Job como Failed. Combinado con restartPolicy: OnFailure, el mismo Pod
+# se reinicia en el mismo nodo (mantiene el PVC montado entre intentos).
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: scraper-once
+  namespace: ml-scraper
+  labels:
+    app.kubernetes.io/name: ml-scraper
+    app.kubernetes.io/instance: ml-scraper-production
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: batch-job
+    app.kubernetes.io/managed-by: kubectl
+spec:
+  # Máximo de reintentos antes de declarar el Job fallido.
+  backoffLimit: 2
+  # Tiempo máximo de ejecución en segundos (20 minutos).
+  # Previene Jobs zombi si el scraper se cuelga.
+  activeDeadlineSeconds: 1200
+  # Cuánto tiempo conservar el Job después de completar (1 hora).
+  # ttlSecondsAfterFinished requiere feature gate TTLAfterFinished (GA desde 1.23).
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ml-scraper
+        app.kubernetes.io/instance: ml-scraper-production
+        app.kubernetes.io/version: "1.0.0"
+        app.kubernetes.io/component: batch-job
+        app.kubernetes.io/managed-by: kubectl
+    spec:
+      # OnFailure: el kubelet reinicia el contenedor en el mismo Pod si falla.
+      # (no se puede usar Always en un Job)
+      restartPolicy: OnFailure
+
+      # Contexto de seguridad a nivel Pod: aplica a todos los contenedores.
+      securityContext:
+        # Fuerza que ningún contenedor corra como root.
+        runAsNonRoot: true
+        # UID 1000 = usuario "scraper" creado en el Dockerfile.
+        runAsUser: 1000
+        runAsGroup: 1000
+        # Evita que procesos del contenedor puedan escribir en el sistema de archivos
+        # del nodo a través de /proc/self/fd.
+        seccompProfile:
+          type: RuntimeDefault
+
+      containers:
+        - name: scraper
+          # Imagen construida en el Hit #7. imagePullPolicy: IfNotPresent evita
+          # que k8s intente bajarla de un registry cuando ya está cargada localmente
+          # con k3d image import o k3s ctr images import.
+          image: ml-scraper:latest
+          imagePullPolicy: IfNotPresent
+
+          # Contexto de seguridad a nivel contenedor (sobreescribe/complementa el Pod-level).
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            # false porque Selenium/Chrome escriben archivos temporales en /tmp y /home.
+            # Si el scraper no usara browsers podría ser true.
+            readOnlyRootFilesystem: false
+            # Previene que el proceso hijo obtenga más privilegios que el padre.
+            allowPrivilegeEscalation: false
+            # Descarta todas las Linux capabilities (principio de mínimo privilegio).
+            capabilities:
+              drop:
+                - ALL
+
+          # Carga todas las claves del ConfigMap como variables de entorno.
+          # El scraper lee BROWSER, HEADLESS, LOG_LEVEL y PRODUCTS desde el entorno.
+          envFrom:
+            - configMapRef:
+                name: scraper-config
+
+          # Recursos: requests = lo que el scheduler garantiza,
+          # limits = el techo que el kernel enforce (OOMKill si se supera memoria).
+          # Chrome headless es intensivo en memoria; 512Mi es el mínimo viable.
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+
+          volumeMounts:
+            # El scraper escribe los JSON y screenshots en /app/output.
+            - name: output
+              mountPath: /app/output
+
+      volumes:
+        - name: output
+          persistentVolumeClaim:
+            claimName: scraper-output

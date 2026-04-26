@@ -1,0 +1,104 @@
+# CronJob: ejecuta el mismo scraping automáticamente cada hora.
+# Kubernetes crea un Job por cada disparo del schedule.
+# successfulJobsHistoryLimit y failedJobsHistoryLimit controlan cuántos
+# Jobs completados/fallidos se conservan (para inspeccionar logs históricos).
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: scraper-hourly
+  namespace: ml-scraper
+  labels:
+    app.kubernetes.io/name: ml-scraper
+    app.kubernetes.io/instance: ml-scraper-production
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: cronjob
+    app.kubernetes.io/managed-by: kubectl
+spec:
+  # Formato cron estándar: minuto hora día-mes mes día-semana
+  # "0 * * * *" = al minuto 0 de cada hora, todos los días.
+  schedule: "0 * * * *"
+
+  # Política ante solapamiento: si el Job anterior sigue corriendo cuando
+  # llega la hora del siguiente disparo.
+  # Forbid = saltear la corrida nueva; evita scraping duplicado y saturación del PVC.
+  concurrencyPolicy: Forbid
+
+  # Ventana de tiempo (en segundos) para iniciar el Job si el scheduler
+  # lo perdió (ej: cluster reiniciado). 300s = 5 minutos de gracia.
+  startingDeadlineSeconds: 300
+
+  # Cuántos Jobs exitosos conservar para inspección de logs.
+  successfulJobsHistoryLimit: 3
+
+  # Cuántos Jobs fallidos conservar (para diagnóstico; 1 es suficiente).
+  failedJobsHistoryLimit: 1
+
+  jobTemplate:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ml-scraper
+        app.kubernetes.io/instance: ml-scraper-production
+        app.kubernetes.io/version: "1.0.0"
+        app.kubernetes.io/component: cronjob
+        app.kubernetes.io/managed-by: kubectl
+    spec:
+      # Mismo backoffLimit que el Job one-off para consistencia.
+      backoffLimit: 2
+      # 20 minutos máximo por corrida; si el scraper se cuelga, Kubernetes lo mata.
+      activeDeadlineSeconds: 1200
+
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: ml-scraper
+            app.kubernetes.io/instance: ml-scraper-production
+            app.kubernetes.io/version: "1.0.0"
+            app.kubernetes.io/component: cronjob
+            app.kubernetes.io/managed-by: kubectl
+        spec:
+          restartPolicy: OnFailure
+
+          # Mismo securityContext que el Job one-off.
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            seccompProfile:
+              type: RuntimeDefault
+
+          containers:
+            - name: scraper
+              image: ml-scraper:latest
+              imagePullPolicy: IfNotPresent
+
+              securityContext:
+                runAsNonRoot: true
+                runAsUser: 1000
+                runAsGroup: 1000
+                readOnlyRootFilesystem: false
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+
+              envFrom:
+                - configMapRef:
+                    name: scraper-config
+
+              # Mismos límites de recursos que el Job one-off.
+              resources:
+                requests:
+                  memory: "256Mi"
+                  cpu: "250m"
+                limits:
+                  memory: "512Mi"
+                  cpu: "500m"
+
+              volumeMounts:
+                - name: output
+                  mountPath: /app/output
+
+          volumes:
+            - name: output
+              persistentVolumeClaim:
+                claimName: scraper-output

@@ -1,0 +1,54 @@
+# Pre-commit hooks — SIP 2026 Selenium Reference
+#
+# Activación (1 vez por clone):
+#   pip install pre-commit
+#   pre-commit install
+#
+# Después, cada `git commit` corre estos hooks. Si alguno falla,
+# el commit no se concreta hasta arreglarlo.
+#
+# Para correr todos los hooks sobre todo el repo manualmente:
+#   pre-commit run --all-files
+
+repos:
+  # ─────────────────────────────────────────────
+  # Detección de secrets (primera línea de defensa)
+  # ─────────────────────────────────────────────
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+
+  # ─────────────────────────────────────────────
+  # Linter + formatter de Python (ruff = todo en uno)
+  # ─────────────────────────────────────────────
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.0
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # ─────────────────────────────────────────────
+  # Checks generales
+  # ─────────────────────────────────────────────
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: detect-private-key
+
+# ─────────────────────────────────────────────
+# Configuración global
+# ─────────────────────────────────────────────
+default_language_version:
+  python: python3.13
+
+# Por defecto pre-commit corre solo sobre archivos staged.
+# Si querés correr sobre todo el repo:  pre-commit run --all-files

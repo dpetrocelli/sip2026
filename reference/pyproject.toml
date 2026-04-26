@@ -1,0 +1,51 @@
+[project]
+name = "sip2026-selenium-reference"
+version = "1.0.0"
+description = "Implementación de referencia TP Selenium + MercadoLibre — SIP 2026"
+requires-python = ">=3.13"
+dependencies = [
+    "selenium>=4.27",
+    "webdriver-manager>=4.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=6.0",
+    "ruff>=0.8",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = [
+    "--tb=short",
+    "--cov=hit5",
+    "--cov-report=term-missing",
+    "--cov-report=html:htmlcov",
+    "--cov-fail-under=70",
+]
+
+[tool.coverage.run]
+source = ["hit5"]
+omit = [
+    "hit5/main.py",          # entrypoint glue: requiere browser real para cubrir
+    "hit5/filters.py",        # depende de DOM real de ML
+    "hit5/browser_factory.py", # construir drivers reales requiere binarios
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+]
+show_missing = true
+skip_covered = false
