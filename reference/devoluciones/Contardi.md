@@ -17,9 +17,7 @@
 | Hit #1 — setup, navegación, búsqueda, 5 títulos | 15 % | 15 | 15 |
 | Hit #2 — Browser Factory Chrome+Firefox | 25 % | 25 | 25 |
 | Hit #3 — filtros DOM + screenshot | 30 % | 28 | 30 |
-| Calidad de código (waits, selectores, sin sleep) | 15 % | 11.5 | 15 |
-| README + informe + video | 10 % | 3 | 10 |
-| Dockerfile (deseable) | 5 % | 0 | 5 |
+| Infra base (calidad código + README/informe/video + Dockerfile opcional) | 30 % | 14.5 | 30 |
 | **Total** | **100 %** | **82.5** | **100** |
 
 ## Cumplimiento punto por punto de la consigna

@@ -321,9 +321,7 @@ cd hit3 && BROWSER=chrome python scraper.py
 | Hit #1 — setup, navegación, búsqueda y lectura de títulos | 15 % |
 | Hit #2 — Browser Factory funcionando contra Chrome **y** Firefox sin cambios de código | 25 % |
 | Hit #3 — filtros aplicados correctamente vía DOM (nuevo + tienda oficial) y screenshot | 30 % |
-| Calidad de código (waits explícitos, selectores en módulo aparte, sin `time.sleep`) | 15 % |
-| README, informe y video explicativo | 10 % |
-| Dockerfile básico (deseable, suma puntos) | 5 % |
+| Infra base — calidad de código (waits explícitos, selectores en módulo aparte, sin `time.sleep`) + README/informe/video explicativo + Dockerfile básico (opcional en Parte 1) | 30 % |
 
 ---
 
