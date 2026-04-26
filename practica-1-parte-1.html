@@ -7,6 +7,71 @@
   <title>Práctica I · Parte 1 — Selenium + MercadoLibre — UNLu
 DCB</title>
   <link rel="stylesheet" href="assets/style.css">
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
 </head>
 <body>
 
@@ -45,18 +110,80 @@ DCB</title>
     <li><a href="#contenidos-del-programa-relacionados"
     id="toc-contenidos-del-programa-relacionados">Contenidos del
     programa relacionados</a></li>
-    <li><a href="#práctica" id="toc-práctica">Práctica</a>
+    <li><a href="#práctica" id="toc-práctica">Práctica</a></li>
+    <li><a href="#conceptos-mínimos-antes-de-empezar"
+    id="toc-conceptos-mínimos-antes-de-empezar">Conceptos mínimos antes
+    de empezar</a>
     <ul>
+    <li><a href="#1-qué-es-webdriver" id="toc-1-qué-es-webdriver">1) Qué
+    es WebDriver</a></li>
+    <li><a
+    href="#2-explicit-waits-vs-timesleep-esto-te-bajan-la-nota-si-lo-mezclás-mal"
+    id="toc-2-explicit-waits-vs-timesleep-esto-te-bajan-la-nota-si-lo-mezclás-mal">2)
+    Explicit waits vs <code>time.sleep</code> (esto te bajan la nota si
+    lo mezclás mal)</a></li>
+    <li><a href="#3-selectores-estables-vs-frágiles"
+    id="toc-3-selectores-estables-vs-frágiles">3) Selectores estables vs
+    frágiles</a></li>
+    <li><a href="#4-headless-vs-headed" id="toc-4-headless-vs-headed">4)
+    Headless vs headed</a></li>
     <li><a href="#hit-1" id="toc-hit-1">Hit #1</a></li>
     <li><a href="#hit-2" id="toc-hit-2">Hit #2</a></li>
     <li><a href="#hit-3" id="toc-hit-3">Hit #3</a></li>
     </ul></li>
-    <li><a href="#criterios-de-evaluación--parte-1"
-    id="toc-criterios-de-evaluación--parte-1">Criterios de evaluación —
-    Parte 1</a></li>
-    <li><a href="#referencias-y-bibliografía"
-    id="toc-referencias-y-bibliografía">Referencias y
-    Bibliografía</a></li>
+    <li><a href="#output-esperado-por-hit-autoverificación"
+    id="toc-output-esperado-por-hit-autoverificación">Output esperado
+    por hit (autoverificación)</a>
+    <ul>
+    <li><a href="#hit-1-1" id="toc-hit-1-1">Hit #1</a></li>
+    <li><a href="#hit-2-1" id="toc-hit-2-1">Hit #2</a></li>
+    <li><a href="#hit-3-1" id="toc-hit-3-1">Hit #3</a></li>
+    </ul></li>
+    <li><a
+    href="#common-pitfalls-cosas-con-las-que-se-choca-todo-el-mundo"
+    id="toc-common-pitfalls-cosas-con-las-que-se-choca-todo-el-mundo">Common
+    pitfalls (cosas con las que se choca todo el mundo)</a>
+    <ul>
+    <li><a
+    href="#mercadolibre-detecta-chrome-headless-y-devuelve-empty-state"
+    id="toc-mercadolibre-detecta-chrome-headless-y-devuelve-empty-state">MercadoLibre
+    detecta Chrome headless y devuelve empty-state</a></li>
+    <li><a href="#banner-de-cookies-intercepta-clicks"
+    id="toc-banner-de-cookies-intercepta-clicks">Banner de cookies
+    intercepta clicks</a></li>
+    <li><a href="#geographic-redirect-a-otros-tlds"
+    id="toc-geographic-redirect-a-otros-tlds">Geographic redirect a
+    otros TLDs</a></li>
+    <li><a href="#lazy-loading-de-resultados"
+    id="toc-lazy-loading-de-resultados">Lazy loading de
+    resultados</a></li>
+    <li><a href="#selectores-que-cambian-al-refresh"
+    id="toc-selectores-que-cambian-al-refresh">Selectores que cambian al
+    refresh</a></li>
+    <li><a href="#timeouts-diferentes-en-chrome-y-firefox"
+    id="toc-timeouts-diferentes-en-chrome-y-firefox">Timeouts diferentes
+    en Chrome y Firefox</a></li>
+    </ul></li>
+    <li><a href="#estructura-del-repositorio-template-obligatorio"
+    id="toc-estructura-del-repositorio-template-obligatorio">Estructura
+    del repositorio (template obligatorio)</a>
+    <ul>
+    <li><a href="#readme-raíz--esqueleto-sugerido"
+    id="toc-readme-raíz--esqueleto-sugerido">README raíz — esqueleto
+    sugerido</a></li>
+    </ul></li>
+    <li><a href="#decisiones-de-diseño"
+    id="toc-decisiones-de-diseño">Decisiones de diseño</a></li>
+    <li><a href="#comparativa-chrome-vs-firefox"
+    id="toc-comparativa-chrome-vs-firefox">Comparativa Chrome vs
+    Firefox</a></li>
+    <li><a href="#herramientas-de-ia-usadas"
+    id="toc-herramientas-de-ia-usadas">Herramientas de IA
+    usadas</a></li>
+    <li><a href="#video-explicativo" id="toc-video-explicativo">Video
+    explicativo</a></li>
+    <li><a href="#limitaciones-conocidas"
+    id="toc-limitaciones-conocidas">Limitaciones conocidas</a></li>
     </ul></li>
     </ul>
     <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
@@ -163,6 +290,114 @@ lazy loading, y diferencias sutiles entre navegadores.</p>
 <li><code>GeForce RTX 5090</code></li>
 </ol>
 <hr />
+<h2 id="conceptos-mínimos-antes-de-empezar">Conceptos mínimos antes de
+empezar</h2>
+<p>Si nunca usaste Selenium, leé estos 4 conceptos. Te van a ahorrar el
+80 % de los problemas que vimos en entregas anteriores.</p>
+<h3 id="1-qué-es-webdriver">1) Qué es WebDriver</h3>
+<p><strong>WebDriver</strong> es un protocolo estandarizado por la W3C
+que permite a un programa controlar un navegador como si fuera un
+usuario humano: clickear, escribir, navegar, leer el DOM. Selenium es la
+implementación más popular del cliente, pero también existen Playwright,
+Puppeteer, Cypress.</p>
+<p>Arquitectura: tu código → biblioteca cliente (Selenium) → driver del
+browser (<code>chromedriver</code> / <code>geckodriver</code>) →
+browser. El driver es un proceso aparte que traduce el protocolo HTTP de
+WebDriver a comandos nativos del browser.</p>
+<h3
+id="2-explicit-waits-vs-timesleep-esto-te-bajan-la-nota-si-lo-mezclás-mal">2)
+Explicit waits vs <code>time.sleep</code> (esto te bajan la nota si lo
+mezclás mal)</h3>
+<p>Una página web moderna <strong>no termina de cargar</strong> en un
+instante: hay JavaScript ejecutándose, requests AJAX que tardan,
+elementos que aparecen tarde. Hay 3 estrategias para sincronizar:</p>
+<table>
+<thead>
+<tr>
+<th>Estrategia</th>
+<th>Qué hace</th>
+<th>Cuándo usarla</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>time.sleep(N)</code> (sleep duro)</td>
+<td>Esperás N segundos fijos pase lo que pase</td>
+<td><strong>Casi nunca.</strong> Lento si N es grande, frágil si N es
+chico.</td>
+</tr>
+<tr>
+<td><strong>Explicit wait</strong> (<code>WebDriverWait</code> +
+<code>expected_conditions</code>)</td>
+<td>Esperás hasta que <strong>una condición específica</strong> se
+cumpla, con un timeout máximo</td>
+<td><strong>Siempre.</strong> Es el patrón correcto.</td>
+</tr>
+<tr>
+<td>Implicit wait</td>
+<td>Configurás un timeout global para “buscar elementos”</td>
+<td>Cómodo pero peligroso — se mezcla raro con explicit waits</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Regla</strong>: cada vez que estés por escribir
+<code>sleep(2)</code>, preguntate “¿qué cosa estoy esperando?” y
+reemplazalo por un <code>WebDriverWait</code> con
+<code>EC.element_to_be_clickable(...)</code> /
+<code>EC.visibility_of_element_located(...)</code> /
+<code>EC.presence_of_element_located(...)</code>.</p>
+<h3 id="3-selectores-estables-vs-frágiles">3) Selectores estables vs
+frágiles</h3>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- Frágil: clase auto-generada que cambia con cada deploy de ML --&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> class</span><span class="op">=</span><span class="st">&quot;ui-search-result__1xY7Z&quot;</span><span class="dt">&gt;</span>...<span class="dt">&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- Robusto: estructura semántica + atributos data-* --&gt;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">li</span><span class="ot"> class</span><span class="op">=</span><span class="st">&quot;ui-search-layout__item&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">h2</span><span class="ot"> class</span><span class="op">=</span><span class="st">&quot;ui-search-item__title&quot;</span><span class="dt">&gt;</span>...<span class="dt">&lt;/</span><span class="kw">h2</span><span class="dt">&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">li</span><span class="dt">&gt;</span></span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Tipo de selector</th>
+<th>Robustez</th>
+<th>Cuándo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data-testid="..."</code></td>
+<td>⭐⭐⭐ Máxima</td>
+<td>Si el sitio los expone (ML no)</td>
+</tr>
+<tr>
+<td>Estructura semántica (<code>h2.ui-search-item__title</code>)</td>
+<td>⭐⭐ Media-alta</td>
+<td>Patrón principal del TP</td>
+</tr>
+<tr>
+<td>Clase con sufijo random (<code>.ui-search-result__1xY</code>)</td>
+<td>⭐ Baja</td>
+<td><strong>Evitar</strong></td>
+</tr>
+<tr>
+<td>XPath posicional (<code>/div/div[3]/span[2]</code>)</td>
+<td>⭐ Baja</td>
+<td><strong>Evitar</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="4-headless-vs-headed">4) Headless vs headed</h3>
+<ul>
+<li><strong>Headed</strong> (default): el browser tiene ventana gráfica
+visible. Útil para desarrollar y debuggear.</li>
+<li><strong>Headless</strong> (<code>--headless</code>): el browser
+corre sin UI. Imprescindible para CI/CD y servidores. Comportamiento ~99
+% igual al headed, <strong>pero</strong>: algunos sitios detectan
+headless y lo bloquean (ML lo hace si no seteás un User-Agent custom).
+Lo van a sufrir en Parte 2 cuando integren con CI.</li>
+</ul>
+<hr />
 <h3 id="hit-1">Hit #1</h3>
 <p>Configure un proyecto en el lenguaje de su elección con Selenium
 WebDriver y los drivers correspondientes (<code>chromedriver</code> y
@@ -208,63 +443,217 @@ usuario.</p>
 filtrada y guárdelo como
 <code>screenshots/&lt;producto&gt;_&lt;browser&gt;.png</code>.</p>
 <hr />
-<h2 id="criterios-de-evaluación--parte-1">Criterios de evaluación —
-Parte 1</h2>
+<h2 id="output-esperado-por-hit-autoverificación">Output esperado por
+hit (autoverificación)</h2>
+<p>Antes de subir al repo, validá que tu solución cumpla esto. Si algo
+no aparece, te falta algo.</p>
+<h3 id="hit-1-1">Hit #1</h3>
+<p>Por consola:</p>
+<pre><code>[INFO] Iniciando scraper en chrome
+[INFO] Navegando a https://www.mercadolibre.com.ar
+[INFO] Búsqueda: &#39;bicicleta rodado 29&#39;
+1. Bicicleta Mountain Bike Rodado 29 21 Velocidades ...
+2. Bicicleta Mtb Rodado 29 Aluminio Shimano 21v ...
+3. ...</code></pre>
+<h3 id="hit-2-1">Hit #2</h3>
+<p>Mismo output del Hit #1, pero ejecutable contra ambos browsers:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">BROWSER</span><span class="op">=</span>chrome <span class="ex">python</span> scraper.py    <span class="co"># ó npm run scraper -- --browser chrome</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">BROWSER</span><span class="op">=</span>firefox <span class="ex">python</span> scraper.py</span></code></pre></div>
+<p>Los dos comandos deben <strong>funcionar idéntico</strong> y producir
+títulos.</p>
+<h3 id="hit-3-1">Hit #3</h3>
+<ul>
+<li>Console output muestra que los 3 filtros (Nuevo, Tienda oficial, Más
+relevantes) se aplicaron — debería ser visible en logs o con un dump de
+la URL final.</li>
+<li>Carpeta <code>screenshots/</code> con como mínimo:
+<ul>
+<li><code>screenshots/bicicleta_rodado_29_chrome.png</code></li>
+<li><code>screenshots/bicicleta_rodado_29_firefox.png</code></li>
+</ul></li>
+<li>En la imagen tiene que verse el panel lateral de filtros con “Nuevo”
+y la “Tienda oficial” tildados.</li>
+</ul>
+<hr />
+<h2 id="common-pitfalls-cosas-con-las-que-se-choca-todo-el-mundo">Common
+pitfalls (cosas con las que se choca todo el mundo)</h2>
+<h3
+id="mercadolibre-detecta-chrome-headless-y-devuelve-empty-state">MercadoLibre
+detecta Chrome headless y devuelve empty-state</h3>
+<p>Si corrés en headless sin User-Agent custom, ML responde con HTML
+pero <strong>sin resultados de búsqueda</strong>. Workaround:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>options.add_argument(<span class="st">&#39;--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#39;</span>)</span></code></pre></div>
+<p>Equivalente en JS y Java. Lo van a necesitar sí o sí en CI (Parte
+2).</p>
+<h3 id="banner-de-cookies-intercepta-clicks">Banner de cookies
+intercepta clicks</h3>
+<p>ML muestra un banner gigante de “Aceptar cookies” que cubre los
+filtros. Tres caminos posibles:</p>
+<ol type="1">
+<li><strong>Aceptar el banner</strong> con un click sobre el botón (más
+natural).</li>
+<li><strong>Click forzado por JavaScript</strong>
+(<code>driver.execute_script("arguments[0].click();", element)</code>) —
+bypassa la intercepción pero es un anti-pattern leve.</li>
+<li><strong>Esperar que el banner desaparezca solo</strong> después de
+un click random fuera (frágil).</li>
+</ol>
+<p>La opción 1 es la limpia. La 2 es válida si documentan por qué.</p>
+<h3 id="geographic-redirect-a-otros-tlds">Geographic redirect a otros
+TLDs</h3>
+<p>Si tu IP no resuelve a Argentina, ML te redirige a
+<code>mercadolibre.com.mx</code> o <code>.com.br</code>. Forzá:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>driver.get(<span class="st">&#39;https://www.mercadolibre.com.ar/&#39;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># y agregá el header Accept-Language</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>options.add_argument(<span class="st">&#39;--accept-lang=es-AR&#39;</span>)</span></code></pre></div>
+<h3 id="lazy-loading-de-resultados">Lazy loading de resultados</h3>
+<p>Los resultados después del 5to-6to a veces no están en el DOM hasta
+que scrolleás. Si extraen 10, hagan scroll antes
+(<code>driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")</code>)
+o esperen a que <code>len(elementos) &gt;= 10</code>.</p>
+<h3 id="selectores-que-cambian-al-refresh">Selectores que cambian al
+refresh</h3>
+<p>Si copiaron una clase como <code>.ui-search-result__1xY7Z</code> con
+sufijo aleatorio, <strong>se va a romper en producción</strong>. Usen
+estructura semántica (<code>li.ui-search-layout__item h2</code>) o
+atributos estables.</p>
+<h3 id="timeouts-diferentes-en-chrome-y-firefox">Timeouts diferentes en
+Chrome y Firefox</h3>
+<p>Firefox tarda ~30 % más en cargar la primera página (es así, no es
+bug suyo). Si pusieron <code>WebDriverWait(driver, 5)</code> y funciona
+en Chrome pero falla en Firefox, suban el timeout a 10-15s.</p>
+<hr />
+<h2 id="estructura-del-repositorio-template-obligatorio">Estructura del
+repositorio (template obligatorio)</h2>
+<p>Esto es lo mínimo que esperamos ver al clonar el repo:</p>
+<pre><code>.
+├── README.md               ← integrantes, cómo correr, decisiones, link al video
+├── .gitignore              ← venv/, node_modules/, target/, __pycache__/, .env
+├── requirements.txt / package.json / pom.xml
+├── hit1/
+│   ├── README.md           ← qué hace, cómo correr
+│   └── scraper.&lt;py|js|java&gt;
+├── hit2/
+│   ├── README.md
+│   ├── browser_factory.&lt;py|js|java&gt;
+│   └── scraper.&lt;py|js|java&gt;
+├── hit3/
+│   ├── README.md
+│   └── scraper.&lt;py|js|java&gt;
+└── screenshots/
+    ├── bicicleta_rodado_29_chrome.png
+    └── bicicleta_rodado_29_firefox.png</code></pre>
+<h3 id="readme-raíz--esqueleto-sugerido">README raíz — esqueleto
+sugerido</h3>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># TP 1 — Selenium MercadoLibre — &lt;Nombre del equipo&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">## Integrantes</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Nombre <span class="pp">|</span> Legajo <span class="pp">|</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="pp">|--------|--------|</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ...    <span class="pp">|</span> ...    <span class="pp">|</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stack</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Lenguaje: Python 3.13 / Node 20 / Java 17</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Selenium: 4.27</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Tests: pytest / jest / junit (Parte 2)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cómo correr</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="fu">### Requisitos previos</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Chrome y Firefox instalados (o usar el contenedor del Hit #7 — Parte 2)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Python 3.13 / Node 20 / Java 17</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ejecución</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="in">```bash</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Hit 1</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> hit1 <span class="kw">&amp;&amp;</span> <span class="va">BROWSER</span><span class="op">=</span>chrome <span class="ex">python</span> scraper.py</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Hit 2</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> hit2 <span class="kw">&amp;&amp;</span> <span class="va">BROWSER</span><span class="op">=</span>firefox <span class="ex">python</span> scraper.py</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Hit 3</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> hit3 <span class="kw">&amp;&amp;</span> <span class="va">BROWSER</span><span class="op">=</span>chrome <span class="ex">python</span> scraper.py</span></code></pre></div>
+<h2 id="decisiones-de-diseño">Decisiones de diseño</h2>
+<p>… (qué eligieron y por qué — ej: por qué <code>WebDriverWait</code>
+con timeout 15s, por qué <code>data-*</code> no aplicaba)</p>
+<h2 id="comparativa-chrome-vs-firefox">Comparativa Chrome vs
+Firefox</h2>
 <table>
 <thead>
 <tr>
-<th>Criterio</th>
-<th>Peso</th>
+<th>Aspecto</th>
+<th>Chrome</th>
+<th>Firefox</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Hit #1 — setup, navegación, búsqueda y lectura de títulos</td>
-<td>15 %</td>
+<td>Tiempo del Hit #3</td>
+<td>…</td>
+<td>…</td>
 </tr>
 <tr>
-<td>Hit #2 — Browser Factory funcionando contra Chrome
-<strong>y</strong> Firefox sin cambios de código</td>
-<td>25 %</td>
-</tr>
-<tr>
-<td>Hit #3 — filtros aplicados correctamente vía DOM (nuevo + tienda
-oficial) y screenshot</td>
-<td>30 %</td>
-</tr>
-<tr>
-<td>Calidad de código (waits explícitos, selectores en módulo aparte,
-sin <code>time.sleep</code>)</td>
-<td>15 %</td>
-</tr>
-<tr>
-<td>README, informe y video explicativo</td>
-<td>10 %</td>
-</tr>
-<tr>
-<td>Dockerfile básico (deseable, suma puntos)</td>
-<td>5 %</td>
+<td>Diferencias en selectores</td>
+<td>…</td>
+<td>…</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="referencias-y-bibliografía">Referencias y Bibliografía</h2>
+<h2 id="herramientas-de-ia-usadas">Herramientas de IA usadas</h2>
 <ul>
-<li><strong>[SEL]</strong> Selenium Documentation. <a
-href="https://www.selenium.dev/documentation/">https://www.selenium.dev/documentation/</a></li>
-<li><strong>[W3C-WD]</strong> W3C WebDriver Specification. <a
-href="https://www.w3.org/TR/webdriver2/">https://www.w3.org/TR/webdriver2/</a></li>
-<li><strong>[CSS-SEL]</strong> MDN — CSS Selectors. <a
-href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors">https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors</a></li>
-<li><strong>[XPATH]</strong> MDN — XPath. <a
-href="https://developer.mozilla.org/en-US/docs/Web/XPath">https://developer.mozilla.org/en-US/docs/Web/XPath</a></li>
-<li><strong>[GITLEAKS]</strong> gitleaks. <a
-href="https://github.com/gitleaks/gitleaks">https://github.com/gitleaks/gitleaks</a></li>
-<li><strong>[ROBOTS]</strong> The Robots Exclusion Protocol. <a
-href="https://www.rfc-editor.org/rfc/rfc9309">https://www.rfc-editor.org/rfc/rfc9309</a></li>
-<li><strong>[ML]</strong> MercadoLibre Argentina. <a
-href="https://www.mercadolibre.com.ar">https://www.mercadolibre.com.ar</a></li>
+<li>Cursor / Claude / Copilot — para qué la usamos: …</li>
+<li>Prompts no triviales documentados en
+<code>docs/ai-usage.md</code></li>
 </ul>
+<h2 id="video-explicativo">Video explicativo</h2>
+<p>[Link YouTube unlisted]</p>
+<h2 id="limitaciones-conocidas">Limitaciones conocidas</h2>
+<ul>
+<li>…</li>
+</ul>
+<pre><code>
+---
+
+## Cómo entregar
+
+1. **Push final al repo público** (GitHub/GitLab) antes del 25/04/2026 23:59 ART.
+2. **README raíz** completo siguiendo el esqueleto de arriba.
+3. **Video** subido a YouTube (unlisted) o equivalente, mostrando los 3 hits en ejecución y comentando las decisiones. Link en el README.
+4. **Mensaje en el canal Discord de la materia** con el link al repo.
+
+&gt; 📡 **Canal Discord de la materia (consultas + entregas):** [pegar invite acá]
+&gt; Antes de preguntar, revisá la sección **Common pitfalls** — el 70 % de las dudas están resueltas ahí.
+
+---
+
+## Criterios de evaluación — Parte 1
+
+| Criterio | Peso |
+|----------|------|
+| Hit #1 — setup, navegación, búsqueda y lectura de títulos | 15 % |
+| Hit #2 — Browser Factory funcionando contra Chrome **y** Firefox sin cambios de código | 25 % |
+| Hit #3 — filtros aplicados correctamente vía DOM (nuevo + tienda oficial) y screenshot | 30 % |
+| Calidad de código (waits explícitos, selectores en módulo aparte, sin `time.sleep`) | 15 % |
+| README, informe y video explicativo | 10 % |
+| Dockerfile básico (deseable, suma puntos) | 5 % |
+
+---
+
+## Referencias y Bibliografía
+
+- **[SEL]** Selenium Documentation. &lt;https://www.selenium.dev/documentation/&gt;
+- **[W3C-WD]** W3C WebDriver Specification. &lt;https://www.w3.org/TR/webdriver2/&gt;
+- **[CSS-SEL]** MDN — CSS Selectors. &lt;https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors&gt;
+- **[XPATH]** MDN — XPath. &lt;https://developer.mozilla.org/en-US/docs/Web/XPath&gt;
+- **[GITLEAKS]** gitleaks. &lt;https://github.com/gitleaks/gitleaks&gt;
+- **[ROBOTS]** The Robots Exclusion Protocol. &lt;https://www.rfc-editor.org/rfc/rfc9309&gt;
+- **[ML]** MercadoLibre Argentina. &lt;https://www.mercadolibre.com.ar&gt;
+</code></pre>
   </main>
 </div>
 

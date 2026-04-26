@@ -281,6 +281,246 @@ kubectl delete -f k8s/
 
 ---
 
+## Material de apoyo
+
+### Tabla de herramientas por lenguaje
+
+Para que no pierdan tiempo eligiendo, esto es lo que esperamos en cada stack:
+
+| Stack | Coverage tool | Linter | Formatter | Pre-commit framework |
+|-------|---------------|--------|-----------|----------------------|
+| **Python 3.13** | `coverage.py` + `pytest-cov` (gate: `--cov-fail-under=70`) | `ruff check` | `ruff format` (o `black`) | `pre-commit` ([pre-commit.com](https://pre-commit.com/)) |
+| **Node.js 20** | `jest --coverage` con `coverageThreshold` ≥ 70 % | `eslint` | `prettier` | `husky` + `lint-staged` o `pre-commit` |
+| **Java 17** | `jacoco` (`<minimum>0.70</minimum>` en `jacoco-maven-plugin`) | `checkstyle` o `pmd` | `spotless` (google-java-format) | `pre-commit` con hooks Maven |
+
+### Plantilla de ADR (`docs/adr/0000-template.md`)
+
+Formato Michael Nygard, 1 página. Copien esto a `docs/adr/0000-template.md` y úsenlo como base para los 3 ADRs obligatorios.
+
+```markdown
+# 000X — <Título corto, en imperativo>
+
+- **Date:** YYYY-MM-DD
+- **Status:** Accepted | Proposed | Deprecated | Superseded by 000Y
+- **Deciders:** <integrantes que tomaron la decisión>
+
+## Contexto
+
+¿Qué problema o trade-off estamos enfrentando? ¿Cuáles son las alternativas que consideramos?
+2-4 párrafos cortos.
+
+## Decisión
+
+¿Qué decidimos hacer? Una oración clara.
+
+## Consecuencias
+
+- Lo que se vuelve **más fácil** con esta decisión.
+- Lo que se vuelve **más difícil** o se sacrifica.
+- Riesgos conocidos y cómo se mitigan.
+
+## Referencias
+
+- Links a docs, papers, charlas que informaron la decisión.
+```
+
+**Ejemplo concreto** del primer ADR (`0001-selenium-vs-playwright.md`):
+
+```markdown
+# 0001 — Usamos Selenium WebDriver y no Playwright
+
+- Date: 2026-04-15
+- Status: Accepted
+- Deciders: Juan Pérez, María García
+
+## Contexto
+
+Necesitamos automatizar un browser para scrapear MercadoLibre. Las alternativas son:
+- **Selenium** (W3C standard, soporte multi-lenguaje, ecosistema enorme).
+- **Playwright** (más rápido, mejor DX, soporta multi-browser nativo).
+- **Puppeteer** (Chrome-only, descartado por requisito multi-browser).
+- **Cypress** (E2E pero pensado para apps propias, no scraping de terceros).
+
+## Decisión
+
+Usamos **Selenium 4** porque la consigna del TP exige Selenium específicamente como
+herramienta de aprendizaje (estándar W3C WebDriver), y porque queremos exposición a la
+herramienta más usada en la industria para QA.
+
+## Consecuencias
+
+- Más fácil: comunidad enorme, drivers nativos para Chrome/Firefox/Edge, bindings en Python/Java/JS/Ruby/C#.
+- Más difícil: API más verbosa que Playwright, no maneja contextos paralelos automáticamente, debemos manejar waits explícitos manualmente.
+- Riesgo: scripts más frágiles ante cambios del DOM. Mitigamos con selectores estables (Hit #5) y reintentos con backoff.
+
+## Referencias
+
+- W3C WebDriver spec: https://www.w3.org/TR/webdriver2/
+- Selenium docs: https://www.selenium.dev/documentation/
+```
+
+### Esqueleto del Dockerfile multi-stage (Hit #7)
+
+Esto es un punto de partida. Adapten al lenguaje. La idea es **multi-stage** para que la imagen final sea lo más chica posible (no necesitan compiladores ni headers en runtime).
+
+```dockerfile
+# ============ Stage 1: builder (deps + compile) ============
+FROM python:3.13-slim AS builder
+WORKDIR /app
+
+# System deps para compilar wheels si hace falta
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --user --no-cache-dir -r requirements.txt
+
+# ============ Stage 2: runtime (browsers + app) ============
+FROM python:3.13-slim AS runtime
+WORKDIR /app
+
+# Instalar Chrome, Firefox y deps mínimas
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    chromium \
+    chromium-driver \
+    firefox-esr \
+    fonts-liberation \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiar deps de Python desde el builder
+COPY --from=builder /root/.local /root/.local
+ENV PATH=/root/.local/bin:$PATH
+
+# Usuario no-root (mejor práctica)
+RUN useradd -m -u 1000 scraper
+USER scraper
+
+COPY --chown=scraper:scraper . .
+
+# Healthcheck — opcional pero recomendado
+HEALTHCHECK --interval=30s --timeout=5s \
+  CMD python -c "import selenium; print('ok')" || exit 1
+
+ENTRYPOINT ["python", "scraper.py"]
+CMD ["--browser", "chrome"]
+```
+
+**Equivalentes para otros stacks:**
+- **Node**: `FROM node:20-slim AS builder` → `npm ci --only=production` → stage runtime con `node:20-slim` + browsers, `USER node`
+- **Java**: `FROM maven:3.9-eclipse-temurin-17 AS builder` → `mvn -B package -DskipTests` → stage runtime con `eclipse-temurin:17-jre` + browsers, copiar `.jar`
+
+### Esqueleto del workflow de CI (`.github/workflows/scrape.yml`, Hit #7)
+
+```yaml
+name: Scraper CI
+
+on:
+  push: { branches: [main] }
+  pull_request: { branches: [main] }
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, firefox]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect secrets with gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: docker build -t ml-scraper:ci .
+
+      - name: Run scraper (headless ${{ matrix.browser }})
+        run: |
+          docker run --rm \
+            -e BROWSER=${{ matrix.browser }} \
+            -e HEADLESS=true \
+            -v ${{ github.workspace }}/output:/app/output \
+            ml-scraper:ci
+
+      - name: Run tests with coverage gate
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}/coverage:/app/coverage \
+            ml-scraper:ci \
+            pytest --cov=. --cov-report=html:/app/coverage --cov-fail-under=70
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scraper-output-${{ matrix.browser }}
+          path: |
+            output/
+            coverage/
+
+  validate-k8s:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-kubectl@v4
+      - name: Validate Kubernetes manifests (dry-run)
+        run: |
+          for f in k8s/*.yaml; do
+            kubectl apply --dry-run=client -f "$f"
+          done
+```
+
+### Esqueleto de pre-commit (`.pre-commit-config.yaml`)
+
+Aplica a Python como ejemplo. Para Node sustituyan los hooks de `ruff` por `eslint`/`prettier`.
+
+```yaml
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.0
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+```
+
+Activar local: `pip install pre-commit && pre-commit install`. Documenten el comando en el README.
+
+---
+
+## Cómo entregar
+
+1. **Push final al repo público** antes del 02/05/2026 23:59 ART.
+2. **README raíz actualizado** con:
+   - Sección "Prerrequisitos cumplidos" mostrando evidencia del checklist del [TP 0](practica-0.html).
+   - Cómo correr Parte 1 + Parte 2 (Docker, k3s/k3d).
+   - Comandos exactos para reproducir el demo del Hit #8.
+3. **Carpeta `docs/adr/`** con como mínimo 3 ADRs.
+4. **Video** mostrando: Hit #4 corriendo (con JSON resultante), pipeline de CI verde con coverage ≥ 70 %, `kubectl apply -f k8s/` con Job completado y CronJob activo.
+5. **Mensaje en el canal Discord de la materia** con el link al repo y al video.
+
+> 📡 **Canal Discord (consultas + entregas):** [pegar invite acá]
+> Antes de pedir ayuda con k3s, revisá el [TP 0](practica-0.html) y la sección de troubleshooting que ya tiene los 4 errores típicos.
+
+---
+
 ### Hit #9 (Bonus)
 
 Extienda el scraper con cualquiera (o varias) de las siguientes capacidades:
