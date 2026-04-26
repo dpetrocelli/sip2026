@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <meta name="generator" content="pandoc + UNLu/DCB template">
+  <title>Implementación de referencia — ADR · Plantilla — UNLu
+DCB</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="unlu-header">
+  <div class="brand">
+    <img src="assets/unlu_escudo.png" alt="Universidad Nacional de Luján" class="logo unlu">
+    <div class="brand-text">
+      <div class="institution">Universidad Nacional de Luján</div>
+      <div class="department">Departamento de Ciencias Básicas</div>
+    </div>
+    <img src="assets/logo_dcb.png" alt="Departamento de Ciencias Básicas" class="logo dcb">
+  </div>
+  <div class="course-bar">
+    <span class="course">Seminario de Integración Profesional</span>
+    <span class="year">2026</span>
+    <span class="instructor">Dr. David Petrocelli</span>
+  </div>
+</header>
+
+<button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
+
+<div class="layout">
+  <aside class="toc-sidebar" id="toc-sidebar">
+    <div class="toc-header">
+      <div class="toc-title">Contenidos</div>
+      <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
+    </div>
+    <ul>
+    <li><a href="#000x--título-corto-en-imperativo"
+    id="toc-000x--título-corto-en-imperativo">000X — &lt;Título corto,
+    en imperativo&gt;</a>
+    <ul>
+    <li><a href="#contexto" id="toc-contexto">Contexto</a></li>
+    <li><a href="#decisión" id="toc-decisión">Decisión</a></li>
+    <li><a href="#consecuencias"
+    id="toc-consecuencias">Consecuencias</a></li>
+    <li><a href="#referencias" id="toc-referencias">Referencias</a></li>
+    </ul></li>
+    </ul>
+    <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
+      <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <nav class="page-nav-top">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+      <span class="banner-pill">REF · ADR</span>
+    </nav>
+
+    <details class="toc-inline" open>
+      <summary>📑 Índice del documento</summary>
+      <ul>
+      <li><a href="#000x--título-corto-en-imperativo"
+      id="toc-000x--título-corto-en-imperativo">000X — &lt;Título corto,
+      en imperativo&gt;</a>
+      <ul>
+      <li><a href="#contexto" id="toc-contexto">Contexto</a></li>
+      <li><a href="#decisión" id="toc-decisión">Decisión</a></li>
+      <li><a href="#consecuencias"
+      id="toc-consecuencias">Consecuencias</a></li>
+      <li><a href="#referencias"
+      id="toc-referencias">Referencias</a></li>
+      </ul></li>
+      </ul>
+      <div class="toc-controls">
+        <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
+        <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
+      </div>
+    </details>
+
+<h1 id="000x--título-corto-en-imperativo">000X — &lt;Título corto, en
+imperativo&gt;</h1>
+<ul>
+<li><strong>Date:</strong> YYYY-MM-DD</li>
+<li><strong>Status:</strong> Proposed | Accepted | Deprecated |
+Superseded by 000Y</li>
+<li><strong>Deciders:</strong> &lt;integrantes que tomaron la
+decisión&gt;</li>
+</ul>
+<h2 id="contexto">Contexto</h2>
+<p>Describir el problema o trade-off que se enfrenta. ¿Qué fuerzas están
+en juego (técnicas, organizacionales, de costos, de plazos)? ¿Cuáles son
+las alternativas que se consideraron y por qué?</p>
+<p>Mantener entre 2 y 4 párrafos cortos. La regla de oro: si dentro de 6
+meses alguien lee este ADR, debería entender por qué la decisión tenía
+sentido en ese momento, sin tener que reconstruir el contexto desde
+cero.</p>
+<h2 id="decisión">Decisión</h2>
+<p>Una oración clara, en voz activa, en presente o pretérito
+perfecto:</p>
+<blockquote>
+<p>Decidimos usar <strong>&lt;tecnología/patrón/enfoque&gt;</strong>
+porque <strong>&lt;razón principal&gt;</strong>.</p>
+</blockquote>
+<p>Si la decisión tiene sub-decisiones (ej: versión específica,
+configuración default), enumerarlas como bullets debajo. No mezclar la
+decisión con la justificación: la justificación va en Contexto, las
+implicancias en Consecuencias.</p>
+<h2 id="consecuencias">Consecuencias</h2>
+<ul>
+<li><strong>Lo que se vuelve más fácil:</strong> capacidades nuevas,
+simplificaciones, alineación con estándares de la industria.</li>
+<li><strong>Lo que se vuelve más difícil o se sacrifica:</strong>
+complejidad agregada, dependencias nuevas, deuda técnica aceptada
+conscientemente.</li>
+<li><strong>Riesgos conocidos y mitigaciones:</strong> qué puede salir
+mal, cómo lo detectamos, qué hacemos si pasa.</li>
+</ul>
+<p>Esta sección debe ser honesta: si la decisión tiene un costo real,
+dejarlo escrito. Un ADR que solo lista beneficios no es un ADR, es
+marketing.</p>
+<h2 id="referencias">Referencias</h2>
+<ul>
+<li>Documentación oficial relevante.</li>
+<li>Papers, charlas o blog posts que informaron la decisión.</li>
+<li>ADRs relacionados (que esta decisión deroga, complementa o
+supersede).</li>
+<li>Issues o discusiones internas (links a Discord, GitHub, etc.).</li>
+</ul>
+
+    <nav class="page-nav-bottom">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+    </nav>
+  </main>
+</div>
+
+<footer class="unlu-footer">
+  <div>
+    UNLu · Departamento de Ciencias Básicas · Seminario de Integración Profesional <strong>2026</strong>
+    · Dr. David Petrocelli
+  </div>
+</footer>
+
+<script>
+// Sidebar show/hide toggle (preference persisted in localStorage)
+(function () {
+  const sidebar = document.getElementById('toc-sidebar');
+  const layout = document.querySelector('.layout');
+  const hideBtn = document.getElementById('sidebar-hide');
+  const showBtn = document.getElementById('sidebar-show');
+  if (!sidebar || !layout || !hideBtn || !showBtn) return;
+
+  const KEY = 'unlu.dcb.sidebar.hidden';
+
+  function apply(hidden) {
+    layout.classList.toggle('sidebar-hidden', hidden);
+    showBtn.classList.toggle('visible', hidden);
+  }
+
+  apply(localStorage.getItem(KEY) === '1');
+
+  hideBtn.addEventListener('click', () => {
+    localStorage.setItem(KEY, '1');
+    apply(true);
+  });
+  showBtn.addEventListener('click', () => {
+    localStorage.removeItem(KEY);
+    apply(false);
+  });
+})();
+
+// Wrap each H2 (and its following content until the next H2) in a <details open>
+// element so users can collapse/expand sections.
+(function () {
+  const main = document.querySelector('main.content');
+  if (!main) return;
+
+  // Collect direct-child H2 headings so we don't touch nested ones (e.g., inside details we'll create)
+  const headings = Array.from(main.children).filter(el => el.tagName === 'H2');
+
+  headings.forEach(h2 => {
+    const details = document.createElement('details');
+    details.open = true;
+    details.className = 'section-collapsible';
+
+    const summary = document.createElement('summary');
+    // Move heading content (incl. anchor) into the summary so anchors keep working
+    summary.innerHTML = h2.innerHTML;
+    if (h2.id) summary.id = h2.id;
+    details.appendChild(summary);
+
+    // Move siblings until next H2 into details
+    const parent = h2.parentNode;
+    let next = h2.nextSibling;
+    parent.replaceChild(details, h2);
+    while (next && !(next.nodeType === 1 && next.tagName === 'H2')) {
+      const node = next;
+      next = next.nextSibling;
+      details.appendChild(node);
+    }
+  });
+
+  // If there's a hash in the URL, ensure the target's <details> is open
+  function openDetailsForHash(hash) {
+    if (!hash) return;
+    const target = document.getElementById(hash.replace(/^#/, ''));
+    if (!target) return;
+    let p = target.closest('details');
+    while (p) { p.open = true; p = p.parentElement && p.parentElement.closest('details'); }
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  openDetailsForHash(window.location.hash);
+  window.addEventListener('hashchange', () => openDetailsForHash(window.location.hash));
+
+  // Wire up "Expand all" / "Collapse all" controls in the inline TOC
+  document.querySelectorAll('.toc-controls [data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const action = btn.getAttribute('data-action');
+      const open = action === 'expand-all';
+      document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

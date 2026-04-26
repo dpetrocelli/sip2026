@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <meta name="generator" content="pandoc + UNLu/DCB template">
+  <title>Implementación de referencia — TP Selenium MercadoLibre — UNLu
+DCB</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+
+<header class="unlu-header">
+  <div class="brand">
+    <img src="assets/unlu_escudo.png" alt="Universidad Nacional de Luján" class="logo unlu">
+    <div class="brand-text">
+      <div class="institution">Universidad Nacional de Luján</div>
+      <div class="department">Departamento de Ciencias Básicas</div>
+    </div>
+    <img src="assets/logo_dcb.png" alt="Departamento de Ciencias Básicas" class="logo dcb">
+  </div>
+  <div class="course-bar">
+    <span class="course">Seminario de Integración Profesional</span>
+    <span class="year">2026</span>
+    <span class="instructor">Dr. David Petrocelli</span>
+  </div>
+</header>
+
+<button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
+
+<div class="layout">
+  <aside class="toc-sidebar" id="toc-sidebar">
+    <div class="toc-header">
+      <div class="toc-title">Contenidos</div>
+      <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
+    </div>
+    <ul>
+    <li><a
+    href="#tp-selenium-mercadolibre--implementación-de-referencia-cátedra"
+    id="toc-tp-selenium-mercadolibre--implementación-de-referencia-cátedra">TP
+    Selenium MercadoLibre — Implementación de Referencia (Cátedra)</a>
+    <ul>
+    <li><a href="#stack" id="toc-stack">Stack</a></li>
+    <li><a href="#estructura-del-repositorio"
+    id="toc-estructura-del-repositorio">Estructura del
+    repositorio</a></li>
+    <li><a href="#cómo-correr-cada-hit"
+    id="toc-cómo-correr-cada-hit">Cómo correr cada hit</a></li>
+    <li><a href="#cómo-correr-los-tests"
+    id="toc-cómo-correr-los-tests">Cómo correr los tests</a></li>
+    <li><a href="#cómo-deployar-el-hit-8-en-k3d"
+    id="toc-cómo-deployar-el-hit-8-en-k3d">Cómo deployar el Hit #8 en
+    k3d</a></li>
+    <li><a href="#architecture-decision-records"
+    id="toc-architecture-decision-records">Architecture Decision
+    Records</a></li>
+    <li><a href="#productos-objetivo"
+    id="toc-productos-objetivo">Productos objetivo</a></li>
+    <li><a href="#licencia" id="toc-licencia">Licencia</a></li>
+    <li><a href="#para-los-alumnos" id="toc-para-los-alumnos">Para los
+    alumnos</a>
+    <ul>
+    <li><a href="#qué-se-espera-de-tu-entrega"
+    id="toc-qué-se-espera-de-tu-entrega">Qué se espera de tu
+    entrega</a></li>
+    <li><a href="#links-oficiales" id="toc-links-oficiales">Links
+    oficiales</a></li>
+    <li><a href="#recordatorio-de-la-rúbrica-parte-2"
+    id="toc-recordatorio-de-la-rúbrica-parte-2">Recordatorio de la
+    rúbrica (Parte 2)</a></li>
+    </ul></li>
+    </ul></li>
+    </ul>
+    <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
+      <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <nav class="page-nav-top">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+      <span class="banner-pill">REF</span>
+    </nav>
+
+    <details class="toc-inline" open>
+      <summary>📑 Índice del documento</summary>
+      <ul>
+      <li><a
+      href="#tp-selenium-mercadolibre--implementación-de-referencia-cátedra"
+      id="toc-tp-selenium-mercadolibre--implementación-de-referencia-cátedra">TP
+      Selenium MercadoLibre — Implementación de Referencia (Cátedra)</a>
+      <ul>
+      <li><a href="#stack" id="toc-stack">Stack</a></li>
+      <li><a href="#estructura-del-repositorio"
+      id="toc-estructura-del-repositorio">Estructura del
+      repositorio</a></li>
+      <li><a href="#cómo-correr-cada-hit"
+      id="toc-cómo-correr-cada-hit">Cómo correr cada hit</a></li>
+      <li><a href="#cómo-correr-los-tests"
+      id="toc-cómo-correr-los-tests">Cómo correr los tests</a></li>
+      <li><a href="#cómo-deployar-el-hit-8-en-k3d"
+      id="toc-cómo-deployar-el-hit-8-en-k3d">Cómo deployar el Hit #8 en
+      k3d</a></li>
+      <li><a href="#architecture-decision-records"
+      id="toc-architecture-decision-records">Architecture Decision
+      Records</a></li>
+      <li><a href="#productos-objetivo"
+      id="toc-productos-objetivo">Productos objetivo</a></li>
+      <li><a href="#licencia" id="toc-licencia">Licencia</a></li>
+      <li><a href="#para-los-alumnos" id="toc-para-los-alumnos">Para los
+      alumnos</a>
+      <ul>
+      <li><a href="#qué-se-espera-de-tu-entrega"
+      id="toc-qué-se-espera-de-tu-entrega">Qué se espera de tu
+      entrega</a></li>
+      <li><a href="#links-oficiales" id="toc-links-oficiales">Links
+      oficiales</a></li>
+      <li><a href="#recordatorio-de-la-rúbrica-parte-2"
+      id="toc-recordatorio-de-la-rúbrica-parte-2">Recordatorio de la
+      rúbrica (Parte 2)</a></li>
+      </ul></li>
+      </ul></li>
+      </ul>
+      <div class="toc-controls">
+        <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
+        <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
+      </div>
+    </details>
+
+<h1
+id="tp-selenium-mercadolibre--implementación-de-referencia-cátedra">TP
+Selenium MercadoLibre — Implementación de Referencia (Cátedra)</h1>
+<blockquote>
+<p><strong>Disclaimer importante.</strong> Esta es la
+<strong>implementación de referencia construida por la cátedra</strong>
+como vara de corrección del TP de SIP 2026. Su único propósito es servir
+como criterio interno de evaluación y como recurso para discutir
+soluciones después de la entrega. <strong>Los alumnos NO deben copiar de
+acá.</strong> Pueden compararla contra su propia entrega <strong>una vez
+corregida</strong> para entender qué decisiones tomaríamos nosotros,
+pero entregar este código (o variaciones cosméticas) cuenta como copia y
+se sanciona según el régimen académico vigente.</p>
+</blockquote>
+<hr />
+<h2 id="stack">Stack</h2>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Versión</th>
+<th>Notas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td>3.13</td>
+<td>Definido en <code>pyproject.toml</code></td>
+</tr>
+<tr>
+<td>Selenium</td>
+<td>4.x</td>
+<td>Bindings oficiales, Selenium Manager para drivers</td>
+</tr>
+<tr>
+<td>Browsers</td>
+<td>Chrome (Chromium) + Firefox (Gecko)</td>
+<td>Multi-browser obligatorio (ver ADR 0002)</td>
+</tr>
+<tr>
+<td>Test runner</td>
+<td><code>pytest</code> + <code>pytest-cov</code></td>
+<td>Cobertura mínima 70 % validada en CI</td>
+</tr>
+<tr>
+<td>Linter / Formatter</td>
+<td><code>ruff</code></td>
+<td>Configurado en <code>pyproject.toml</code></td>
+</tr>
+<tr>
+<td>Container runtime</td>
+<td>Docker</td>
+<td>Multi-stage build, usuario no-root</td>
+</tr>
+<tr>
+<td>Orquestador</td>
+<td>k3s / k3d</td>
+<td>Kubernetes liviano (ver ADR 0003)</td>
+</tr>
+<tr>
+<td>CI/CD</td>
+<td>GitHub Actions</td>
+<td>Matriz Chrome/Firefox + coverage gate</td>
+</tr>
+<tr>
+<td>Pre-commit</td>
+<td><code>pre-commit</code> framework</td>
+<td>gitleaks + ruff + check-yaml</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="estructura-del-repositorio">Estructura del repositorio</h2>
+<table>
+<thead>
+<tr>
+<th>Carpeta</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/</code></td>
+<td>Código fuente del scraper (browser factory, selectores, extractores,
+runner principal)</td>
+</tr>
+<tr>
+<td><code>tests/</code></td>
+<td>Tests automatizados (unitarios + integración) corridos en CI bajo
+matriz de browsers</td>
+</tr>
+<tr>
+<td><code>hit1/</code></td>
+<td>Setup inicial: instalación de Selenium + smoke test
+multi-browser</td>
+</tr>
+<tr>
+<td><code>hit2/</code></td>
+<td>Multi-browser Browser Factory
+(<code>BROWSER=chrome|firefox</code>)</td>
+</tr>
+<tr>
+<td><code>hit3/</code></td>
+<td>Búsqueda + filtros vía DOM en MercadoLibre</td>
+</tr>
+<tr>
+<td><code>hit4/</code></td>
+<td>Extracción estructurada a JSON (los 6 campos por resultado, 10
+resultados por producto)</td>
+</tr>
+<tr>
+<td><code>hit5/</code></td>
+<td>Robustez: selectores en módulo aparte, manejo de fallos parciales,
+retries con backoff</td>
+</tr>
+<tr>
+<td><code>hit6/</code></td>
+<td>Modo headless + tests automatizados + coverage ≥ 70 %</td>
+</tr>
+<tr>
+<td><code>hit7/</code></td>
+<td>Dockerfile multi-stage + workflow de CI con matriz de browsers +
+pre-commit</td>
+</tr>
+<tr>
+<td><code>hit8/</code></td>
+<td>Manifests de Kubernetes: <code>Job</code>, <code>CronJob</code>,
+<code>ConfigMap</code>, <code>PVC</code></td>
+</tr>
+<tr>
+<td><code>docs/adr/</code></td>
+<td>Architecture Decision Records (3 oficiales + plantilla)</td>
+</tr>
+<tr>
+<td><code>output/</code></td>
+<td>Salida de cada corrida: <code>bicicleta_rodado_29.json</code>,
+<code>iphone_16_pro_max.json</code>, <code>geforce_5090.json</code></td>
+</tr>
+<tr>
+<td><code>screenshots/</code></td>
+<td>Capturas generadas por el scraper (evidencia + debugging)</td>
+</tr>
+<tr>
+<td><code>logs/</code></td>
+<td>Logs estructurados de corridas</td>
+</tr>
+<tr>
+<td><code>.github/workflows/</code></td>
+<td>Pipeline de CI/CD (<code>scrape.yml</code>)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="cómo-correr-cada-hit">Cómo correr cada hit</h2>
+<blockquote>
+<p>Cada subcarpeta <code>hitN/</code> tiene su propio
+<code>README.md</code> con el detalle. Lo que sigue es solo el
+índice.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Hit</th>
+<th>Comando rápido</th>
+<th>Ver detalle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>#1</td>
+<td><code>python -m src.smoke --browser chrome</code></td>
+<td><code>hit1/README.md</code></td>
+</tr>
+<tr>
+<td>#2</td>
+<td><code>BROWSER=firefox python -m src.runner</code></td>
+<td><code>hit2/README.md</code></td>
+</tr>
+<tr>
+<td>#3</td>
+<td><code>python -m src.runner --product "iPhone 16 Pro Max"</code></td>
+<td><code>hit3/README.md</code></td>
+</tr>
+<tr>
+<td>#4</td>
+<td><code>python -m src.runner --all-products --output-dir output/</code></td>
+<td><code>hit4/README.md</code></td>
+</tr>
+<tr>
+<td>#5</td>
+<td><code>python -m src.runner --all-products --retries 3</code></td>
+<td><code>hit5/README.md</code></td>
+</tr>
+<tr>
+<td>#6</td>
+<td><code>HEADLESS=true python -m src.runner --all-products</code></td>
+<td><code>hit6/README.md</code></td>
+</tr>
+<tr>
+<td>#7</td>
+<td><code>docker run --rm -v $(pwd)/output:/app/output ml-scraper:latest --browser firefox</code></td>
+<td><code>hit7/README.md</code></td>
+</tr>
+<tr>
+<td>#8</td>
+<td><code>kubectl apply -f hit8/k8s/</code></td>
+<td><code>hit8/README.md</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><em>Placeholder.</em> Los comandos exactos, variables de entorno y
+outputs esperados están documentados en cada <code>hitN/README.md</code>
+por los implementadores de cada hit.</p>
+</blockquote>
+<hr />
+<h2 id="cómo-correr-los-tests">Cómo correr los tests</h2>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Local, browser único</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pytest</span> <span class="at">--cov</span><span class="op">=</span>src <span class="at">--cov-report</span><span class="op">=</span>html <span class="at">--cov-fail-under</span><span class="op">=</span>70</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Local, matriz de browsers (igual que CI)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">BROWSER</span><span class="op">=</span>chrome  <span class="ex">pytest</span> <span class="at">--cov</span><span class="op">=</span>src <span class="at">--cov-fail-under</span><span class="op">=</span>70</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="va">BROWSER</span><span class="op">=</span>firefox <span class="ex">pytest</span> <span class="at">--cov</span><span class="op">=</span>src <span class="at">--cov-fail-under</span><span class="op">=</span>70</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Dentro del contenedor Docker</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> ml-scraper:latest pytest <span class="at">--cov</span><span class="op">=</span>src <span class="at">--cov-fail-under</span><span class="op">=</span>70</span></code></pre></div>
+<blockquote>
+<p><em>Placeholder.</em> La estructura exacta de fixtures, marcadores de
+pytest y mocks está documentada en <code>tests/README.md</code>.</p>
+</blockquote>
+<hr />
+<h2 id="cómo-deployar-el-hit-8-en-k3d">Cómo deployar el Hit #8 en
+k3d</h2>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Construir la imagen</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">-t</span> ml-scraper:latest .</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Importar al cluster k3d (asume cluster llamado &#39;scraper&#39;)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">k3d</span> image import ml-scraper:latest <span class="at">-c</span> scraper</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Aplicar todos los manifiestos</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> hit8/k8s/</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Disparar el Job one-off y seguir los logs</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> logs <span class="at">-l</span> job-name=scraper-once <span class="at">-f</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Verificar que el CronJob quedó programado</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get cronjobs</span></code></pre></div>
+<blockquote>
+<p><em>Placeholder.</em> El recetario completo (incluyendo path para k3s
+nativo, troubleshooting, verificación del PVC y limpieza) está en
+<code>hit8/README.md</code>.</p>
+</blockquote>
+<hr />
+<h2 id="architecture-decision-records">Architecture Decision
+Records</h2>
+<p>Los 3 ADRs oficiales que documentan las decisiones técnicas centrales
+del proyecto:</p>
+<ul>
+<li><a
+href="docs/adr/0000-template.md"><code>docs/adr/0000-template.md</code></a>
+— Plantilla en blanco (formato Michael Nygard)</li>
+<li><a
+href="docs/adr/0001-selenium-vs-playwright.md"><code>docs/adr/0001-selenium-vs-playwright.md</code></a>
+— Por qué Selenium y no Playwright/Puppeteer/Cypress</li>
+<li><a
+href="docs/adr/0002-multi-browser-chrome-firefox.md"><code>docs/adr/0002-multi-browser-chrome-firefox.md</code></a>
+— Por qué soportar Chrome y Firefox simultáneamente</li>
+<li><a
+href="docs/adr/0003-k8s-job-vs-docker-compose.md"><code>docs/adr/0003-k8s-job-vs-docker-compose.md</code></a>
+— Por qué Kubernetes Job/CronJob en lugar de docker-compose + cron del
+host</li>
+</ul>
+<hr />
+<h2 id="productos-objetivo">Productos objetivo</h2>
+<p>El scraper procesa los <strong>3 productos definidos en la consigna
+del TP</strong>, idénticos en Parte 1 y Parte 2:</p>
+<ol type="1">
+<li><strong>Bicicleta rodado 29</strong> →
+<code>output/bicicleta_rodado_29.json</code></li>
+<li><strong>iPhone 16 Pro Max</strong> →
+<code>output/iphone_16_pro_max.json</code></li>
+<li><strong>GeForce RTX 5090</strong> →
+<code>output/geforce_5090.json</code></li>
+</ol>
+<p>Cada archivo es un array JSON con los <strong>primeros 10
+resultados</strong> filtrados, donde cada elemento tiene los 6 campos
+definidos en el Hit #4: <code>titulo</code>, <code>precio</code>,
+<code>link</code>, <code>tienda_oficial</code>,
+<code>envio_gratis</code>, <code>cuotas_sin_interes</code>.</p>
+<hr />
+<h2 id="licencia">Licencia</h2>
+<p><strong>MIT License.</strong> Es la elección estándar para material
+de cátedra: permisiva, compatible con la mayoría de proyectos en los que
+los alumnos podrían querer reusar fragmentos en el futuro, sin
+reciprocidad obligatoria (a diferencia de GPL) y sin cláusulas de
+atribución pesadas (a diferencia de Apache 2.0). Para un repo educativo
+es la combinación correcta de “tomalo y aprendé” con “atribuí cuando
+uses partes sustanciales”.</p>
+<p>Ver archivo <code>LICENSE</code> en la raíz del repo (a agregar por
+la cátedra).</p>
+<hr />
+<h2 id="para-los-alumnos">Para los alumnos</h2>
+<h3 id="qué-se-espera-de-tu-entrega">Qué se espera de tu entrega</h3>
+<p>Tu repo (no este) tiene que cumplir todo lo listado en la consigna
+oficial: los 8 hits + bonus opcional, README raíz documentando cómo
+reproducir cada parte, carpeta <code>docs/adr/</code> con <strong>mínimo
+3 ADRs propios</strong> (no copiados de acá), pipeline de CI verde con
+coverage ≥ 70 %, Dockerfile funcional, manifests de Kubernetes corriendo
+en k3s/k3d, y video de demo.</p>
+<p><strong>Lo que no se acepta:</strong></p>
+<ul>
+<li>Coverage por debajo del 70 %.</li>
+<li>Pipeline de CI roto en <code>main</code>.</li>
+<li>Secrets hardcodeados (gitleaks los detecta y la entrega se rechaza
+directo).</li>
+<li>ADRs genéricos copiados de internet sin contexto del proyecto
+propio.</li>
+<li>“Funciona solo en Chrome” — la matriz exige Firefox también.</li>
+</ul>
+<h3 id="links-oficiales">Links oficiales</h3>
+<ul>
+<li>Consigna del TP — Parte 1 (Hits #1–#3): <a
+href="https://dpetrocelli.github.io/sip2026/practica-1.html">https://dpetrocelli.github.io/sip2026/practica-1.html</a></li>
+<li>Consigna del TP — Parte 2 (Hits #4–#9): <a
+href="https://dpetrocelli.github.io/sip2026/practica-2.html">https://dpetrocelli.github.io/sip2026/practica-2.html</a></li>
+<li>TP 0 — Prerrequisitos de Kubernetes (k3s): <a
+href="https://dpetrocelli.github.io/sip2026/practica-0.html">https://dpetrocelli.github.io/sip2026/practica-0.html</a></li>
+<li>Sitio principal de la materia: <a
+href="https://dpetrocelli.github.io/sip2026/">https://dpetrocelli.github.io/sip2026/</a></li>
+</ul>
+<h3 id="recordatorio-de-la-rúbrica-parte-2">Recordatorio de la rúbrica
+(Parte 2)</h3>
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>Peso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hit #4 — extracción JSON con todos los campos</td>
+<td>18 %</td>
+</tr>
+<tr>
+<td>Hit #5 — manejo robusto de errores + retries con backoff</td>
+<td>10 %</td>
+</tr>
+<tr>
+<td>Hit #6 — tests + coverage ≥ 70 % validada en CI</td>
+<td>12 %</td>
+</tr>
+<tr>
+<td>Hit #7 — Dockerfile con Chrome + Firefox + drivers</td>
+<td>10 %</td>
+</tr>
+<tr>
+<td>Hit #7 — pipeline CI/CD con matriz + artifacts + coverage gate</td>
+<td>10 %</td>
+</tr>
+<tr>
+<td>Hit #7 — pre-commit hooks configurados y documentados</td>
+<td>5 %</td>
+</tr>
+<tr>
+<td>Hit #8 — Job + CronJob + ConfigMap + PVC en k3s/k3d</td>
+<td>15 %</td>
+</tr>
+<tr>
+<td>ADRs (mínimo 3)</td>
+<td>5 %</td>
+</tr>
+<tr>
+<td>Modo headless configurable</td>
+<td>5 %</td>
+</tr>
+<tr>
+<td>Hit #9 (al menos un bonus)</td>
+<td>10 %</td>
+</tr>
+</tbody>
+</table>
+<p>Antes de pedir ayuda en Discord: leé el <a
+href="https://dpetrocelli.github.io/sip2026/practica-0.html">TP 0</a> y
+la sección de troubleshooting que ya tiene los 4 errores típicos
+resueltos.</p>
+
+    <nav class="page-nav-bottom">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+    </nav>
+  </main>
+</div>
+
+<footer class="unlu-footer">
+  <div>
+    UNLu · Departamento de Ciencias Básicas · Seminario de Integración Profesional <strong>2026</strong>
+    · Dr. David Petrocelli
+  </div>
+</footer>
+
+<script>
+// Sidebar show/hide toggle (preference persisted in localStorage)
+(function () {
+  const sidebar = document.getElementById('toc-sidebar');
+  const layout = document.querySelector('.layout');
+  const hideBtn = document.getElementById('sidebar-hide');
+  const showBtn = document.getElementById('sidebar-show');
+  if (!sidebar || !layout || !hideBtn || !showBtn) return;
+
+  const KEY = 'unlu.dcb.sidebar.hidden';
+
+  function apply(hidden) {
+    layout.classList.toggle('sidebar-hidden', hidden);
+    showBtn.classList.toggle('visible', hidden);
+  }
+
+  apply(localStorage.getItem(KEY) === '1');
+
+  hideBtn.addEventListener('click', () => {
+    localStorage.setItem(KEY, '1');
+    apply(true);
+  });
+  showBtn.addEventListener('click', () => {
+    localStorage.removeItem(KEY);
+    apply(false);
+  });
+})();
+
+// Wrap each H2 (and its following content until the next H2) in a <details open>
+// element so users can collapse/expand sections.
+(function () {
+  const main = document.querySelector('main.content');
+  if (!main) return;
+
+  // Collect direct-child H2 headings so we don't touch nested ones (e.g., inside details we'll create)
+  const headings = Array.from(main.children).filter(el => el.tagName === 'H2');
+
+  headings.forEach(h2 => {
+    const details = document.createElement('details');
+    details.open = true;
+    details.className = 'section-collapsible';
+
+    const summary = document.createElement('summary');
+    // Move heading content (incl. anchor) into the summary so anchors keep working
+    summary.innerHTML = h2.innerHTML;
+    if (h2.id) summary.id = h2.id;
+    details.appendChild(summary);
+
+    // Move siblings until next H2 into details
+    const parent = h2.parentNode;
+    let next = h2.nextSibling;
+    parent.replaceChild(details, h2);
+    while (next && !(next.nodeType === 1 && next.tagName === 'H2')) {
+      const node = next;
+      next = next.nextSibling;
+      details.appendChild(node);
+    }
+  });
+
+  // If there's a hash in the URL, ensure the target's <details> is open
+  function openDetailsForHash(hash) {
+    if (!hash) return;
+    const target = document.getElementById(hash.replace(/^#/, ''));
+    if (!target) return;
+    let p = target.closest('details');
+    while (p) { p.open = true; p = p.parentElement && p.parentElement.closest('details'); }
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  openDetailsForHash(window.location.hash);
+  window.addEventListener('hashchange', () => openDetailsForHash(window.location.hash));
+
+  // Wire up "Expand all" / "Collapse all" controls in the inline TOC
+  document.querySelectorAll('.toc-controls [data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const action = btn.getAttribute('data-action');
+      const open = action === 'expand-all';
+      document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

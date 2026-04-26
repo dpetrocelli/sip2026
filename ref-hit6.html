@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <meta name="generator" content="pandoc + UNLu/DCB template">
+  <title>Implementación de referencia — Hit #6 — Tests automatizados +
+cobertura ≥ 70 % — UNLu DCB</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+
+<header class="unlu-header">
+  <div class="brand">
+    <img src="assets/unlu_escudo.png" alt="Universidad Nacional de Luján" class="logo unlu">
+    <div class="brand-text">
+      <div class="institution">Universidad Nacional de Luján</div>
+      <div class="department">Departamento de Ciencias Básicas</div>
+    </div>
+    <img src="assets/logo_dcb.png" alt="Departamento de Ciencias Básicas" class="logo dcb">
+  </div>
+  <div class="course-bar">
+    <span class="course">Seminario de Integración Profesional</span>
+    <span class="year">2026</span>
+    <span class="instructor">Dr. David Petrocelli</span>
+  </div>
+</header>
+
+<button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
+
+<div class="layout">
+  <aside class="toc-sidebar" id="toc-sidebar">
+    <div class="toc-header">
+      <div class="toc-title">Contenidos</div>
+      <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
+    </div>
+    <ul>
+    <li><a href="#hit-6--tests-automatizados--cobertura--70-"
+    id="toc-hit-6--tests-automatizados--cobertura--70-">Hit #6 — Tests
+    automatizados + cobertura ≥ 70 %</a>
+    <ul>
+    <li><a href="#suite" id="toc-suite">Suite</a></li>
+    <li><a href="#cobertura--exclusiones-razonadas"
+    id="toc-cobertura--exclusiones-razonadas">Cobertura — exclusiones
+    razonadas</a></li>
+    <li><a href="#cómo-correr-local" id="toc-cómo-correr-local">Cómo
+    correr local</a></li>
+    <li><a href="#output-local-de-la-última-corrida-referencia"
+    id="toc-output-local-de-la-última-corrida-referencia">Output local
+    de la última corrida (referencia)</a></li>
+    <li><a href="#conexión-con-ci" id="toc-conexión-con-ci">Conexión con
+    CI</a></li>
+    <li><a href="#pre-commit-local" id="toc-pre-commit-local">Pre-commit
+    local</a></li>
+    </ul></li>
+    </ul>
+    <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
+      <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <nav class="page-nav-top">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+      <span class="banner-pill">REF · HIT 6</span>
+    </nav>
+
+    <details class="toc-inline" open>
+      <summary>📑 Índice del documento</summary>
+      <ul>
+      <li><a href="#hit-6--tests-automatizados--cobertura--70-"
+      id="toc-hit-6--tests-automatizados--cobertura--70-">Hit #6 — Tests
+      automatizados + cobertura ≥ 70 %</a>
+      <ul>
+      <li><a href="#suite" id="toc-suite">Suite</a></li>
+      <li><a href="#cobertura--exclusiones-razonadas"
+      id="toc-cobertura--exclusiones-razonadas">Cobertura — exclusiones
+      razonadas</a></li>
+      <li><a href="#cómo-correr-local" id="toc-cómo-correr-local">Cómo
+      correr local</a></li>
+      <li><a href="#output-local-de-la-última-corrida-referencia"
+      id="toc-output-local-de-la-última-corrida-referencia">Output local
+      de la última corrida (referencia)</a></li>
+      <li><a href="#conexión-con-ci" id="toc-conexión-con-ci">Conexión
+      con CI</a></li>
+      <li><a href="#pre-commit-local"
+      id="toc-pre-commit-local">Pre-commit local</a></li>
+      </ul></li>
+      </ul>
+      <div class="toc-controls">
+        <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
+        <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
+      </div>
+    </details>
+
+<h1 id="hit-6--tests-automatizados--cobertura--70-">Hit #6 — Tests
+automatizados + cobertura ≥ 70 %</h1>
+<p>Tests unitarios y de integración del scraper, con gate de cobertura
+validado por CI.</p>
+<blockquote>
+<p>Las <strong>piezas testables</strong> del scraper (extractors,
+selectores, retries) están cubiertas con mocks/fakes — los tests
+<strong>no abren browser real ni hacen requests a MercadoLibre</strong>.
+Esto los hace rápidos (&lt;1s todo el suite), determinísticos y
+CI-friendly.</p>
+</blockquote>
+<h2 id="suite">Suite</h2>
+<table>
+<thead>
+<tr>
+<th>Archivo</th>
+<th>Qué cubre</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a
+href="../tests/conftest.py"><code>tests/conftest.py</code></a></td>
+<td>Fixtures comunes (mock de <code>WebElement</code>, fake driver)</td>
+</tr>
+<tr>
+<td><a
+href="../tests/test_extractors.py"><code>tests/test_extractors.py</code></a></td>
+<td>Los 6 extractors del Hit #4 (titulo, precio, link, tienda_oficial,
+envio_gratis, cuotas_sin_interes), happy path + soft-fail a
+<code>null</code> cuando el campo no está</td>
+</tr>
+<tr>
+<td><a
+href="../tests/test_retry.py"><code>tests/test_retry.py</code></a></td>
+<td>Decorador <code>@with_backoff</code>: éxito al 1er intento, éxito
+tras N fallos, fallo total tras max_attempts, excepción no-retryable se
+propaga sin reintento</td>
+</tr>
+<tr>
+<td><a
+href="../tests/test_browser_factory.py"><code>tests/test_browser_factory.py</code></a></td>
+<td>Cadena de resolución del browser (CLI &gt; env &gt; default),
+validación de browser no soportado, detección de modo headless</td>
+</tr>
+<tr>
+<td><a
+href="../tests/test_ml_selectors.py"><code>tests/test_ml_selectors.py</code></a></td>
+<td>Sanity: las constantes esperadas existen y son strings no
+vacíos</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cobertura--exclusiones-razonadas">Cobertura — exclusiones
+razonadas</h2>
+<p><code>pyproject.toml</code> configura
+<code>[tool.coverage.run]</code> para excluir 3 módulos del cálculo de
+cobertura:</p>
+<table>
+<thead>
+<tr>
+<th>Módulo</th>
+<th>Por qué se excluye</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hit5/main.py</code></td>
+<td>Glue code — orquesta browser real + ML. No hay forma honesta de
+cubrirlo sin un E2E completo</td>
+</tr>
+<tr>
+<td><code>hit5/filters.py</code></td>
+<td>Cada función llama al DOM real de ML. Mockear todos los
+<code>find_element</code> no aporta valor — el contrato real está en
+E2E</td>
+</tr>
+<tr>
+<td><code>hit5/browser_factory.py</code></td>
+<td>Construir un driver Chrome/Firefox real es lo único que valida que
+la factory funciona. La parte testeable (<code>_is_headless</code>,
+validación de browser) sí está cubierta vía tests indirectos</td>
+</tr>
+</tbody>
+</table>
+<p>Resultado: <strong>cobertura efectiva 97 % sobre el código
+testable</strong> (<code>extractors.py</code>,
+<code>ml_selectors.py</code>, <code>retry.py</code>).</p>
+<h2 id="cómo-correr-local">Cómo correr local</h2>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup venv (una vez)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv .venv</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">.</span> .venv/bin/activate</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install pytest pytest-cov</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Correr todo el suite con coverage gate</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">pytest</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Solo unos tests</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="ex">pytest</span> tests/test_retry.py <span class="at">-v</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Coverage HTML detallada</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ex">pytest</span> <span class="kw">&amp;&amp;</span> <span class="ex">open</span> htmlcov/index.html</span></code></pre></div>
+<p>El gate de <code>--cov-fail-under=70</code> está <strong>hardcoded en
+<code>pyproject.toml</code></strong> — si la cobertura cae bajo 70 %,
+<code>pytest</code> retorna no-cero y CI falla.</p>
+<h2 id="output-local-de-la-última-corrida-referencia">Output local de la
+última corrida (referencia)</h2>
+<pre><code>77 passed in 0.15s
+================================ tests coverage ================================
+Name                   Stmts   Miss  Cover   Missing
+----------------------------------------------------
+hit5/extractors.py        52      0   100%
+hit5/ml_selectors.py      13      0   100%
+hit5/retry.py             30      3    90%   78-80
+----------------------------------------------------
+TOTAL                     95      3    97%
+Required test coverage of 70% reached. Total coverage: 96.84%</code></pre>
+<h2 id="conexión-con-ci">Conexión con CI</h2>
+<p><a
+href="../.github/workflows/scrape.yml"><code>.github/workflows/scrape.yml</code></a>
+corre <code>pytest</code> (con cobertura) en el job
+<code>unit-tests</code>. Si falla el gate, el pipeline corta y NO se
+ejecutan los tests de integración ni el deploy.</p>
+<h2 id="pre-commit-local">Pre-commit local</h2>
+<p><a
+href="../.pre-commit-config.yaml"><code>.pre-commit-config.yaml</code></a>
+corre <code>gitleaks</code> + <code>ruff check</code> +
+<code>ruff format</code> antes de cada commit. Activación:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install pre-commit</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pre-commit</span> install</span></code></pre></div>
+
+    <nav class="page-nav-bottom">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+    </nav>
+  </main>
+</div>
+
+<footer class="unlu-footer">
+  <div>
+    UNLu · Departamento de Ciencias Básicas · Seminario de Integración Profesional <strong>2026</strong>
+    · Dr. David Petrocelli
+  </div>
+</footer>
+
+<script>
+// Sidebar show/hide toggle (preference persisted in localStorage)
+(function () {
+  const sidebar = document.getElementById('toc-sidebar');
+  const layout = document.querySelector('.layout');
+  const hideBtn = document.getElementById('sidebar-hide');
+  const showBtn = document.getElementById('sidebar-show');
+  if (!sidebar || !layout || !hideBtn || !showBtn) return;
+
+  const KEY = 'unlu.dcb.sidebar.hidden';
+
+  function apply(hidden) {
+    layout.classList.toggle('sidebar-hidden', hidden);
+    showBtn.classList.toggle('visible', hidden);
+  }
+
+  apply(localStorage.getItem(KEY) === '1');
+
+  hideBtn.addEventListener('click', () => {
+    localStorage.setItem(KEY, '1');
+    apply(true);
+  });
+  showBtn.addEventListener('click', () => {
+    localStorage.removeItem(KEY);
+    apply(false);
+  });
+})();
+
+// Wrap each H2 (and its following content until the next H2) in a <details open>
+// element so users can collapse/expand sections.
+(function () {
+  const main = document.querySelector('main.content');
+  if (!main) return;
+
+  // Collect direct-child H2 headings so we don't touch nested ones (e.g., inside details we'll create)
+  const headings = Array.from(main.children).filter(el => el.tagName === 'H2');
+
+  headings.forEach(h2 => {
+    const details = document.createElement('details');
+    details.open = true;
+    details.className = 'section-collapsible';
+
+    const summary = document.createElement('summary');
+    // Move heading content (incl. anchor) into the summary so anchors keep working
+    summary.innerHTML = h2.innerHTML;
+    if (h2.id) summary.id = h2.id;
+    details.appendChild(summary);
+
+    // Move siblings until next H2 into details
+    const parent = h2.parentNode;
+    let next = h2.nextSibling;
+    parent.replaceChild(details, h2);
+    while (next && !(next.nodeType === 1 && next.tagName === 'H2')) {
+      const node = next;
+      next = next.nextSibling;
+      details.appendChild(node);
+    }
+  });
+
+  // If there's a hash in the URL, ensure the target's <details> is open
+  function openDetailsForHash(hash) {
+    if (!hash) return;
+    const target = document.getElementById(hash.replace(/^#/, ''));
+    if (!target) return;
+    let p = target.closest('details');
+    while (p) { p.open = true; p = p.parentElement && p.parentElement.closest('details'); }
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  openDetailsForHash(window.location.hash);
+  window.addEventListener('hashchange', () => openDetailsForHash(window.location.hash));
+
+  // Wire up "Expand all" / "Collapse all" controls in the inline TOC
+  document.querySelectorAll('.toc-controls [data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const action = btn.getAttribute('data-action');
+      const open = action === 'expand-all';
+      document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -111,6 +111,8 @@ Escriba un script que abra **Chrome**, navegue a `https://www.mercadolibre.com.a
 
 Use **explicit waits** (`WebDriverWait` + `expected_conditions`). Está prohibido el uso de `time.sleep()` (o equivalentes) como mecanismo principal de sincronización.
 
+> 🔗 **Implementación de referencia:** [Hit #1 completo](ref-hit1.html) · [código en GitHub](https://github.com/dpetrocelli/sip2026/tree/main/reference/hit1)
+
 ---
 
 ### Hit #2
@@ -120,6 +122,8 @@ Refactorice el código del Hit #1 para introducir una **Browser Factory**: una f
 El parámetro debe poder pasarse por línea de comandos o variable de entorno (`BROWSER=firefox python scraper.py`).
 
 Verifique que el script funcione exactamente igual contra **Chrome** y **Firefox**. Documente en el informe cualquier diferencia encontrada (selectores que se rompen, comportamiento distinto de waits, etc.).
+
+> 🔗 **Implementación de referencia:** [Hit #2 completo](ref-hit2.html) · [código en GitHub](https://github.com/dpetrocelli/sip2026/tree/main/reference/hit2)
 
 ---
 
@@ -134,6 +138,8 @@ Modifique el scraper para aplicar los siguientes **filtros** sobre la página de
 La interacción con los filtros debe hacerse navegando el DOM (clicks reales sobre los links/checkboxes), **no** modificando la URL a mano. Esto valida que el flujo funciona como lo haría un usuario.
 
 Capture un **screenshot** de la página de resultados ya filtrada y guárdelo como `screenshots/<producto>_<browser>.png`.
+
+> 🔗 **Implementación de referencia:** [Hit #3 completo](ref-hit3.html) · [código en GitHub](https://github.com/dpetrocelli/sip2026/tree/main/reference/hit3)
 
 ---
 

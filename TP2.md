@@ -8,7 +8,7 @@
 - Haber entregado la **Parte 1** (Hits #1–#3). Esta segunda parte continúa el mismo proyecto y arranca con el Hit #4 (extracción estructurada a JSON), que es la base sobre la que se construye el resto.
 - Haber completado la guía del **TP 0 — Prerrequisitos (k3s)** antes de empezar el Hit #8. Sin un cluster k3s/k3d funcional no podés cumplir esa parte.
 
-> 📚 **Implementación de referencia disponible.** La cátedra publicó una implementación completa que cubre los 8 hits + ADRs + pre-commit + CI + manifests k8s en <https://github.com/dpetrocelli/sip2026/tree/main/reference>. Sirve como vara de corrección y como ejemplo de buenas prácticas (no la copien tal cual — adaptenla a su stack y decisiones).
+> 📚 **Implementación de referencia disponible.** La cátedra publicó una implementación completa que cubre los 8 hits + ADRs + pre-commit + CI + manifests k8s. Podés navegarla aquí mismo en el sitio: [índice de la implementación de referencia](reference.html), o ver el [código fuente en GitHub](https://github.com/dpetrocelli/sip2026/tree/main/reference). Sirve como vara de corrección y como ejemplo de buenas prácticas (no la copien tal cual — adaptenla a su stack y decisiones). También está la [Parte 1 de Lecciones (resumen pedagógico)](ref-lecciones-parte1.html).
 
 ---
 
@@ -21,10 +21,10 @@ Aplican los mismos requisitos generales de la Parte 1, **más** los siguientes:
 - **Tests automatizados obligatorios** (`pytest` / `JUnit` / `Jest`) corriendo en CI sobre matriz de browsers, con **cobertura ≥ 70 %** medida por la herramienta estándar del lenguaje (`coverage.py`, `jest --coverage`, `jacoco`). El pipeline debe **fallar** si la cobertura cae debajo del umbral.
 - **Pre-commit hooks obligatorios** (`pre-commit` framework o equivalente nativo del lenguaje). Como mínimo: `gitleaks` para detectar secrets, y el linter del lenguaje (`ruff` para Python, `eslint` para Node, `checkstyle`/`spotless` para Java). Esto fuerza que los problemas se detecten **antes** de pushear, no recién en CI.
 - **Mínimo 3 ADRs** (Architecture Decision Records) en `docs/adr/`, formato Markdown corto (1 página máx cada uno). Como mínimo:
-  - `0001-selenium-vs-playwright.md` — por qué eligieron Selenium (y no Playwright/Puppeteer/Cypress).
-  - `0002-multi-browser.md` — por qué se exige soporte de Chrome **y** Firefox simultáneo.
-  - `0003-k8s-job-vs-docker-compose.md` — por qué Kubernetes Job y no `docker-compose` para el scraping programado.
-  - Plantilla recomendada: <https://github.com/joelparkerhenderson/architecture-decision-record/blob/main/locales/en/templates/decision-record-template-by-michael-nygard/index.md>
+  - `0001-selenium-vs-playwright.md` — por qué eligieron Selenium (y no Playwright/Puppeteer/Cypress). Ver el [ADR 0001 de la cátedra](ref-adr-0001.html) como ejemplo.
+  - `0002-multi-browser.md` — por qué se exige soporte de Chrome **y** Firefox simultáneo. Ver el [ADR 0002 de la cátedra](ref-adr-0002.html).
+  - `0003-k8s-job-vs-docker-compose.md` — por qué Kubernetes Job y no `docker-compose` para el scraping programado. Ver el [ADR 0003 de la cátedra](ref-adr-0003.html).
+  - Plantilla recomendada: <https://github.com/joelparkerhenderson/architecture-decision-record/blob/main/locales/en/templates/decision-record-template-by-michael-nygard/index.md> (la cátedra tiene su [propia plantilla en `0000-template.md`](ref-adr-template.html)).
 - Mantener las **buenas prácticas** ya exigidas en Parte 1: explicit waits, selectores en módulo aparte, logs estructurados, no commitear secrets, gitleaks en CI.
 
 ---
@@ -74,6 +74,8 @@ Guarde la salida en archivos separados por producto, en formato JSON:
 
 El JSON debe ser un array de objetos, uno por resultado, con los campos definidos arriba.
 
+> 🔗 **Implementación de referencia:** [Hit #4 completo](ref-hit4.html) · [código en GitHub](https://github.com/dpetrocelli/sip2026/tree/main/reference/hit4)
+
 ---
 
 ### Hit #5
@@ -84,6 +86,8 @@ Endurezca el scraper para que sea **robusto frente a fallos parciales**:
 2. Si un selector falla por timeout, registre el error en el log con contexto (qué producto, qué browser, qué selector) y continúe con el siguiente resultado.
 3. Implemente un mecanismo de **reintentos con backoff** ante fallos transitorios de carga (ej: 3 intentos con 2s, 4s, 8s).
 4. Estructure los selectores en un módulo aparte (constantes con nombres semánticos), de modo que un cambio de DOM en MercadoLibre se arregle en un solo lugar.
+
+> 🔗 **Implementación de referencia:** [Hit #5 completo](ref-hit5.html) · [código en GitHub](https://github.com/dpetrocelli/sip2026/tree/main/reference/hit5)
 
 ---
 
@@ -101,6 +105,8 @@ Escriba un set de **tests automatizados** (`pytest` / `JUnit` / `Jest`) que vali
 Los tests deben correr en CI tanto en Chrome como en Firefox.
 
 **Cobertura mínima: 70 %.** Configure el reporte de cobertura (`coverage.py` + `pytest-cov`, `jest --coverage`, `jacoco`) y agregue una etapa al pipeline de CI que **falle si la cobertura cae debajo del 70 %**. Publique el reporte HTML como artifact del workflow.
+
+> 🔗 **Implementación de referencia:** [Hit #6 completo](ref-hit6.html) · [código en GitHub](https://github.com/dpetrocelli/sip2026/tree/main/reference/hit6)
 
 ---
 
@@ -135,6 +141,8 @@ Configure un **GitHub Actions workflow** (`.github/workflows/scrape.yml`) que:
 - Formatter (`black` / `prettier` / `spotless`).
 
 Documente en el README cómo activarlos: `pre-commit install` (Python/Node) o el equivalente del stack.
+
+> 🔗 **Implementación de referencia:** [Hit #7 completo](ref-hit7.html) · [código en GitHub](https://github.com/dpetrocelli/sip2026/tree/main/reference/hit7)
 
 ---
 
@@ -289,6 +297,8 @@ kubectl delete -f k8s/
 - Captura de pantalla (o asciinema) de `kubectl get jobs` mostrando un Job completado y `kubectl get cronjobs` mostrando el cron activo.
 - Bonus: agregar al pipeline de CI una etapa que valide la sintaxis de los YAMLs con `kubectl apply --dry-run=client -f k8s/`.
 
+> 🔗 **Implementación de referencia:** [Hit #8 completo](ref-hit8.html) · [código en GitHub](https://github.com/dpetrocelli/sip2026/tree/main/reference/hit8)
+
 ---
 
 ## Material de apoyo
@@ -334,7 +344,7 @@ Formato Michael Nygard, 1 página. Copien esto a `docs/adr/0000-template.md` y �
 - Links a docs, papers, charlas que informaron la decisión.
 ```
 
-**Ejemplo concreto** del primer ADR (`0001-selenium-vs-playwright.md`):
+**Ejemplo concreto** del primer ADR (`0001-selenium-vs-playwright.md` — versión completa rendereada: [ADR 0001](ref-adr-0001.html)):
 
 ```markdown
 # 0001 — Usamos Selenium WebDriver y no Playwright
@@ -595,7 +605,7 @@ docker run --rm -e HEADLESS=true -e BROWSER=chrome \
 
 ### 6) Comparación contra el golden master (opcional pero recomendado)
 
-La cátedra publicó la implementación de referencia con un `tooling/compare.py` que valida estructura, schema, presencia de hits, anti-patterns y secrets. Pueden correrla contra su propio repo para tener feedback antes de entregar:
+La cátedra publicó la implementación de referencia con un `tooling/compare.py` que valida estructura, schema, presencia de hits, anti-patterns y secrets. Pueden correrla contra su propio repo para tener feedback antes de entregar. El script vive en [`reference/tooling/compare.py`](https://github.com/dpetrocelli/sip2026/blob/main/reference/tooling/compare.py) (es un archivo Python, así que el link va directo a GitHub):
 
 ```bash
 git clone https://github.com/dpetrocelli/sip2026.git /tmp/sip-ref

@@ -311,10 +311,14 @@ funcional no podés cumplir esa parte.</li>
 <blockquote>
 <p>📚 <strong>Implementación de referencia disponible.</strong> La
 cátedra publicó una implementación completa que cubre los 8 hits + ADRs
-+ pre-commit + CI + manifests k8s en <a
-href="https://github.com/dpetrocelli/sip2026/tree/main/reference">https://github.com/dpetrocelli/sip2026/tree/main/reference</a>.
-Sirve como vara de corrección y como ejemplo de buenas prácticas (no la
-copien tal cual — adaptenla a su stack y decisiones).</p>
++ pre-commit + CI + manifests k8s. Podés navegarla aquí mismo en el
+sitio: <a href="reference.html">índice de la implementación de
+referencia</a>, o ver el <a
+href="https://github.com/dpetrocelli/sip2026/tree/main/reference">código
+fuente en GitHub</a>. Sirve como vara de corrección y como ejemplo de
+buenas prácticas (no la copien tal cual — adaptenla a su stack y
+decisiones). También está la <a href="ref-lecciones-parte1.html">Parte 1
+de Lecciones (resumen pedagógico)</a>.</p>
 </blockquote>
 <hr />
 <h2 id="requisitos-consideraciones-y-formato-de-entrega">Requisitos,
@@ -351,13 +355,18 @@ no recién en CI.</li>
 Como mínimo:
 <ul>
 <li><code>0001-selenium-vs-playwright.md</code> — por qué eligieron
-Selenium (y no Playwright/Puppeteer/Cypress).</li>
+Selenium (y no Playwright/Puppeteer/Cypress). Ver el <a
+href="ref-adr-0001.html">ADR 0001 de la cátedra</a> como ejemplo.</li>
 <li><code>0002-multi-browser.md</code> — por qué se exige soporte de
-Chrome <strong>y</strong> Firefox simultáneo.</li>
+Chrome <strong>y</strong> Firefox simultáneo. Ver el <a
+href="ref-adr-0002.html">ADR 0002 de la cátedra</a>.</li>
 <li><code>0003-k8s-job-vs-docker-compose.md</code> — por qué Kubernetes
-Job y no <code>docker-compose</code> para el scraping programado.</li>
+Job y no <code>docker-compose</code> para el scraping programado. Ver el
+<a href="ref-adr-0003.html">ADR 0003 de la cátedra</a>.</li>
 <li>Plantilla recomendada: <a
-href="https://github.com/joelparkerhenderson/architecture-decision-record/blob/main/locales/en/templates/decision-record-template-by-michael-nygard/index.md">https://github.com/joelparkerhenderson/architecture-decision-record/blob/main/locales/en/templates/decision-record-template-by-michael-nygard/index.md</a></li>
+href="https://github.com/joelparkerhenderson/architecture-decision-record/blob/main/locales/en/templates/decision-record-template-by-michael-nygard/index.md">https://github.com/joelparkerhenderson/architecture-decision-record/blob/main/locales/en/templates/decision-record-template-by-michael-nygard/index.md</a>
+(la cátedra tiene su <a href="ref-adr-template.html">propia plantilla en
+<code>0000-template.md</code></a>).</li>
 </ul></li>
 <li>Mantener las <strong>buenas prácticas</strong> ya exigidas en Parte
 1: explicit waits, selectores en módulo aparte, logs estructurados, no
@@ -422,6 +431,12 @@ JSON:</p>
 </ul>
 <p>El JSON debe ser un array de objetos, uno por resultado, con los
 campos definidos arriba.</p>
+<blockquote>
+<p>🔗 <strong>Implementación de referencia:</strong> <a
+href="ref-hit4.html">Hit #4 completo</a> · <a
+href="https://github.com/dpetrocelli/sip2026/tree/main/reference/hit4">código
+en GitHub</a></p>
+</blockquote>
 <hr />
 <h3 id="hit-5">Hit #5</h3>
 <p>Endurezca el scraper para que sea <strong>robusto frente a fallos
@@ -439,6 +454,12 @@ ante fallos transitorios de carga (ej: 3 intentos con 2s, 4s, 8s).</li>
 nombres semánticos), de modo que un cambio de DOM en MercadoLibre se
 arregle en un solo lugar.</li>
 </ol>
+<blockquote>
+<p>🔗 <strong>Implementación de referencia:</strong> <a
+href="ref-hit5.html">Hit #5 completo</a> · <a
+href="https://github.com/dpetrocelli/sip2026/tree/main/reference/hit5">código
+en GitHub</a></p>
+</blockquote>
 <hr />
 <h3 id="hit-6">Hit #6</h3>
 <p>Agregue <strong>modo headless</strong> controlable por variable de
@@ -459,6 +480,12 @@ cobertura (<code>coverage.py</code> + <code>pytest-cov</code>,
 <code>jest --coverage</code>, <code>jacoco</code>) y agregue una etapa
 al pipeline de CI que <strong>falle si la cobertura cae debajo del 70
 %</strong>. Publique el reporte HTML como artifact del workflow.</p>
+<blockquote>
+<p>🔗 <strong>Implementación de referencia:</strong> <a
+href="ref-hit6.html">Hit #6 completo</a> · <a
+href="https://github.com/dpetrocelli/sip2026/tree/main/reference/hit6">código
+en GitHub</a></p>
+</blockquote>
 <hr />
 <h3 id="hit-7">Hit #7</h3>
 <p>Construya un <strong>Dockerfile</strong> que empaquete el scraper
@@ -502,6 +529,12 @@ mínimo:</p>
 <p>Documente en el README cómo activarlos:
 <code>pre-commit install</code> (Python/Node) o el equivalente del
 stack.</p>
+<blockquote>
+<p>🔗 <strong>Implementación de referencia:</strong> <a
+href="ref-hit7.html">Hit #7 completo</a> · <a
+href="https://github.com/dpetrocelli/sip2026/tree/main/reference/hit7">código
+en GitHub</a></p>
+</blockquote>
 <hr />
 <h3 id="hit-8--despliegue-en-kubernetes-k3s">Hit #8 — Despliegue en
 Kubernetes (k3s)</h3>
@@ -660,6 +693,12 @@ mostrando el cron activo.</li>
 <li>Bonus: agregar al pipeline de CI una etapa que valide la sintaxis de
 los YAMLs con <code>kubectl apply --dry-run=client -f k8s/</code>.</li>
 </ul>
+<blockquote>
+<p>🔗 <strong>Implementación de referencia:</strong> <a
+href="ref-hit8.html">Hit #8 completo</a> · <a
+href="https://github.com/dpetrocelli/sip2026/tree/main/reference/hit8">código
+en GitHub</a></p>
+</blockquote>
 <hr />
 <h2 id="material-de-apoyo">Material de apoyo</h2>
 <h3 id="tabla-de-herramientas-por-lenguaje">Tabla de herramientas por
@@ -737,7 +776,8 @@ class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb5-1"><
 <span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Links a docs, papers, charlas que informaron la decisión.</span></code></pre></div>
 <p><strong>Ejemplo concreto</strong> del primer ADR
-(<code>0001-selenium-vs-playwright.md</code>):</p>
+(<code>0001-selenium-vs-playwright.md</code> — versión completa
+rendereada: <a href="ref-adr-0001.html">ADR 0001</a>):</p>
 <div class="sourceCode" id="cb6"><pre
 class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># 0001 — Usamos Selenium WebDriver y no Playwright</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -1008,7 +1048,9 @@ Comparación contra el golden master (opcional pero recomendado)</h3>
 <p>La cátedra publicó la implementación de referencia con un
 <code>tooling/compare.py</code> que valida estructura, schema, presencia
 de hits, anti-patterns y secrets. Pueden correrla contra su propio repo
-para tener feedback antes de entregar:</p>
+para tener feedback antes de entregar. El script vive en <a
+href="https://github.com/dpetrocelli/sip2026/blob/main/reference/tooling/compare.py"><code>reference/tooling/compare.py</code></a>
+(es un archivo Python, así que el link va directo a GitHub):</p>
 <div class="sourceCode" id="cb16"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/dpetrocelli/sip2026.git /tmp/sip-ref</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> /tmp/sip-ref/reference/tooling/compare.py <span class="dt">\</span></span>
