@@ -299,6 +299,19 @@ kubectl delete -f k8s/
 
 ---
 
+### Hit #8 — Capacidad extendida (obligatorio, mínimo 1 de 6)
+
+Extienda el scraper con **al menos una** de las siguientes capacidades. Hacer más de una suma puntos extra (hasta 2 ítems sumando), pero la entrega NO se acepta sin al menos 1.
+
+1. **Paginación**: traer los primeros 30 resultados en lugar de 10, navegando hasta 3 páginas.
+2. **Comparación de precios**: para cada producto, calcular precio mínimo, máximo, mediana y desvío estándar entre los resultados extraídos. Imprimir tabla resumen.
+3. **Histórico con PostgreSQL**: guardar los resultados en una instancia PostgreSQL con timestamp, para detectar cambios de precio entre corridas del CronJob (Hit #7). Implementación esperada: deployment de Postgres en el mismo cluster k3s (StatefulSet + PVC + Service), credenciales via `Secret`, schema migrations (Alembic / Flyway / Liquibase / SQL files versionados). Tabla mínima: `(producto, titulo, precio, link, tienda_oficial, scraped_at)`.
+4. **Reporte HTML**: generar una página estática (con GitHub Pages publicada por el pipeline) que muestre los resultados de la última corrida en una tabla navegable.
+5. **Page Object Model**: refactorizar el scraper para separar el código de navegación (`SearchPage`, `ResultsPage`) del código de extracción y de los tests.
+6. **Helm Chart**: empaquetar los manifiestos del Hit #7 como un chart con `values.yaml` parametrizable.
+
+---
+
 ## Material de apoyo
 
 ### Tabla de herramientas por lenguaje
@@ -649,19 +662,6 @@ kubectl logs -l job-name=scraper-once -n ml-scraper
 ```
 
 Si el Job termina en `Complete` y los logs muestran los 3 JSON generados, están listos para entregar.
-
----
-
-### Hit #8 — Capacidad extendida (obligatorio, mínimo 1 de 6)
-
-Extienda el scraper con **al menos una** de las siguientes capacidades. Hacer más de una suma puntos extra (hasta 2 ítems sumando), pero la entrega NO se acepta sin al menos 1.
-
-1. **Paginación**: traer los primeros 30 resultados en lugar de 10, navegando hasta 3 páginas.
-2. **Comparación de precios**: para cada producto, calcular precio mínimo, máximo, mediana y desvío estándar entre los resultados extraídos. Imprimir tabla resumen.
-3. **Histórico con PostgreSQL**: guardar los resultados en una instancia PostgreSQL con timestamp, para detectar cambios de precio entre corridas del CronJob (Hit #7). Implementación esperada: deployment de Postgres en el mismo cluster k3s (StatefulSet + PVC + Service), credenciales via `Secret`, schema migrations (Alembic / Flyway / Liquibase / SQL files versionados). Tabla mínima: `(producto, titulo, precio, link, tienda_oficial, scraped_at)`.
-4. **Reporte HTML**: generar una página estática (con GitHub Pages publicada por el pipeline) que muestre los resultados de la última corrida en una tabla navegable.
-5. **Page Object Model**: refactorizar el scraper para separar el código de navegación (`SearchPage`, `ResultsPage`) del código de extracción y de los tests.
-6. **Helm Chart**: empaquetar los manifiestos del Hit #7 como un chart con `values.yaml` parametrizable.
 
 ---
 
