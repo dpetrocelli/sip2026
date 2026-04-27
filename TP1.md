@@ -167,11 +167,33 @@ Los dos comandos deben **funcionar idéntico** y producir títulos.
 
 ### Hit #3
 
-- Console output muestra que los 3 filtros (Nuevo, Tienda oficial, Más relevantes) se aplicaron — debería ser visible en logs o con un dump de la URL final.
+Comando exacto:
+
+```bash
+cd hit3 && BROWSER=chrome python scraper.py
+```
+
+Por consola se debe ver algo equivalente a:
+
+```
+[INFO] Iniciando scraper en chrome
+[INFO] Búsqueda: 'bicicleta rodado 29'
+[INFO] Aplicando filtro: Condición = Nuevo
+[INFO] Aplicando filtro: Tienda oficial = Sí
+[INFO] Aplicando orden: Más relevantes
+[INFO] URL final: https://listado.mercadolibre.com.ar/bicicleta-rodado-29_ITEM*CONDITION_2230284_OFFICIAL_STORE_*_OrderId_RELEVANCE
+[INFO] Screenshot guardado en screenshots/bicicleta_rodado_29_chrome.png
+1. Bicicleta Mountain Bike Rodado 29 ...
+2. ...
+```
+
+Validaciones adicionales:
+
 - Carpeta `screenshots/` con como mínimo:
   - `screenshots/bicicleta_rodado_29_chrome.png`
   - `screenshots/bicicleta_rodado_29_firefox.png`
 - En la imagen tiene que verse el panel lateral de filtros con "Nuevo" y la "Tienda oficial" tildados.
+- Si algún filtro no está disponible para la query (ver pitfall correspondiente), debe loggearse `WARNING — Filtro X no disponible` y continuar sin abortar.
 
 ---
 
@@ -209,6 +231,18 @@ options.add_argument('--accept-lang=es-AR')
 ### Lazy loading de resultados
 
 Los resultados después del 5to-6to a veces no están en el DOM hasta que scrolleás. Si extraen 10, hagan scroll antes (`driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")`) o esperen a que `len(elementos) >= 10`.
+
+### Filtros del sidebar que NO aparecen para algunas búsquedas
+
+Esto lo descubrimos validando la implementación de referencia de la cátedra: ML decide **dinámicamente** qué filtros mostrar en el sidebar según la query. Para `bicicleta rodado 29` aparecen "Condición" y "Tienda oficial" sin problema, pero para `iPhone 16 Pro Max` o `GeForce RTX 5090` el sidebar puede no incluirlos (porque ML "asume" que para esa query la mayoría de los productos son nuevos / oficiales / no aplica).
+
+**Implicancia para el scraper**: si tu código asume que los 3 filtros siempre se aplican y falla cuando alguno no está disponible, vas a perder corridas completas. Lo correcto es:
+
+1. Loggear `WARNING — Filtro X no disponible en esta búsqueda` y continuar.
+2. Que el scraper escriba el JSON igual con los resultados sin filtrar (mejor 10 sin filtrar que 0).
+3. En la implementación de referencia esto está manejado en `filters.py` — cuando el filtro no aparece, se loggea y se sigue.
+
+Esto NO es bug suyo, es la realidad de scrapear ML. El test del Hit #6 (Parte 2) tiene que aceptar que `tienda_oficial: null` para todos los items es un resultado válido.
 
 ### Selectores que cambian al refresh
 
@@ -320,6 +354,18 @@ cd hit3 && BROWSER=chrome python scraper.py
 | Hit #2 — Browser Factory funcionando contra Chrome **y** Firefox sin cambios de código | 25 % |
 | Hit #3 — filtros aplicados correctamente vía DOM (nuevo + tienda oficial) y screenshot | 30 % |
 | Infra base — calidad de código (waits explícitos, selectores en módulo aparte, sin `time.sleep`) + README/informe/video explicativo + **Dockerfile + docker-compose.yml obligatorios** | 30 % |
+
+---
+
+## Lo que sigue: Parte 2
+
+La [Parte 2](practica-1-parte-2.html) (entrega 02/05/2026) extiende el scraper con tests automatizados, Docker + docker-compose, CI/CD con GitHub Actions, despliegue en Kubernetes (k3s/k3d) y una capa de capacidad extendida (paginación, estadísticas, histórico con PostgreSQL).
+
+**Antes del próximo sábado:**
+
+1. Revisá esta devolución y arreglá los 3-4 ítems críticos que te marcamos.
+2. Completá el [TP 0 — Prerrequisitos k3s](practica-0.html) con su checklist final (cluster funcionando + nginx-test + import de imagen). Sin esto la Parte 2 no se puede entregar.
+3. Empezá por el Hit #4 (extracción JSON estructurada) — es la base sobre la que se monta todo Parte 2.
 
 ---
 

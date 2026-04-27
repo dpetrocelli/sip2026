@@ -162,6 +162,10 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     <li><a href="#lazy-loading-de-resultados"
     id="toc-lazy-loading-de-resultados">Lazy loading de
     resultados</a></li>
+    <li><a
+    href="#filtros-del-sidebar-que-no-aparecen-para-algunas-búsquedas"
+    id="toc-filtros-del-sidebar-que-no-aparecen-para-algunas-búsquedas">Filtros
+    del sidebar que NO aparecen para algunas búsquedas</a></li>
     <li><a href="#selectores-que-cambian-al-refresh"
     id="toc-selectores-que-cambian-al-refresh">Selectores que cambian al
     refresh</a></li>
@@ -182,6 +186,8 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     <li><a href="#criterios-de-evaluación--parte-1"
     id="toc-criterios-de-evaluación--parte-1">Criterios de evaluación —
     Parte 1</a></li>
+    <li><a href="#lo-que-sigue-parte-2" id="toc-lo-que-sigue-parte-2">Lo
+    que sigue: Parte 2</a></li>
     <li><a href="#referencias-y-bibliografía"
     id="toc-referencias-y-bibliografía">Referencias y Bibliografía</a>
     <ul>
@@ -216,6 +222,11 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
   </aside>
 
   <main class="content">
+    <nav class="page-breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Inicio</a>
+      <span class="sep">›</span>
+      <span class="current">TP 1 · PARTE 1</span>
+    </nav>
     <nav class="page-nav-top">
       <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
       <span class="banner-pill">TP 1 · PARTE 1</span>
@@ -286,6 +297,10 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       <li><a href="#lazy-loading-de-resultados"
       id="toc-lazy-loading-de-resultados">Lazy loading de
       resultados</a></li>
+      <li><a
+      href="#filtros-del-sidebar-que-no-aparecen-para-algunas-búsquedas"
+      id="toc-filtros-del-sidebar-que-no-aparecen-para-algunas-búsquedas">Filtros
+      del sidebar que NO aparecen para algunas búsquedas</a></li>
       <li><a href="#selectores-que-cambian-al-refresh"
       id="toc-selectores-que-cambian-al-refresh">Selectores que cambian
       al refresh</a></li>
@@ -306,6 +321,8 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       <li><a href="#criterios-de-evaluación--parte-1"
       id="toc-criterios-de-evaluación--parte-1">Criterios de evaluación
       — Parte 1</a></li>
+      <li><a href="#lo-que-sigue-parte-2"
+      id="toc-lo-que-sigue-parte-2">Lo que sigue: Parte 2</a></li>
       <li><a href="#referencias-y-bibliografía"
       id="toc-referencias-y-bibliografía">Referencias y Bibliografía</a>
       <ul>
@@ -620,10 +637,21 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="
 <p>Los dos comandos deben <strong>funcionar idéntico</strong> y producir
 títulos.</p>
 <h3 id="hit-3-1">Hit #3</h3>
+<p>Comando exacto:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> hit3 <span class="kw">&amp;&amp;</span> <span class="va">BROWSER</span><span class="op">=</span>chrome <span class="ex">python</span> scraper.py</span></code></pre></div>
+<p>Por consola se debe ver algo equivalente a:</p>
+<pre><code>[INFO] Iniciando scraper en chrome
+[INFO] Búsqueda: &#39;bicicleta rodado 29&#39;
+[INFO] Aplicando filtro: Condición = Nuevo
+[INFO] Aplicando filtro: Tienda oficial = Sí
+[INFO] Aplicando orden: Más relevantes
+[INFO] URL final: https://listado.mercadolibre.com.ar/bicicleta-rodado-29_ITEM*CONDITION_2230284_OFFICIAL_STORE_*_OrderId_RELEVANCE
+[INFO] Screenshot guardado en screenshots/bicicleta_rodado_29_chrome.png
+1. Bicicleta Mountain Bike Rodado 29 ...
+2. ...</code></pre>
+<p>Validaciones adicionales:</p>
 <ul>
-<li>Console output muestra que los 3 filtros (Nuevo, Tienda oficial, Más
-relevantes) se aplicaron — debería ser visible en logs o con un dump de
-la URL final.</li>
 <li>Carpeta <code>screenshots/</code> con como mínimo:
 <ul>
 <li><code>screenshots/bicicleta_rodado_29_chrome.png</code></li>
@@ -631,6 +659,10 @@ la URL final.</li>
 </ul></li>
 <li>En la imagen tiene que verse el panel lateral de filtros con “Nuevo”
 y la “Tienda oficial” tildados.</li>
+<li>Si algún filtro no está disponible para la query (ver pitfall
+correspondiente), debe loggearse
+<code>WARNING — Filtro X no disponible</code> y continuar sin
+abortar.</li>
 </ul>
 <hr />
 <h2 id="common-pitfalls-cosas-con-las-que-se-choca-todo-el-mundo">Common
@@ -640,8 +672,8 @@ id="mercadolibre-detecta-chrome-headless-y-devuelve-empty-state">MercadoLibre
 detecta Chrome headless y devuelve empty-state</h3>
 <p>Si corrés en headless sin User-Agent custom, ML responde con HTML
 pero <strong>sin resultados de búsqueda</strong>. Workaround:</p>
-<div class="sourceCode" id="cb4"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>options.add_argument(<span class="st">&#39;--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>options.add_argument(<span class="st">&#39;--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#39;</span>)</span></code></pre></div>
 <p>Equivalente en JS y Java. Lo van a necesitar sí o sí en CI (Parte
 2).</p>
 <h3 id="banner-de-cookies-intercepta-clicks">Banner de cookies
@@ -662,15 +694,41 @@ un click random fuera (frágil).</li>
 TLDs</h3>
 <p>Si tu IP no resuelve a Argentina, ML te redirige a
 <code>mercadolibre.com.mx</code> o <code>.com.br</code>. Forzá:</p>
-<div class="sourceCode" id="cb5"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>driver.get(<span class="st">&#39;https://www.mercadolibre.com.ar/&#39;</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># y agregá el header Accept-Language</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>options.add_argument(<span class="st">&#39;--accept-lang=es-AR&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>driver.get(<span class="st">&#39;https://www.mercadolibre.com.ar/&#39;</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># y agregá el header Accept-Language</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>options.add_argument(<span class="st">&#39;--accept-lang=es-AR&#39;</span>)</span></code></pre></div>
 <h3 id="lazy-loading-de-resultados">Lazy loading de resultados</h3>
 <p>Los resultados después del 5to-6to a veces no están en el DOM hasta
 que scrolleás. Si extraen 10, hagan scroll antes
 (<code>driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")</code>)
 o esperen a que <code>len(elementos) &gt;= 10</code>.</p>
+<h3
+id="filtros-del-sidebar-que-no-aparecen-para-algunas-búsquedas">Filtros
+del sidebar que NO aparecen para algunas búsquedas</h3>
+<p>Esto lo descubrimos validando la implementación de referencia de la
+cátedra: ML decide <strong>dinámicamente</strong> qué filtros mostrar en
+el sidebar según la query. Para <code>bicicleta rodado 29</code>
+aparecen “Condición” y “Tienda oficial” sin problema, pero para
+<code>iPhone 16 Pro Max</code> o <code>GeForce RTX 5090</code> el
+sidebar puede no incluirlos (porque ML “asume” que para esa query la
+mayoría de los productos son nuevos / oficiales / no aplica).</p>
+<p><strong>Implicancia para el scraper</strong>: si tu código asume que
+los 3 filtros siempre se aplican y falla cuando alguno no está
+disponible, vas a perder corridas completas. Lo correcto es:</p>
+<ol type="1">
+<li>Loggear
+<code>WARNING — Filtro X no disponible en esta búsqueda</code> y
+continuar.</li>
+<li>Que el scraper escriba el JSON igual con los resultados sin filtrar
+(mejor 10 sin filtrar que 0).</li>
+<li>En la implementación de referencia esto está manejado en
+<code>filters.py</code> — cuando el filtro no aparece, se loggea y se
+sigue.</li>
+</ol>
+<p>Esto NO es bug suyo, es la realidad de scrapear ML. El test del Hit
+#6 (Parte 2) tiene que aceptar que <code>tienda_oficial: null</code>
+para todos los items es un resultado válido.</p>
 <h3 id="selectores-que-cambian-al-refresh">Selectores que cambian al
 refresh</h3>
 <p>Si copiaron una clase como <code>.ui-search-result__1xY7Z</code> con
@@ -705,56 +763,56 @@ repositorio (template obligatorio)</h2>
     └── bicicleta_rodado_29_firefox.png</code></pre>
 <h3 id="readme-raíz--esqueleto-sugerido">README raíz — esqueleto
 sugerido</h3>
-<div class="sourceCode" id="cb7"><pre
-class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># TP 1 — Selenium MercadoLibre — &lt;Nombre del equipo&gt;</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">## Integrantes</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Nombre <span class="pp">|</span> Legajo <span class="pp">|</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="pp">|--------|--------|</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ...    <span class="pp">|</span> ...    <span class="pp">|</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stack</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Lenguaje: Python 3.13 / Node 20 / Java 17</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Selenium: 4.27</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Tests: pytest / jest / junit (Parte 2)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cómo correr</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="fu">### Requisitos previos</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Chrome y Firefox instalados (o usar el contenedor de la Infra base — Parte 2)</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Python 3.13 / Node 20 / Java 17</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ejecución</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="in">```bash</span></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Hit 1</span></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> hit1 <span class="kw">&amp;&amp;</span> <span class="va">BROWSER</span><span class="op">=</span>chrome <span class="ex">python</span> scraper.py</span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Hit 2</span></span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> hit2 <span class="kw">&amp;&amp;</span> <span class="va">BROWSER</span><span class="op">=</span>firefox <span class="ex">python</span> scraper.py</span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Hit 3</span></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> hit3 <span class="kw">&amp;&amp;</span> <span class="va">BROWSER</span><span class="op">=</span>chrome <span class="ex">python</span> scraper.py</span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decisiones de diseño</span></span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>... (qué eligieron y por qué — ej: por qué <span class="in">`WebDriverWait`</span> con timeout 15s, por qué <span class="in">`data-*`</span> no aplicaba)</span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparativa Chrome vs Firefox</span></span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Aspecto <span class="pp">|</span> Chrome <span class="pp">|</span> Firefox <span class="pp">|</span></span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="pp">|---------|--------|---------|</span></span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Tiempo del Hit #3 <span class="pp">|</span> ... <span class="pp">|</span> ... <span class="pp">|</span></span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Diferencias en selectores <span class="pp">|</span> ... <span class="pp">|</span> ... <span class="pp">|</span></span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="fu">## Herramientas de IA usadas</span></span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Cursor / Claude / Copilot — para qué la usamos: ...</span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Prompts no triviales documentados en <span class="in">`docs/ai-usage.md`</span></span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="fu">## Video explicativo</span></span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Link YouTube unlisted</span><span class="co">]</span></span>
-<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a><span class="fu">## Limitaciones conocidas</span></span>
-<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>...</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># TP 1 — Selenium MercadoLibre — &lt;Nombre del equipo&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">## Integrantes</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Nombre <span class="pp">|</span> Legajo <span class="pp">|</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="pp">|--------|--------|</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ...    <span class="pp">|</span> ...    <span class="pp">|</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stack</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Lenguaje: Python 3.13 / Node 20 / Java 17</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Selenium: 4.27</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Tests: pytest / jest / junit (Parte 2)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cómo correr</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="fu">### Requisitos previos</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Chrome y Firefox instalados (o usar el contenedor de la Infra base — Parte 2)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Python 3.13 / Node 20 / Java 17</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ejecución</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="in">```bash</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Hit 1</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> hit1 <span class="kw">&amp;&amp;</span> <span class="va">BROWSER</span><span class="op">=</span>chrome <span class="ex">python</span> scraper.py</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Hit 2</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> hit2 <span class="kw">&amp;&amp;</span> <span class="va">BROWSER</span><span class="op">=</span>firefox <span class="ex">python</span> scraper.py</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Hit 3</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> hit3 <span class="kw">&amp;&amp;</span> <span class="va">BROWSER</span><span class="op">=</span>chrome <span class="ex">python</span> scraper.py</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decisiones de diseño</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>... (qué eligieron y por qué — ej: por qué <span class="in">`WebDriverWait`</span> con timeout 15s, por qué <span class="in">`data-*`</span> no aplicaba)</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparativa Chrome vs Firefox</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Aspecto <span class="pp">|</span> Chrome <span class="pp">|</span> Firefox <span class="pp">|</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a><span class="pp">|---------|--------|---------|</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Tiempo del Hit #3 <span class="pp">|</span> ... <span class="pp">|</span> ... <span class="pp">|</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Diferencias en selectores <span class="pp">|</span> ... <span class="pp">|</span> ... <span class="pp">|</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a><span class="fu">## Herramientas de IA usadas</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Cursor / Claude / Copilot — para qué la usamos: ...</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Prompts no triviales documentados en <span class="in">`docs/ai-usage.md`</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a><span class="fu">## Video explicativo</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Link YouTube unlisted</span><span class="co">]</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a><span class="fu">## Limitaciones conocidas</span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>...</span></code></pre></div>
 <hr />
 <h2 id="cómo-entregar">Cómo entregar</h2>
 <ol type="1">
@@ -809,6 +867,23 @@ obligatorios</strong></td>
 </tr>
 </tbody>
 </table>
+<hr />
+<h2 id="lo-que-sigue-parte-2">Lo que sigue: Parte 2</h2>
+<p>La <a href="practica-1-parte-2.html">Parte 2</a> (entrega 02/05/2026)
+extiende el scraper con tests automatizados, Docker + docker-compose,
+CI/CD con GitHub Actions, despliegue en Kubernetes (k3s/k3d) y una capa
+de capacidad extendida (paginación, estadísticas, histórico con
+PostgreSQL).</p>
+<p><strong>Antes del próximo sábado:</strong></p>
+<ol type="1">
+<li>Revisá esta devolución y arreglá los 3-4 ítems críticos que te
+marcamos.</li>
+<li>Completá el <a href="practica-0.html">TP 0 — Prerrequisitos k3s</a>
+con su checklist final (cluster funcionando + nginx-test + import de
+imagen). Sin esto la Parte 2 no se puede entregar.</li>
+<li>Empezá por el Hit #4 (extracción JSON estructurada) — es la base
+sobre la que se monta todo Parte 2.</li>
+</ol>
 <hr />
 <h2 id="referencias-y-bibliografía">Referencias y Bibliografía</h2>
 <p>Solo lo directamente vinculado a lo que se les pide en esta Parte 1.
@@ -901,6 +976,23 @@ href="https://github.com/gitleaks/gitleaks">https://github.com/gitleaks/gitleaks
 <li><strong>MercadoLibre Argentina</strong> — <a
 href="https://www.mercadolibre.com.ar">https://www.mercadolibre.com.ar</a></li>
 </ul>
+
+    <nav class="page-prev-next" aria-label="Navegación entre páginas">
+      <a class="prev-link" href="#" data-slot="prev" hidden>
+        <span class="arrow">←</span>
+        <span class="nav-meta">
+          <span class="nav-label">Anterior</span>
+          <span class="nav-title" data-slot="prev-title"></span>
+        </span>
+      </a>
+      <a class="next-link" href="#" data-slot="next" hidden>
+        <span class="nav-meta">
+          <span class="nav-label">Siguiente</span>
+          <span class="nav-title" data-slot="next-title"></span>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+    </nav>
 
     <nav class="page-nav-bottom">
       <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
@@ -995,6 +1087,56 @@ href="https://www.mercadolibre.com.ar">https://www.mercadolibre.com.ar</a></li>
       document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
     });
   });
+})();
+
+// Populate prev/next navigation based on the current page's banner-num
+(function () {
+  const pill = document.querySelector('.banner-pill');
+  const nav = document.querySelector('.page-prev-next');
+  if (!pill || !nav) return;
+
+  const key = (pill.textContent || '').trim().toUpperCase();
+
+  // Map banner-num → { prev, next }
+  // Each entry: { href, title } (or null if not present)
+  const MAP = {
+    'TP 0': {
+      prev: null,
+      next: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' }
+    },
+    'TP 1 · PARTE 1': {
+      prev: { href: 'practica-0.html', title: 'TP 0 — Prerrequisitos' },
+      next: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' }
+    },
+    'TP 1 · PARTE 2': {
+      prev: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' },
+      next: null
+    }
+  };
+
+  const entry = MAP[key];
+  if (!entry) return;
+
+  const prevLink = nav.querySelector('[data-slot="prev"]');
+  const nextLink = nav.querySelector('[data-slot="next"]');
+  const prevTitle = nav.querySelector('[data-slot="prev-title"]');
+  const nextTitle = nav.querySelector('[data-slot="next-title"]');
+
+  if (entry.prev && prevLink && prevTitle) {
+    prevLink.setAttribute('href', entry.prev.href);
+    prevTitle.textContent = entry.prev.title;
+    prevLink.hidden = false;
+  }
+  if (entry.next && nextLink && nextTitle) {
+    nextLink.setAttribute('href', entry.next.href);
+    nextTitle.textContent = entry.next.title;
+    nextLink.hidden = false;
+  }
+
+  // If neither slot is shown, hide the whole nav
+  if ((!entry.prev) && (!entry.next)) {
+    nav.style.display = 'none';
+  }
 })();
 
 // Open all external links in a new tab (preserves the current page).

@@ -41,12 +41,14 @@ Aplican los mismos requisitos generales de la Parte 1, **más** los siguientes:
   4. Publique JSON + screenshots + reporte de cobertura como **artifacts** del workflow.
   5. Falle si **gitleaks** detecta secrets hardcodeados.
 
+  Esqueleto del workflow [más abajo](#esqueleto-del-workflow-de-ci-githubworkflowsscrapeyml-infra-base).
+
 - **Pre-commit hooks** locales (`.pre-commit-config.yaml` o equivalente nativo del stack) con mínimo:
   - `gitleaks` — bloquea commits con secrets.
   - Linter del lenguaje (`ruff` / `eslint` / `checkstyle`).
   - Formatter (`black` / `prettier` / `spotless`).
 
-  Documenten en el README cómo activarlos: `pre-commit install` (Python/Node) o equivalente del stack. Esto fuerza que los problemas se detecten **antes** de pushear, no recién en CI.
+  Documenten en el README cómo activarlos: `pre-commit install` (Python/Node) o equivalente del stack. Esto fuerza que los problemas se detecten **antes** de pushear, no recién en CI. Esqueleto [más abajo](#esqueleto-de-pre-commit-pre-commit-configyaml).
 
 ### Otros requisitos
 
@@ -307,6 +309,169 @@ Extienda el scraper con **las siguientes 3 capacidades**:
 2. **Comparación de precios**: para cada producto, calcular precio mínimo, máximo, mediana y desvío estándar entre los resultados extraídos. Imprimir tabla resumen.
 3. **Histórico con PostgreSQL**: guardar los resultados en una instancia PostgreSQL con timestamp, para detectar cambios de precio entre corridas del CronJob (Hit #7). Implementación esperada: deployment de Postgres en el mismo cluster k3s (StatefulSet + PVC + Service), credenciales via `Secret`, schema migrations (Alembic / Flyway / Liquibase / SQL files versionados). Tabla mínima: `(producto, titulo, precio, link, tienda_oficial, scraped_at)`.
 
+   Schema mínimo (versionarlo en una migration):
+
+   ```sql
+   CREATE TABLE IF NOT EXISTS scrape_results (
+       id           BIGSERIAL PRIMARY KEY,
+       producto     TEXT      NOT NULL,
+       titulo       TEXT      NOT NULL,
+       precio       NUMERIC(12,2),
+       link         TEXT,
+       tienda_oficial TEXT,
+       envio_gratis BOOLEAN,
+       scraped_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+   );
+   CREATE INDEX IF NOT EXISTS idx_scrape_results_producto_fecha
+       ON scrape_results (producto, scraped_at DESC);
+   ```
+
+   Con este schema y un par de corridas del CronJob, una query como:
+
+   ```sql
+   SELECT producto, MIN(precio), MAX(precio), AVG(precio), COUNT(DISTINCT scraped_at) AS n_runs
+   FROM scrape_results
+   WHERE scraped_at > NOW() - INTERVAL '7 days'
+   GROUP BY producto;
+   ```
+
+   les da una vista de la evolución de precios sin escribir código adicional.
+
+---
+
+## Cómo entregar
+
+1. **Push final al repo público** antes del 02/05/2026 23:59 ART.
+2. **README raíz actualizado** con:
+   - Sección "Prerrequisitos cumplidos" mostrando evidencia del checklist del [TP 0](practica-0.html).
+   - Cómo correr Parte 1 + Parte 2 (Docker, k3s/k3d).
+   - Comandos exactos para reproducir el demo del Hit #7.
+3. **Carpeta `docs/adr/`** con mínimo 4 ADRs (2 elegidos del menú + 2 de su elección).
+4. **Video** mostrando: Hit #4 corriendo (con JSON resultante), pipeline de CI verde con coverage ≥ 70 %, `kubectl apply -f k8s/` con Job completado y CronJob activo.
+5. **Mensaje en el canal Discord de la materia** con el link al repo y al video.
+
+> 📡 **Canal Discord (consultas + entregas):** <https://discord.com/channels/1482135908508500148/1482135909456679139>
+> Antes de pedir ayuda con k3s, revisá el [TP 0](practica-0.html) y la sección de troubleshooting que ya tiene los 4 errores típicos.
+
+---
+
+## Auto-verificación previa a la entrega
+
+Antes de pushear el commit final, corré estos comandos en tu repo. Si **algo de esta lista falla, todavía no entregues** — vas a perder puntos seguros que se evitan con 2 minutos de checklist.
+
+### 1) Tests + cobertura ≥ 70 %
+
+```bash
+# Python
+pytest --cov=. --cov-fail-under=70
+
+# Node
+npm test -- --coverage --coverageThreshold='{"global":{"lines":70}}'
+
+# Java
+mvn verify   # con jacoco-maven-plugin configurado con minimum 0.70
+```
+
+### 2) Linter + formatter (los mismos que corren en pre-commit)
+
+```bash
+ruff check . && ruff format --check .          # Python
+npx eslint . && npx prettier --check .          # Node
+mvn spotless:check && mvn checkstyle:check      # Java
+```
+
+### 3) Detección de secrets
+
+```bash
+gitleaks detect --no-git --verbose
+# alternativa si ya está configurado pre-commit:
+pre-commit run gitleaks --all-files
+```
+
+### 4) Manifests Kubernetes válidos
+
+```bash
+for f in k8s/*.yaml; do
+  kubectl apply --dry-run=client -f "$f" || echo "❌ $f rompe"
+done
+```
+
+### 5) Build de la imagen Docker
+
+```bash
+docker build -t ml-scraper:test .
+docker run --rm -e HEADLESS=true -e BROWSER=chrome \
+  -v $(pwd)/output:/app/output \
+  ml-scraper:test --limit 3
+# Verificá que se generen los 3 JSON en output/
+```
+
+### 6) Comparación contra el golden master (opcional pero recomendado)
+
+La cátedra publicó la implementación de referencia con un `tooling/compare.py` que valida estructura, schema, presencia de hits, anti-patterns y secrets. Pueden correrla contra su propio repo para tener feedback antes de entregar:
+
+```bash
+git clone https://github.com/dpetrocelli/sip2026.git /tmp/sip-ref
+python /tmp/sip-ref/reference/tooling/compare.py \
+  --student . --out /tmp/mi-evaluacion.md
+cat /tmp/mi-evaluacion.md
+```
+
+El reporte indica qué hits encuentra, qué anti-patterns detecta (`time.sleep`, selectores hardcodeados, secrets, etc.) y un score estimado. **No reemplaza la corrección humana**, pero detecta los errores estructurales más comunes.
+
+### 7) E2E completo en cluster local
+
+```bash
+# Cargá la imagen al cluster (k3s o k3d)
+docker save ml-scraper:test -o /tmp/img.tar && sudo k3s ctr images import /tmp/img.tar
+# o:  k3d image import ml-scraper:test -c <tu-cluster>
+
+kubectl apply -f k8s/namespace.yaml
+kubectl apply -f k8s/
+kubectl wait --for=condition=complete job/scraper-once --timeout=600s -n ml-scraper
+kubectl logs -l job-name=scraper-once -n ml-scraper
+```
+
+Si el Job termina en `Complete` y los logs muestran los 3 JSON generados, están listos para entregar.
+
+### 8) Verificar que los retries del Hit #5 efectivamente disparan
+
+```bash
+# Forzar un fallo transitorio (ej: matar la red 1 segundo) y ver el log:
+docker compose up scraper 2>&1 | grep -E "retry|backoff|reintento"
+# Output esperado: ver al menos 1 línea WARNING con "intento N/3" antes del éxito.
+```
+
+Si tu corrida nunca dispara retries (porque ML responde rápido en tu red), no hace falta forzarlo — pero el código tiene que estar ahí. La cátedra valida con un test unitario en CI que el decorador `@with_backoff` reintenta correctamente ante `TimeoutException` mockeada.
+
+---
+
+## Criterios de evaluación — Parte 2
+
+### Requisitos bloqueantes (no se acepta la entrega sin estos)
+
+Estos no suman puntos — son condición necesaria para que la entrega sea **corregible**. Si falta cualquiera de los 4, la nota es 0.
+
+- **TP 0 cumplido** — checklist de prerrequisitos k3s con evidencia en el README (`kubectl get nodes` Ready, nginx-test corrió, sé importar imágenes al cluster).
+- **Infra base** completa y funcional:
+  - `Dockerfile` multi-stage con versiones pineadas (no `:latest`).
+  - `docker-compose.yml` que levanta el scraper con un solo comando.
+  - Pipeline GitHub Actions corriendo en verde con matriz Chrome/Firefox + gate de cobertura ≥ 70 % + gitleaks + artifacts publicados.
+  - `.pre-commit-config.yaml` con gitleaks + linter + formatter, documentado en el README cómo activarlo.
+- **Modo headless** configurable por env (`HEADLESS=true`) y operativo en CI sin abrir display gráfico.
+- **Auto-verificación** ejecutada antes del push final ([checklist completo abajo](#auto-verificación-previa-a-la-entrega)) — los 8 comandos pasaron.
+
+### Tabla de puntaje (100 %)
+
+| Criterio | Peso |
+|----------|------|
+| **Hit #4** — extracción estructurada a JSON de los 3 productos con todos los campos | 25 % |
+| **Hit #5** — manejo robusto de errores (selectores faltantes, timeouts, retries con backoff) | 15 % |
+| **Hit #6** — tests automatizados + cobertura ≥ 70 % validada en CI | 15 % |
+| **Hit #7** — `Job` + `CronJob` + `ConfigMap` + `PVC` corriendo en k3s/k3d | 20 % |
+| **Hit #8** — capacidad extendida (paginación + stats + histórico PostgreSQL en k3s) | 15 % |
+| **ADRs** (mínimo 4 en `docs/adr/` — 2 del menú propuesto + 2 de elección propia) | 10 % |
+
 ---
 
 ## Material de apoyo
@@ -562,131 +727,6 @@ repos:
 ```
 
 Activar local: `pip install pre-commit && pre-commit install`. Documenten el comando en el README.
-
----
-
-## Cómo entregar
-
-1. **Push final al repo público** antes del 02/05/2026 23:59 ART.
-2. **README raíz actualizado** con:
-   - Sección "Prerrequisitos cumplidos" mostrando evidencia del checklist del [TP 0](practica-0.html).
-   - Cómo correr Parte 1 + Parte 2 (Docker, k3s/k3d).
-   - Comandos exactos para reproducir el demo del Hit #7.
-3. **Carpeta `docs/adr/`** con mínimo 4 ADRs (2 elegidos del menú + 2 de su elección).
-4. **Video** mostrando: Hit #4 corriendo (con JSON resultante), pipeline de CI verde con coverage ≥ 70 %, `kubectl apply -f k8s/` con Job completado y CronJob activo.
-5. **Mensaje en el canal Discord de la materia** con el link al repo y al video.
-
-> 📡 **Canal Discord (consultas + entregas):** <https://discord.com/channels/1482135908508500148/1482135909456679139>
-> Antes de pedir ayuda con k3s, revisá el [TP 0](practica-0.html) y la sección de troubleshooting que ya tiene los 4 errores típicos.
-
----
-
-## Auto-verificación previa a la entrega
-
-Antes de pushear el commit final, corré estos comandos en tu repo. Si **algo de esta lista falla, todavía no entregues** — vas a perder puntos seguros que se evitan con 2 minutos de checklist.
-
-### 1) Tests + cobertura ≥ 70 %
-
-```bash
-# Python
-pytest --cov=. --cov-fail-under=70
-
-# Node
-npm test -- --coverage --coverageThreshold='{"global":{"lines":70}}'
-
-# Java
-mvn verify   # con jacoco-maven-plugin configurado con minimum 0.70
-```
-
-### 2) Linter + formatter (los mismos que corren en pre-commit)
-
-```bash
-ruff check . && ruff format --check .          # Python
-npx eslint . && npx prettier --check .          # Node
-mvn spotless:check && mvn checkstyle:check      # Java
-```
-
-### 3) Detección de secrets
-
-```bash
-gitleaks detect --no-git --verbose
-# alternativa si ya está configurado pre-commit:
-pre-commit run gitleaks --all-files
-```
-
-### 4) Manifests Kubernetes válidos
-
-```bash
-for f in k8s/*.yaml; do
-  kubectl apply --dry-run=client -f "$f" || echo "❌ $f rompe"
-done
-```
-
-### 5) Build de la imagen Docker
-
-```bash
-docker build -t ml-scraper:test .
-docker run --rm -e HEADLESS=true -e BROWSER=chrome \
-  -v $(pwd)/output:/app/output \
-  ml-scraper:test --limit 3
-# Verificá que se generen los 3 JSON en output/
-```
-
-### 6) Comparación contra el golden master (opcional pero recomendado)
-
-La cátedra publicó la implementación de referencia con un `tooling/compare.py` que valida estructura, schema, presencia de hits, anti-patterns y secrets. Pueden correrla contra su propio repo para tener feedback antes de entregar:
-
-```bash
-git clone https://github.com/dpetrocelli/sip2026.git /tmp/sip-ref
-python /tmp/sip-ref/reference/tooling/compare.py \
-  --student . --out /tmp/mi-evaluacion.md
-cat /tmp/mi-evaluacion.md
-```
-
-El reporte indica qué hits encuentra, qué anti-patterns detecta (`time.sleep`, selectores hardcodeados, secrets, etc.) y un score estimado. **No reemplaza la corrección humana**, pero detecta los errores estructurales más comunes.
-
-### 7) E2E completo en cluster local
-
-```bash
-# Cargá la imagen al cluster (k3s o k3d)
-docker save ml-scraper:test -o /tmp/img.tar && sudo k3s ctr images import /tmp/img.tar
-# o:  k3d image import ml-scraper:test -c <tu-cluster>
-
-kubectl apply -f k8s/namespace.yaml
-kubectl apply -f k8s/
-kubectl wait --for=condition=complete job/scraper-once --timeout=600s -n ml-scraper
-kubectl logs -l job-name=scraper-once -n ml-scraper
-```
-
-Si el Job termina en `Complete` y los logs muestran los 3 JSON generados, están listos para entregar.
-
----
-
-## Criterios de evaluación — Parte 2
-
-### Requisitos bloqueantes (no se acepta la entrega sin estos)
-
-Estos no suman puntos — son condición necesaria para que la entrega sea **corregible**. Si falta cualquiera de los 4, la nota es 0.
-
-- **TP 0 cumplido** — checklist de prerrequisitos k3s con evidencia en el README (`kubectl get nodes` Ready, nginx-test corrió, sé importar imágenes al cluster).
-- **Infra base** completa y funcional:
-  - `Dockerfile` multi-stage con versiones pineadas (no `:latest`).
-  - `docker-compose.yml` que levanta el scraper con un solo comando.
-  - Pipeline GitHub Actions corriendo en verde con matriz Chrome/Firefox + gate de cobertura ≥ 70 % + gitleaks + artifacts publicados.
-  - `.pre-commit-config.yaml` con gitleaks + linter + formatter, documentado en el README cómo activarlo.
-- **Modo headless** configurable por env (`HEADLESS=true`) y operativo en CI sin abrir display gráfico.
-- **Auto-verificación** ejecutada antes del push final ([checklist completo abajo](#auto-verificación-previa-a-la-entrega)) — los 7 comandos pasaron.
-
-### Tabla de puntaje (100 %)
-
-| Criterio | Peso |
-|----------|------|
-| **Hit #4** — extracción estructurada a JSON de los 3 productos con todos los campos | 25 % |
-| **Hit #5** — manejo robusto de errores (selectores faltantes, timeouts, retries con backoff) | 15 % |
-| **Hit #6** — tests automatizados + cobertura ≥ 70 % validada en CI | 15 % |
-| **Hit #7** — `Job` + `CronJob` + `ConfigMap` + `PVC` corriendo en k3s/k3d | 20 % |
-| **Hit #8** — capacidad extendida (paginación + stats + histórico PostgreSQL en k3s) | 15 % |
-| **ADRs** (mínimo 4 en `docs/adr/` — 2 del menú propuesto + 2 de elección propia) | 10 % |
 
 ---
 
