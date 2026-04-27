@@ -163,3 +163,126 @@ Test E2E real ejecutado contra MercadoLibre desde el cluster `k3d-scraper-ref`, 
 | `chrome_crashpad_handler: --database is required` | Bug del paquete `chromium` de Debian trixie con headless | Reemplazado por `google-chrome-stable` desde el repo oficial de Google |
 | `cannot touch '/home/scraper/.local/share/applications/mimeapps.list'` | Usuario `scraper` creado con `--no-create-home` → Chrome no podía inicializar | `useradd --create-home` + `chown -R` del home dir |
 | Filtros `nuevo` / `tienda_oficial` / `mas_relevantes` no aparecen en algunas búsquedas | ML ajusta los filtros del sidebar según la query (no es bug, es comportamiento real del sitio) | El scraper loggea WARNING y continúa — el JSON se escribe igual con todos los resultados sin filtrar |
+
+## Histórico con PostgreSQL — implementación de referencia
+
+> **Estado:** _skeleton_. Los manifests, el schema y el módulo Python están listos. La integración con `main.py` (llamar a `PostgresWriter.insert_results()` después de cada scrape) queda **a cargo del alumno** como parte de su Hit #8.
+
+### Qué incluye este skeleton
+
+| Archivo | Recurso / Tipo | Para qué |
+|---------|----------------|----------|
+| `k8s/postgres-secret.yaml` | `Secret` Opaque | Guarda `POSTGRES_PASSWORD`. **Solo TP** — para producción ver external-secrets / sealed-secrets / Vault. |
+| `k8s/postgres-init-configmap.yaml` | `ConfigMap` `postgres-init-sql` | Schema inicial (`init.sql`) montado en `/docker-entrypoint-initdb.d/` — Postgres lo ejecuta automáticamente al primer arranque. |
+| `k8s/postgres-statefulset.yaml` | `StatefulSet` `postgres` (1 réplica) | Postgres 16 (`postgres:16-trixie`) con PVC 5 Gi (`local-path`), corre como UID 999 non-root. |
+| `k8s/postgres-service.yaml` | `Service` ClusterIP `postgres:5432` | Endpoint interno del cluster. El scraper se conecta a `postgres.ml-scraper.svc.cluster.local`. |
+| `migrations/001_initial_schema.sql` | SQL versionado | Fuente de verdad del schema. Mismo contenido que el `data.init.sql` del ConfigMap (mantenerlos sincronizados). |
+| `postgres_writer.py` | Módulo Python | `class PostgresWriter` con pool de conexiones (`psycopg_pool`), `insert_results()` y retry con backoff exponencial reusando `hit5/retry.py`. |
+
+### Schema (resumen)
+
+```sql
+CREATE TABLE scrape_results (
+    id              BIGSERIAL PRIMARY KEY,
+    producto        TEXT NOT NULL,
+    titulo          TEXT NOT NULL,
+    precio          NUMERIC(12,2),
+    link            TEXT,
+    tienda_oficial  TEXT,
+    envio_gratis    BOOLEAN,
+    cuotas_sin_interes TEXT,
+    scraped_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+-- + 2 índices: (producto, scraped_at DESC) y (scraped_at DESC)
+```
+
+`scraped_at` lo llena la base con `NOW()` — no se manda desde Python, así evitamos drift de reloj entre nodos del cluster.
+
+### Cómo deployar
+
+```bash
+# 1. El namespace ya está creado por hit8/k8s/namespace.yaml. Si no:
+kubectl apply -f hit8/k8s/namespace.yaml
+
+# 2. Aplicar los 4 manifests de Postgres (orden recomendado):
+kubectl apply -f hit8/k8s/postgres-secret.yaml
+kubectl apply -f hit8/k8s/postgres-init-configmap.yaml
+kubectl apply -f hit8/k8s/postgres-statefulset.yaml
+kubectl apply -f hit8/k8s/postgres-service.yaml
+
+# 3. Esperar a que Postgres esté Ready (puede tardar ~30-60s la primera vez,
+#    porque tiene que inicializar el cluster y aplicar el init.sql):
+kubectl wait --for=condition=Ready pod/postgres-0 -n ml-scraper --timeout=180s
+```
+
+### Cómo conectarse desde el scraper
+
+Dentro del cluster, el hostname del Service es lo que resuelve a la IP de Postgres:
+
+```python
+import os
+from hit8.postgres_writer import PostgresWriter
+
+# El hostname `postgres` resuelve dentro del namespace ml-scraper.
+# El password viene del Secret (montar como env var en el Job/CronJob).
+dsn = f"postgresql://scraper:{os.environ['POSTGRES_PASSWORD']}@postgres:5432/scraper"
+
+with PostgresWriter(dsn) as writer:
+    n = writer.insert_results(
+        producto="Bicicleta rodado 29",
+        items=resultados,  # list[dict] del scraper
+    )
+    print(f"Persistidos {n} resultados")
+```
+
+Para que el `Job`/`CronJob` reciba `POSTGRES_PASSWORD`, agregar al spec del container:
+
+```yaml
+env:
+  - name: POSTGRES_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: postgres-secret
+        key: POSTGRES_PASSWORD
+```
+
+### Verificar que las inserciones aterrizan
+
+```bash
+# Abrir un psql interactivo dentro del pod:
+kubectl exec -it -n ml-scraper postgres-0 -- psql -U scraper -d scraper
+
+# Ya en el prompt psql:
+SELECT producto, COUNT(*) AS n, MAX(scraped_at) AS ultima
+FROM scrape_results
+GROUP BY producto
+ORDER BY ultima DESC;
+
+-- Top 5 más baratos del último scrape de un producto:
+SELECT titulo, precio, tienda_oficial, scraped_at
+FROM scrape_results
+WHERE producto = 'Bicicleta rodado 29'
+ORDER BY scraped_at DESC, precio ASC
+LIMIT 5;
+```
+
+O desde fuera del cluster con port-forward:
+
+```bash
+kubectl port-forward -n ml-scraper svc/postgres 5432:5432
+# en otra terminal:
+psql "postgresql://scraper:changeme-en-prod@localhost:5432/scraper" \
+  -c "SELECT COUNT(*) FROM scrape_results;"
+```
+
+### Lo que falta (a cargo del alumno en su Hit #8)
+
+1. Agregar `psycopg[binary]` y `psycopg_pool` a `requirements.txt` / `pyproject.toml`.
+2. Importar `PostgresWriter` desde `main.py` y llamarlo después de cada scrape exitoso.
+3. Inyectar `POSTGRES_PASSWORD` desde el Secret hacia el container del scraper en `job.yaml` y `cronjob.yaml`.
+4. Manejar el caso "Postgres no responde" — el writer ya hace 3 retries con backoff, pero el scraper puede decidir si seguir escribiendo solo el JSON al PVC o abortar.
+5. (Opcional) Implementar la **paginación** y las **estadísticas** que pide la consigna del Hit #8 leyendo de `scrape_results`.
+
+### Decisión arquitectónica
+
+Ver [`docs/adr/0007-postgres-statefulset-vs-managed.md`](../docs/adr/0007-postgres-statefulset-vs-managed.md) para el por qué de `StatefulSet` en cluster en lugar de SQLite local, RDS managed, o DynamoDB.

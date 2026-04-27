@@ -1,0 +1,26 @@
+# Namespace dedicado para todo el stack de observabilidad (Loki + Alloy + Grafana).
+# Lo separamos del namespace `ml-scraper` para:
+#   1. poder aplicar ResourceQuotas distintas (los componentes de observability
+#      pelean por memoria con el scraper si comparten namespace),
+#   2. poder borrar todo el stack con `kubectl delete ns observability` sin
+#      tocar el scraper, y viceversa,
+#   3. respetar el patrón de la industria (kube-prometheus-stack, OpenTelemetry,
+#      etc. todos viven en su propio namespace).
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: observability
+  labels:
+    # Labels well-known recomendadas por Kubernetes (KEP-2).
+    app.kubernetes.io/name: observability
+    app.kubernetes.io/instance: observability-tp3
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: logging-stack
+    app.kubernetes.io/managed-by: helm
+    # Pod Security Standard: baseline. No exigimos `restricted` porque Alloy
+    # necesita montar hostPath (/var/log/pods) y eso requiere `privileged`
+    # o al menos `baseline`. En clusters serios usar `restricted` y mover
+    # Alloy a un namespace excepción.
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted

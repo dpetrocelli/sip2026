@@ -1,0 +1,161 @@
+# ===========================================================================
+# grafana/loki Helm chart — values para el TP 3 (logging centralizado).
+# ---------------------------------------------------------------------------
+# Chart pinneado a la última 6.x LTS conocida al momento de escribir el TP.
+# Verificar la última disponible con:
+#   helm repo update && helm search repo grafana/loki --versions | head
+# Comando de instalación:
+#   helm upgrade --install loki grafana/loki \
+#     -n observability \
+#     -f helm/loki-values.yaml \
+#     --version 6.16.0
+# ---------------------------------------------------------------------------
+# Decisiones de diseño:
+#   * SingleBinary mode → Loki corre como un único proceso en lugar de
+#     micro-servicios (distributor/ingester/querier/compactor separados).
+#     Para un cluster local con 1 scraper que emite ~MB/día de logs, el
+#     modo distribuido es overkill y suma complejidad operacional sin
+#     ningún beneficio de throughput.
+#   * Storage filesystem (no S3) → mantenemos el TP autocontenido, sin
+#     cuentas de cloud. En producción real cambiar a `s3` con un bucket
+#     y credenciales por IRSA/ServiceAccount.
+#   * auth_enabled: false → un solo tenant (`fake`). Activar `true`
+#     requiere mandar `X-Scope-OrgID` en cada request, lo cual complica
+#     los dashboards y las queries del cheatsheet sin aportar nada al TP.
+# ===========================================================================
+
+# Modo de despliegue. SingleBinary == todo Loki en un solo Pod.
+deploymentMode: SingleBinary
+
+# Configuración del Pod único de Loki.
+singleBinary:
+  # 1 réplica: simple, alcanza para el volumen de logs del scraper.
+  # Escalar a 3 requeriría storage compartido (S3) y consensus (memberlist).
+  replicas: 1
+  persistence:
+    enabled: true
+    # local-path es el storage class default que k3s/k3d traen built-in.
+    # En cloud cambiar por gp3 (EKS), premium-rwo (GKE), managed-premium (AKS).
+    storageClass: local-path
+    # 5Gi alcanza para ~7 días de logs del scraper (con retention configurada
+    # más abajo). El compactor borra los chunks viejos automáticamente.
+    size: 5Gi
+  resources:
+    requests:
+      # 256Mi cubre el footprint base del proceso loki + cache pequeño de chunks.
+      memory: 256Mi
+      # 250m == 1/4 de core. Suficiente para ingestar y consultar pocos MB/día.
+      cpu: 250m
+    limits:
+      # 1Gi tope para evitar OOM-kills durante queries con `unwrap` o agregaciones
+      # pesadas sobre rangos largos. Si vemos OOMs subir a 2Gi.
+      memory: 1Gi
+      # 500m tope: evita que Loki consuma todo el CPU del nodo durante un
+      # rebuild de índice o un compaction.
+      cpu: 500m
+
+# Apagamos las réplicas de los componentes del modo distribuido — todo va al
+# SingleBinary. Es importante porque el chart por default deja algunas en 1.
+backend:
+  replicas: 0
+read:
+  replicas: 0
+write:
+  replicas: 0
+ingester:
+  replicas: 0
+querier:
+  replicas: 0
+queryFrontend:
+  replicas: 0
+queryScheduler:
+  replicas: 0
+distributor:
+  replicas: 0
+compactor:
+  replicas: 0
+indexGateway:
+  replicas: 0
+bloomCompactor:
+  replicas: 0
+bloomGateway:
+  replicas: 0
+
+# Apagamos el chunks cache (memcached) — para volumen del TP es overhead inútil.
+chunksCache:
+  enabled: false
+resultsCache:
+  enabled: false
+
+# El chart insiste en bitnami/memcachedexporter etc; deshabilitamos sidecars
+# y monitoring stack que no usamos en el TP.
+monitoring:
+  selfMonitoring:
+    enabled: false
+    grafanaAgent:
+      installOperator: false
+  serviceMonitor:
+    enabled: false
+test:
+  enabled: false
+lokiCanary:
+  enabled: false
+
+# Configuración inline de Loki (sobrescribe los defaults del chart).
+loki:
+  # Multi-tenant OFF → todo va al tenant `fake`. Simplifica queries.
+  auth_enabled: false
+
+  # Sin schema legacy: arrancamos directo en TSDB v13 (formato actual 2024+).
+  schemaConfig:
+    configs:
+      - from: "2024-04-01"
+        store: tsdb
+        object_store: filesystem
+        schema: v13
+        index:
+          # Un nuevo índice por día. Para retention de 7 días == 7 índices.
+          prefix: index_
+          period: 24h
+
+  # Storage en disco local (PVC montado en el SingleBinary).
+  storage:
+    type: filesystem
+    filesystem:
+      chunks_directory: /var/loki/chunks
+      rules_directory: /var/loki/rules
+
+  # Limits globales — críticos para evitar que un cliente mal configurado
+  # tire el cluster.
+  limits_config:
+    # 7 días de retention. El compactor borra chunks más viejos.
+    # Para más retention bumpear a 720h (30d) y subir el PVC a 20Gi+.
+    retention_period: 168h
+    # Volumen máximo por tenant — generoso para el TP, restrictivo en prod.
+    ingestion_rate_mb: 10
+    ingestion_burst_size_mb: 20
+    # Series máximas activas por tenant. El scraper emite ~10-20 series
+    # (combinaciones únicas de labels), 1000 es muy holgado.
+    max_global_streams_per_user: 1000
+    # Permitir labels que mande el cliente (Alloy). Sin esto los labels
+    # de pod/namespace/container se descartan silenciosamente.
+    discover_log_levels: true
+
+  # Activar el compactor que aplica retention.
+  compactor:
+    working_directory: /var/loki/compactor
+    delete_request_store: filesystem
+    retention_enabled: true
+    retention_delete_delay: 2h
+    retention_delete_worker_count: 50
+
+  # Sin replicación entre ingesters (solo hay 1).
+  commonConfig:
+    replication_factor: 1
+
+# Service por defecto: ClusterIP en puerto 3100 (HTTP) — los pods de
+# Alloy y Grafana lo resuelven como `loki.observability.svc.cluster.local`.
+# No exponer Loki por NodePort/Ingress sin auth — está abierto a quien
+# pueda hablar con el Service.
+gateway:
+  enabled: false

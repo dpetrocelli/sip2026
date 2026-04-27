@@ -931,3 +931,23 @@ details.section-collapsible > p:first-of-type {
     margin: 0 auto;
   }
 }
+
+/* ---- "Próximamente" / next-up variant ----
+   For practices that are visible/linkable but not yet the active deliverable.
+   Used by both flow-step and tp-card. Muted accent vs the active entrega. */
+.flow-step.open.next-up {
+  background: var(--mid-blue);
+  border-color: var(--accent);
+  border-style: dashed;
+}
+.flow-step.open.next-up .step-status { color: #fff; opacity: 0.92; }
+
+.tp-card.next-up {
+  border-left-color: var(--accent);
+  border-left-style: dashed;
+  background: var(--off-white);
+}
+.tp-card.next-up .tp-num {
+  background: var(--accent);
+  color: var(--navy);
+}
