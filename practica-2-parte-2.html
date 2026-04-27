@@ -8,9 +8,8 @@
 (Elasticsearch + Fluent Bit + Kibana) — UNLu DCB</title>
   <link rel="stylesheet" href="assets/style.css">
   <style type="text/css">
-html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -578,7 +577,7 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="
 <li><p><strong>Versiones pinneadas a abril 2026</strong>:</p>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th>Componente</th>
 <th>Chart / CRD</th>
 <th>Versión</th>
@@ -586,25 +585,25 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>ECK Operator</td>
 <td><code>elastic/eck-operator</code></td>
 <td><code>2.16.x</code></td>
 <td><a href="https://helm.elastic.co">https://helm.elastic.co</a></td>
 </tr>
-<tr>
+<tr class="even">
 <td>Elasticsearch</td>
 <td>CRD <code>elasticsearch.k8s.elastic.co/v1</code></td>
 <td><code>8.17.x</code></td>
 <td>(gestionado por ECK Operator)</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Kibana</td>
 <td>CRD <code>kibana.k8s.elastic.co/v1</code></td>
 <td><code>8.17.x</code></td>
 <td>(gestionado por ECK Operator)</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Fluent Bit</td>
 <td><code>fluent/fluent-bit</code></td>
 <td><code>0.48.x</code> (app <code>3.2.x</code>)</td>
@@ -673,7 +672,7 @@ tiempo.</p></li>
 es pesado. Estos son los techos aceptables:</p>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th>Componente</th>
 <th>Requests</th>
 <th>Limits</th>
@@ -681,25 +680,25 @@ es pesado. Estos son los techos aceptables:</p>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>ECK Operator</td>
 <td>50m CPU, 128Mi RAM</td>
 <td>100m CPU, 256Mi RAM</td>
 <td>—</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Elasticsearch (1 nodo)</td>
 <td>500m CPU, <strong>1Gi RAM</strong></td>
 <td>1000m CPU, <strong>2Gi RAM</strong></td>
 <td><strong>10Gi PVC</strong> <code>local-path</code></td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Kibana</td>
 <td>200m CPU, 512Mi RAM</td>
 <td>500m CPU, <strong>1Gi RAM</strong></td>
 <td>—</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Fluent Bit (DaemonSet)</td>
 <td>50m CPU, 64Mi RAM</td>
 <td>200m CPU, 128Mi RAM</td>
@@ -1241,43 +1240,43 @@ cookbook dejen una nota mencionando el equivalente Lucene de cada query
 más):</p>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th>#</th>
 <th>Pregunta</th>
 <th>Query KQL</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>Q1</td>
 <td>Errores por producto en las últimas 24h</td>
 <td><code>level: "ERROR" and producto: *</code> (filtro de tiempo en el
 time picker)</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Q2</td>
 <td>Top selectores faltantes (filtros que el scraper no encontró)</td>
 <td><code>message: "Filtro * no disponible" and producto: *</code></td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Q3</td>
 <td>Distribución de duración del Job (campo <code>job_duration_ms</code>
 del scraper)</td>
 <td><code>event: "scrape_completado" and job_duration_ms &gt;= 0</code>
 (visualizar como histograma)</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Q4</td>
 <td>Logs con timeout de Selenium en cualquier producto</td>
 <td><code>message: *timeout* and (logger: "selenium*" or logger: "extractors")</code></td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Q5</td>
 <td>Eventos del CronJob específico (correlación por
 <code>job_name</code>)</td>
 <td><code>kubernetes.labels.job_name: "scraper-test-1"</code></td>
 </tr>
-<tr>
+<tr class="even">
 <td>Q6</td>
 <td>Errores que NO sean del módulo de Postgres (excluir false positives
 conocidos)</td>
@@ -1657,45 +1656,45 @@ final.</li>
 <h3 id="tabla-de-puntaje-100-">Tabla de puntaje (100 %)</h3>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th>Criterio</th>
 <th>Peso</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td><strong>Hit #1</strong> — ECK Operator + Elasticsearch (green) +
 Kibana corriendo</td>
 <td>20 %</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>Hit #2</strong> — Fluent Bit DaemonSet + pipeline al scraper
 + parser JSON funcionando</td>
 <td>20 %</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Hit #3</strong> — ILM policy <code>scraper-logs</code> (3
 fases) + index template asociado</td>
 <td>15 %</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>Hit #4</strong> — <code>kql-cookbook.md</code> con las 6
 queries documentadas (pregunta + KQL + equivalente Lucene + por
 qué)</td>
 <td>15 %</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Hit #5</strong> — dashboard
 <code>scraper-overview.ndjson</code> importado as-code y mostrando datos
 reales</td>
 <td>20 %</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>ADR <code>0009-stack-de-logging-efk.md</code></strong>
 comparando contra Loki en footprint / latency / lic.</td>
 <td>10 %</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Bonus Hit #6</strong> — alerta a Discord funcionando +
 screenshot</td>
 <td>+5 %</td>
@@ -1713,96 +1712,96 @@ en su propio cluster — los números abajo son referencia ballpark con
 datos del scraper.</p>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th>Dimensión</th>
 <th>Loki + Promtail + Grafana</th>
 <th>EFK = Elasticsearch + Fluent Bit + Kibana</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td><strong>RAM resident del backend</strong></td>
 <td>~250-400 Mi (Loki single-binary)</td>
 <td>~1.5-2.0 Gi (ES single-node con heap 1G)</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>RAM resident del agente</strong></td>
 <td>~50-100 Mi (Promtail)</td>
 <td>~40-80 Mi (Fluent Bit, escrito en C — más liviano)</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>RAM resident del visualizador</strong></td>
 <td>~150-250 Mi (Grafana)</td>
 <td>~600-900 Mi (Kibana, Node.js + Chrome PDF)</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>Total RAM stack</strong></td>
 <td><strong>~0.5-0.8 Gi</strong></td>
 <td><strong>~2.5-3.0 Gi</strong> (5× más pesado)</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Disco para 7 días retention</strong></td>
 <td>~500 Mi - 2 Gi (chunks comprimidos)</td>
 <td>~3-8 Gi (índice invertido + .doc files)</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>Latency query “errores 24h”</strong></td>
 <td>~100-300 ms (filtros sobre labels)</td>
 <td>~20-80 ms (inverted index hit)</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Latency query full-text “encontrar substring”</strong></td>
 <td><strong>~5-30 segundos</strong> (grep lineal sobre chunks)</td>
 <td>~50-200 ms (inverted index)</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>Cardinality tolerance</strong></td>
 <td>Baja — explota con &gt; 100 valores únicos por label</td>
 <td>Alta — Lucene maneja millones de terms por field</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Setup complexity</strong></td>
 <td>3 charts Helm + 1 ConfigMap dashboard</td>
 <td>ECK Operator + 2 CRDs + 1 chart Fluent Bit + import API</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>Query language</strong></td>
 <td>LogQL (label-first, PromQL-like)</td>
 <td>KQL (campo-valor, intuitivo) + Query DSL JSON (avanzado)</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Visualización</strong></td>
 <td>Grafana (dashboards as-code, alerting maduro)</td>
 <td>Kibana (Lens auto, machine learning add-on, más
 visualizaciones)</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>Licencia</strong></td>
 <td><strong>Apache 2.0</strong> (verdaderamente OSS)</td>
 <td><strong>Elastic License v2</strong> (source-available, <strong>NO
 OSS</strong>, prohíbe SaaS competing)</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Alternativa OSS</strong></td>
 <td>— (ya es Apache 2.0)</td>
 <td>OpenSearch + OpenSearch Dashboards (fork AWS, Apache 2.0)</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>Costo cluster local</strong></td>
 <td>$0 — entra cómodo en 6 GB</td>
 <td>$0 — pero pide 8 GB mínimo</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Costo cloud (estimado, 100 GB/día)</strong></td>
 <td>~$30/mes (Grafana Cloud Logs)</td>
 <td>~$200/mes (Elastic Cloud) — <strong>6-7× más caro</strong></td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>Curva de aprendizaje</strong></td>
 <td>Empinada al principio (LogQL es nuevo), después rápida</td>
 <td>Empinada al principio (Query DSL es complejo), KQL es amigable</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Caso donde gana</strong></td>
 <td>Logs operacionales, label-driven, bajo volumen</td>
 <td>Full-text search, alta cardinalidad, búsqueda exploratoria</td>
