@@ -35,7 +35,7 @@
     <div class="flow-diagram" aria-label="Flujo cronológico de prácticas">
       <a href="practica-0.html" class="flow-step open" data-status="abierto">
         <div class="step-num">TP 0</div>
-        <div class="step-name">Prerrequisitos k3s</div>
+        <div class="step-name">Prerrequisitos Kubernetes</div>
         <div class="step-status">🔓 Prerrequisito</div>
       </a>
       <span class="flow-arrow" aria-hidden="true">→</span>
@@ -47,29 +47,29 @@
       <span class="flow-arrow" aria-hidden="true">→</span>
       <a href="practica-1-parte-2.html" class="flow-step open" data-status="abierto">
         <div class="step-num">TP 1 · Parte 2</div>
-        <div class="step-name">Tests + Docker + k3s</div>
+        <div class="step-name">Tests + Docker + Kubernetes</div>
         <div class="step-status">🔓 Entrega 02/05</div>
       </a>
       <span class="flow-arrow" aria-hidden="true">→</span>
       <a href="practica-2-parte-1.html" class="flow-step open" data-status="abierto">
         <div class="step-num">TP 2 (4 partes)</div>
-        <div class="step-name">Observabilidad: logs en k3s</div>
+        <div class="step-name">Observabilidad: logs en Kubernetes</div>
         <div class="step-status">🔓 Entrega 05/05 + 09/05</div>
       </a>
     </div>
 
     <h2 style="margin-top: 32px;">Práctica 0 — Prerrequisitos</h2>
     <p style="margin-top: 4px; color: var(--gray); font-size: 14px;">
-      Guía paso a paso para instalar k3s (o k3d) y dar los primeros pasos con Kubernetes.
+      Guía paso a paso para instalar Kubernetes localmente (con k3s en Linux/WSL o k3d en macOS/Windows) y dar los primeros pasos.
       <strong>Requisito obligatorio para entregar la Parte 2.</strong>
     </p>
 
     <div class="tp-grid">
       <a href="practica-0.html" class="tp-card" style="border-left-color: var(--gray);">
         <span class="tp-num" style="background: var(--gray);">TP 0</span>
-        <h3>Prerrequisitos: k3s + kubectl</h3>
+        <h3>Prerrequisitos: Kubernetes + kubectl</h3>
         <p class="tp-desc">
-          Instalación de k3s en Linux/WSL o k3d en macOS/Windows, comandos básicos de
+          Instalación de Kubernetes (k3s en Linux/WSL o k3d en macOS/Windows), comandos básicos de
           kubectl, hello-world con nginx, y conceptos mínimos (Pod, Job, CronJob,
           ConfigMap, PVC) para encarar el Hit #8.
         </p>
@@ -101,11 +101,11 @@
 
       <a href="practica-1-parte-2.html" class="tp-card">
         <span class="tp-num">TP 1 · PARTE 2</span>
-        <h3>JSON, Tests, Docker, k3s y CI/CD</h3>
+        <h3>JSON, Tests, Docker, Kubernetes y CI/CD</h3>
         <p class="tp-desc">
           Hits #4–#9: extracción estructurada a JSON, scraper resiliente, tests con
           cobertura ≥ 70 %, Dockerfile multi-browser, pre-commit hooks, despliegue en
-          k3s/k3d (Job + CronJob + ConfigMap + PVC), ADRs y bonus (paginación, POM, Helm).
+          Kubernetes (Job + CronJob + ConfigMap + PVC), ADRs y bonus (paginación, POM, Helm).
         </p>
         <div class="tp-meta">
           <span>Entrega: <strong>02/05/2026</strong></span>
@@ -116,7 +116,7 @@
 
     <h2 style="margin-top: 48px;">Práctica II — Observabilidad (4 partes)</h2>
     <p style="margin-top: 4px; color: var(--gray); font-size: 14px;">
-      Logging centralizado y trazabilidad del scraper sobre k3s, recorriendo tres stacks
+      Logging centralizado y trazabilidad del scraper sobre Kubernetes, recorriendo tres stacks
       (Loki/Promtail/Alloy/Grafana, EFK y OpenTelemetry) y cerrando con una comparativa
       arquitectónica y un ADR magisterial.
     </p>
@@ -126,7 +126,7 @@
         <span class="tp-num">TP 2 · PARTE 1</span>
         <h3>Loki + Promtail/Alloy + Grafana</h3>
         <p class="tp-desc">
-          Logging centralizado del scraper en k3s: recolección de logs con Promtail/Alloy,
+          Logging centralizado del scraper en Kubernetes: recolección de logs con Promtail/Alloy,
           indexación en Loki, exploración y dashboards en Grafana. Aplica conceptos de la
           Parte 2 del TP 1 (Job/CronJob, ConfigMap, PVC).
         </p>
