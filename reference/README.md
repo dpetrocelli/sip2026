@@ -148,10 +148,14 @@ Tu repo (no este) tiene que cumplir todo lo listado en la consigna oficial: los 
 
 ### Links oficiales
 
-- Consigna del TP — Parte 1 (Hits #1–#3): <https://dpetrocelli.github.io/sip2026/practica-1.html>
-- Consigna del TP — Parte 2 (Hits #4–#9): <https://dpetrocelli.github.io/sip2026/practica-2.html>
-- TP 0 — Prerrequisitos de Kubernetes (k3s): <https://dpetrocelli.github.io/sip2026/practica-0.html>
 - Sitio principal de la materia: <https://dpetrocelli.github.io/sip2026/>
+- TP 0 — Prerrequisitos Kubernetes (k3s): <https://dpetrocelli.github.io/sip2026/practica-0.html>
+- TP 1 · Parte 1 — Selenium + MercadoLibre (Hits #1–#3, cerrado): <https://dpetrocelli.github.io/sip2026/practica-1-parte-1.html>
+- TP 1 · Parte 2 — Robustez + Tests + Docker + k3s + Postgres (Hits #4–#8): <https://dpetrocelli.github.io/sip2026/practica-1-parte-2.html>
+- TP 2 · Parte 1 — Logging con Loki + Promtail/Alloy + Grafana: <https://dpetrocelli.github.io/sip2026/practica-2-parte-1.html>
+- TP 2 · Parte 2 — Logging con EFK (Elasticsearch + Fluent Bit + Kibana): <https://dpetrocelli.github.io/sip2026/practica-2-parte-2.html>
+- TP 2 · Parte 3 — OpenTelemetry Collector + SDK (vendor-neutral): <https://dpetrocelli.github.io/sip2026/practica-2-parte-3.html>
+- TP 2 · Parte 4 — Cierre + ADR magisterial: <https://dpetrocelli.github.io/sip2026/practica-2-parte-4.html>
 
 ### Recordatorio de la rúbrica (Parte 2)
 
