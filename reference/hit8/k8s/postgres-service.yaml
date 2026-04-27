@@ -1,0 +1,35 @@
+# Service ClusterIP que expone Postgres dentro del cluster.
+#
+# El scraper se conecta a `postgres:5432` desde dentro del namespace ml-scraper
+# (DNS interno: postgres.ml-scraper.svc.cluster.local).
+#
+# ClusterIP (no LoadBalancer / NodePort) porque la base NO debe exponerse fuera
+# del cluster. Si hace falta acceso externo para debugging, usar:
+#   kubectl port-forward -n ml-scraper svc/postgres 5432:5432
+#
+# Nota: este Service NO es headless (clusterIP no está en None) — se usa como
+# endpoint normal. El StatefulSet referencia este mismo nombre en serviceName,
+# lo cual es válido aunque el patrón "ortodoxo" para STS es un Service headless
+# adicional. Para 1 réplica sin necesidad de DNS por-pod, alcanza con éste.
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: ml-scraper
+  labels:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/instance: ml-scraper-production
+    app.kubernetes.io/version: "16"
+    app.kubernetes.io/component: database
+    app.kubernetes.io/managed-by: kubectl
+    app.kubernetes.io/part-of: ml-scraper
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/instance: ml-scraper-production
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+      protocol: TCP

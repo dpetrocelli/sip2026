@@ -1,0 +1,47 @@
+# ConfigMap con el schema inicial. Se monta en /docker-entrypoint-initdb.d/
+# del contenedor Postgres. La imagen oficial postgres:16-trixie ejecuta TODO
+# script .sql/.sh que encuentre en ese directorio durante el primer arranque
+# (cuando $PGDATA está vacío). En arranques subsiguientes los ignora.
+#
+# Esto evita tener que correr la migración manualmente con `kubectl exec` la
+# primera vez. Para migraciones posteriores (002_, 003_, ...) hay que aplicarlas
+# con un Job dedicado o vía herramienta tipo flyway/liquibase/alembic.
+#
+# El contenido de data.init.sql DEBE estar sincronizado con el archivo
+# migrations/001_initial_schema.sql (es la misma fuente de verdad versionada).
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-sql
+  namespace: ml-scraper
+  labels:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/instance: ml-scraper-production
+    app.kubernetes.io/version: "16"
+    app.kubernetes.io/component: database-init
+    app.kubernetes.io/managed-by: kubectl
+    app.kubernetes.io/part-of: ml-scraper
+immutable: true
+data:
+  init.sql: |
+    -- 001_initial_schema.sql — Schema inicial para histórico del scraper
+    -- Aplicado automáticamente por postgres:16 al primer arranque
+    -- desde /docker-entrypoint-initdb.d/init.sql
+
+    CREATE TABLE IF NOT EXISTS scrape_results (
+        id              BIGSERIAL PRIMARY KEY,
+        producto        TEXT NOT NULL,
+        titulo          TEXT NOT NULL,
+        precio          NUMERIC(12,2),
+        link            TEXT,
+        tienda_oficial  TEXT,
+        envio_gratis    BOOLEAN,
+        cuotas_sin_interes TEXT,
+        scraped_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_scrape_results_producto_fecha
+        ON scrape_results (producto, scraped_at DESC);
+
+    CREATE INDEX IF NOT EXISTS idx_scrape_results_scraped_at
+        ON scrape_results (scraped_at DESC);

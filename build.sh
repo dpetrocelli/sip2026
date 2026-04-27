@@ -51,6 +51,14 @@ render "TP2.md" \
   "Práctica I · Parte 2 — Robustez, Tests, Docker, k3s y CI/CD" \
   "TP 1 · PARTE 2"
 
+# --- TP 2 (TP3.md) — Observabilidad: Logging centralizado con Loki + Promtail + Grafana ---
+# Nota: el archivo fuente se llama TP3.md (3er documento de la cátedra), pero en el flujo
+# del alumno es la 2da práctica del cuatrimestre, por eso el banner-num es "TP 2".
+render "TP3.md" \
+  "practica-2.html" \
+  "Práctica II — Observabilidad: Logging centralizado" \
+  "TP 2"
+
 echo ""
 echo "Done. Open with:"
 echo "  xdg-open $DIR/index.html"

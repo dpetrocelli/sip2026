@@ -1,0 +1,1037 @@
+# Trabajo Práctico Nº 2
+
+## Observabilidad — Logging centralizado del scraper en k3s
+
+**Fecha de Entrega: 16/05/2026**
+
+> Este TP arranca **donde terminó el [TP 1 — Parte 2](practica-1-parte-2.html)**: el scraper ya corre como `Job` y `CronJob` en el cluster k3s (Hit #7), ya tiene `logging` estructurado básico en Python (Hit #5) y ya escribe el histórico a Postgres (Hit #8). Lo que falta — y este TP lo resuelve — es **mirar lo que pasa**: cuando un CronJob de las 3 AM falla, hoy hay que pelearle a `kubectl logs --previous` y rezar para que el pod no se haya recolectado todavía. Acá montamos el stack de logging centralizado que hace ese problema desaparecer.
+
+**Pre-requisitos:**
+
+- **TP 1 — Parte 2 entregado y aprobado**: scraper corriendo como `Job` + `CronJob` en k3s/k3d, con `logging` Python (módulo `logging_setup.py` del Hit #5) y Postgres en cluster (Hit #8). Sin esto no hay logs que centralizar.
+- Cluster k3s/k3d operativo (cubierto en [TP 0](practica-0.html)) con al menos **6 GB de RAM libre** y **8 GB de disco** — el stack de Loki + Grafana + Promtail/Alloy suma ~1.5 GB resident set + chunks store del PVC.
+- Familiaridad con `kubectl`, `helm` y manifests (TP 0 + TP 1 · Parte 2).
+- **Helm 3 instalado** (`helm version` ≥ 3.16). Si no lo tenés: `curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash`.
+
+---
+
+## Requisitos, consideraciones y formato de entrega
+
+Aplican los mismos requisitos generales del TP 1 (repo público, README por hit, video, integración con IA documentada, sin secrets commiteados) **más** los siguientes específicos de este TP.
+
+### Infra base obligatoria — bloqueante
+
+> 🚧 **Sin esto la entrega no se puede evaluar.** La cátedra corre tu `helm install` + `kubectl apply` + abre Grafana en el browser para verificar dashboards y queries. Si el stack no levanta, no se llega a corregir nada más → **nota 0**. No suma puntos en la rúbrica porque es condición necesaria.
+
+- **Carpeta `observability/` en el repo** con todo lo declarativo y reproducible:
+
+  ```
+  observability/
+  ├── README.md                    ← cómo levantar el stack en una corrida
+  ├── helm/
+  │   ├── loki-values.yaml         ← values pinneados del chart de Loki
+  │   ├── promtail-values.yaml     ← (o alloy-values.yaml si optan por Alloy)
+  │   └── grafana-values.yaml      ← admin secret refs + datasource provisionado
+  ├── manifests/
+  │   ├── namespace.yaml           ← namespace `observability`
+  │   ├── grafana-secret.yaml      ← SOLO con placeholder, NO el secret real
+  │   └── grafana-nodeport.yaml    ← Service NodePort 30000 (o ingress)
+  ├── dashboards/
+  │   └── scraper-overview.json    ← dashboard provisionado as-code (Hit #5)
+  ├── queries/
+  │   └── logql-cookbook.md        ← las 5+ queries del Hit #4 documentadas
+  └── install.sh                   ← script idempotente con todos los pasos
+  ```
+
+- **Script `observability/install.sh` reproducible** que levanta el stack completo desde cero en un cluster limpio, con un solo comando. La cátedra lo ejecuta tal cual:
+
+  ```bash
+  cd observability && ./install.sh
+  # Output esperado al final:
+  #   ✓ Loki running   (kubectl get pod -n observability -l app=loki)
+  #   ✓ Promtail/Alloy running (DaemonSet con 1 pod por nodo)
+  #   ✓ Grafana running  (NodePort 30000 abierto)
+  #   ✓ Datasource Loki configurado y validado (status 200 desde Grafana)
+  #   ✓ Dashboard 'Scraper Overview' provisionado
+  #   → Abrir http://<node-ip>:30000  (admin / <ver secret>)
+  ```
+
+- **Helm chart pinneado a versión específica** (no `latest` en ninguna release). Para la entrega 2026:
+
+  | Componente | Chart | Versión chart | App version | Repo |
+  |---|---|---|---|---|
+  | Loki (single-binary) | `grafana/loki` | `6.16.x` | Loki 3.x | <https://grafana.github.io/helm-charts> |
+  | Promtail | `grafana/promtail` | `6.16.x` | Promtail 3.x | <https://grafana.github.io/helm-charts> |
+  | Alloy (alternativa a Promtail) | `grafana/alloy` | `0.9.x` | Alloy 1.5.x | <https://grafana.github.io/helm-charts> |
+  | Grafana | `grafana/grafana` | `8.5.x` | Grafana 11.x | <https://grafana.github.io/helm-charts> |
+
+  > ⚠️ **NO usen `grafana/loki-stack`** (el chart all-in-one). Está **deprecado desde 2024** — sigue funcionando pero ya no recibe updates de Loki 3.x. La cátedra evalúa con los charts separados (`loki` + `promtail|alloy` + `grafana`).
+
+- **Secret de admin de Grafana via `kubectl create secret`** o External Secrets, **nunca** commiteado en `values.yaml` ni en el repo. El `install.sh` debe crear el secret leyendo de una env var:
+
+  ```bash
+  : "${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD before running}"
+  kubectl -n observability create secret generic grafana-admin \
+    --from-literal=admin-user=admin \
+    --from-literal=admin-password="$GRAFANA_ADMIN_PASSWORD" \
+    --dry-run=client -o yaml | kubectl apply -f -
+  ```
+
+  El `grafana-values.yaml` referencia el secret (`admin.existingSecret: grafana-admin`).
+
+- **`gitleaks` en pre-commit y CI**: igual que en TP 1 · Parte 2. Si alguien commitea por error la password de Grafana en `values.yaml`, el push debe fallar.
+
+### Otros requisitos
+
+- **Mínimo 1 ADR obligatorio** en `docs/adr/` (continúan la numeración del TP 1 · Parte 2): `0007-stack-de-logging.md` justificando **por qué Loki + Promtail/Alloy y no ELK / Splunk / Datadog** en este contexto. Mismo formato Michael Nygard (Contexto · Decisión · Consecuencias). Plantilla y referencias en el TP 1 · Parte 2 — no se repiten acá.
+
+  Este ADR no es de relleno: la decisión real importa porque el costo, la complejidad operativa y el lock-in de cada opción son muy distintos. El ADR tiene que mencionar al menos: requerimiento de retención (7 días en este TP), recursos del cluster (un solo nodo k3s), familiaridad del equipo, costo (Loki + Grafana son OSS; Datadog/Splunk no), y por qué descartaron las otras 4-5 alternativas de la [tabla de comparación de opciones](#material-de-apoyo).
+
+- **Bonus opcional — 1 ADR adicional** (`0008-promtail-vs-alloy.md`) si optan por Alloy en lugar de Promtail. Tiene que justificar por qué Alloy a sabiendas de que Promtail está más documentado y es más simple para empezar.
+
+- **NO tocar el código del scraper** durante Hit #1 y Hit #2. El scraper ya escribe a stdout (`logger.info(...)` del Hit #5 de TP 1 · Parte 2) y `kubectl logs` ya los muestra — Promtail/Alloy automáticamente los recolecta del filesystem del nodo (`/var/log/pods/`). Recién en Hit #3 se modifica el scraper para emitir JSON estructurado.
+
+- **Resources limitados — es un cluster local k3s**. Cualquier values.yaml que pida más de lo siguiente se considera mal calibrado:
+
+  | Componente | Requests | Limits | Storage |
+  |---|---|---|---|
+  | Loki (single-binary) | 256 Mi RAM, 100m CPU | 512 Mi RAM, 500m CPU | 5 Gi PVC `local-path` |
+  | Promtail (DaemonSet) | 64 Mi RAM, 50m CPU | 128 Mi RAM, 200m CPU | — (lee del host) |
+  | Alloy (DaemonSet) | 128 Mi RAM, 100m CPU | 256 Mi RAM, 300m CPU | — |
+  | Grafana | 128 Mi RAM, 100m CPU | 256 Mi RAM, 300m CPU | 1 Gi PVC `local-path` |
+
+- **Mantener las buenas prácticas del TP 1**: explicit waits + selectores en módulo aparte siguen siendo requisito vigente. No regresionar.
+
+---
+
+## Contenidos del programa relacionados
+
+- Observabilidad: los tres pilares (logs, métricas, traces) y por qué este TP cubre solo logs.
+- Arquitectura de logging centralizado: agente por nodo (DaemonSet) + collector + storage + visualizador.
+- Loki: modelo "label-first" (igual que Prometheus) vs el modelo "full-text index" de ELK.
+- LogQL: lenguaje de queries de Loki — selector de streams + filtros + agregaciones.
+- Logs estructurados: JSON line-delimited, campos enriquecidos, niveles, correlación.
+- Grafana: datasources, dashboards as-code, alerting básico.
+- Helm: charts, values, releases, dependencias.
+- Patrones operativos: retention, sizing, backpressure, sampling.
+
+---
+
+## Práctica
+
+En el [TP 1 · Parte 2](practica-1-parte-2.html) llegamos al estado que cualquier sistema de producción tiene en su día 1: el scraper corre solo (`CronJob` en k3s), persiste resultados a Postgres y emite logs a stdout. Lo que **no** hicimos todavía es lo que aparece en el día 2 de cualquier sistema real: **¿cómo me entero cuando algo se rompe a las 3 AM?**
+
+Hoy, si el `CronJob` falla, la única forma de saber qué pasó es:
+
+```bash
+kubectl get pods -n ml-scraper -l job-name=scraper-hourly-28473215
+kubectl logs <pod> -n ml-scraper
+```
+
+Esto se vuelve **inutilizable** muy rápido por tres razones:
+
+1. **Los pods se borran.** k8s los recolecta cuando el `Job` termina (o cuando supera `successfulJobsHistoryLimit`). Si llegás 30 minutos tarde, el log ya no existe.
+2. **No se pueden buscar.** "¿Cuántas veces falló el scraping de iPhone en las últimas 24h?" → con `kubectl logs` no se puede contestar. Necesitás indexar.
+3. **No se pueden correlacionar.** "El error de Postgres del Hit #8 ocurrió 200 ms después del error de Selenium del Hit #5" → para verlo necesitás los dos streams en una misma timeline.
+
+La solución estándar en 2026 es **logging centralizado**: un agente que vive en cada nodo, lee los logs de los pods en tiempo real, los empuja a un backend que los almacena con índice, y un visualizador donde se queryan y dashboardean. La pila canónica del ecosistema CNCF es **Loki + Promtail/Alloy + Grafana**.
+
+Vamos a montar exactamente eso, con dos restricciones realistas:
+
+- **Recursos limitados**: cluster local de un solo nodo, ~6 GB de RAM disponibles.
+- **Sin cloud**: nada de S3, GCS, Datadog. Todo on-cluster con storage local.
+
+---
+
+### Hit #1 — Deploy del stack Loki + Promtail + Grafana
+
+Despleguen los 3 charts separados de Grafana Helm en un namespace dedicado (`observability`). El objetivo de este hit es **dejar el stack arriba y conectado**, sin todavía tocar el scraper.
+
+#### 1.1 — Namespace y repo Helm
+
+```bash
+kubectl create namespace observability
+
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+```
+
+#### 1.2 — Loki en modo single-binary con storage local
+
+Loki tiene 3 modos de deploy: monolithic (`single binary`), simple-scalable (3 deployments), microservices (~10 deployments). Para un cluster local **siempre** elegir **single-binary** — los otros modos solo tienen sentido con S3/GCS y volumen alto.
+
+`observability/helm/loki-values.yaml`:
+
+```yaml
+# Single-binary mode — todo Loki en un solo pod, storage en filesystem local
+deploymentMode: SingleBinary
+
+singleBinary:
+  replicas: 1
+  resources:
+    requests: { cpu: 100m, memory: 256Mi }
+    limits:   { cpu: 500m, memory: 512Mi }
+  persistence:
+    enabled: true
+    size: 5Gi
+    storageClass: local-path  # viene en k3s out-of-the-box
+
+loki:
+  auth_enabled: false  # acceso interno al cluster, no necesita multi-tenant
+  commonConfig:
+    replication_factor: 1
+  storage:
+    type: filesystem
+  schemaConfig:
+    configs:
+      - from: 2025-01-01
+        store: tsdb
+        object_store: filesystem
+        schema: v13
+        index:
+          prefix: loki_index_
+          period: 24h
+  limits_config:
+    retention_period: 168h          # 7 días — alcanza para el TP
+    reject_old_samples: true
+    reject_old_samples_max_age: 168h
+    max_query_length: 721h          # 30 días
+  compactor:
+    retention_enabled: true
+    delete_request_store: filesystem
+
+# Apagar todo lo que no usamos en single-binary
+read:    { replicas: 0 }
+write:   { replicas: 0 }
+backend: { replicas: 0 }
+chunksCache:   { enabled: false }
+resultsCache:  { enabled: false }
+test: { enabled: false }
+monitoring:
+  selfMonitoring:    { enabled: false, grafanaAgent: { installOperator: false } }
+  lokiCanary:        { enabled: false }
+gateway: { enabled: false }   # accedemos directo al pod via Service
+```
+
+```bash
+helm install loki grafana/loki \
+  --version 6.16.0 \
+  --namespace observability \
+  --values observability/helm/loki-values.yaml
+```
+
+Verificar:
+
+```bash
+kubectl -n observability rollout status statefulset/loki --timeout=180s
+kubectl -n observability get pvc                # tiene que estar Bound
+```
+
+#### 1.3 — Promtail (o Alloy) como DaemonSet
+
+Para este hit **recomendamos Promtail** — es lo más simple y todavía es el camino más documentado para empezar. Quienes opten por **Alloy** (sucesor de Promtail unificado con Grafana Agent, GA 2024) deben documentar la decisión en el ADR `0008-promtail-vs-alloy.md`.
+
+`observability/helm/promtail-values.yaml`:
+
+```yaml
+config:
+  clients:
+    - url: http://loki.observability.svc.cluster.local:3100/loki/api/v1/push
+
+  # Por defecto Promtail trae un scrape config para todos los pods del cluster
+  # con relabeling estándar. En el Hit #2 lo refinamos.
+
+resources:
+  requests: { cpu: 50m, memory: 64Mi }
+  limits:   { cpu: 200m, memory: 128Mi }
+
+# Tolera taints del control plane porque en k3s single-node es el único nodo
+tolerations:
+  - effect: NoSchedule
+    operator: Exists
+```
+
+```bash
+helm install promtail grafana/promtail \
+  --version 6.16.0 \
+  --namespace observability \
+  --values observability/helm/promtail-values.yaml
+```
+
+Verificar:
+
+```bash
+kubectl -n observability get ds promtail        # DESIRED == READY
+kubectl -n observability logs ds/promtail | head -30
+# Tenés que ver lineas tipo: "Adding target ... namespace=ml-scraper pod=scraper-..."
+```
+
+#### 1.4 — Grafana con datasource Loki provisionado
+
+`observability/helm/grafana-values.yaml`:
+
+```yaml
+admin:
+  existingSecret: grafana-admin   # creado por install.sh, NO en este YAML
+  userKey: admin-user
+  passwordKey: admin-password
+
+persistence:
+  enabled: true
+  size: 1Gi
+  storageClassName: local-path
+
+resources:
+  requests: { cpu: 100m, memory: 128Mi }
+  limits:   { cpu: 300m, memory: 256Mi }
+
+service:
+  type: NodePort
+  nodePort: 30000
+
+# Datasource Loki provisionado — sin clicks en la UI
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://loki.observability.svc.cluster.local:3100
+        isDefault: true
+        jsonData:
+          maxLines: 1000
+
+# Dashboard provisionado del Hit #5 — referencia el ConfigMap que se crea aparte
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: 'sip2026'
+        orgId: 1
+        folder: 'SIP 2026'
+        type: file
+        disableDeletion: false
+        options:
+          path: /var/lib/grafana/dashboards/sip2026
+```
+
+```bash
+helm install grafana grafana/grafana \
+  --version 8.5.0 \
+  --namespace observability \
+  --values observability/helm/grafana-values.yaml
+```
+
+Verificar y abrir Grafana:
+
+```bash
+kubectl -n observability rollout status deploy/grafana --timeout=120s
+kubectl -n observability get svc grafana   # Tiene que mostrar 30000:xxxxx
+echo "Abrir http://$(hostname -I | awk '{print $1}'):30000"
+```
+
+#### Output esperado del Hit #1
+
+```
+$ kubectl -n observability get pods
+NAME                       READY   STATUS    RESTARTS   AGE
+loki-0                     1/1     Running   0          3m
+promtail-7d5fb             1/1     Running   0          3m
+grafana-69b8f8c4d4-xxxxx   1/1     Running   0          2m
+
+$ kubectl -n observability get svc
+NAME       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)
+grafana    NodePort    10.43.x.x       <none>        80:30000/TCP
+loki       ClusterIP   10.43.x.x       <none>        3100/TCP,9095/TCP
+```
+
+En `http://<node-ip>:30000` → login con `admin` / `<GRAFANA_ADMIN_PASSWORD>` → menú **Explore** → datasource **Loki** → query `{namespace="observability"}` → **tienen que aparecer logs del propio stack**. Eso prueba que el pipeline Promtail → Loki → Grafana está cerrado end-to-end.
+
+---
+
+### Hit #2 — Recolección de logs del scraper con labels Kubernetes
+
+El default de Promtail captura **todo** el cluster. Para este TP nos enfocamos en el scraper. Refinen el `scrape_configs` para:
+
+1. Filtrar solo el namespace donde corre el scraper (`ml-scraper` del TP 1 · Parte 2 — usen el namespace que efectivamente hayan elegido).
+2. Enriquecer cada línea con labels que sirvan para queryar después: `app`, `pod`, `container`, `namespace`, `job_name` (importante para distinguir corridas del CronJob), `node`.
+
+Modifiquen `observability/helm/promtail-values.yaml` agregando un scrape config explícito para el namespace del scraper:
+
+```yaml
+config:
+  clients:
+    - url: http://loki.observability.svc.cluster.local:3100/loki/api/v1/push
+
+  snippets:
+    extraScrapeConfigs: |
+      - job_name: ml-scraper-pods
+        kubernetes_sd_configs:
+          - role: pod
+            namespaces:
+              names: [ml-scraper]
+        relabel_configs:
+          # Drop pods que no son del scraper (ej: postgres del Hit #8)
+          - source_labels: [__meta_kubernetes_pod_label_app]
+            regex: scraper
+            action: keep
+          # Map labels Kubernetes a labels Loki
+          - source_labels: [__meta_kubernetes_namespace]
+            target_label: namespace
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: pod
+          - source_labels: [__meta_kubernetes_pod_container_name]
+            target_label: container
+          - source_labels: [__meta_kubernetes_pod_label_app]
+            target_label: app
+          - source_labels: [__meta_kubernetes_pod_label_job_name]
+            target_label: job_name
+          - source_labels: [__meta_kubernetes_node_name]
+            target_label: node
+          # Path al log file en el host
+          - source_labels:
+              - __meta_kubernetes_pod_uid
+              - __meta_kubernetes_pod_container_name
+            target_label: __path__
+            separator: /
+            replacement: /var/log/pods/*$1/*.log
+```
+
+> 💡 **Por qué labels específicos y no "todos"**. En Loki cada combinación única de labels crea un **stream** y los streams son el unidad de costo de RAM. Si poneys 20 labels (incluyendo `pod_uid` que cambia con cada Job), explotás el cardinality y Loki empieza a OOM-killear. La regla práctica: **menos de 10 labels totales, ninguno con cardinalidad alta** (no usen IDs random como label, sí como contenido del log).
+
+Aplicar:
+
+```bash
+helm upgrade promtail grafana/promtail \
+  --version 6.16.0 \
+  --namespace observability \
+  --values observability/helm/promtail-values.yaml
+
+kubectl -n observability rollout status ds/promtail
+```
+
+#### Disparar tráfico para validar
+
+```bash
+# Disparar un Job manual del scraper (TP 1 · P2 Hit #7)
+kubectl -n ml-scraper create job --from=cronjob/scraper-hourly scraper-test-1
+kubectl -n ml-scraper wait --for=condition=complete job/scraper-test-1 --timeout=600s
+```
+
+#### Output esperado del Hit #2
+
+En Grafana → Explore → Loki, la query siguiente debe devolver logs:
+
+```
+{namespace="ml-scraper", app="scraper"}
+```
+
+Y refinada por job:
+
+```
+{namespace="ml-scraper", app="scraper", job_name="scraper-test-1"}
+```
+
+**Capturen un screenshot de Grafana mostrando los logs filtrados por estos labels** y commitéenlo en `observability/screenshots/hit2-labels.png`.
+
+---
+
+### Hit #3 — Migrar el scraper a logs JSON estructurados
+
+El `logging_setup.py` del [Hit #5 de TP 1 · Parte 2](practica-1-parte-2.html#hit-5) emite líneas tipo:
+
+```
+2026-05-10T03:14:22-0300 | INFO     | extractors | Scrapeando página 1
+```
+
+Eso es legible por humanos pero **muy pobre para queryar en LogQL**. Imagínense que quieran responder "¿cuántos errores hubo por producto en las últimas 24h?" — con texto plano tienen que parsear con regex en cada query, frágil y lento. Con JSON estructurado, Loki extrae los campos automáticamente y queryan con `| json | producto="iphone"`.
+
+Migren el módulo de logging para emitir **JSON line-delimited a stdout** (un objeto JSON por línea). Mantengan el RotatingFileHandler para logs locales — pero el handler de stream que va a `kubectl logs` (y por lo tanto a Promtail) debe ser JSON.
+
+#### Cambio mínimo en Python
+
+Agregar `python-json-logger>=3.2.0` a `requirements.txt` (verificar que ya esté pinneado al hacer `pip freeze`):
+
+```python
+# logging_setup.py
+import logging
+from logging.handlers import RotatingFileHandler
+from pythonjsonlogger.json import JsonFormatter
+
+def setup_logging(log_file: str = "output/scraper.log") -> None:
+    # JSON formatter para stdout (k8s → Promtail → Loki)
+    json_formatter = JsonFormatter(
+        "%(asctime)s %(levelname)s %(name)s %(message)s",
+        rename_fields={"asctime": "timestamp", "levelname": "level", "name": "logger"},
+        timestamp=True,
+    )
+
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(json_formatter)
+
+    # Plain-text rotativo para debugging local (no va a Loki)
+    file_formatter = logging.Formatter(
+        "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s"
+    )
+    file_handler = RotatingFileHandler(
+        log_file, maxBytes=2_000_000, backupCount=3, encoding="utf-8"
+    )
+    file_handler.setFormatter(file_formatter)
+
+    logging.basicConfig(level=logging.INFO, handlers=[stream_handler, file_handler])
+```
+
+Y **enriquecer los call-sites** con contexto estructurado vía `extra=`:
+
+```python
+# extractors.py (ejemplo)
+logger.info(
+    "Scrape iniciado",
+    extra={"producto": producto, "browser": browser, "page": page},
+)
+logger.warning(
+    "Precio ausente, devuelvo null",
+    extra={"producto": producto, "field": "precio", "result_index": idx},
+)
+logger.error(
+    "Timeout tras 3 reintentos",
+    extra={"producto": producto, "selector": selector, "attempts": 3},
+    exc_info=True,
+)
+```
+
+> ⚠️ **No mezclen `%`-formatting con `extra=`**. Si ponen `logger.info("Producto %s", producto)` el `producto` queda en el `message` y no es queryable como campo. Para que Loki lo extraiga, **tiene que estar en `extra`**.
+
+#### Equivalentes en otros stacks
+
+| Stack | Librería | Output esperado |
+|---|---|---|
+| Node.js | `pino` | `pino` ya emite JSON nativo. No requiere migración — verificar que `transport` no esté seteado a `pino-pretty` en producción. |
+| Java | SLF4J + Logback + `logstash-logback-encoder` | Reemplazar `<encoder>` por `<encoder class="net.logstash.logback.encoder.LogstashEncoder"/>`. |
+
+#### Validar el JSON output con LogQL
+
+Después de redeployar la imagen del scraper y disparar un Job:
+
+```
+{namespace="ml-scraper", app="scraper"} | json
+```
+
+En la columna **Detected fields** de Grafana tienen que aparecer: `level`, `producto`, `browser`, `logger`, `message`, `timestamp`. Si ven solo `message` y nada extraído, no es JSON válido — Promtail emite los logs raw pero Loki no parsea.
+
+**Consigna obligatoria**: en el `README.md` de `observability/` muestren un **antes/después** con dos screenshots: log line plain text del Hit #2 vs log line JSON con campos extraídos del Hit #3.
+
+---
+
+### Hit #4 — LogQL cookbook: 5+ queries útiles
+
+Documenten en `observability/queries/logql-cookbook.md` **al menos 5 queries LogQL** que respondan preguntas operativas reales sobre el scraper. Cada query debe llevar:
+
+1. La pregunta de negocio que responde (1 línea).
+2. La query LogQL.
+3. Un ejemplo del output esperado (texto o screenshot).
+4. Por qué la query está escrita así (qué streams selecciona, qué filtros aplica, por qué `count_over_time` y no `rate`, etc.).
+
+Mínimo obligatorio (las 5 que la cátedra valida — pueden agregar más):
+
+#### Q1 — Top errores por producto en las últimas 24h
+
+```logql
+sum by (producto) (
+  count_over_time(
+    {namespace="ml-scraper", app="scraper"} | json | level="ERROR" [24h]
+  )
+)
+```
+
+Pregunta: **"¿qué producto está fallando más?"** — útil para priorizar bugfixes de selectores.
+
+#### Q2 — Tasa de WARNINGs por minuto en la última hora
+
+```logql
+sum by (producto) (
+  rate({namespace="ml-scraper", app="scraper"} | json | level="WARNING" [1m])
+)
+```
+
+Pregunta: **"¿hubo un pico de errores de retry hace 30 min?"** — visual para detectar incidentes en curso.
+
+#### Q3 — Conteo de filtros que no aparecieron por producto
+
+```logql
+sum by (producto) (
+  count_over_time(
+    {namespace="ml-scraper", app="scraper"}
+      | json
+      | message =~ "Filtro .* no disponible"
+    [7d]
+  )
+)
+```
+
+Pregunta: **"¿qué productos pierden el filtro `tienda_oficial` (ML lo oculta dinámicamente — ver pitfall TP 1 · P1)?"**.
+
+#### Q4 — Duración media entre intentos de retry
+
+```logql
+avg_over_time(
+  {namespace="ml-scraper", app="scraper"}
+    | json
+    | message=~"intento.*backoff"
+    | unwrap delay_ms
+  [1h]
+)
+```
+
+Pregunta: **"¿el backoff exponencial está disparando como esperamos?"** — requiere que el Hit #3 emita el campo `delay_ms` como número.
+
+#### Q5 — Última corrida exitosa por producto
+
+```logql
+topk(1,
+  {namespace="ml-scraper", app="scraper"}
+    | json
+    | level="INFO"
+    | message="Scrape completado"
+) by (producto)
+```
+
+Pregunta: **"¿hace cuánto que no scrapeo exitosamente cada producto?"** — base para una alerta del Hit #6.
+
+> 📚 **Documentación canónica de LogQL**: <https://grafana.com/docs/loki/latest/query/>. Lean al menos las secciones **Log queries** y **Metric queries** — son cortas y la diferencia entre las dos es donde se confunde todo el mundo en su primer LogQL.
+
+---
+
+### Hit #5 — Dashboard Grafana provisionado as-code
+
+Construyan **un dashboard único** en Grafana (UI o JSON a mano) que muestre:
+
+- **Stat panels (parte de arriba)**: total de scrapes hoy, % de éxito, productos con más errores en 24h.
+- **Time series (parte media)**: las queries Q2 y Q3 del Hit #4.
+- **Table (parte de abajo)**: última corrida exitosa por producto (Q5) + top errores (Q1).
+
+Una vez que se ve bien en la UI, **exportarlo como JSON** (icono Share → Export → Save to file) y commitearlo en `observability/dashboards/scraper-overview.json`.
+
+#### Provisioning del dashboard
+
+Loaden el JSON al pod de Grafana via ConfigMap, y referencienlo desde el `dashboardProviders` ya configurado en `grafana-values.yaml` del Hit #1.
+
+`observability/manifests/dashboard-configmap.yaml` (generado por `install.sh`):
+
+```bash
+kubectl -n observability create configmap scraper-overview-dashboard \
+  --from-file=scraper-overview.json=observability/dashboards/scraper-overview.json \
+  --dry-run=client -o yaml | kubectl apply -f -
+```
+
+Y en `grafana-values.yaml` agregar el mount:
+
+```yaml
+extraConfigmapMounts:
+  - name: scraper-overview-dashboard
+    configMap: scraper-overview-dashboard
+    mountPath: /var/lib/grafana/dashboards/sip2026
+    readOnly: true
+```
+
+#### Output esperado del Hit #5
+
+Después de re-aplicar y re-disparar el `scraper-test-1`:
+
+- En Grafana → Dashboards → carpeta **SIP 2026** → aparece el dashboard **Scraper Overview**.
+- Los 3 stat panels muestran números reales (no `No data`).
+- Los time-series muestran las últimas 6 horas de actividad.
+- La tabla de "última corrida exitosa" muestra los 3 productos con timestamps recientes.
+
+**Capturen el screenshot final en `observability/screenshots/hit5-dashboard.png`** — esto es lo que la cátedra mira primero al evaluar.
+
+---
+
+### Hit #6 — Alertas (opcional, bonus +5 %)
+
+Configuren **una alerta Grafana Alerting** que notifique a un **webhook de Discord** cuando se cumpla cualquiera de estas dos condiciones:
+
+1. El `CronJob` del scraper falla **2 veces seguidas** (basado en logs `level=ERROR` con `event=scrape_failed`).
+2. Un producto **no se logra scrapear en 24h** (basado en la query Q5 — la última corrida exitosa es > 24h vieja).
+
+#### Estructura mínima
+
+- **Contact point Discord** en Grafana → Alerting → Contact points → New contact point → Discord webhook URL.
+
+  > 🔒 **El URL del webhook es un secret.** No commitearlo. Usen un k8s `Secret` y refencienlo desde Grafana via env var (`grafana-values.yaml` → `envFromSecret`). El `install.sh` debe leer `DISCORD_WEBHOOK_URL` de env vars locales, igual que `GRAFANA_ADMIN_PASSWORD`.
+
+- **Alert rule provisioning** as-code en `observability/manifests/alert-rules.yaml` (Grafana lo carga via ConfigMap mounted en `/etc/grafana/provisioning/alerting/`).
+
+  Ejemplo de regla para condición #2:
+
+  ```yaml
+  apiVersion: 1
+  groups:
+    - orgId: 1
+      name: scraper-health
+      folder: SIP 2026
+      interval: 5m
+      rules:
+        - uid: scrape-stale-24h
+          title: "Producto no scrapeado en 24h"
+          condition: A
+          data:
+            - refId: A
+              datasourceUid: <UID-de-Loki>
+              model:
+                expr: |
+                  (time() - max(last_over_time(
+                    {namespace="ml-scraper", app="scraper"}
+                      | json | message="Scrape completado"
+                      | unwrap timestamp [25h]
+                  )) by (producto)) > 86400
+          noDataState: Alerting
+          execErrState: Alerting
+          for: 10m
+          annotations:
+            summary: "El producto {{ $labels.producto }} no se scrapea hace más de 24h"
+          labels:
+            severity: warning
+  ```
+
+- **Test de la alerta**: simulen el fallo escalando el CronJob a `suspend: true` y esperando 24h, **o** modificando temporalmente el threshold a `> 600` (10 min) y dejándolo así para la corrida de evaluación.
+
+Documenten en `observability/README.md` cómo se setea `DISCORD_WEBHOOK_URL` y cómo se valida que la alerta efectivamente disparó (screenshot del mensaje en Discord).
+
+---
+
+## Cómo entregar
+
+1. **Push final al repo público** (mismo repo del TP 1, no abrir uno nuevo) antes del **16/05/2026 23:59 ART**.
+2. **README raíz actualizado** con una sección nueva "TP 2 — Observabilidad":
+   - Cómo ejecutar `observability/install.sh` desde cero.
+   - Variables de entorno requeridas (`GRAFANA_ADMIN_PASSWORD`, opcionalmente `DISCORD_WEBHOOK_URL`).
+   - Link al `observability/README.md` con los detalles.
+3. **Carpeta `observability/`** completa según [estructura obligatoria](#infra-base-obligatoria--bloqueante).
+4. **`docs/adr/0007-stack-de-logging.md`** (y opcionalmente `0008-promtail-vs-alloy.md`).
+5. **Carpeta `observability/screenshots/`** con mínimo:
+   - `hit2-labels.png` — Grafana Explore mostrando logs filtrados por labels k8s.
+   - `hit3-json-fields.png` — Grafana Explore mostrando campos JSON extraídos.
+   - `hit5-dashboard.png` — el dashboard provisionado renderizado con datos reales.
+   - (bonus Hit #6) `hit6-discord-alert.png` — captura de la notificación en Discord.
+6. **Video corto (3-5 min)** mostrando: `install.sh` corriendo de cero, Grafana abriéndose en `:30000`, demo de las 5 queries del Hit #4 en Explore, dashboard del Hit #5 con datos.
+7. **Mensaje en el canal Discord de la materia** con el link al repo y al video.
+
+> 📡 **Canal Discord (consultas + entregas):** <https://discord.com/channels/1482135908508500148/1482135909456679139>
+> Antes de pedir ayuda con Loki, revisá la sección [Common pitfalls](#common-pitfalls) abajo — la mayoría de los problemas son los 4 ahí descritos.
+
+---
+
+## Auto-verificación previa a la entrega
+
+Igual que en TP 1 · Parte 2: si **algo de esta lista falla, no entregues**. Son puntos seguros que se pierden con 5 minutos de checklist.
+
+### 1) `install.sh` corre limpio en cluster vacío
+
+```bash
+# Borrar el namespace para arrancar limpio
+kubectl delete namespace observability --wait=true
+
+# Re-instalar from scratch
+export GRAFANA_ADMIN_PASSWORD='<algo-random>'
+cd observability && ./install.sh
+
+# El script DEBE terminar con exit 0 y los 5 ✓ del output esperado del Hit #1
+```
+
+### 2) Los 3 pods + DaemonSet están Running
+
+```bash
+kubectl -n observability get pods,ds,svc,pvc
+# Tiene que mostrar:
+#  loki-0 Running, promtail-xxxx Running, grafana-xxxxx Running
+#  ds/promtail con DESIRED == READY
+#  svc/grafana con NodePort 30000
+#  PVCs Bound (storage-loki-0, grafana)
+```
+
+### 3) Loki responde a queries via HTTP
+
+```bash
+kubectl -n observability port-forward svc/loki 3100:3100 &
+sleep 2
+curl -sG http://localhost:3100/loki/api/v1/labels | jq '.data | length > 0'
+# Esperado: true
+```
+
+### 4) Grafana resuelve el datasource Loki
+
+```bash
+# Con port-forward o NodePort:
+curl -u admin:"$GRAFANA_ADMIN_PASSWORD" \
+  http://localhost:30000/api/datasources/name/Loki | jq '.type'
+# Esperado: "loki"
+```
+
+### 5) Las 5 queries del Hit #4 corren sin error
+
+Abran Grafana → Explore → pegue cada query del cookbook → tiene que devolver datos (o `No data` si genuinamente no hay logs ese período, pero **nunca** error de sintaxis LogQL).
+
+### 6) Dashboard provisionado aparece en la UI
+
+```bash
+kubectl -n observability rollout restart deploy/grafana
+sleep 30
+# Abrir Grafana → Dashboards → buscar "Scraper Overview"
+# Tiene que estar en la carpeta "SIP 2026"
+```
+
+### 7) Logs del scraper son JSON parseados
+
+Query en Explore: `{namespace="ml-scraper", app="scraper"} | json`. En el panel **Detected fields** tienen que aparecer al menos: `level`, `producto`, `logger`, `timestamp`. Si solo aparece `message`, el Hit #3 no está bien.
+
+### 8) `gitleaks` no detecta el password de Grafana
+
+```bash
+gitleaks detect --no-git --verbose
+# Esperado: 0 leaks. Si encuentra GRAFANA_ADMIN_PASSWORD o el webhook de Discord
+# en algún archivo, está mal — borralo y movelo a un Secret de k8s.
+```
+
+---
+
+## Common pitfalls
+
+### `loki-stack` chart deprecado
+
+Si googlean "Loki helm" el primer link dice `grafana/loki-stack`. **No lo usen.** Está deprecado desde 2024, viene con Loki 2.x (no 3.x), y trae Promtail acoplado de un modo que no permite override fino. Los charts separados (`grafana/loki` + `grafana/promtail`) son el camino oficial 2026.
+
+### Cardinality explosion → Loki OOM
+
+Si pusieron un label `request_id` o `trace_id` en el `relabel_configs`, **Loki se va a OOM-killear** en pocos minutos. Esos campos van **dentro del JSON** del log, no como label. Regla práctica: ningún label debe tener más de ~100 valores únicos por día.
+
+### Promtail no encuentra logs (`__path__` vacío)
+
+Si en `kubectl logs ds/promtail` ven warnings "no targets discovered" o "open /var/log/pods/...: no such file", probablemente:
+
+1. El path en el host es distinto en k3d (`/var/log/pods/...`) vs k3s puro (`/var/log/pods/...` también, pero con symlinks distintos). Prueben los dos formatos.
+2. El pod del scraper terminó hace mucho y el log file fue rotado/eliminado. Disparen un Job nuevo y miren los logs en vivo.
+3. El `serviceAccount` de Promtail no tiene permisos de lectura sobre el host filesystem. El chart oficial lo configura solo, pero si overridearon el `securityContext` lo pueden haber roto.
+
+### `python-json-logger` cambió de API en v3
+
+La importación correcta en versiones modernas (>=3.0) es:
+
+```python
+from pythonjsonlogger.json import JsonFormatter   # ✓ correcto
+```
+
+NO `from pythonjsonlogger import jsonlogger` (era el path en v2.x — sigue funcionando pero está deprecado).
+
+### Grafana muestra `No data` aunque hay logs en Loki
+
+Casi siempre es **time range**: por default Grafana arranca en "Last 1 hour" y los logs del CronJob de hace 6 horas no aparecen. Cambien el rango a "Last 24 hours" antes de panickear.
+
+### El dashboard JSON se rompe al cambiar de versión de Grafana
+
+El JSON de dashboards es **compatible solo dentro de la misma minor de Grafana**. Si exportaron en Grafana 11.5 y la cátedra evalúa con 11.4 puede haber paneles que no rendericen. Mitigación: en el JSON exportado, **pongan `"schemaVersion": 39`** (el de la versión más vieja de la 11.x que soporten) y no usen features experimentales.
+
+---
+
+## Criterios de evaluación
+
+### Requisitos bloqueantes (no se acepta la entrega sin estos)
+
+Estos no suman puntos — son condición necesaria para que la entrega sea **corregible**. Si falta cualquiera, la nota es 0.
+
+- **TP 1 · Parte 2 entregado y aprobado** (mínimo 60/100). El scraper tiene que estar corriendo como CronJob en k3s al momento de evaluar este TP.
+- **`observability/install.sh`** funciona en un cluster limpio con un solo comando (verificado en [auto-verificación #1](#1-installsh-corre-limpio-en-cluster-vacío)).
+- **Helm charts pinneados** a versiones específicas (no `latest`) y `loki-stack` **NO** usado.
+- **Sin secrets en el repo** (`gitleaks detect` da 0 leaks — verificado en [auto-verificación #8](#8-gitleaks-no-detecta-el-password-de-grafana)).
+- **Auto-verificación completa ejecutada** antes del push final.
+
+### Tabla de puntaje (100 %)
+
+| Criterio | Peso |
+|----------|------|
+| **Hit #1** — stack Loki + Promtail + Grafana corriendo + datasource validado | 20 % |
+| **Hit #2** — Promtail/Alloy refinado a namespace `ml-scraper` con labels k8s útiles | 15 % |
+| **Hit #3** — scraper migrado a JSON line-delimited + campos extraíbles via `\| json` | 20 % |
+| **Hit #4** — `logql-cookbook.md` con las 5 queries documentadas (pregunta + query + por qué) | 15 % |
+| **Hit #5** — dashboard `scraper-overview.json` provisionado as-code y mostrando datos reales | 20 % |
+| **ADR `0007-stack-de-logging.md`** justificando la elección con alternativas descartadas | 10 % |
+| **Bonus Hit #6** — alerta a Discord funcionando + screenshot de la notificación | +5 % |
+
+---
+
+## Material de apoyo
+
+### Tabla comparativa de stacks de logging centralizado
+
+Antes de elegir Loki, conozcan las alternativas — esto va al ADR `0007`.
+
+| Stack | Componentes | Storage | Query | Pro | Contra | Costo (TP) |
+|---|---|---|---|---|---|---|
+| **Loki + Promtail + Grafana** | 3 charts | Filesystem / S3 / GCS | LogQL (label-first) | Simple, bajo costo, integración nativa Grafana | Index pobre vs Elasticsearch — full-text grep es lento | OSS, $0 |
+| **Loki + Alloy + Grafana** | 3 charts | Idem | LogQL | Alloy unifica logs + métricas + traces (sucesor de Promtail), GA 2024 | Menos documentación que Promtail, learning curve | OSS, $0 |
+| **Vector + Loki + Grafana** | 3 procesos | Idem | LogQL | Vector es más performante que Promtail (Rust), config más expresiva | Más componentes que mantener | OSS, $0 |
+| **OpenTelemetry Collector + Loki** | OTel Coll + Loki + Grafana | Idem | LogQL | Vendor-neutral (CNCF), permite migrar de Loki sin re-instrumentar el scraper | Más config, OTel logs aún en evolución 2026 | OSS, $0 |
+| **EFK = Elasticsearch + Fluentd + Kibana** | 3+ pods pesados | Elasticsearch (RAM-hungry) | KQL / Lucene query | Full-text search rapidísima, ecosistema maduro | Heavy: ES single-node ya pide 2 GB RAM, no entra cómodo en k3s local | OSS, **NO usar en este TP** |
+| **Datadog Logs** | SaaS | Datadog cloud | Datadog query language | Zero-ops, dashboards listos | Vendor lock-in, **paid** ($0.10/GB ingested) | $$$ — descartar |
+| **New Relic Logs** | SaaS | New Relic cloud | NRQL | Idem Datadog, free tier 100 GB/mes | Vendor lock-in | Gratis hasta 100 GB, después paid |
+| **Splunk Cloud** | SaaS o on-prem | Splunk indexer | SPL | Estándar enterprise, search potentísima | **Caro**, complejo de operar on-prem | $$$$ — descartar |
+
+**Para este TP, las únicas opciones aceptables son**: **Loki + Promtail + Grafana** (default recomendado) o **Loki + Alloy + Grafana** (con ADR `0008-promtail-vs-alloy.md` justificándolo). Vector y OpenTelemetry Collector se aceptan también si los equipos quieren explorar — requieren ADR adicional. EFK / Datadog / Splunk **no se aceptan** (no caben en el cluster local o no son OSS).
+
+### Esqueleto de `install.sh`
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+NAMESPACE=observability
+: "${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD before running}"
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+echo "→ Namespace + Helm repo"
+kubectl create namespace "$NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
+helm repo add grafana https://grafana.github.io/helm-charts >/dev/null 2>&1 || true
+helm repo update >/dev/null
+
+echo "→ Secret de admin de Grafana"
+kubectl -n "$NAMESPACE" create secret generic grafana-admin \
+  --from-literal=admin-user=admin \
+  --from-literal=admin-password="$GRAFANA_ADMIN_PASSWORD" \
+  --dry-run=client -o yaml | kubectl apply -f -
+
+echo "→ Loki (single-binary, filesystem)"
+helm upgrade --install loki grafana/loki \
+  --version 6.16.0 \
+  --namespace "$NAMESPACE" \
+  --values "$DIR/helm/loki-values.yaml" \
+  --wait --timeout 5m
+
+echo "→ Promtail (DaemonSet)"
+helm upgrade --install promtail grafana/promtail \
+  --version 6.16.0 \
+  --namespace "$NAMESPACE" \
+  --values "$DIR/helm/promtail-values.yaml" \
+  --wait --timeout 3m
+
+echo "→ Dashboard ConfigMap"
+kubectl -n "$NAMESPACE" create configmap scraper-overview-dashboard \
+  --from-file="scraper-overview.json=$DIR/dashboards/scraper-overview.json" \
+  --dry-run=client -o yaml | kubectl apply -f -
+
+echo "→ Grafana"
+helm upgrade --install grafana grafana/grafana \
+  --version 8.5.0 \
+  --namespace "$NAMESPACE" \
+  --values "$DIR/helm/grafana-values.yaml" \
+  --wait --timeout 3m
+
+NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}')
+echo ""
+echo "✓ Loki running"
+echo "✓ Promtail running"
+echo "✓ Grafana running"
+echo "✓ Datasource Loki configurado"
+echo "✓ Dashboard 'Scraper Overview' provisionado"
+echo "→ Abrir http://${NODE_IP}:30000   (admin / \$GRAFANA_ADMIN_PASSWORD)"
+```
+
+Hagan `chmod +x install.sh` antes de commitearlo.
+
+### Esqueleto de ADR `0007-stack-de-logging.md`
+
+Mismo formato Michael Nygard del TP 1 · Parte 2 (no se repite la plantilla — está [ahí](practica-1-parte-2.html#esqueleto-del-workflow-de-ci-githubworkflowsscrapeyml-infra-base)). Ejemplo concreto:
+
+```markdown
+# 0007 — Adoptamos Loki + Promtail + Grafana para logging centralizado
+
+- Date: 2026-05-12
+- Status: Accepted
+- Deciders: <equipo>
+
+## Contexto
+
+El scraper corre como CronJob en k3s y emite logs a stdout. `kubectl logs` se vuelve
+inutilizable en cuanto los pods son recolectados. Necesitamos un backend de logs con
+retención mínima 7 días, queryable, y visualizable. Restricciones:
+- Cluster local k3s single-node, ~6 GB RAM disponibles.
+- Sin cloud / sin servicios pagos.
+- Equipo familiarizado con Grafana (lo vimos en otra materia).
+
+Alternativas consideradas: Loki+Promtail, Loki+Alloy, Vector+Loki, OTel+Loki,
+EFK, Datadog, Splunk. Tabla comparativa en TP 2 / Material de apoyo.
+
+## Decisión
+
+Adoptamos **Loki + Promtail + Grafana** (charts separados, versiones pinneadas).
+
+## Consecuencias
+
+- Más fácil: setup en ~10 min con Helm; integración nativa con dashboards Grafana;
+  costo $0; modelo label-first es simple y suficiente para nuestro volumen.
+- Más difícil: full-text grep es lento (Loki indexa labels, no el cuerpo del log) —
+  si en el futuro queremos búsquedas tipo "encontrame el log con esta substring de
+  100 chars" vamos a sufrir.
+- Sacrificio: no podemos hacer queries complejas tipo SQL (vs Splunk SPL).
+- Riesgo: cardinality explosion si labelean mal. Mitigado en Hit #2 con regla de
+  ≤10 labels totales y ningún label de cardinalidad alta.
+
+## Referencias
+
+- Loki design doc: https://grafana.com/docs/loki/latest/get-started/architecture/
+- Comparativa de la cátedra: TP 2 / Material de apoyo
+```
+
+---
+
+## Referencias y Bibliografía
+
+Solo lo directamente vinculado a lo que se les pide en este TP. Los libros generales de Kubernetes / containers viven en el [TP 0](practica-0.html#lectura-recomendada-y-referencias) y no se repiten.
+
+### Hit #1 — Deploy del stack Loki + Promtail + Grafana
+
+- **Grafana Loki documentation — Get started** — overview, deployment modes (single-binary vs simple-scalable vs microservices) y por qué para este TP es single-binary. <https://grafana.com/docs/loki/latest/get-started/>
+- **Grafana Loki Helm chart — values reference** — toda la sintaxis de `loki-values.yaml`. La sección "Configuration examples" tiene el ejemplo single-binary que adaptamos en el Hit #1. <https://grafana.com/docs/loki/latest/setup/install/helm/install-monolithic/>
+- **Grafana Helm chart docs** — values del chart `grafana/grafana` 8.x: persistence, datasources provisioning, dashboard providers. <https://github.com/grafana/helm-charts/tree/main/charts/grafana>
+- **Helm 3 — Best practices for charts** — versionado, override de values, lifecycle. <https://helm.sh/docs/chart_best_practices/>
+
+### Hit #2 — Promtail / Alloy + scrape configs Kubernetes
+
+- **Promtail — Scrape configs reference** — todas las opciones de `kubernetes_sd_configs` y `relabel_configs` que usamos. <https://grafana.com/docs/loki/latest/send-data/promtail/configuration/#scrape_configs>
+- **Promtail — Pipeline stages** — para el bonus de parsear timestamps custom o multilineas. <https://grafana.com/docs/loki/latest/send-data/promtail/stages/>
+- **Grafana Alloy documentation** (opcional, si optan por Alloy en lugar de Promtail) — sucesor unificado de Promtail + Grafana Agent + OTel Collector, GA 2024. <https://grafana.com/docs/alloy/latest/>
+- **Loki — Cardinality best practices** — el por qué de "no usar request_id como label". Cortito y al hueso. <https://grafana.com/docs/loki/latest/get-started/labels/cardinality/>
+
+### Hit #3 — Logs estructurados JSON
+
+- **`python-json-logger` 3.x — README** — la librería estándar para emitir JSON desde el módulo `logging` de Python. Soportar `extra=` y custom field mapping. <https://github.com/nhairs/python-json-logger>
+- **Twelve-Factor App — XI. Logs** — la doctrina de "tratar los logs como event streams" que está debajo de todo este TP. <https://12factor.net/logs>
+- **Equivalentes**: [`pino` para Node](https://getpino.io/) (JSON nativo, ya emiten JSON sin migrar) · [`logstash-logback-encoder` para Java](https://github.com/logfellow/logstash-logback-encoder) (JSON encoder para Logback).
+
+### Hit #4 — LogQL
+
+- **LogQL documentation — log queries** — selector de streams + line filters. La parte "literal", lo más usado. <https://grafana.com/docs/loki/latest/query/log_queries/>
+- **LogQL documentation — metric queries** — `rate`, `count_over_time`, `sum by`, `avg_over_time`, `unwrap`. La parte "agregaciones" — donde se confunde todo el mundo en su primera semana. <https://grafana.com/docs/loki/latest/query/metric_queries/>
+- **LogQL — Examples cheatsheet** — patterns comunes para copiar y adaptar. <https://grafana.com/docs/loki/latest/query/query_examples/>
+
+### Hit #5 — Dashboards as-code
+
+- **Grafana — Provisioning dashboards** — cómo cargar dashboards desde ConfigMap, file provider, y formato del JSON. <https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards>
+- **Grafana — Dashboard JSON model** — referencia completa del schema (paneles, queries, targets, transformations). <https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/view-dashboard-json-model/>
+
+### Hit #6 — Alertas (bonus)
+
+- **Grafana Alerting — Provision alert rules** — formato YAML del alert provisioning que usamos en Hit #6. <https://grafana.com/docs/grafana/latest/alerting/set-up/provision-alerting-resources/>
+- **Grafana Alerting — Discord contact point** — integración nativa con webhooks Discord. <https://grafana.com/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-discord/>
+
+### Observabilidad — fundamentos
+
+- **Distributed Systems Observability** — Cindy Sridharan (O'Reilly, 2018) — el reporte corto (~80 páginas) que define los 3 pilares (logs / metrics / traces) y por qué este TP cubre solo logs. Lectura imprescindible para entender en qué encaja Loki en el ecosistema. <https://www.oreilly.com/library/view/distributed-systems-observability/9781492033431/>
+- **Google SRE Book — Cap. 6: Monitoring Distributed Systems** — los "4 golden signals" (latency, traffic, errors, saturation) y por qué los logs sirven para los 2 últimos. <https://sre.google/sre-book/monitoring-distributed-systems/>
+- **CNCF — Observability Whitepaper** (2023) — overview de logging / tracing / metrics / events / profiles desde la fundación que mantiene Loki, Prometheus y OpenTelemetry. <https://github.com/cncf/tag-observability/blob/main/whitepaper.md>
+
+### Comparación Loki vs alternativas
+
+- **"Like Prometheus, but for logs" — Grafana Labs** — el blog post fundacional (2018) donde se explica el modelo "label-first" de Loki vs el "full-text index" de Elasticsearch. Sigue siendo la mejor explicación de por qué Loki cuesta 10× menos que ELK para el mismo volumen. <https://grafana.com/blog/2018/12/12/loki-prometheus-inspired-open-source-logging-for-cloud-natives/>
+- **Sigelman, B. et al. (2010).** "Dapper, a Large-Scale Distributed Systems Tracing Infrastructure". *Google Technical Report.* — el paper que inicia el ecosistema de observabilidad moderno (focus en traces, pero el modelo de "structured events" se aplica directo a este TP). <https://research.google/pubs/pub36356/>

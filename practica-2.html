@@ -1,0 +1,2031 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <meta name="generator" content="pandoc + UNLu/DCB template">
+  <title>Práctica II — Observabilidad: Logging centralizado — UNLu
+DCB</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+
+<header class="unlu-header">
+  <a href="index.html" class="brand" title="Volver al menú principal">
+    <img src="assets/unlu_escudo.png" alt="Universidad Nacional de Luján" class="logo unlu">
+    <div class="brand-text">
+      <div class="institution">Universidad Nacional de Luján</div>
+      <div class="department">Departamento de Ciencias Básicas</div>
+    </div>
+    <img src="assets/logo_dcb.png" alt="Departamento de Ciencias Básicas" class="logo dcb">
+  </a>
+  <div class="course-bar">
+    <span class="course">Seminario de Integración Profesional</span>
+    <span class="year">2026</span>
+    <span class="instructor">Dr. David Petrocelli</span>
+  </div>
+</header>
+
+<button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
+
+<div class="layout">
+  <aside class="toc-sidebar" id="toc-sidebar">
+    <div class="toc-header">
+      <div class="toc-title">Contenidos</div>
+      <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
+    </div>
+    <ul>
+    <li><a href="#trabajo-práctico-nº-2"
+    id="toc-trabajo-práctico-nº-2">Trabajo Práctico Nº 2</a>
+    <ul>
+    <li><a
+    href="#observabilidad--logging-centralizado-del-scraper-en-k3s"
+    id="toc-observabilidad--logging-centralizado-del-scraper-en-k3s">Observabilidad
+    — Logging centralizado del scraper en k3s</a></li>
+    <li><a href="#requisitos-consideraciones-y-formato-de-entrega"
+    id="toc-requisitos-consideraciones-y-formato-de-entrega">Requisitos,
+    consideraciones y formato de entrega</a>
+    <ul>
+    <li><a href="#infra-base-obligatoria--bloqueante"
+    id="toc-infra-base-obligatoria--bloqueante">Infra base obligatoria —
+    bloqueante</a></li>
+    <li><a href="#otros-requisitos" id="toc-otros-requisitos">Otros
+    requisitos</a></li>
+    </ul></li>
+    <li><a href="#contenidos-del-programa-relacionados"
+    id="toc-contenidos-del-programa-relacionados">Contenidos del
+    programa relacionados</a></li>
+    <li><a href="#práctica" id="toc-práctica">Práctica</a>
+    <ul>
+    <li><a href="#hit-1--deploy-del-stack-loki--promtail--grafana"
+    id="toc-hit-1--deploy-del-stack-loki--promtail--grafana">Hit #1 —
+    Deploy del stack Loki + Promtail + Grafana</a></li>
+    <li><a
+    href="#hit-2--recolección-de-logs-del-scraper-con-labels-kubernetes"
+    id="toc-hit-2--recolección-de-logs-del-scraper-con-labels-kubernetes">Hit
+    #2 — Recolección de logs del scraper con labels Kubernetes</a></li>
+    <li><a href="#hit-3--migrar-el-scraper-a-logs-json-estructurados"
+    id="toc-hit-3--migrar-el-scraper-a-logs-json-estructurados">Hit #3 —
+    Migrar el scraper a logs JSON estructurados</a></li>
+    <li><a href="#hit-4--logql-cookbook-5-queries-útiles"
+    id="toc-hit-4--logql-cookbook-5-queries-útiles">Hit #4 — LogQL
+    cookbook: 5+ queries útiles</a></li>
+    <li><a href="#hit-5--dashboard-grafana-provisionado-as-code"
+    id="toc-hit-5--dashboard-grafana-provisionado-as-code">Hit #5 —
+    Dashboard Grafana provisionado as-code</a></li>
+    <li><a href="#hit-6--alertas-opcional-bonus-5-"
+    id="toc-hit-6--alertas-opcional-bonus-5-">Hit #6 — Alertas
+    (opcional, bonus +5 %)</a></li>
+    </ul></li>
+    <li><a href="#cómo-entregar" id="toc-cómo-entregar">Cómo
+    entregar</a></li>
+    <li><a href="#auto-verificación-previa-a-la-entrega"
+    id="toc-auto-verificación-previa-a-la-entrega">Auto-verificación
+    previa a la entrega</a>
+    <ul>
+    <li><a href="#1-installsh-corre-limpio-en-cluster-vacío"
+    id="toc-1-installsh-corre-limpio-en-cluster-vacío">1)
+    <code>install.sh</code> corre limpio en cluster vacío</a></li>
+    <li><a href="#2-los-3-pods--daemonset-están-running"
+    id="toc-2-los-3-pods--daemonset-están-running">2) Los 3 pods +
+    DaemonSet están Running</a></li>
+    <li><a href="#3-loki-responde-a-queries-via-http"
+    id="toc-3-loki-responde-a-queries-via-http">3) Loki responde a
+    queries via HTTP</a></li>
+    <li><a href="#4-grafana-resuelve-el-datasource-loki"
+    id="toc-4-grafana-resuelve-el-datasource-loki">4) Grafana resuelve
+    el datasource Loki</a></li>
+    <li><a href="#5-las-5-queries-del-hit-4-corren-sin-error"
+    id="toc-5-las-5-queries-del-hit-4-corren-sin-error">5) Las 5 queries
+    del Hit #4 corren sin error</a></li>
+    <li><a href="#6-dashboard-provisionado-aparece-en-la-ui"
+    id="toc-6-dashboard-provisionado-aparece-en-la-ui">6) Dashboard
+    provisionado aparece en la UI</a></li>
+    <li><a href="#7-logs-del-scraper-son-json-parseados"
+    id="toc-7-logs-del-scraper-son-json-parseados">7) Logs del scraper
+    son JSON parseados</a></li>
+    <li><a href="#8-gitleaks-no-detecta-el-password-de-grafana"
+    id="toc-8-gitleaks-no-detecta-el-password-de-grafana">8)
+    <code>gitleaks</code> no detecta el password de Grafana</a></li>
+    </ul></li>
+    <li><a href="#common-pitfalls" id="toc-common-pitfalls">Common
+    pitfalls</a>
+    <ul>
+    <li><a href="#loki-stack-chart-deprecado"
+    id="toc-loki-stack-chart-deprecado"><code>loki-stack</code> chart
+    deprecado</a></li>
+    <li><a href="#cardinality-explosion--loki-oom"
+    id="toc-cardinality-explosion--loki-oom">Cardinality explosion →
+    Loki OOM</a></li>
+    <li><a href="#promtail-no-encuentra-logs-__path__-vacío"
+    id="toc-promtail-no-encuentra-logs-__path__-vacío">Promtail no
+    encuentra logs (<code>__path__</code> vacío)</a></li>
+    <li><a href="#python-json-logger-cambió-de-api-en-v3"
+    id="toc-python-json-logger-cambió-de-api-en-v3"><code>python-json-logger</code>
+    cambió de API en v3</a></li>
+    <li><a href="#grafana-muestra-no-data-aunque-hay-logs-en-loki"
+    id="toc-grafana-muestra-no-data-aunque-hay-logs-en-loki">Grafana
+    muestra <code>No data</code> aunque hay logs en Loki</a></li>
+    <li><a
+    href="#el-dashboard-json-se-rompe-al-cambiar-de-versión-de-grafana"
+    id="toc-el-dashboard-json-se-rompe-al-cambiar-de-versión-de-grafana">El
+    dashboard JSON se rompe al cambiar de versión de Grafana</a></li>
+    </ul></li>
+    <li><a href="#criterios-de-evaluación"
+    id="toc-criterios-de-evaluación">Criterios de evaluación</a>
+    <ul>
+    <li><a
+    href="#requisitos-bloqueantes-no-se-acepta-la-entrega-sin-estos"
+    id="toc-requisitos-bloqueantes-no-se-acepta-la-entrega-sin-estos">Requisitos
+    bloqueantes (no se acepta la entrega sin estos)</a></li>
+    <li><a href="#tabla-de-puntaje-100-"
+    id="toc-tabla-de-puntaje-100-">Tabla de puntaje (100 %)</a></li>
+    </ul></li>
+    <li><a href="#material-de-apoyo" id="toc-material-de-apoyo">Material
+    de apoyo</a>
+    <ul>
+    <li><a href="#tabla-comparativa-de-stacks-de-logging-centralizado"
+    id="toc-tabla-comparativa-de-stacks-de-logging-centralizado">Tabla
+    comparativa de stacks de logging centralizado</a></li>
+    <li><a href="#esqueleto-de-installsh"
+    id="toc-esqueleto-de-installsh">Esqueleto de
+    <code>install.sh</code></a></li>
+    <li><a href="#esqueleto-de-adr-0007-stack-de-loggingmd"
+    id="toc-esqueleto-de-adr-0007-stack-de-loggingmd">Esqueleto de ADR
+    <code>0007-stack-de-logging.md</code></a></li>
+    </ul></li>
+    <li><a href="#referencias-y-bibliografía"
+    id="toc-referencias-y-bibliografía">Referencias y Bibliografía</a>
+    <ul>
+    <li><a href="#hit-1--deploy-del-stack-loki--promtail--grafana-1"
+    id="toc-hit-1--deploy-del-stack-loki--promtail--grafana-1">Hit #1 —
+    Deploy del stack Loki + Promtail + Grafana</a></li>
+    <li><a href="#hit-2--promtail--alloy--scrape-configs-kubernetes"
+    id="toc-hit-2--promtail--alloy--scrape-configs-kubernetes">Hit #2 —
+    Promtail / Alloy + scrape configs Kubernetes</a></li>
+    <li><a href="#hit-3--logs-estructurados-json"
+    id="toc-hit-3--logs-estructurados-json">Hit #3 — Logs estructurados
+    JSON</a></li>
+    <li><a href="#hit-4--logql" id="toc-hit-4--logql">Hit #4 —
+    LogQL</a></li>
+    <li><a href="#hit-5--dashboards-as-code"
+    id="toc-hit-5--dashboards-as-code">Hit #5 — Dashboards
+    as-code</a></li>
+    <li><a href="#hit-6--alertas-bonus"
+    id="toc-hit-6--alertas-bonus">Hit #6 — Alertas (bonus)</a></li>
+    <li><a href="#observabilidad--fundamentos"
+    id="toc-observabilidad--fundamentos">Observabilidad —
+    fundamentos</a></li>
+    <li><a href="#comparación-loki-vs-alternativas"
+    id="toc-comparación-loki-vs-alternativas">Comparación Loki vs
+    alternativas</a></li>
+    </ul></li>
+    </ul></li>
+    </ul>
+    <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
+      <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <nav class="page-breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Inicio</a>
+      <span class="sep">›</span>
+      <span class="current">TP 2</span>
+    </nav>
+    <nav class="page-nav-top">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+      <span class="banner-pill">TP 2</span>
+    </nav>
+
+    <details class="toc-inline" open>
+      <summary>📑 Índice del documento</summary>
+      <ul>
+      <li><a href="#trabajo-práctico-nº-2"
+      id="toc-trabajo-práctico-nº-2">Trabajo Práctico Nº 2</a>
+      <ul>
+      <li><a
+      href="#observabilidad--logging-centralizado-del-scraper-en-k3s"
+      id="toc-observabilidad--logging-centralizado-del-scraper-en-k3s">Observabilidad
+      — Logging centralizado del scraper en k3s</a></li>
+      <li><a href="#requisitos-consideraciones-y-formato-de-entrega"
+      id="toc-requisitos-consideraciones-y-formato-de-entrega">Requisitos,
+      consideraciones y formato de entrega</a>
+      <ul>
+      <li><a href="#infra-base-obligatoria--bloqueante"
+      id="toc-infra-base-obligatoria--bloqueante">Infra base obligatoria
+      — bloqueante</a></li>
+      <li><a href="#otros-requisitos" id="toc-otros-requisitos">Otros
+      requisitos</a></li>
+      </ul></li>
+      <li><a href="#contenidos-del-programa-relacionados"
+      id="toc-contenidos-del-programa-relacionados">Contenidos del
+      programa relacionados</a></li>
+      <li><a href="#práctica" id="toc-práctica">Práctica</a>
+      <ul>
+      <li><a href="#hit-1--deploy-del-stack-loki--promtail--grafana"
+      id="toc-hit-1--deploy-del-stack-loki--promtail--grafana">Hit #1 —
+      Deploy del stack Loki + Promtail + Grafana</a></li>
+      <li><a
+      href="#hit-2--recolección-de-logs-del-scraper-con-labels-kubernetes"
+      id="toc-hit-2--recolección-de-logs-del-scraper-con-labels-kubernetes">Hit
+      #2 — Recolección de logs del scraper con labels
+      Kubernetes</a></li>
+      <li><a href="#hit-3--migrar-el-scraper-a-logs-json-estructurados"
+      id="toc-hit-3--migrar-el-scraper-a-logs-json-estructurados">Hit #3
+      — Migrar el scraper a logs JSON estructurados</a></li>
+      <li><a href="#hit-4--logql-cookbook-5-queries-útiles"
+      id="toc-hit-4--logql-cookbook-5-queries-útiles">Hit #4 — LogQL
+      cookbook: 5+ queries útiles</a></li>
+      <li><a href="#hit-5--dashboard-grafana-provisionado-as-code"
+      id="toc-hit-5--dashboard-grafana-provisionado-as-code">Hit #5 —
+      Dashboard Grafana provisionado as-code</a></li>
+      <li><a href="#hit-6--alertas-opcional-bonus-5-"
+      id="toc-hit-6--alertas-opcional-bonus-5-">Hit #6 — Alertas
+      (opcional, bonus +5 %)</a></li>
+      </ul></li>
+      <li><a href="#cómo-entregar" id="toc-cómo-entregar">Cómo
+      entregar</a></li>
+      <li><a href="#auto-verificación-previa-a-la-entrega"
+      id="toc-auto-verificación-previa-a-la-entrega">Auto-verificación
+      previa a la entrega</a>
+      <ul>
+      <li><a href="#1-installsh-corre-limpio-en-cluster-vacío"
+      id="toc-1-installsh-corre-limpio-en-cluster-vacío">1)
+      <code>install.sh</code> corre limpio en cluster vacío</a></li>
+      <li><a href="#2-los-3-pods--daemonset-están-running"
+      id="toc-2-los-3-pods--daemonset-están-running">2) Los 3 pods +
+      DaemonSet están Running</a></li>
+      <li><a href="#3-loki-responde-a-queries-via-http"
+      id="toc-3-loki-responde-a-queries-via-http">3) Loki responde a
+      queries via HTTP</a></li>
+      <li><a href="#4-grafana-resuelve-el-datasource-loki"
+      id="toc-4-grafana-resuelve-el-datasource-loki">4) Grafana resuelve
+      el datasource Loki</a></li>
+      <li><a href="#5-las-5-queries-del-hit-4-corren-sin-error"
+      id="toc-5-las-5-queries-del-hit-4-corren-sin-error">5) Las 5
+      queries del Hit #4 corren sin error</a></li>
+      <li><a href="#6-dashboard-provisionado-aparece-en-la-ui"
+      id="toc-6-dashboard-provisionado-aparece-en-la-ui">6) Dashboard
+      provisionado aparece en la UI</a></li>
+      <li><a href="#7-logs-del-scraper-son-json-parseados"
+      id="toc-7-logs-del-scraper-son-json-parseados">7) Logs del scraper
+      son JSON parseados</a></li>
+      <li><a href="#8-gitleaks-no-detecta-el-password-de-grafana"
+      id="toc-8-gitleaks-no-detecta-el-password-de-grafana">8)
+      <code>gitleaks</code> no detecta el password de Grafana</a></li>
+      </ul></li>
+      <li><a href="#common-pitfalls" id="toc-common-pitfalls">Common
+      pitfalls</a>
+      <ul>
+      <li><a href="#loki-stack-chart-deprecado"
+      id="toc-loki-stack-chart-deprecado"><code>loki-stack</code> chart
+      deprecado</a></li>
+      <li><a href="#cardinality-explosion--loki-oom"
+      id="toc-cardinality-explosion--loki-oom">Cardinality explosion →
+      Loki OOM</a></li>
+      <li><a href="#promtail-no-encuentra-logs-__path__-vacío"
+      id="toc-promtail-no-encuentra-logs-__path__-vacío">Promtail no
+      encuentra logs (<code>__path__</code> vacío)</a></li>
+      <li><a href="#python-json-logger-cambió-de-api-en-v3"
+      id="toc-python-json-logger-cambió-de-api-en-v3"><code>python-json-logger</code>
+      cambió de API en v3</a></li>
+      <li><a href="#grafana-muestra-no-data-aunque-hay-logs-en-loki"
+      id="toc-grafana-muestra-no-data-aunque-hay-logs-en-loki">Grafana
+      muestra <code>No data</code> aunque hay logs en Loki</a></li>
+      <li><a
+      href="#el-dashboard-json-se-rompe-al-cambiar-de-versión-de-grafana"
+      id="toc-el-dashboard-json-se-rompe-al-cambiar-de-versión-de-grafana">El
+      dashboard JSON se rompe al cambiar de versión de Grafana</a></li>
+      </ul></li>
+      <li><a href="#criterios-de-evaluación"
+      id="toc-criterios-de-evaluación">Criterios de evaluación</a>
+      <ul>
+      <li><a
+      href="#requisitos-bloqueantes-no-se-acepta-la-entrega-sin-estos"
+      id="toc-requisitos-bloqueantes-no-se-acepta-la-entrega-sin-estos">Requisitos
+      bloqueantes (no se acepta la entrega sin estos)</a></li>
+      <li><a href="#tabla-de-puntaje-100-"
+      id="toc-tabla-de-puntaje-100-">Tabla de puntaje (100 %)</a></li>
+      </ul></li>
+      <li><a href="#material-de-apoyo"
+      id="toc-material-de-apoyo">Material de apoyo</a>
+      <ul>
+      <li><a href="#tabla-comparativa-de-stacks-de-logging-centralizado"
+      id="toc-tabla-comparativa-de-stacks-de-logging-centralizado">Tabla
+      comparativa de stacks de logging centralizado</a></li>
+      <li><a href="#esqueleto-de-installsh"
+      id="toc-esqueleto-de-installsh">Esqueleto de
+      <code>install.sh</code></a></li>
+      <li><a href="#esqueleto-de-adr-0007-stack-de-loggingmd"
+      id="toc-esqueleto-de-adr-0007-stack-de-loggingmd">Esqueleto de ADR
+      <code>0007-stack-de-logging.md</code></a></li>
+      </ul></li>
+      <li><a href="#referencias-y-bibliografía"
+      id="toc-referencias-y-bibliografía">Referencias y Bibliografía</a>
+      <ul>
+      <li><a href="#hit-1--deploy-del-stack-loki--promtail--grafana-1"
+      id="toc-hit-1--deploy-del-stack-loki--promtail--grafana-1">Hit #1
+      — Deploy del stack Loki + Promtail + Grafana</a></li>
+      <li><a href="#hit-2--promtail--alloy--scrape-configs-kubernetes"
+      id="toc-hit-2--promtail--alloy--scrape-configs-kubernetes">Hit #2
+      — Promtail / Alloy + scrape configs Kubernetes</a></li>
+      <li><a href="#hit-3--logs-estructurados-json"
+      id="toc-hit-3--logs-estructurados-json">Hit #3 — Logs
+      estructurados JSON</a></li>
+      <li><a href="#hit-4--logql" id="toc-hit-4--logql">Hit #4 —
+      LogQL</a></li>
+      <li><a href="#hit-5--dashboards-as-code"
+      id="toc-hit-5--dashboards-as-code">Hit #5 — Dashboards
+      as-code</a></li>
+      <li><a href="#hit-6--alertas-bonus"
+      id="toc-hit-6--alertas-bonus">Hit #6 — Alertas (bonus)</a></li>
+      <li><a href="#observabilidad--fundamentos"
+      id="toc-observabilidad--fundamentos">Observabilidad —
+      fundamentos</a></li>
+      <li><a href="#comparación-loki-vs-alternativas"
+      id="toc-comparación-loki-vs-alternativas">Comparación Loki vs
+      alternativas</a></li>
+      </ul></li>
+      </ul></li>
+      </ul>
+      <div class="toc-controls">
+        <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
+        <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
+      </div>
+    </details>
+
+<h1 id="trabajo-práctico-nº-2">Trabajo Práctico Nº 2</h1>
+<h2
+id="observabilidad--logging-centralizado-del-scraper-en-k3s">Observabilidad
+— Logging centralizado del scraper en k3s</h2>
+<p><strong>Fecha de Entrega: 16/05/2026</strong></p>
+<blockquote>
+<p>Este TP arranca <strong>donde terminó el <a
+href="practica-1-parte-2.html">TP 1 — Parte 2</a></strong>: el scraper
+ya corre como <code>Job</code> y <code>CronJob</code> en el cluster k3s
+(Hit #7), ya tiene <code>logging</code> estructurado básico en Python
+(Hit #5) y ya escribe el histórico a Postgres (Hit #8). Lo que falta — y
+este TP lo resuelve — es <strong>mirar lo que pasa</strong>: cuando un
+CronJob de las 3 AM falla, hoy hay que pelearle a
+<code>kubectl logs --previous</code> y rezar para que el pod no se haya
+recolectado todavía. Acá montamos el stack de logging centralizado que
+hace ese problema desaparecer.</p>
+</blockquote>
+<p><strong>Pre-requisitos:</strong></p>
+<ul>
+<li><strong>TP 1 — Parte 2 entregado y aprobado</strong>: scraper
+corriendo como <code>Job</code> + <code>CronJob</code> en k3s/k3d, con
+<code>logging</code> Python (módulo <code>logging_setup.py</code> del
+Hit #5) y Postgres en cluster (Hit #8). Sin esto no hay logs que
+centralizar.</li>
+<li>Cluster k3s/k3d operativo (cubierto en <a href="practica-0.html">TP
+0</a>) con al menos <strong>6 GB de RAM libre</strong> y <strong>8 GB de
+disco</strong> — el stack de Loki + Grafana + Promtail/Alloy suma ~1.5
+GB resident set + chunks store del PVC.</li>
+<li>Familiaridad con <code>kubectl</code>, <code>helm</code> y manifests
+(TP 0 + TP 1 · Parte 2).</li>
+<li><strong>Helm 3 instalado</strong> (<code>helm version</code> ≥
+3.16). Si no lo tenés:
+<code>curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash</code>.</li>
+</ul>
+<hr />
+<h2 id="requisitos-consideraciones-y-formato-de-entrega">Requisitos,
+consideraciones y formato de entrega</h2>
+<p>Aplican los mismos requisitos generales del TP 1 (repo público,
+README por hit, video, integración con IA documentada, sin secrets
+commiteados) <strong>más</strong> los siguientes específicos de este
+TP.</p>
+<h3 id="infra-base-obligatoria--bloqueante">Infra base obligatoria —
+bloqueante</h3>
+<blockquote>
+<p>🚧 <strong>Sin esto la entrega no se puede evaluar.</strong> La
+cátedra corre tu <code>helm install</code> + <code>kubectl apply</code>
++ abre Grafana en el browser para verificar dashboards y queries. Si el
+stack no levanta, no se llega a corregir nada más → <strong>nota
+0</strong>. No suma puntos en la rúbrica porque es condición
+necesaria.</p>
+</blockquote>
+<ul>
+<li><p><strong>Carpeta <code>observability/</code> en el repo</strong>
+con todo lo declarativo y reproducible:</p>
+<pre><code>observability/
+├── README.md                    ← cómo levantar el stack en una corrida
+├── helm/
+│   ├── loki-values.yaml         ← values pinneados del chart de Loki
+│   ├── promtail-values.yaml     ← (o alloy-values.yaml si optan por Alloy)
+│   └── grafana-values.yaml      ← admin secret refs + datasource provisionado
+├── manifests/
+│   ├── namespace.yaml           ← namespace `observability`
+│   ├── grafana-secret.yaml      ← SOLO con placeholder, NO el secret real
+│   └── grafana-nodeport.yaml    ← Service NodePort 30000 (o ingress)
+├── dashboards/
+│   └── scraper-overview.json    ← dashboard provisionado as-code (Hit #5)
+├── queries/
+│   └── logql-cookbook.md        ← las 5+ queries del Hit #4 documentadas
+└── install.sh                   ← script idempotente con todos los pasos</code></pre></li>
+<li><p><strong>Script <code>observability/install.sh</code>
+reproducible</strong> que levanta el stack completo desde cero en un
+cluster limpio, con un solo comando. La cátedra lo ejecuta tal cual:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> observability <span class="kw">&amp;&amp;</span> <span class="ex">./install.sh</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Output esperado al final:</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   ✓ Loki running   (kubectl get pod -n observability -l app=loki)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   ✓ Promtail/Alloy running (DaemonSet con 1 pod por nodo)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   ✓ Grafana running  (NodePort 30000 abierto)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   ✓ Datasource Loki configurado y validado (status 200 desde Grafana)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   ✓ Dashboard &#39;Scraper Overview&#39; provisionado</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   → Abrir http://&lt;node-ip&gt;:30000  (admin / &lt;ver secret&gt;)</span></span></code></pre></div></li>
+<li><p><strong>Helm chart pinneado a versión específica</strong> (no
+<code>latest</code> en ninguna release). Para la entrega 2026:</p>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Chart</th>
+<th>Versión chart</th>
+<th>App version</th>
+<th>Repo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Loki (single-binary)</td>
+<td><code>grafana/loki</code></td>
+<td><code>6.16.x</code></td>
+<td>Loki 3.x</td>
+<td><a
+href="https://grafana.github.io/helm-charts">https://grafana.github.io/helm-charts</a></td>
+</tr>
+<tr>
+<td>Promtail</td>
+<td><code>grafana/promtail</code></td>
+<td><code>6.16.x</code></td>
+<td>Promtail 3.x</td>
+<td><a
+href="https://grafana.github.io/helm-charts">https://grafana.github.io/helm-charts</a></td>
+</tr>
+<tr>
+<td>Alloy (alternativa a Promtail)</td>
+<td><code>grafana/alloy</code></td>
+<td><code>0.9.x</code></td>
+<td>Alloy 1.5.x</td>
+<td><a
+href="https://grafana.github.io/helm-charts">https://grafana.github.io/helm-charts</a></td>
+</tr>
+<tr>
+<td>Grafana</td>
+<td><code>grafana/grafana</code></td>
+<td><code>8.5.x</code></td>
+<td>Grafana 11.x</td>
+<td><a
+href="https://grafana.github.io/helm-charts">https://grafana.github.io/helm-charts</a></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>NO usen <code>grafana/loki-stack</code></strong> (el chart
+all-in-one). Está <strong>deprecado desde 2024</strong> — sigue
+funcionando pero ya no recibe updates de Loki 3.x. La cátedra evalúa con
+los charts separados (<code>loki</code> + <code>promtail|alloy</code> +
+<code>grafana</code>).</p>
+</blockquote></li>
+<li><p><strong>Secret de admin de Grafana via
+<code>kubectl create secret</code></strong> o External Secrets,
+<strong>nunca</strong> commiteado en <code>values.yaml</code> ni en el
+repo. El <code>install.sh</code> debe crear el secret leyendo de una env
+var:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">:</span> <span class="st">&quot;</span><span class="va">${GRAFANA_ADMIN_PASSWORD</span><span class="op">:?</span>Set GRAFANA_ADMIN_PASSWORD before running<span class="va">}</span><span class="st">&quot;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> observability create secret generic grafana-admin <span class="dt">\</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--from-literal</span><span class="op">=</span>admin-user=admin <span class="dt">\</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--from-literal</span><span class="op">=</span>admin-password=<span class="st">&quot;</span><span class="va">$GRAFANA_ADMIN_PASSWORD</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--dry-run</span><span class="op">=</span>client <span class="at">-o</span> yaml <span class="kw">|</span> <span class="ex">kubectl</span> apply <span class="at">-f</span> <span class="at">-</span></span></code></pre></div>
+<p>El <code>grafana-values.yaml</code> referencia el secret
+(<code>admin.existingSecret: grafana-admin</code>).</p></li>
+<li><p><strong><code>gitleaks</code> en pre-commit y CI</strong>: igual
+que en TP 1 · Parte 2. Si alguien commitea por error la password de
+Grafana en <code>values.yaml</code>, el push debe fallar.</p></li>
+</ul>
+<h3 id="otros-requisitos">Otros requisitos</h3>
+<ul>
+<li><p><strong>Mínimo 1 ADR obligatorio</strong> en
+<code>docs/adr/</code> (continúan la numeración del TP 1 · Parte 2):
+<code>0007-stack-de-logging.md</code> justificando <strong>por qué Loki
++ Promtail/Alloy y no ELK / Splunk / Datadog</strong> en este contexto.
+Mismo formato Michael Nygard (Contexto · Decisión · Consecuencias).
+Plantilla y referencias en el TP 1 · Parte 2 — no se repiten acá.</p>
+<p>Este ADR no es de relleno: la decisión real importa porque el costo,
+la complejidad operativa y el lock-in de cada opción son muy distintos.
+El ADR tiene que mencionar al menos: requerimiento de retención (7 días
+en este TP), recursos del cluster (un solo nodo k3s), familiaridad del
+equipo, costo (Loki + Grafana son OSS; Datadog/Splunk no), y por qué
+descartaron las otras 4-5 alternativas de la <a
+href="#material-de-apoyo">tabla de comparación de opciones</a>.</p></li>
+<li><p><strong>Bonus opcional — 1 ADR adicional</strong>
+(<code>0008-promtail-vs-alloy.md</code>) si optan por Alloy en lugar de
+Promtail. Tiene que justificar por qué Alloy a sabiendas de que Promtail
+está más documentado y es más simple para empezar.</p></li>
+<li><p><strong>NO tocar el código del scraper</strong> durante Hit #1 y
+Hit #2. El scraper ya escribe a stdout (<code>logger.info(...)</code>
+del Hit #5 de TP 1 · Parte 2) y <code>kubectl logs</code> ya los muestra
+— Promtail/Alloy automáticamente los recolecta del filesystem del nodo
+(<code>/var/log/pods/</code>). Recién en Hit #3 se modifica el scraper
+para emitir JSON estructurado.</p></li>
+<li><p><strong>Resources limitados — es un cluster local k3s</strong>.
+Cualquier values.yaml que pida más de lo siguiente se considera mal
+calibrado:</p>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Requests</th>
+<th>Limits</th>
+<th>Storage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Loki (single-binary)</td>
+<td>256 Mi RAM, 100m CPU</td>
+<td>512 Mi RAM, 500m CPU</td>
+<td>5 Gi PVC <code>local-path</code></td>
+</tr>
+<tr>
+<td>Promtail (DaemonSet)</td>
+<td>64 Mi RAM, 50m CPU</td>
+<td>128 Mi RAM, 200m CPU</td>
+<td>— (lee del host)</td>
+</tr>
+<tr>
+<td>Alloy (DaemonSet)</td>
+<td>128 Mi RAM, 100m CPU</td>
+<td>256 Mi RAM, 300m CPU</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Grafana</td>
+<td>128 Mi RAM, 100m CPU</td>
+<td>256 Mi RAM, 300m CPU</td>
+<td>1 Gi PVC <code>local-path</code></td>
+</tr>
+</tbody>
+</table></li>
+<li><p><strong>Mantener las buenas prácticas del TP 1</strong>: explicit
+waits + selectores en módulo aparte siguen siendo requisito vigente. No
+regresionar.</p></li>
+</ul>
+<hr />
+<h2 id="contenidos-del-programa-relacionados">Contenidos del programa
+relacionados</h2>
+<ul>
+<li>Observabilidad: los tres pilares (logs, métricas, traces) y por qué
+este TP cubre solo logs.</li>
+<li>Arquitectura de logging centralizado: agente por nodo (DaemonSet) +
+collector + storage + visualizador.</li>
+<li>Loki: modelo “label-first” (igual que Prometheus) vs el modelo
+“full-text index” de ELK.</li>
+<li>LogQL: lenguaje de queries de Loki — selector de streams + filtros +
+agregaciones.</li>
+<li>Logs estructurados: JSON line-delimited, campos enriquecidos,
+niveles, correlación.</li>
+<li>Grafana: datasources, dashboards as-code, alerting básico.</li>
+<li>Helm: charts, values, releases, dependencias.</li>
+<li>Patrones operativos: retention, sizing, backpressure, sampling.</li>
+</ul>
+<hr />
+<h2 id="práctica">Práctica</h2>
+<p>En el <a href="practica-1-parte-2.html">TP 1 · Parte 2</a> llegamos
+al estado que cualquier sistema de producción tiene en su día 1: el
+scraper corre solo (<code>CronJob</code> en k3s), persiste resultados a
+Postgres y emite logs a stdout. Lo que <strong>no</strong> hicimos
+todavía es lo que aparece en el día 2 de cualquier sistema real:
+<strong>¿cómo me entero cuando algo se rompe a las 3 AM?</strong></p>
+<p>Hoy, si el <code>CronJob</code> falla, la única forma de saber qué
+pasó es:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pods <span class="at">-n</span> ml-scraper <span class="at">-l</span> job-name=scraper-hourly-28473215</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> logs <span class="op">&lt;</span>pod<span class="op">&gt;</span> -n ml-scraper</span></code></pre></div>
+<p>Esto se vuelve <strong>inutilizable</strong> muy rápido por tres
+razones:</p>
+<ol type="1">
+<li><strong>Los pods se borran.</strong> k8s los recolecta cuando el
+<code>Job</code> termina (o cuando supera
+<code>successfulJobsHistoryLimit</code>). Si llegás 30 minutos tarde, el
+log ya no existe.</li>
+<li><strong>No se pueden buscar.</strong> “¿Cuántas veces falló el
+scraping de iPhone en las últimas 24h?” → con <code>kubectl logs</code>
+no se puede contestar. Necesitás indexar.</li>
+<li><strong>No se pueden correlacionar.</strong> “El error de Postgres
+del Hit #8 ocurrió 200 ms después del error de Selenium del Hit #5” →
+para verlo necesitás los dos streams en una misma timeline.</li>
+</ol>
+<p>La solución estándar en 2026 es <strong>logging
+centralizado</strong>: un agente que vive en cada nodo, lee los logs de
+los pods en tiempo real, los empuja a un backend que los almacena con
+índice, y un visualizador donde se queryan y dashboardean. La pila
+canónica del ecosistema CNCF es <strong>Loki + Promtail/Alloy +
+Grafana</strong>.</p>
+<p>Vamos a montar exactamente eso, con dos restricciones realistas:</p>
+<ul>
+<li><strong>Recursos limitados</strong>: cluster local de un solo nodo,
+~6 GB de RAM disponibles.</li>
+<li><strong>Sin cloud</strong>: nada de S3, GCS, Datadog. Todo
+on-cluster con storage local.</li>
+</ul>
+<hr />
+<h3 id="hit-1--deploy-del-stack-loki--promtail--grafana">Hit #1 — Deploy
+del stack Loki + Promtail + Grafana</h3>
+<p>Despleguen los 3 charts separados de Grafana Helm en un namespace
+dedicado (<code>observability</code>). El objetivo de este hit es
+<strong>dejar el stack arriba y conectado</strong>, sin todavía tocar el
+scraper.</p>
+<h4 id="11--namespace-y-repo-helm">1.1 — Namespace y repo Helm</h4>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> create namespace observability</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> repo add grafana https://grafana.github.io/helm-charts</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> repo update</span></code></pre></div>
+<h4 id="12--loki-en-modo-single-binary-con-storage-local">1.2 — Loki en
+modo single-binary con storage local</h4>
+<p>Loki tiene 3 modos de deploy: monolithic
+(<code>single binary</code>), simple-scalable (3 deployments),
+microservices (~10 deployments). Para un cluster local
+<strong>siempre</strong> elegir <strong>single-binary</strong> — los
+otros modos solo tienen sentido con S3/GCS y volumen alto.</p>
+<p><code>observability/helm/loki-values.yaml</code>:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Single-binary mode — todo Loki en un solo pod, storage en filesystem local</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">deploymentMode</span><span class="kw">:</span><span class="at"> SingleBinary</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">singleBinary</span><span class="kw">:</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">replicas</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">resources</span><span class="kw">:</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">requests</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">cpu</span><span class="kw">:</span><span class="at"> 100m</span><span class="kw">,</span><span class="at"> </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 256Mi </span><span class="kw">}</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">limits</span><span class="kw">:</span><span class="at">   </span><span class="kw">{</span><span class="at"> </span><span class="fu">cpu</span><span class="kw">:</span><span class="at"> 500m</span><span class="kw">,</span><span class="at"> </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 512Mi </span><span class="kw">}</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">persistence</span><span class="kw">:</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">enabled</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">size</span><span class="kw">:</span><span class="at"> 5Gi</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">storageClass</span><span class="kw">:</span><span class="at"> local-path</span><span class="co">  # viene en k3s out-of-the-box</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">loki</span><span class="kw">:</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">auth_enabled</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span><span class="co">  # acceso interno al cluster, no necesita multi-tenant</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">commonConfig</span><span class="kw">:</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">replication_factor</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">storage</span><span class="kw">:</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">type</span><span class="kw">:</span><span class="at"> filesystem</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">schemaConfig</span><span class="kw">:</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">configs</span><span class="kw">:</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">from</span><span class="kw">:</span><span class="at"> 2025-01-01</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">store</span><span class="kw">:</span><span class="at"> tsdb</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">object_store</span><span class="kw">:</span><span class="at"> filesystem</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">schema</span><span class="kw">:</span><span class="at"> v13</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">index</span><span class="kw">:</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">prefix</span><span class="kw">:</span><span class="at"> loki_index_</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">period</span><span class="kw">:</span><span class="at"> 24h</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">limits_config</span><span class="kw">:</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">retention_period</span><span class="kw">:</span><span class="at"> 168h</span><span class="co">          # 7 días — alcanza para el TP</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">reject_old_samples</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">reject_old_samples_max_age</span><span class="kw">:</span><span class="at"> 168h</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">max_query_length</span><span class="kw">:</span><span class="at"> 721h</span><span class="co">          # 30 días</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">compactor</span><span class="kw">:</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">retention_enabled</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">delete_request_store</span><span class="kw">:</span><span class="at"> filesystem</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Apagar todo lo que no usamos en single-binary</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="fu">read</span><span class="kw">:</span><span class="at">    </span><span class="kw">{</span><span class="at"> </span><span class="fu">replicas</span><span class="kw">:</span><span class="at"> </span><span class="dv">0</span><span class="at"> </span><span class="kw">}</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="fu">write</span><span class="kw">:</span><span class="at">   </span><span class="kw">{</span><span class="at"> </span><span class="fu">replicas</span><span class="kw">:</span><span class="at"> </span><span class="dv">0</span><span class="at"> </span><span class="kw">}</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="fu">backend</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">replicas</span><span class="kw">:</span><span class="at"> </span><span class="dv">0</span><span class="at"> </span><span class="kw">}</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="fu">chunksCache</span><span class="kw">:</span><span class="at">   </span><span class="kw">{</span><span class="at"> </span><span class="fu">enabled</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span><span class="at"> </span><span class="kw">}</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="fu">resultsCache</span><span class="kw">:</span><span class="at">  </span><span class="kw">{</span><span class="at"> </span><span class="fu">enabled</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span><span class="at"> </span><span class="kw">}</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="fu">test</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">enabled</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span><span class="at"> </span><span class="kw">}</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="fu">monitoring</span><span class="kw">:</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">selfMonitoring</span><span class="kw">:</span><span class="at">    </span><span class="kw">{</span><span class="at"> </span><span class="fu">enabled</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span><span class="kw">,</span><span class="at"> </span><span class="fu">grafanaAgent</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">installOperator</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span><span class="at"> </span><span class="kw">}</span><span class="at"> </span><span class="kw">}</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">lokiCanary</span><span class="kw">:</span><span class="at">        </span><span class="kw">{</span><span class="at"> </span><span class="fu">enabled</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span><span class="at"> </span><span class="kw">}</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="fu">gateway</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">enabled</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span><span class="at"> </span><span class="kw">}</span><span class="co">   # accedemos directo al pod via Service</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> install loki grafana/loki <span class="dt">\</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--version</span> 6.16.0 <span class="dt">\</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--namespace</span> observability <span class="dt">\</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--values</span> observability/helm/loki-values.yaml</span></code></pre></div>
+<p>Verificar:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> observability rollout status statefulset/loki <span class="at">--timeout</span><span class="op">=</span>180s</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> observability get pvc                <span class="co"># tiene que estar Bound</span></span></code></pre></div>
+<h4 id="13--promtail-o-alloy-como-daemonset">1.3 — Promtail (o Alloy)
+como DaemonSet</h4>
+<p>Para este hit <strong>recomendamos Promtail</strong> — es lo más
+simple y todavía es el camino más documentado para empezar. Quienes
+opten por <strong>Alloy</strong> (sucesor de Promtail unificado con
+Grafana Agent, GA 2024) deben documentar la decisión en el ADR
+<code>0008-promtail-vs-alloy.md</code>.</p>
+<p><code>observability/helm/promtail-values.yaml</code>:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">config</span><span class="kw">:</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">clients</span><span class="kw">:</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">url</span><span class="kw">:</span><span class="at"> http://loki.observability.svc.cluster.local:3100/loki/api/v1/push</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">  # Por defecto Promtail trae un scrape config para todos los pods del cluster</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">  # con relabeling estándar. En el Hit #2 lo refinamos.</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">resources</span><span class="kw">:</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">requests</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">cpu</span><span class="kw">:</span><span class="at"> 50m</span><span class="kw">,</span><span class="at"> </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 64Mi </span><span class="kw">}</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">limits</span><span class="kw">:</span><span class="at">   </span><span class="kw">{</span><span class="at"> </span><span class="fu">cpu</span><span class="kw">:</span><span class="at"> 200m</span><span class="kw">,</span><span class="at"> </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 128Mi </span><span class="kw">}</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Tolera taints del control plane porque en k3s single-node es el único nodo</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="fu">tolerations</span><span class="kw">:</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">effect</span><span class="kw">:</span><span class="at"> NoSchedule</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">operator</span><span class="kw">:</span><span class="at"> Exists</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> install promtail grafana/promtail <span class="dt">\</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--version</span> 6.16.0 <span class="dt">\</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--namespace</span> observability <span class="dt">\</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--values</span> observability/helm/promtail-values.yaml</span></code></pre></div>
+<p>Verificar:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> observability get ds promtail        <span class="co"># DESIRED == READY</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> observability logs ds/promtail <span class="kw">|</span> <span class="fu">head</span> <span class="at">-30</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Tenés que ver lineas tipo: &quot;Adding target ... namespace=ml-scraper pod=scraper-...&quot;</span></span></code></pre></div>
+<h4 id="14--grafana-con-datasource-loki-provisionado">1.4 — Grafana con
+datasource Loki provisionado</h4>
+<p><code>observability/helm/grafana-values.yaml</code>:</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">admin</span><span class="kw">:</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">existingSecret</span><span class="kw">:</span><span class="at"> grafana-admin</span><span class="co">   # creado por install.sh, NO en este YAML</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">userKey</span><span class="kw">:</span><span class="at"> admin-user</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">passwordKey</span><span class="kw">:</span><span class="at"> admin-password</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">persistence</span><span class="kw">:</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">enabled</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">size</span><span class="kw">:</span><span class="at"> 1Gi</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">storageClassName</span><span class="kw">:</span><span class="at"> local-path</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="fu">resources</span><span class="kw">:</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">requests</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">cpu</span><span class="kw">:</span><span class="at"> 100m</span><span class="kw">,</span><span class="at"> </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 128Mi </span><span class="kw">}</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">limits</span><span class="kw">:</span><span class="at">   </span><span class="kw">{</span><span class="at"> </span><span class="fu">cpu</span><span class="kw">:</span><span class="at"> 300m</span><span class="kw">,</span><span class="at"> </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 256Mi </span><span class="kw">}</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="fu">service</span><span class="kw">:</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">type</span><span class="kw">:</span><span class="at"> NodePort</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">nodePort</span><span class="kw">:</span><span class="at"> </span><span class="dv">30000</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Datasource Loki provisionado — sin clicks en la UI</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="fu">datasources</span><span class="kw">:</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">datasources.yaml</span><span class="kw">:</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">datasources</span><span class="kw">:</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Loki</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">type</span><span class="kw">:</span><span class="at"> loki</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">access</span><span class="kw">:</span><span class="at"> proxy</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">url</span><span class="kw">:</span><span class="at"> http://loki.observability.svc.cluster.local:3100</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">isDefault</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">jsonData</span><span class="kw">:</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">maxLines</span><span class="kw">:</span><span class="at"> </span><span class="dv">1000</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Dashboard provisionado del Hit #5 — referencia el ConfigMap que se crea aparte</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a><span class="fu">dashboardProviders</span><span class="kw">:</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">dashboardproviders.yaml</span><span class="kw">:</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">providers</span><span class="kw">:</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&#39;sip2026&#39;</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">orgId</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">folder</span><span class="kw">:</span><span class="at"> </span><span class="st">&#39;SIP 2026&#39;</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">type</span><span class="kw">:</span><span class="at"> file</span></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">disableDeletion</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">options</span><span class="kw">:</span></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">path</span><span class="kw">:</span><span class="at"> /var/lib/grafana/dashboards/sip2026</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> install grafana grafana/grafana <span class="dt">\</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--version</span> 8.5.0 <span class="dt">\</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--namespace</span> observability <span class="dt">\</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--values</span> observability/helm/grafana-values.yaml</span></code></pre></div>
+<p>Verificar y abrir Grafana:</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> observability rollout status deploy/grafana <span class="at">--timeout</span><span class="op">=</span>120s</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> observability get svc grafana   <span class="co"># Tiene que mostrar 30000:xxxxx</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Abrir http://</span><span class="va">$(</span><span class="fu">hostname</span> <span class="at">-I</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;{print $1}&#39;</span><span class="va">)</span><span class="st">:30000&quot;</span></span></code></pre></div>
+<h4 id="output-esperado-del-hit-1">Output esperado del Hit #1</h4>
+<pre><code>$ kubectl -n observability get pods
+NAME                       READY   STATUS    RESTARTS   AGE
+loki-0                     1/1     Running   0          3m
+promtail-7d5fb             1/1     Running   0          3m
+grafana-69b8f8c4d4-xxxxx   1/1     Running   0          2m
+
+$ kubectl -n observability get svc
+NAME       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)
+grafana    NodePort    10.43.x.x       &lt;none&gt;        80:30000/TCP
+loki       ClusterIP   10.43.x.x       &lt;none&gt;        3100/TCP,9095/TCP</code></pre>
+<p>En <code>http://&lt;node-ip&gt;:30000</code> → login con
+<code>admin</code> / <code>&lt;GRAFANA_ADMIN_PASSWORD&gt;</code> → menú
+<strong>Explore</strong> → datasource <strong>Loki</strong> → query
+<code>{namespace="observability"}</code> → <strong>tienen que aparecer
+logs del propio stack</strong>. Eso prueba que el pipeline Promtail →
+Loki → Grafana está cerrado end-to-end.</p>
+<hr />
+<h3
+id="hit-2--recolección-de-logs-del-scraper-con-labels-kubernetes">Hit #2
+— Recolección de logs del scraper con labels Kubernetes</h3>
+<p>El default de Promtail captura <strong>todo</strong> el cluster. Para
+este TP nos enfocamos en el scraper. Refinen el
+<code>scrape_configs</code> para:</p>
+<ol type="1">
+<li>Filtrar solo el namespace donde corre el scraper
+(<code>ml-scraper</code> del TP 1 · Parte 2 — usen el namespace que
+efectivamente hayan elegido).</li>
+<li>Enriquecer cada línea con labels que sirvan para queryar después:
+<code>app</code>, <code>pod</code>, <code>container</code>,
+<code>namespace</code>, <code>job_name</code> (importante para
+distinguir corridas del CronJob), <code>node</code>.</li>
+</ol>
+<p>Modifiquen <code>observability/helm/promtail-values.yaml</code>
+agregando un scrape config explícito para el namespace del scraper:</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">config</span><span class="kw">:</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">clients</span><span class="kw">:</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">url</span><span class="kw">:</span><span class="at"> http://loki.observability.svc.cluster.local:3100/loki/api/v1/push</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">snippets</span><span class="kw">:</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">    extraScrapeConfigs</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>      - job_name: ml-scraper-pods</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        kubernetes_sd_configs:</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>          - role: pod</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>            namespaces:</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>              names: [ml-scraper]</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>        relabel_configs:</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>          # Drop pods que no son del scraper (ej: postgres del Hit #8)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>          - source_labels: [__meta_kubernetes_pod_label_app]</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>            regex: scraper</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>            action: keep</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>          # Map labels Kubernetes a labels Loki</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>          - source_labels: [__meta_kubernetes_namespace]</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>            target_label: namespace</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>          - source_labels: [__meta_kubernetes_pod_name]</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>            target_label: pod</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>          - source_labels: [__meta_kubernetes_pod_container_name]</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>            target_label: container</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>          - source_labels: [__meta_kubernetes_pod_label_app]</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>            target_label: app</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>          - source_labels: [__meta_kubernetes_pod_label_job_name]</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>            target_label: job_name</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>          - source_labels: [__meta_kubernetes_node_name]</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>            target_label: node</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>          # Path al log file en el host</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>          - source_labels:</span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>              - __meta_kubernetes_pod_uid</span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>              - __meta_kubernetes_pod_container_name</span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>            target_label: __path__</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>            separator: /</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>            replacement: /var/log/pods/*$1/*.log</span></code></pre></div>
+<blockquote>
+<p>💡 <strong>Por qué labels específicos y no “todos”</strong>. En Loki
+cada combinación única de labels crea un <strong>stream</strong> y los
+streams son el unidad de costo de RAM. Si poneys 20 labels (incluyendo
+<code>pod_uid</code> que cambia con cada Job), explotás el cardinality y
+Loki empieza a OOM-killear. La regla práctica: <strong>menos de 10
+labels totales, ninguno con cardinalidad alta</strong> (no usen IDs
+random como label, sí como contenido del log).</p>
+</blockquote>
+<p>Aplicar:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> upgrade promtail grafana/promtail <span class="dt">\</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--version</span> 6.16.0 <span class="dt">\</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--namespace</span> observability <span class="dt">\</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--values</span> observability/helm/promtail-values.yaml</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> observability rollout status ds/promtail</span></code></pre></div>
+<h4 id="disparar-tráfico-para-validar">Disparar tráfico para
+validar</h4>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Disparar un Job manual del scraper (TP 1 · P2 Hit #7)</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> ml-scraper create job <span class="at">--from</span><span class="op">=</span>cronjob/scraper-hourly scraper-test-1</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> ml-scraper wait <span class="at">--for</span><span class="op">=</span>condition=complete job/scraper-test-1 <span class="at">--timeout</span><span class="op">=</span>600s</span></code></pre></div>
+<h4 id="output-esperado-del-hit-2">Output esperado del Hit #2</h4>
+<p>En Grafana → Explore → Loki, la query siguiente debe devolver
+logs:</p>
+<pre><code>{namespace=&quot;ml-scraper&quot;, app=&quot;scraper&quot;}</code></pre>
+<p>Y refinada por job:</p>
+<pre><code>{namespace=&quot;ml-scraper&quot;, app=&quot;scraper&quot;, job_name=&quot;scraper-test-1&quot;}</code></pre>
+<p><strong>Capturen un screenshot de Grafana mostrando los logs
+filtrados por estos labels</strong> y commitéenlo en
+<code>observability/screenshots/hit2-labels.png</code>.</p>
+<hr />
+<h3 id="hit-3--migrar-el-scraper-a-logs-json-estructurados">Hit #3 —
+Migrar el scraper a logs JSON estructurados</h3>
+<p>El <code>logging_setup.py</code> del <a
+href="practica-1-parte-2.html#hit-5">Hit #5 de TP 1 · Parte 2</a> emite
+líneas tipo:</p>
+<pre><code>2026-05-10T03:14:22-0300 | INFO     | extractors | Scrapeando página 1</code></pre>
+<p>Eso es legible por humanos pero <strong>muy pobre para queryar en
+LogQL</strong>. Imagínense que quieran responder “¿cuántos errores hubo
+por producto en las últimas 24h?” — con texto plano tienen que parsear
+con regex en cada query, frágil y lento. Con JSON estructurado, Loki
+extrae los campos automáticamente y queryan con
+<code>| json | producto="iphone"</code>.</p>
+<p>Migren el módulo de logging para emitir <strong>JSON line-delimited a
+stdout</strong> (un objeto JSON por línea). Mantengan el
+RotatingFileHandler para logs locales — pero el handler de stream que va
+a <code>kubectl logs</code> (y por lo tanto a Promtail) debe ser
+JSON.</p>
+<h4 id="cambio-mínimo-en-python">Cambio mínimo en Python</h4>
+<p>Agregar <code>python-json-logger&gt;=3.2.0</code> a
+<code>requirements.txt</code> (verificar que ya esté pinneado al hacer
+<code>pip freeze</code>):</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># logging_setup.py</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> logging</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> logging.handlers <span class="im">import</span> RotatingFileHandler</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pythonjsonlogger.json <span class="im">import</span> JsonFormatter</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> setup_logging(log_file: <span class="bu">str</span> <span class="op">=</span> <span class="st">&quot;output/scraper.log&quot;</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># JSON formatter para stdout (k8s → Promtail → Loki)</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    json_formatter <span class="op">=</span> JsonFormatter(</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;</span><span class="sc">%(asctime)s</span><span class="st"> </span><span class="sc">%(levelname)s</span><span class="st"> </span><span class="sc">%(name)s</span><span class="st"> </span><span class="sc">%(message)s</span><span class="st">&quot;</span>,</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>        rename_fields<span class="op">=</span>{<span class="st">&quot;asctime&quot;</span>: <span class="st">&quot;timestamp&quot;</span>, <span class="st">&quot;levelname&quot;</span>: <span class="st">&quot;level&quot;</span>, <span class="st">&quot;name&quot;</span>: <span class="st">&quot;logger&quot;</span>},</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>        timestamp<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    stream_handler <span class="op">=</span> logging.StreamHandler()</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    stream_handler.setFormatter(json_formatter)</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plain-text rotativo para debugging local (no va a Loki)</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>    file_formatter <span class="op">=</span> logging.Formatter(</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;</span><span class="sc">%(asctime)s</span><span class="st"> | </span><span class="sc">%(levelname)-8s</span><span class="st"> | </span><span class="sc">%(name)s</span><span class="st"> | </span><span class="sc">%(message)s</span><span class="st">&quot;</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>    file_handler <span class="op">=</span> RotatingFileHandler(</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>        log_file, maxBytes<span class="op">=</span><span class="dv">2_000_000</span>, backupCount<span class="op">=</span><span class="dv">3</span>, encoding<span class="op">=</span><span class="st">&quot;utf-8&quot;</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>    file_handler.setFormatter(file_formatter)</span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>    logging.basicConfig(level<span class="op">=</span>logging.INFO, handlers<span class="op">=</span>[stream_handler, file_handler])</span></code></pre></div>
+<p>Y <strong>enriquecer los call-sites</strong> con contexto
+estructurado vía <code>extra=</code>:</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># extractors.py (ejemplo)</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>logger.info(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Scrape iniciado&quot;</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    extra<span class="op">=</span>{<span class="st">&quot;producto&quot;</span>: producto, <span class="st">&quot;browser&quot;</span>: browser, <span class="st">&quot;page&quot;</span>: page},</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>logger.warning(</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Precio ausente, devuelvo null&quot;</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    extra<span class="op">=</span>{<span class="st">&quot;producto&quot;</span>: producto, <span class="st">&quot;field&quot;</span>: <span class="st">&quot;precio&quot;</span>, <span class="st">&quot;result_index&quot;</span>: idx},</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>logger.error(</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Timeout tras 3 reintentos&quot;</span>,</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>    extra<span class="op">=</span>{<span class="st">&quot;producto&quot;</span>: producto, <span class="st">&quot;selector&quot;</span>: selector, <span class="st">&quot;attempts&quot;</span>: <span class="dv">3</span>},</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>    exc_info<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<blockquote>
+<p>⚠️ <strong>No mezclen <code>%</code>-formatting con
+<code>extra=</code></strong>. Si ponen
+<code>logger.info("Producto %s", producto)</code> el
+<code>producto</code> queda en el <code>message</code> y no es queryable
+como campo. Para que Loki lo extraiga, <strong>tiene que estar en
+<code>extra</code></strong>.</p>
+</blockquote>
+<h4 id="equivalentes-en-otros-stacks">Equivalentes en otros stacks</h4>
+<table>
+<thead>
+<tr>
+<th>Stack</th>
+<th>Librería</th>
+<th>Output esperado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Node.js</td>
+<td><code>pino</code></td>
+<td><code>pino</code> ya emite JSON nativo. No requiere migración —
+verificar que <code>transport</code> no esté seteado a
+<code>pino-pretty</code> en producción.</td>
+</tr>
+<tr>
+<td>Java</td>
+<td>SLF4J + Logback + <code>logstash-logback-encoder</code></td>
+<td>Reemplazar <code>&lt;encoder&gt;</code> por
+<code>&lt;encoder class="net.logstash.logback.encoder.LogstashEncoder"/&gt;</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="validar-el-json-output-con-logql">Validar el JSON output con
+LogQL</h4>
+<p>Después de redeployar la imagen del scraper y disparar un Job:</p>
+<pre><code>{namespace=&quot;ml-scraper&quot;, app=&quot;scraper&quot;} | json</code></pre>
+<p>En la columna <strong>Detected fields</strong> de Grafana tienen que
+aparecer: <code>level</code>, <code>producto</code>,
+<code>browser</code>, <code>logger</code>, <code>message</code>,
+<code>timestamp</code>. Si ven solo <code>message</code> y nada
+extraído, no es JSON válido — Promtail emite los logs raw pero Loki no
+parsea.</p>
+<p><strong>Consigna obligatoria</strong>: en el <code>README.md</code>
+de <code>observability/</code> muestren un
+<strong>antes/después</strong> con dos screenshots: log line plain text
+del Hit #2 vs log line JSON con campos extraídos del Hit #3.</p>
+<hr />
+<h3 id="hit-4--logql-cookbook-5-queries-útiles">Hit #4 — LogQL cookbook:
+5+ queries útiles</h3>
+<p>Documenten en <code>observability/queries/logql-cookbook.md</code>
+<strong>al menos 5 queries LogQL</strong> que respondan preguntas
+operativas reales sobre el scraper. Cada query debe llevar:</p>
+<ol type="1">
+<li>La pregunta de negocio que responde (1 línea).</li>
+<li>La query LogQL.</li>
+<li>Un ejemplo del output esperado (texto o screenshot).</li>
+<li>Por qué la query está escrita así (qué streams selecciona, qué
+filtros aplica, por qué <code>count_over_time</code> y no
+<code>rate</code>, etc.).</li>
+</ol>
+<p>Mínimo obligatorio (las 5 que la cátedra valida — pueden agregar
+más):</p>
+<h4 id="q1--top-errores-por-producto-en-las-últimas-24h">Q1 — Top
+errores por producto en las últimas 24h</h4>
+<pre class="logql"><code>sum by (producto) (
+  count_over_time(
+    {namespace=&quot;ml-scraper&quot;, app=&quot;scraper&quot;} | json | level=&quot;ERROR&quot; [24h]
+  )
+)</code></pre>
+<p>Pregunta: <strong>“¿qué producto está fallando más?”</strong> — útil
+para priorizar bugfixes de selectores.</p>
+<h4 id="q2--tasa-de-warnings-por-minuto-en-la-última-hora">Q2 — Tasa de
+WARNINGs por minuto en la última hora</h4>
+<pre class="logql"><code>sum by (producto) (
+  rate({namespace=&quot;ml-scraper&quot;, app=&quot;scraper&quot;} | json | level=&quot;WARNING&quot; [1m])
+)</code></pre>
+<p>Pregunta: <strong>“¿hubo un pico de errores de retry hace 30
+min?”</strong> — visual para detectar incidentes en curso.</p>
+<h4 id="q3--conteo-de-filtros-que-no-aparecieron-por-producto">Q3 —
+Conteo de filtros que no aparecieron por producto</h4>
+<pre class="logql"><code>sum by (producto) (
+  count_over_time(
+    {namespace=&quot;ml-scraper&quot;, app=&quot;scraper&quot;}
+      | json
+      | message =~ &quot;Filtro .* no disponible&quot;
+    [7d]
+  )
+)</code></pre>
+<p>Pregunta: <strong>“¿qué productos pierden el filtro
+<code>tienda_oficial</code> (ML lo oculta dinámicamente — ver pitfall TP
+1 · P1)?”</strong>.</p>
+<h4 id="q4--duración-media-entre-intentos-de-retry">Q4 — Duración media
+entre intentos de retry</h4>
+<pre class="logql"><code>avg_over_time(
+  {namespace=&quot;ml-scraper&quot;, app=&quot;scraper&quot;}
+    | json
+    | message=~&quot;intento.*backoff&quot;
+    | unwrap delay_ms
+  [1h]
+)</code></pre>
+<p>Pregunta: <strong>“¿el backoff exponencial está disparando como
+esperamos?”</strong> — requiere que el Hit #3 emita el campo
+<code>delay_ms</code> como número.</p>
+<h4 id="q5--última-corrida-exitosa-por-producto">Q5 — Última corrida
+exitosa por producto</h4>
+<pre class="logql"><code>topk(1,
+  {namespace=&quot;ml-scraper&quot;, app=&quot;scraper&quot;}
+    | json
+    | level=&quot;INFO&quot;
+    | message=&quot;Scrape completado&quot;
+) by (producto)</code></pre>
+<p>Pregunta: <strong>“¿hace cuánto que no scrapeo exitosamente cada
+producto?”</strong> — base para una alerta del Hit #6.</p>
+<blockquote>
+<p>📚 <strong>Documentación canónica de LogQL</strong>: <a
+href="https://grafana.com/docs/loki/latest/query/">https://grafana.com/docs/loki/latest/query/</a>.
+Lean al menos las secciones <strong>Log queries</strong> y
+<strong>Metric queries</strong> — son cortas y la diferencia entre las
+dos es donde se confunde todo el mundo en su primer LogQL.</p>
+</blockquote>
+<hr />
+<h3 id="hit-5--dashboard-grafana-provisionado-as-code">Hit #5 —
+Dashboard Grafana provisionado as-code</h3>
+<p>Construyan <strong>un dashboard único</strong> en Grafana (UI o JSON
+a mano) que muestre:</p>
+<ul>
+<li><strong>Stat panels (parte de arriba)</strong>: total de scrapes
+hoy, % de éxito, productos con más errores en 24h.</li>
+<li><strong>Time series (parte media)</strong>: las queries Q2 y Q3 del
+Hit #4.</li>
+<li><strong>Table (parte de abajo)</strong>: última corrida exitosa por
+producto (Q5) + top errores (Q1).</li>
+</ul>
+<p>Una vez que se ve bien en la UI, <strong>exportarlo como
+JSON</strong> (icono Share → Export → Save to file) y commitearlo en
+<code>observability/dashboards/scraper-overview.json</code>.</p>
+<h4 id="provisioning-del-dashboard">Provisioning del dashboard</h4>
+<p>Loaden el JSON al pod de Grafana via ConfigMap, y referencienlo desde
+el <code>dashboardProviders</code> ya configurado en
+<code>grafana-values.yaml</code> del Hit #1.</p>
+<p><code>observability/manifests/dashboard-configmap.yaml</code>
+(generado por <code>install.sh</code>):</p>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> observability create configmap scraper-overview-dashboard <span class="dt">\</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--from-file</span><span class="op">=</span>scraper-overview.json=observability/dashboards/scraper-overview.json <span class="dt">\</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--dry-run</span><span class="op">=</span>client <span class="at">-o</span> yaml <span class="kw">|</span> <span class="ex">kubectl</span> apply <span class="at">-f</span> <span class="at">-</span></span></code></pre></div>
+<p>Y en <code>grafana-values.yaml</code> agregar el mount:</p>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">extraConfigmapMounts</span><span class="kw">:</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> scraper-overview-dashboard</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">configMap</span><span class="kw">:</span><span class="at"> scraper-overview-dashboard</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">mountPath</span><span class="kw">:</span><span class="at"> /var/lib/grafana/dashboards/sip2026</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">readOnly</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code></pre></div>
+<h4 id="output-esperado-del-hit-5">Output esperado del Hit #5</h4>
+<p>Después de re-aplicar y re-disparar el
+<code>scraper-test-1</code>:</p>
+<ul>
+<li>En Grafana → Dashboards → carpeta <strong>SIP 2026</strong> →
+aparece el dashboard <strong>Scraper Overview</strong>.</li>
+<li>Los 3 stat panels muestran números reales (no
+<code>No data</code>).</li>
+<li>Los time-series muestran las últimas 6 horas de actividad.</li>
+<li>La tabla de “última corrida exitosa” muestra los 3 productos con
+timestamps recientes.</li>
+</ul>
+<p><strong>Capturen el screenshot final en
+<code>observability/screenshots/hit5-dashboard.png</code></strong> —
+esto es lo que la cátedra mira primero al evaluar.</p>
+<hr />
+<h3 id="hit-6--alertas-opcional-bonus-5-">Hit #6 — Alertas (opcional,
+bonus +5 %)</h3>
+<p>Configuren <strong>una alerta Grafana Alerting</strong> que notifique
+a un <strong>webhook de Discord</strong> cuando se cumpla cualquiera de
+estas dos condiciones:</p>
+<ol type="1">
+<li>El <code>CronJob</code> del scraper falla <strong>2 veces
+seguidas</strong> (basado en logs <code>level=ERROR</code> con
+<code>event=scrape_failed</code>).</li>
+<li>Un producto <strong>no se logra scrapear en 24h</strong> (basado en
+la query Q5 — la última corrida exitosa es &gt; 24h vieja).</li>
+</ol>
+<h4 id="estructura-mínima">Estructura mínima</h4>
+<ul>
+<li><p><strong>Contact point Discord</strong> en Grafana → Alerting →
+Contact points → New contact point → Discord webhook URL.</p>
+<blockquote>
+<p>🔒 <strong>El URL del webhook es un secret.</strong> No commitearlo.
+Usen un k8s <code>Secret</code> y refencienlo desde Grafana via env var
+(<code>grafana-values.yaml</code> → <code>envFromSecret</code>). El
+<code>install.sh</code> debe leer <code>DISCORD_WEBHOOK_URL</code> de
+env vars locales, igual que <code>GRAFANA_ADMIN_PASSWORD</code>.</p>
+</blockquote></li>
+<li><p><strong>Alert rule provisioning</strong> as-code en
+<code>observability/manifests/alert-rules.yaml</code> (Grafana lo carga
+via ConfigMap mounted en
+<code>/etc/grafana/provisioning/alerting/</code>).</p>
+<p>Ejemplo de regla para condición #2:</p>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">groups</span><span class="kw">:</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">orgId</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> scraper-health</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">folder</span><span class="kw">:</span><span class="at"> SIP 2026</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">interval</span><span class="kw">:</span><span class="at"> 5m</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">rules</span><span class="kw">:</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uid</span><span class="kw">:</span><span class="at"> scrape-stale-24h</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Producto no scrapeado en 24h&quot;</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">condition</span><span class="kw">:</span><span class="at"> A</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">data</span><span class="kw">:</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> </span><span class="fu">refId</span><span class="kw">:</span><span class="at"> A</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">datasourceUid</span><span class="kw">:</span><span class="at"> &lt;UID-de-Loki&gt;</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">model</span><span class="kw">:</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a><span class="fu">              expr</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>                (time() - max(last_over_time(</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>                  {namespace=&quot;ml-scraper&quot;, app=&quot;scraper&quot;}</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>                    | json | message=&quot;Scrape completado&quot;</span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>                    | unwrap timestamp [25h]</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>                )) by (producto)) &gt; 86400</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">noDataState</span><span class="kw">:</span><span class="at"> Alerting</span></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">execErrState</span><span class="kw">:</span><span class="at"> Alerting</span></span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">for</span><span class="kw">:</span><span class="at"> 10m</span></span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">annotations</span><span class="kw">:</span></span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">summary</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;El producto {{ $labels.producto }} no se scrapea hace más de 24h&quot;</span></span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">labels</span><span class="kw">:</span></span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">severity</span><span class="kw">:</span><span class="at"> warning</span></span></code></pre></div></li>
+<li><p><strong>Test de la alerta</strong>: simulen el fallo escalando el
+CronJob a <code>suspend: true</code> y esperando 24h, <strong>o</strong>
+modificando temporalmente el threshold a <code>&gt; 600</code> (10 min)
+y dejándolo así para la corrida de evaluación.</p></li>
+</ul>
+<p>Documenten en <code>observability/README.md</code> cómo se setea
+<code>DISCORD_WEBHOOK_URL</code> y cómo se valida que la alerta
+efectivamente disparó (screenshot del mensaje en Discord).</p>
+<hr />
+<h2 id="cómo-entregar">Cómo entregar</h2>
+<ol type="1">
+<li><strong>Push final al repo público</strong> (mismo repo del TP 1, no
+abrir uno nuevo) antes del <strong>16/05/2026 23:59 ART</strong>.</li>
+<li><strong>README raíz actualizado</strong> con una sección nueva “TP 2
+— Observabilidad”:
+<ul>
+<li>Cómo ejecutar <code>observability/install.sh</code> desde cero.</li>
+<li>Variables de entorno requeridas
+(<code>GRAFANA_ADMIN_PASSWORD</code>, opcionalmente
+<code>DISCORD_WEBHOOK_URL</code>).</li>
+<li>Link al <code>observability/README.md</code> con los detalles.</li>
+</ul></li>
+<li><strong>Carpeta <code>observability/</code></strong> completa según
+<a href="#infra-base-obligatoria--bloqueante">estructura
+obligatoria</a>.</li>
+<li><strong><code>docs/adr/0007-stack-de-logging.md</code></strong> (y
+opcionalmente <code>0008-promtail-vs-alloy.md</code>).</li>
+<li><strong>Carpeta <code>observability/screenshots/</code></strong> con
+mínimo:
+<ul>
+<li><code>hit2-labels.png</code> — Grafana Explore mostrando logs
+filtrados por labels k8s.</li>
+<li><code>hit3-json-fields.png</code> — Grafana Explore mostrando campos
+JSON extraídos.</li>
+<li><code>hit5-dashboard.png</code> — el dashboard provisionado
+renderizado con datos reales.</li>
+<li>(bonus Hit #6) <code>hit6-discord-alert.png</code> — captura de la
+notificación en Discord.</li>
+</ul></li>
+<li><strong>Video corto (3-5 min)</strong> mostrando:
+<code>install.sh</code> corriendo de cero, Grafana abriéndose en
+<code>:30000</code>, demo de las 5 queries del Hit #4 en Explore,
+dashboard del Hit #5 con datos.</li>
+<li><strong>Mensaje en el canal Discord de la materia</strong> con el
+link al repo y al video.</li>
+</ol>
+<blockquote>
+<p>📡 <strong>Canal Discord (consultas + entregas):</strong> <a
+href="https://discord.com/channels/1482135908508500148/1482135909456679139">https://discord.com/channels/1482135908508500148/1482135909456679139</a>
+Antes de pedir ayuda con Loki, revisá la sección <a
+href="#common-pitfalls">Common pitfalls</a> abajo — la mayoría de los
+problemas son los 4 ahí descritos.</p>
+</blockquote>
+<hr />
+<h2 id="auto-verificación-previa-a-la-entrega">Auto-verificación previa
+a la entrega</h2>
+<p>Igual que en TP 1 · Parte 2: si <strong>algo de esta lista falla, no
+entregues</strong>. Son puntos seguros que se pierden con 5 minutos de
+checklist.</p>
+<h3 id="1-installsh-corre-limpio-en-cluster-vacío">1)
+<code>install.sh</code> corre limpio en cluster vacío</h3>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Borrar el namespace para arrancar limpio</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> delete namespace observability <span class="at">--wait</span><span class="op">=</span>true</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Re-instalar from scratch</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">GRAFANA_ADMIN_PASSWORD</span><span class="op">=</span><span class="st">&#39;&lt;algo-random&gt;&#39;</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> observability <span class="kw">&amp;&amp;</span> <span class="ex">./install.sh</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="co"># El script DEBE terminar con exit 0 y los 5 ✓ del output esperado del Hit #1</span></span></code></pre></div>
+<h3 id="2-los-3-pods--daemonset-están-running">2) Los 3 pods + DaemonSet
+están Running</h3>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> observability get pods,ds,svc,pvc</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Tiene que mostrar:</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  loki-0 Running, promtail-xxxx Running, grafana-xxxxx Running</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  ds/promtail con DESIRED == READY</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  svc/grafana con NodePort 30000</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  PVCs Bound (storage-loki-0, grafana)</span></span></code></pre></div>
+<h3 id="3-loki-responde-a-queries-via-http">3) Loki responde a queries
+via HTTP</h3>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> observability port-forward svc/loki 3100:3100 <span class="kw">&amp;</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sleep</span> 2</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sG</span> http://localhost:3100/loki/api/v1/labels <span class="kw">|</span> <span class="ex">jq</span> <span class="st">&#39;.data | length &gt; 0&#39;</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Esperado: true</span></span></code></pre></div>
+<h3 id="4-grafana-resuelve-el-datasource-loki">4) Grafana resuelve el
+datasource Loki</h3>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Con port-forward o NodePort:</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-u</span> admin:<span class="st">&quot;</span><span class="va">$GRAFANA_ADMIN_PASSWORD</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  http://localhost:30000/api/datasources/name/Loki <span class="kw">|</span> <span class="ex">jq</span> <span class="st">&#39;.type&#39;</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Esperado: &quot;loki&quot;</span></span></code></pre></div>
+<h3 id="5-las-5-queries-del-hit-4-corren-sin-error">5) Las 5 queries del
+Hit #4 corren sin error</h3>
+<p>Abran Grafana → Explore → pegue cada query del cookbook → tiene que
+devolver datos (o <code>No data</code> si genuinamente no hay logs ese
+período, pero <strong>nunca</strong> error de sintaxis LogQL).</p>
+<h3 id="6-dashboard-provisionado-aparece-en-la-ui">6) Dashboard
+provisionado aparece en la UI</h3>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> observability rollout restart deploy/grafana</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sleep</span> 30</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Abrir Grafana → Dashboards → buscar &quot;Scraper Overview&quot;</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Tiene que estar en la carpeta &quot;SIP 2026&quot;</span></span></code></pre></div>
+<h3 id="7-logs-del-scraper-son-json-parseados">7) Logs del scraper son
+JSON parseados</h3>
+<p>Query en Explore:
+<code>{namespace="ml-scraper", app="scraper"} | json</code>. En el panel
+<strong>Detected fields</strong> tienen que aparecer al menos:
+<code>level</code>, <code>producto</code>, <code>logger</code>,
+<code>timestamp</code>. Si solo aparece <code>message</code>, el Hit #3
+no está bien.</p>
+<h3 id="8-gitleaks-no-detecta-el-password-de-grafana">8)
+<code>gitleaks</code> no detecta el password de Grafana</h3>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gitleaks</span> detect <span class="at">--no-git</span> <span class="at">--verbose</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Esperado: 0 leaks. Si encuentra GRAFANA_ADMIN_PASSWORD o el webhook de Discord</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co"># en algún archivo, está mal — borralo y movelo a un Secret de k8s.</span></span></code></pre></div>
+<hr />
+<h2 id="common-pitfalls">Common pitfalls</h2>
+<h3 id="loki-stack-chart-deprecado"><code>loki-stack</code> chart
+deprecado</h3>
+<p>Si googlean “Loki helm” el primer link dice
+<code>grafana/loki-stack</code>. <strong>No lo usen.</strong> Está
+deprecado desde 2024, viene con Loki 2.x (no 3.x), y trae Promtail
+acoplado de un modo que no permite override fino. Los charts separados
+(<code>grafana/loki</code> + <code>grafana/promtail</code>) son el
+camino oficial 2026.</p>
+<h3 id="cardinality-explosion--loki-oom">Cardinality explosion → Loki
+OOM</h3>
+<p>Si pusieron un label <code>request_id</code> o <code>trace_id</code>
+en el <code>relabel_configs</code>, <strong>Loki se va a
+OOM-killear</strong> en pocos minutos. Esos campos van <strong>dentro
+del JSON</strong> del log, no como label. Regla práctica: ningún label
+debe tener más de ~100 valores únicos por día.</p>
+<h3 id="promtail-no-encuentra-logs-__path__-vacío">Promtail no encuentra
+logs (<code>__path__</code> vacío)</h3>
+<p>Si en <code>kubectl logs ds/promtail</code> ven warnings “no targets
+discovered” o “open /var/log/pods/…: no such file”, probablemente:</p>
+<ol type="1">
+<li>El path en el host es distinto en k3d
+(<code>/var/log/pods/...</code>) vs k3s puro
+(<code>/var/log/pods/...</code> también, pero con symlinks distintos).
+Prueben los dos formatos.</li>
+<li>El pod del scraper terminó hace mucho y el log file fue
+rotado/eliminado. Disparen un Job nuevo y miren los logs en vivo.</li>
+<li>El <code>serviceAccount</code> de Promtail no tiene permisos de
+lectura sobre el host filesystem. El chart oficial lo configura solo,
+pero si overridearon el <code>securityContext</code> lo pueden haber
+roto.</li>
+</ol>
+<h3
+id="python-json-logger-cambió-de-api-en-v3"><code>python-json-logger</code>
+cambió de API en v3</h3>
+<p>La importación correcta en versiones modernas (&gt;=3.0) es:</p>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pythonjsonlogger.json <span class="im">import</span> JsonFormatter   <span class="co"># ✓ correcto</span></span></code></pre></div>
+<p>NO <code>from pythonjsonlogger import jsonlogger</code> (era el path
+en v2.x — sigue funcionando pero está deprecado).</p>
+<h3 id="grafana-muestra-no-data-aunque-hay-logs-en-loki">Grafana muestra
+<code>No data</code> aunque hay logs en Loki</h3>
+<p>Casi siempre es <strong>time range</strong>: por default Grafana
+arranca en “Last 1 hour” y los logs del CronJob de hace 6 horas no
+aparecen. Cambien el rango a “Last 24 hours” antes de panickear.</p>
+<h3 id="el-dashboard-json-se-rompe-al-cambiar-de-versión-de-grafana">El
+dashboard JSON se rompe al cambiar de versión de Grafana</h3>
+<p>El JSON de dashboards es <strong>compatible solo dentro de la misma
+minor de Grafana</strong>. Si exportaron en Grafana 11.5 y la cátedra
+evalúa con 11.4 puede haber paneles que no rendericen. Mitigación: en el
+JSON exportado, <strong>pongan <code>"schemaVersion": 39</code></strong>
+(el de la versión más vieja de la 11.x que soporten) y no usen features
+experimentales.</p>
+<hr />
+<h2 id="criterios-de-evaluación">Criterios de evaluación</h2>
+<h3
+id="requisitos-bloqueantes-no-se-acepta-la-entrega-sin-estos">Requisitos
+bloqueantes (no se acepta la entrega sin estos)</h3>
+<p>Estos no suman puntos — son condición necesaria para que la entrega
+sea <strong>corregible</strong>. Si falta cualquiera, la nota es 0.</p>
+<ul>
+<li><strong>TP 1 · Parte 2 entregado y aprobado</strong> (mínimo
+60/100). El scraper tiene que estar corriendo como CronJob en k3s al
+momento de evaluar este TP.</li>
+<li><strong><code>observability/install.sh</code></strong> funciona en
+un cluster limpio con un solo comando (verificado en <a
+href="#1-installsh-corre-limpio-en-cluster-vacío">auto-verificación
+#1</a>).</li>
+<li><strong>Helm charts pinneados</strong> a versiones específicas (no
+<code>latest</code>) y <code>loki-stack</code> <strong>NO</strong>
+usado.</li>
+<li><strong>Sin secrets en el repo</strong>
+(<code>gitleaks detect</code> da 0 leaks — verificado en <a
+href="#8-gitleaks-no-detecta-el-password-de-grafana">auto-verificación
+#8</a>).</li>
+<li><strong>Auto-verificación completa ejecutada</strong> antes del push
+final.</li>
+</ul>
+<h3 id="tabla-de-puntaje-100-">Tabla de puntaje (100 %)</h3>
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>Peso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hit #1</strong> — stack Loki + Promtail + Grafana corriendo
++ datasource validado</td>
+<td>20 %</td>
+</tr>
+<tr>
+<td><strong>Hit #2</strong> — Promtail/Alloy refinado a namespace
+<code>ml-scraper</code> con labels k8s útiles</td>
+<td>15 %</td>
+</tr>
+<tr>
+<td><strong>Hit #3</strong> — scraper migrado a JSON line-delimited +
+campos extraíbles via <code>| json</code></td>
+<td>20 %</td>
+</tr>
+<tr>
+<td><strong>Hit #4</strong> — <code>logql-cookbook.md</code> con las 5
+queries documentadas (pregunta + query + por qué)</td>
+<td>15 %</td>
+</tr>
+<tr>
+<td><strong>Hit #5</strong> — dashboard
+<code>scraper-overview.json</code> provisionado as-code y mostrando
+datos reales</td>
+<td>20 %</td>
+</tr>
+<tr>
+<td><strong>ADR <code>0007-stack-de-logging.md</code></strong>
+justificando la elección con alternativas descartadas</td>
+<td>10 %</td>
+</tr>
+<tr>
+<td><strong>Bonus Hit #6</strong> — alerta a Discord funcionando +
+screenshot de la notificación</td>
+<td>+5 %</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="material-de-apoyo">Material de apoyo</h2>
+<h3 id="tabla-comparativa-de-stacks-de-logging-centralizado">Tabla
+comparativa de stacks de logging centralizado</h3>
+<p>Antes de elegir Loki, conozcan las alternativas — esto va al ADR
+<code>0007</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Stack</th>
+<th>Componentes</th>
+<th>Storage</th>
+<th>Query</th>
+<th>Pro</th>
+<th>Contra</th>
+<th>Costo (TP)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Loki + Promtail + Grafana</strong></td>
+<td>3 charts</td>
+<td>Filesystem / S3 / GCS</td>
+<td>LogQL (label-first)</td>
+<td>Simple, bajo costo, integración nativa Grafana</td>
+<td>Index pobre vs Elasticsearch — full-text grep es lento</td>
+<td>OSS, $0</td>
+</tr>
+<tr>
+<td><strong>Loki + Alloy + Grafana</strong></td>
+<td>3 charts</td>
+<td>Idem</td>
+<td>LogQL</td>
+<td>Alloy unifica logs + métricas + traces (sucesor de Promtail), GA
+2024</td>
+<td>Menos documentación que Promtail, learning curve</td>
+<td>OSS, $0</td>
+</tr>
+<tr>
+<td><strong>Vector + Loki + Grafana</strong></td>
+<td>3 procesos</td>
+<td>Idem</td>
+<td>LogQL</td>
+<td>Vector es más performante que Promtail (Rust), config más
+expresiva</td>
+<td>Más componentes que mantener</td>
+<td>OSS, $0</td>
+</tr>
+<tr>
+<td><strong>OpenTelemetry Collector + Loki</strong></td>
+<td>OTel Coll + Loki + Grafana</td>
+<td>Idem</td>
+<td>LogQL</td>
+<td>Vendor-neutral (CNCF), permite migrar de Loki sin re-instrumentar el
+scraper</td>
+<td>Más config, OTel logs aún en evolución 2026</td>
+<td>OSS, $0</td>
+</tr>
+<tr>
+<td><strong>EFK = Elasticsearch + Fluentd + Kibana</strong></td>
+<td>3+ pods pesados</td>
+<td>Elasticsearch (RAM-hungry)</td>
+<td>KQL / Lucene query</td>
+<td>Full-text search rapidísima, ecosistema maduro</td>
+<td>Heavy: ES single-node ya pide 2 GB RAM, no entra cómodo en k3s
+local</td>
+<td>OSS, <strong>NO usar en este TP</strong></td>
+</tr>
+<tr>
+<td><strong>Datadog Logs</strong></td>
+<td>SaaS</td>
+<td>Datadog cloud</td>
+<td>Datadog query language</td>
+<td>Zero-ops, dashboards listos</td>
+<td>Vendor lock-in, <strong>paid</strong> ($0.10/GB ingested)</td>
+<td>$$$ — descartar</td>
+</tr>
+<tr>
+<td><strong>New Relic Logs</strong></td>
+<td>SaaS</td>
+<td>New Relic cloud</td>
+<td>NRQL</td>
+<td>Idem Datadog, free tier 100 GB/mes</td>
+<td>Vendor lock-in</td>
+<td>Gratis hasta 100 GB, después paid</td>
+</tr>
+<tr>
+<td><strong>Splunk Cloud</strong></td>
+<td>SaaS o on-prem</td>
+<td>Splunk indexer</td>
+<td>SPL</td>
+<td>Estándar enterprise, search potentísima</td>
+<td><strong>Caro</strong>, complejo de operar on-prem</td>
+<td><span class="math display"></span> — descartar</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Para este TP, las únicas opciones aceptables son</strong>:
+<strong>Loki + Promtail + Grafana</strong> (default recomendado) o
+<strong>Loki + Alloy + Grafana</strong> (con ADR
+<code>0008-promtail-vs-alloy.md</code> justificándolo). Vector y
+OpenTelemetry Collector se aceptan también si los equipos quieren
+explorar — requieren ADR adicional. EFK / Datadog / Splunk <strong>no se
+aceptan</strong> (no caben en el cluster local o no son OSS).</p>
+<h3 id="esqueleto-de-installsh">Esqueleto de
+<code>install.sh</code></h3>
+<div class="sourceCode" id="cb40"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env bash</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-euo</span> pipefail</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="va">NAMESPACE</span><span class="op">=</span>observability</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="bu">:</span> <span class="st">&quot;</span><span class="va">${GRAFANA_ADMIN_PASSWORD</span><span class="op">:?</span>Set GRAFANA_ADMIN_PASSWORD before running<span class="va">}</span><span class="st">&quot;</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="va">DIR</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$(</span><span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$(</span><span class="fu">dirname</span> <span class="st">&quot;</span><span class="va">${BASH_SOURCE</span><span class="op">[</span><span class="dv">0</span><span class="op">]</span><span class="va">}</span><span class="st">&quot;</span><span class="va">)</span><span class="st">&quot;</span> <span class="kw">&amp;&amp;</span> <span class="bu">pwd</span><span class="va">)</span><span class="st">&quot;</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;→ Namespace + Helm repo&quot;</span></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> create namespace <span class="st">&quot;</span><span class="va">$NAMESPACE</span><span class="st">&quot;</span> <span class="at">--dry-run</span><span class="op">=</span>client <span class="at">-o</span> yaml <span class="kw">|</span> <span class="ex">kubectl</span> apply <span class="at">-f</span> <span class="at">-</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> repo add grafana https://grafana.github.io/helm-charts <span class="op">&gt;</span>/dev/null <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">||</span> <span class="fu">true</span></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> repo update <span class="op">&gt;</span>/dev/null</span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;→ Secret de admin de Grafana&quot;</span></span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> <span class="st">&quot;</span><span class="va">$NAMESPACE</span><span class="st">&quot;</span> create secret generic grafana-admin <span class="dt">\</span></span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">--from-literal</span><span class="op">=</span>admin-user=admin <span class="dt">\</span></span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">--from-literal</span><span class="op">=</span>admin-password=<span class="st">&quot;</span><span class="va">$GRAFANA_ADMIN_PASSWORD</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">--dry-run</span><span class="op">=</span>client <span class="at">-o</span> yaml <span class="kw">|</span> <span class="ex">kubectl</span> apply <span class="at">-f</span> <span class="at">-</span></span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;→ Loki (single-binary, filesystem)&quot;</span></span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> upgrade <span class="at">--install</span> loki grafana/loki <span class="dt">\</span></span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">--version</span> 6.16.0 <span class="dt">\</span></span>
+<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">--namespace</span> <span class="st">&quot;</span><span class="va">$NAMESPACE</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">--values</span> <span class="st">&quot;</span><span class="va">$DIR</span><span class="st">/helm/loki-values.yaml&quot;</span> <span class="dt">\</span></span>
+<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">--wait</span> <span class="at">--timeout</span> 5m</span>
+<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;→ Promtail (DaemonSet)&quot;</span></span>
+<span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> upgrade <span class="at">--install</span> promtail grafana/promtail <span class="dt">\</span></span>
+<span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">--version</span> 6.16.0 <span class="dt">\</span></span>
+<span id="cb40-30"><a href="#cb40-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">--namespace</span> <span class="st">&quot;</span><span class="va">$NAMESPACE</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb40-31"><a href="#cb40-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">--values</span> <span class="st">&quot;</span><span class="va">$DIR</span><span class="st">/helm/promtail-values.yaml&quot;</span> <span class="dt">\</span></span>
+<span id="cb40-32"><a href="#cb40-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">--wait</span> <span class="at">--timeout</span> 3m</span>
+<span id="cb40-33"><a href="#cb40-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-34"><a href="#cb40-34" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;→ Dashboard ConfigMap&quot;</span></span>
+<span id="cb40-35"><a href="#cb40-35" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> <span class="st">&quot;</span><span class="va">$NAMESPACE</span><span class="st">&quot;</span> create configmap scraper-overview-dashboard <span class="dt">\</span></span>
+<span id="cb40-36"><a href="#cb40-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">--from-file</span><span class="op">=</span><span class="st">&quot;scraper-overview.json=</span><span class="va">$DIR</span><span class="st">/dashboards/scraper-overview.json&quot;</span> <span class="dt">\</span></span>
+<span id="cb40-37"><a href="#cb40-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">--dry-run</span><span class="op">=</span>client <span class="at">-o</span> yaml <span class="kw">|</span> <span class="ex">kubectl</span> apply <span class="at">-f</span> <span class="at">-</span></span>
+<span id="cb40-38"><a href="#cb40-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-39"><a href="#cb40-39" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;→ Grafana&quot;</span></span>
+<span id="cb40-40"><a href="#cb40-40" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> upgrade <span class="at">--install</span> grafana grafana/grafana <span class="dt">\</span></span>
+<span id="cb40-41"><a href="#cb40-41" aria-hidden="true" tabindex="-1"></a>  <span class="at">--version</span> 8.5.0 <span class="dt">\</span></span>
+<span id="cb40-42"><a href="#cb40-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">--namespace</span> <span class="st">&quot;</span><span class="va">$NAMESPACE</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb40-43"><a href="#cb40-43" aria-hidden="true" tabindex="-1"></a>  <span class="at">--values</span> <span class="st">&quot;</span><span class="va">$DIR</span><span class="st">/helm/grafana-values.yaml&quot;</span> <span class="dt">\</span></span>
+<span id="cb40-44"><a href="#cb40-44" aria-hidden="true" tabindex="-1"></a>  <span class="at">--wait</span> <span class="at">--timeout</span> 3m</span>
+<span id="cb40-45"><a href="#cb40-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-46"><a href="#cb40-46" aria-hidden="true" tabindex="-1"></a><span class="va">NODE_IP</span><span class="op">=</span><span class="va">$(</span><span class="ex">kubectl</span> get nodes <span class="at">-o</span> jsonpath=<span class="st">&#39;{.items[0].status.addresses[?(@.type==&quot;InternalIP&quot;)].address}&#39;</span><span class="va">)</span></span>
+<span id="cb40-47"><a href="#cb40-47" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb40-48"><a href="#cb40-48" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;✓ Loki running&quot;</span></span>
+<span id="cb40-49"><a href="#cb40-49" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;✓ Promtail running&quot;</span></span>
+<span id="cb40-50"><a href="#cb40-50" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;✓ Grafana running&quot;</span></span>
+<span id="cb40-51"><a href="#cb40-51" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;✓ Datasource Loki configurado&quot;</span></span>
+<span id="cb40-52"><a href="#cb40-52" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;✓ Dashboard &#39;Scraper Overview&#39; provisionado&quot;</span></span>
+<span id="cb40-53"><a href="#cb40-53" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;→ Abrir http://</span><span class="va">${NODE_IP}</span><span class="st">:30000   (admin / </span><span class="dt">\$</span><span class="st">GRAFANA_ADMIN_PASSWORD)&quot;</span></span></code></pre></div>
+<p>Hagan <code>chmod +x install.sh</code> antes de commitearlo.</p>
+<h3 id="esqueleto-de-adr-0007-stack-de-loggingmd">Esqueleto de ADR
+<code>0007-stack-de-logging.md</code></h3>
+<p>Mismo formato Michael Nygard del TP 1 · Parte 2 (no se repite la
+plantilla — está <a
+href="practica-1-parte-2.html#esqueleto-del-workflow-de-ci-githubworkflowsscrapeyml-infra-base">ahí</a>).
+Ejemplo concreto:</p>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># 0007 — Adoptamos Loki + Promtail + Grafana para logging centralizado</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Date: 2026-05-12</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Status: Accepted</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Deciders: <span class="dt">&lt;</span><span class="kw">equipo</span><span class="dt">&gt;</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="fu">## Contexto</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>El scraper corre como CronJob en k3s y emite logs a stdout. <span class="in">`kubectl logs`</span> se vuelve</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>inutilizable en cuanto los pods son recolectados. Necesitamos un backend de logs con</span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>retención mínima 7 días, queryable, y visualizable. Restricciones:</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Cluster local k3s single-node, ~6 GB RAM disponibles.</span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Sin cloud / sin servicios pagos.</span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Equipo familiarizado con Grafana (lo vimos en otra materia).</span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>Alternativas consideradas: Loki+Promtail, Loki+Alloy, Vector+Loki, OTel+Loki,</span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>EFK, Datadog, Splunk. Tabla comparativa en TP 2 / Material de apoyo.</span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decisión</span></span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a>Adoptamos **Loki + Promtail + Grafana** (charts separados, versiones pinneadas).</span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a><span class="fu">## Consecuencias</span></span>
+<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Más fácil: setup en ~10 min con Helm; integración nativa con dashboards Grafana;</span>
+<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a>  costo $0; modelo label-first es simple y suficiente para nuestro volumen.</span>
+<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Más difícil: full-text grep es lento (Loki indexa labels, no el cuerpo del log) —</span>
+<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a>  si en el futuro queremos búsquedas tipo &quot;encontrame el log con esta substring de</span>
+<span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a>  100 chars&quot; vamos a sufrir.</span>
+<span id="cb41-30"><a href="#cb41-30" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Sacrificio: no podemos hacer queries complejas tipo SQL (vs Splunk SPL).</span>
+<span id="cb41-31"><a href="#cb41-31" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Riesgo: cardinality explosion si labelean mal. Mitigado en Hit #2 con regla de</span>
+<span id="cb41-32"><a href="#cb41-32" aria-hidden="true" tabindex="-1"></a>  ≤10 labels totales y ningún label de cardinalidad alta.</span>
+<span id="cb41-33"><a href="#cb41-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-34"><a href="#cb41-34" aria-hidden="true" tabindex="-1"></a><span class="fu">## Referencias</span></span>
+<span id="cb41-35"><a href="#cb41-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-36"><a href="#cb41-36" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Loki design doc: https://grafana.com/docs/loki/latest/get-started/architecture/</span>
+<span id="cb41-37"><a href="#cb41-37" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Comparativa de la cátedra: TP 2 / Material de apoyo</span></code></pre></div>
+<hr />
+<h2 id="referencias-y-bibliografía">Referencias y Bibliografía</h2>
+<p>Solo lo directamente vinculado a lo que se les pide en este TP. Los
+libros generales de Kubernetes / containers viven en el <a
+href="practica-0.html#lectura-recomendada-y-referencias">TP 0</a> y no
+se repiten.</p>
+<h3 id="hit-1--deploy-del-stack-loki--promtail--grafana-1">Hit #1 —
+Deploy del stack Loki + Promtail + Grafana</h3>
+<ul>
+<li><strong>Grafana Loki documentation — Get started</strong> —
+overview, deployment modes (single-binary vs simple-scalable vs
+microservices) y por qué para este TP es single-binary. <a
+href="https://grafana.com/docs/loki/latest/get-started/">https://grafana.com/docs/loki/latest/get-started/</a></li>
+<li><strong>Grafana Loki Helm chart — values reference</strong> — toda
+la sintaxis de <code>loki-values.yaml</code>. La sección “Configuration
+examples” tiene el ejemplo single-binary que adaptamos en el Hit #1. <a
+href="https://grafana.com/docs/loki/latest/setup/install/helm/install-monolithic/">https://grafana.com/docs/loki/latest/setup/install/helm/install-monolithic/</a></li>
+<li><strong>Grafana Helm chart docs</strong> — values del chart
+<code>grafana/grafana</code> 8.x: persistence, datasources provisioning,
+dashboard providers. <a
+href="https://github.com/grafana/helm-charts/tree/main/charts/grafana">https://github.com/grafana/helm-charts/tree/main/charts/grafana</a></li>
+<li><strong>Helm 3 — Best practices for charts</strong> — versionado,
+override de values, lifecycle. <a
+href="https://helm.sh/docs/chart_best_practices/">https://helm.sh/docs/chart_best_practices/</a></li>
+</ul>
+<h3 id="hit-2--promtail--alloy--scrape-configs-kubernetes">Hit #2 —
+Promtail / Alloy + scrape configs Kubernetes</h3>
+<ul>
+<li><strong>Promtail — Scrape configs reference</strong> — todas las
+opciones de <code>kubernetes_sd_configs</code> y
+<code>relabel_configs</code> que usamos. <a
+href="https://grafana.com/docs/loki/latest/send-data/promtail/configuration/#scrape_configs">https://grafana.com/docs/loki/latest/send-data/promtail/configuration/#scrape_configs</a></li>
+<li><strong>Promtail — Pipeline stages</strong> — para el bonus de
+parsear timestamps custom o multilineas. <a
+href="https://grafana.com/docs/loki/latest/send-data/promtail/stages/">https://grafana.com/docs/loki/latest/send-data/promtail/stages/</a></li>
+<li><strong>Grafana Alloy documentation</strong> (opcional, si optan por
+Alloy en lugar de Promtail) — sucesor unificado de Promtail + Grafana
+Agent + OTel Collector, GA 2024. <a
+href="https://grafana.com/docs/alloy/latest/">https://grafana.com/docs/alloy/latest/</a></li>
+<li><strong>Loki — Cardinality best practices</strong> — el por qué de
+“no usar request_id como label”. Cortito y al hueso. <a
+href="https://grafana.com/docs/loki/latest/get-started/labels/cardinality/">https://grafana.com/docs/loki/latest/get-started/labels/cardinality/</a></li>
+</ul>
+<h3 id="hit-3--logs-estructurados-json">Hit #3 — Logs estructurados
+JSON</h3>
+<ul>
+<li><strong><code>python-json-logger</code> 3.x — README</strong> — la
+librería estándar para emitir JSON desde el módulo <code>logging</code>
+de Python. Soportar <code>extra=</code> y custom field mapping. <a
+href="https://github.com/nhairs/python-json-logger">https://github.com/nhairs/python-json-logger</a></li>
+<li><strong>Twelve-Factor App — XI. Logs</strong> — la doctrina de
+“tratar los logs como event streams” que está debajo de todo este TP. <a
+href="https://12factor.net/logs">https://12factor.net/logs</a></li>
+<li><strong>Equivalentes</strong>: <a
+href="https://getpino.io/"><code>pino</code> para Node</a> (JSON nativo,
+ya emiten JSON sin migrar) · <a
+href="https://github.com/logfellow/logstash-logback-encoder"><code>logstash-logback-encoder</code>
+para Java</a> (JSON encoder para Logback).</li>
+</ul>
+<h3 id="hit-4--logql">Hit #4 — LogQL</h3>
+<ul>
+<li><strong>LogQL documentation — log queries</strong> — selector de
+streams + line filters. La parte “literal”, lo más usado. <a
+href="https://grafana.com/docs/loki/latest/query/log_queries/">https://grafana.com/docs/loki/latest/query/log_queries/</a></li>
+<li><strong>LogQL documentation — metric queries</strong> —
+<code>rate</code>, <code>count_over_time</code>, <code>sum by</code>,
+<code>avg_over_time</code>, <code>unwrap</code>. La parte “agregaciones”
+— donde se confunde todo el mundo en su primera semana. <a
+href="https://grafana.com/docs/loki/latest/query/metric_queries/">https://grafana.com/docs/loki/latest/query/metric_queries/</a></li>
+<li><strong>LogQL — Examples cheatsheet</strong> — patterns comunes para
+copiar y adaptar. <a
+href="https://grafana.com/docs/loki/latest/query/query_examples/">https://grafana.com/docs/loki/latest/query/query_examples/</a></li>
+</ul>
+<h3 id="hit-5--dashboards-as-code">Hit #5 — Dashboards as-code</h3>
+<ul>
+<li><strong>Grafana — Provisioning dashboards</strong> — cómo cargar
+dashboards desde ConfigMap, file provider, y formato del JSON. <a
+href="https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards">https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards</a></li>
+<li><strong>Grafana — Dashboard JSON model</strong> — referencia
+completa del schema (paneles, queries, targets, transformations). <a
+href="https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/view-dashboard-json-model/">https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/view-dashboard-json-model/</a></li>
+</ul>
+<h3 id="hit-6--alertas-bonus">Hit #6 — Alertas (bonus)</h3>
+<ul>
+<li><strong>Grafana Alerting — Provision alert rules</strong> — formato
+YAML del alert provisioning que usamos en Hit #6. <a
+href="https://grafana.com/docs/grafana/latest/alerting/set-up/provision-alerting-resources/">https://grafana.com/docs/grafana/latest/alerting/set-up/provision-alerting-resources/</a></li>
+<li><strong>Grafana Alerting — Discord contact point</strong> —
+integración nativa con webhooks Discord. <a
+href="https://grafana.com/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-discord/">https://grafana.com/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-discord/</a></li>
+</ul>
+<h3 id="observabilidad--fundamentos">Observabilidad — fundamentos</h3>
+<ul>
+<li><strong>Distributed Systems Observability</strong> — Cindy Sridharan
+(O’Reilly, 2018) — el reporte corto (~80 páginas) que define los 3
+pilares (logs / metrics / traces) y por qué este TP cubre solo logs.
+Lectura imprescindible para entender en qué encaja Loki en el
+ecosistema. <a
+href="https://www.oreilly.com/library/view/distributed-systems-observability/9781492033431/">https://www.oreilly.com/library/view/distributed-systems-observability/9781492033431/</a></li>
+<li><strong>Google SRE Book — Cap. 6: Monitoring Distributed
+Systems</strong> — los “4 golden signals” (latency, traffic, errors,
+saturation) y por qué los logs sirven para los 2 últimos. <a
+href="https://sre.google/sre-book/monitoring-distributed-systems/">https://sre.google/sre-book/monitoring-distributed-systems/</a></li>
+<li><strong>CNCF — Observability Whitepaper</strong> (2023) — overview
+de logging / tracing / metrics / events / profiles desde la fundación
+que mantiene Loki, Prometheus y OpenTelemetry. <a
+href="https://github.com/cncf/tag-observability/blob/main/whitepaper.md">https://github.com/cncf/tag-observability/blob/main/whitepaper.md</a></li>
+</ul>
+<h3 id="comparación-loki-vs-alternativas">Comparación Loki vs
+alternativas</h3>
+<ul>
+<li><strong>“Like Prometheus, but for logs” — Grafana Labs</strong> — el
+blog post fundacional (2018) donde se explica el modelo “label-first” de
+Loki vs el “full-text index” de Elasticsearch. Sigue siendo la mejor
+explicación de por qué Loki cuesta 10× menos que ELK para el mismo
+volumen. <a
+href="https://grafana.com/blog/2018/12/12/loki-prometheus-inspired-open-source-logging-for-cloud-natives/">https://grafana.com/blog/2018/12/12/loki-prometheus-inspired-open-source-logging-for-cloud-natives/</a></li>
+<li><strong>Sigelman, B. et al. (2010).</strong> “Dapper, a Large-Scale
+Distributed Systems Tracing Infrastructure”. <em>Google Technical
+Report.</em> — el paper que inicia el ecosistema de observabilidad
+moderno (focus en traces, pero el modelo de “structured events” se
+aplica directo a este TP). <a
+href="https://research.google/pubs/pub36356/">https://research.google/pubs/pub36356/</a></li>
+</ul>
+
+    <nav class="page-prev-next" aria-label="Navegación entre páginas">
+      <a class="prev-link" href="#" data-slot="prev" hidden>
+        <span class="arrow">←</span>
+        <span class="nav-meta">
+          <span class="nav-label">Anterior</span>
+          <span class="nav-title" data-slot="prev-title"></span>
+        </span>
+      </a>
+      <a class="next-link" href="#" data-slot="next" hidden>
+        <span class="nav-meta">
+          <span class="nav-label">Siguiente</span>
+          <span class="nav-title" data-slot="next-title"></span>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+    </nav>
+
+    <nav class="page-nav-bottom">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+    </nav>
+  </main>
+</div>
+
+<footer class="unlu-footer">
+  <div>
+    UNLu · Departamento de Ciencias Básicas · Seminario de Integración Profesional <strong>2026</strong>
+    · Dr. David Petrocelli
+  </div>
+</footer>
+
+<script>
+// Sidebar show/hide toggle (preference persisted in localStorage)
+(function () {
+  const sidebar = document.getElementById('toc-sidebar');
+  const layout = document.querySelector('.layout');
+  const hideBtn = document.getElementById('sidebar-hide');
+  const showBtn = document.getElementById('sidebar-show');
+  if (!sidebar || !layout || !hideBtn || !showBtn) return;
+
+  const KEY = 'unlu.dcb.sidebar.hidden';
+
+  function apply(hidden) {
+    layout.classList.toggle('sidebar-hidden', hidden);
+    showBtn.classList.toggle('visible', hidden);
+  }
+
+  apply(localStorage.getItem(KEY) === '1');
+
+  hideBtn.addEventListener('click', () => {
+    localStorage.setItem(KEY, '1');
+    apply(true);
+  });
+  showBtn.addEventListener('click', () => {
+    localStorage.removeItem(KEY);
+    apply(false);
+  });
+})();
+
+// Wrap each H2 (and its following content until the next H2) in a <details open>
+// element so users can collapse/expand sections.
+(function () {
+  const main = document.querySelector('main.content');
+  if (!main) return;
+
+  // Collect direct-child H2 headings so we don't touch nested ones (e.g., inside details we'll create)
+  const headings = Array.from(main.children).filter(el => el.tagName === 'H2');
+
+  headings.forEach(h2 => {
+    const details = document.createElement('details');
+    details.open = true;
+    details.className = 'section-collapsible';
+
+    const summary = document.createElement('summary');
+    // Move heading content (incl. anchor) into the summary so anchors keep working
+    summary.innerHTML = h2.innerHTML;
+    if (h2.id) summary.id = h2.id;
+    details.appendChild(summary);
+
+    // Move siblings until next H2 into details
+    const parent = h2.parentNode;
+    let next = h2.nextSibling;
+    parent.replaceChild(details, h2);
+    while (next && !(next.nodeType === 1 && next.tagName === 'H2')) {
+      const node = next;
+      next = next.nextSibling;
+      details.appendChild(node);
+    }
+  });
+
+  // If there's a hash in the URL, ensure the target's <details> is open
+  function openDetailsForHash(hash) {
+    if (!hash) return;
+    const target = document.getElementById(hash.replace(/^#/, ''));
+    if (!target) return;
+    let p = target.closest('details');
+    while (p) { p.open = true; p = p.parentElement && p.parentElement.closest('details'); }
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  openDetailsForHash(window.location.hash);
+  window.addEventListener('hashchange', () => openDetailsForHash(window.location.hash));
+
+  // Wire up "Expand all" / "Collapse all" controls in the inline TOC
+  document.querySelectorAll('.toc-controls [data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const action = btn.getAttribute('data-action');
+      const open = action === 'expand-all';
+      document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
+    });
+  });
+})();
+
+// Populate prev/next navigation based on the current page's banner-num
+(function () {
+  const pill = document.querySelector('.banner-pill');
+  const nav = document.querySelector('.page-prev-next');
+  if (!pill || !nav) return;
+
+  const key = (pill.textContent || '').trim().toUpperCase();
+
+  // Map banner-num → { prev, next }
+  // Each entry: { href, title } (or null if not present)
+  const MAP = {
+    'TP 0': {
+      prev: null,
+      next: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' }
+    },
+    'TP 1 · PARTE 1': {
+      prev: { href: 'practica-0.html', title: 'TP 0 — Prerrequisitos' },
+      next: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' }
+    },
+    'TP 1 · PARTE 2': {
+      prev: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' },
+      next: { href: 'practica-2.html', title: 'Práctica II — Observabilidad' }
+    },
+    'TP 2': {
+      prev: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' },
+      next: null
+    }
+  };
+
+  const entry = MAP[key];
+  if (!entry) return;
+
+  const prevLink = nav.querySelector('[data-slot="prev"]');
+  const nextLink = nav.querySelector('[data-slot="next"]');
+  const prevTitle = nav.querySelector('[data-slot="prev-title"]');
+  const nextTitle = nav.querySelector('[data-slot="next-title"]');
+
+  if (entry.prev && prevLink && prevTitle) {
+    prevLink.setAttribute('href', entry.prev.href);
+    prevTitle.textContent = entry.prev.title;
+    prevLink.hidden = false;
+  }
+  if (entry.next && nextLink && nextTitle) {
+    nextLink.setAttribute('href', entry.next.href);
+    nextTitle.textContent = entry.next.title;
+    nextLink.hidden = false;
+  }
+
+  // If neither slot is shown, hide the whole nav
+  if ((!entry.prev) && (!entry.next)) {
+    nav.style.display = 'none';
+  }
+})();
+
+// Open all external links in a new tab (preserves the current page).
+// Internal anchors (#hash), relative links and same-origin links stay in-tab.
+(function () {
+  const here = window.location.hostname;
+  document.querySelectorAll('a[href]').forEach(a => {
+    const href = a.getAttribute('href');
+    if (!href) return;
+    // Skip anchors and pure relative links
+    if (href.startsWith('#') || href.startsWith('/') || !/^https?:\/\//i.test(href)) return;
+    try {
+      const url = new URL(href);
+      if (url.hostname && url.hostname !== here) {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      }
+    } catch (_) {
+      // Malformed URL — ignore
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

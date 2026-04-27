@@ -557,6 +557,112 @@ herramienta más usada en la industria para QA.
 - Selenium docs: https://www.selenium.dev/documentation/
 ```
 
+### Esqueleto de logging estructurado (Hit #5)
+
+`print()` no alcanza para el Hit #5 y no es aceptable como evidencia de robustez: no tiene **niveles** (no podés filtrar `DEBUG` vs `ERROR` en CI), no tiene **rotación** (en el CronJob de k3s el archivo crece para siempre y termina llenando el PVC), y es **ilegible en CI** (no hay timestamp, no hay módulo, no se distingue del output del scraper).
+
+Esqueleto Python (poner en un módulo `logging_setup.py` y llamarlo una vez desde `scraper.py`):
+
+```python
+import logging
+from logging.handlers import RotatingFileHandler
+
+def setup_logging(log_file: str = "output/scraper.log") -> None:
+    fmt = "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s"
+    formatter = logging.Formatter(fmt, datefmt="%Y-%m-%dT%H:%M:%S%z")
+
+    # Rotating file → no crece infinito en el CronJob
+    file_handler = RotatingFileHandler(
+        log_file, maxBytes=2_000_000, backupCount=3, encoding="utf-8"
+    )
+    file_handler.setFormatter(formatter)
+
+    # Stream → se ve en `kubectl logs` y en GH Actions
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+
+    logging.basicConfig(
+        level=logging.INFO,
+        handlers=[file_handler, stream_handler],
+    )
+
+# En cada módulo (extractors.py, retry.py, etc.):
+logger = logging.getLogger(__name__)
+
+# Uso típico:
+logger.info("Scrapeando página %d", page)
+logger.warning("Precio ausente, devuelvo null", extra={"producto": p})
+logger.error("Timeout tras 3 reintentos", exc_info=True)
+```
+
+**Equivalentes nombrados:**
+
+| Stack    | Librería recomendada    | Por qué                                                |
+|----------|-------------------------|--------------------------------------------------------|
+| Node.js  | `pino` (o `winston`)    | pino es el más rápido y emite JSON nativo (ideal para `kubectl logs` + parsers). winston es más config-friendly pero más lento. |
+| Java     | SLF4J + Logback         | `logback.xml` con `<RollingFileAppender>` + `<SizeBasedTriggeringPolicy>` cumple lo mismo que `RotatingFileHandler`. |
+
+### Esqueleto de tests mínimos (Hit #6)
+
+**Importante:** los tests del Hit #6 deben correr **sin abrir un browser real** — usen mocks. Eso los hace rápidos (todo el suite < 1s), determinísticos, y CI-friendly (no necesitan Chrome ni display). Si un test del Hit #6 levanta Selenium de verdad, está mal hecho — eso pertenece a un test E2E aparte.
+
+Esqueleto Python con `pytest`:
+
+```python
+# tests/conftest.py
+import pytest
+from unittest.mock import MagicMock
+
+@pytest.fixture
+def mock_element():
+    """WebElement falso con .text y .get_attribute() configurables."""
+    el = MagicMock()
+    el.text = ""
+    el.get_attribute.return_value = ""
+    return el
+
+@pytest.fixture
+def fake_driver():
+    return MagicMock()
+```
+
+```python
+# tests/test_extractors.py
+from extractors import extract_precio
+from selenium.common.exceptions import NoSuchElementException
+
+def test_extract_precio_happy_path(mock_element):
+    mock_element.text = "$ 12.345"
+    assert extract_precio(mock_element) == 12345.0
+
+def test_extract_precio_soft_fail_returns_null(fake_driver):
+    fake_driver.find_element.side_effect = NoSuchElementException()
+    assert extract_precio(fake_driver) is None  # no levanta, devuelve null
+```
+
+```python
+# tests/test_retry.py
+from unittest.mock import MagicMock
+from selenium.common.exceptions import TimeoutException
+from retry import fetch_with_retry
+
+def test_retry_dispara_3_veces_ante_timeout():
+    fn = MagicMock(side_effect=[TimeoutException(), TimeoutException(), "ok"])
+    assert fetch_with_retry(fn, max_attempts=3) == "ok"
+    assert fn.call_count == 3
+```
+
+Correrlos con la gate de cobertura del Hit #6:
+
+```bash
+pytest --cov=. --cov-fail-under=70
+```
+
+**Equivalentes:**
+
+- **Node.js**: `jest` con `describe()` + `expect()` + `jest.mock('selenium-webdriver')` para mockear el driver.
+- **Java**: JUnit 5 + Mockito — `@Mock WebElement el;` + `when(el.getText()).thenReturn("$ 12.345");`.
+
 ### Esqueleto del Dockerfile multi-stage (Infra base)
 
 Esto es un punto de partida. Adapten al lenguaje. La idea es **multi-stage** para que la imagen final sea lo más chica posible (no necesitan compiladores ni headers en runtime).
@@ -727,6 +833,67 @@ repos:
 ```
 
 Activar local: `pip install pre-commit && pre-commit install`. Documenten el comando en el README.
+
+**Equivalente Node.js — husky + lint-staged** (`package.json`):
+
+```json
+{
+  "scripts": {
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,ts}": ["eslint --fix", "prettier --write"],
+    "*.{json,md,yaml,yml}": ["prettier --write"]
+  },
+  "devDependencies": {
+    "husky": "^9.1.0",
+    "lint-staged": "^15.2.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.3.0"
+  }
+}
+```
+
+Y `.husky/pre-commit`:
+
+```bash
+#!/usr/bin/env sh
+npx lint-staged
+gitleaks detect --no-git --redact --verbose
+```
+
+Activar local: `npm install && npm run prepare` (husky deja el hook listo).
+
+**Equivalente Java — Maven + Spotless** (`pom.xml`, fragmento del `<build>`):
+
+```xml
+<plugin>
+  <groupId>com.diffplug.spotless</groupId>
+  <artifactId>spotless-maven-plugin</artifactId>
+  <version>2.43.0</version>
+  <configuration>
+    <java>
+      <googleJavaFormat><version>1.22.0</version></googleJavaFormat>
+      <removeUnusedImports/>
+      <trimTrailingWhitespace/>
+    </java>
+  </configuration>
+  <executions>
+    <execution>
+      <goals><goal>check</goal></goals>
+      <phase>verify</phase>
+    </execution>
+  </executions>
+</plugin>
+```
+
+Y un hook Git (`.git/hooks/pre-commit`, o un perfil `prepare-commit` en Maven) que invoque:
+
+```bash
+mvn spotless:check && gitleaks detect --no-git --redact
+```
+
+> En **cualquier** stack se puede usar el framework [`pre-commit.com`](https://pre-commit.com/) directamente — es agnóstico al lenguaje y soporta hooks de Node, Java, Go, Rust, etc. Si no quieren mantener husky o pom.xml + hook custom, `pre-commit` es la opción más portable.
 
 ---
 
