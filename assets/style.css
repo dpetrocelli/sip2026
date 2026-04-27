@@ -58,6 +58,14 @@ body {
   padding: 14px 32px 10px;
   max-width: 1400px;
   margin: 0 auto;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.unlu-header .brand:hover {
+  opacity: 0.85;
 }
 
 .unlu-header .brand .logo {

@@ -734,6 +734,17 @@ Activar local: `pip install pre-commit && pre-commit install`. Documenten el com
 
 Solo lo directamente vinculado a lo que se les pide en Parte 2. Los libros generales de Kubernetes / containers viven en el [TP 0](practica-0.html#lectura-recomendada-y-referencias) y no se repiten.
 
+### Infra base — Dockerfile + docker-compose + CI/CD + pre-commit
+
+- **Docker — Best practices for writing Dockerfiles** — multi-stage, layer ordering, .dockerignore. <https://docs.docker.com/develop/develop-images/instructions/>
+- **Docker Compose specification** — la spec oficial v2 de compose (ya no es "docker-compose v1" Python). <https://compose-spec.io/>
+- **GitHub Actions — Workflow syntax** — toda la sintaxis de `.github/workflows/*.yml`. <https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions>
+- **GitHub Actions — Using a matrix for jobs** — cómo correr Chrome y Firefox en paralelo (lo que pide Hit #7). <https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs>
+- **gitleaks** — bloquea commits con secrets. <https://github.com/gitleaks/gitleaks>
+- **gitleaks-action** — el wrapper para usarlo en GH Actions. <https://github.com/gitleaks/gitleaks-action>
+- **pre-commit framework** — la referencia para el `.pre-commit-config.yaml`. <https://pre-commit.com/>
+- **Sigstore / cosign** — firma criptográfica de imágenes Docker, **estándar 2026** para supply chain security (SLSA Level 3). Lo que viene después de gitleaks. <https://docs.sigstore.dev/>
+
 ### Hit #4 — Extracción JSON estructurada
 
 - **JSON Schema** — el estándar para validar la estructura del output. Si quieren ir un paso más, agreguen un test que valide cada `output/*.json` contra un schema. <https://json-schema.org/>
@@ -753,17 +764,6 @@ Solo lo directamente vinculado a lo que se les pide en Parte 2. Los libros gener
 - **`pytest-cov`** — plugin que integra coverage con pytest + el flag `--cov-fail-under=70` que les piden. <https://pytest-cov.readthedocs.io/>
 - **Equivalentes**: [`jest --coverage`](https://jestjs.io/docs/cli#--coverageboolean) (Node) · [`jacoco-maven-plugin`](https://www.eclemma.org/jacoco/trunk/doc/maven.html) (Java)
 - **Hutchins, M.; Foster, H.; Goradia, T.; Ostrand, T. (1994).** "Experiments on the Effectiveness of Dataflow- and Control-Flow-Based Test Adequacy Criteria". *ICSE 1994.* — el paper original que establece por qué la cobertura ≥ 70 % NO es la métrica completa pero sí un piso razonable. <https://dl.acm.org/doi/10.5555/257734.257766>
-
-### Infra base — Dockerfile + docker-compose + CI/CD + pre-commit
-
-- **Docker — Best practices for writing Dockerfiles** — multi-stage, layer ordering, .dockerignore. <https://docs.docker.com/develop/develop-images/instructions/>
-- **Docker Compose specification** — la spec oficial v2 de compose (ya no es "docker-compose v1" Python). <https://compose-spec.io/>
-- **GitHub Actions — Workflow syntax** — toda la sintaxis de `.github/workflows/*.yml`. <https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions>
-- **GitHub Actions — Using a matrix for jobs** — cómo correr Chrome y Firefox en paralelo (lo que pide Hit #7). <https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs>
-- **gitleaks** — bloquea commits con secrets. <https://github.com/gitleaks/gitleaks>
-- **gitleaks-action** — el wrapper para usarlo en GH Actions. <https://github.com/gitleaks/gitleaks-action>
-- **pre-commit framework** — la referencia para el `.pre-commit-config.yaml`. <https://pre-commit.com/>
-- **Sigstore / cosign** — firma criptográfica de imágenes Docker, **estándar 2026** para supply chain security (SLSA Level 3). Lo que viene después de gitleaks. <https://docs.sigstore.dev/>
 
 ### Hit #7 — Kubernetes Job + CronJob + ConfigMap + PVC
 
