@@ -4,7 +4,7 @@
 
 **Fecha de Entrega: 25/04/2026 (entrega cerrada)**
 
-> ✅ **Entrega cerrada.** Esta consigna queda como referencia. El trabajo continúa en la [Parte 2](practica-1-parte-2.html) (Hits #4–#8, entrega 09/05/2026), que **requiere** haber completado el [TP 0 — Prerrequisitos k3s](practica-0.html) antes del Hit #7.
+> ✅ **Entrega cerrada.** Esta consigna queda como referencia. El trabajo continúa en la [Parte 2](practica-1-parte-2.html) (Hits #4–#8, entrega 02/05/2026), que **requiere** haber completado el [TP 0 — Prerrequisitos k3s](practica-0.html) antes del Hit #7.
 
 ---
 
@@ -359,7 +359,7 @@ cd hit3 && BROWSER=chrome python scraper.py
 
 ## Lo que sigue: Parte 2
 
-La [Parte 2](practica-1-parte-2.html) (entrega 09/05/2026) extiende el scraper con tests automatizados, Docker + docker-compose, CI/CD con GitHub Actions, despliegue en Kubernetes (k3s/k3d) y una capa de capacidad extendida (paginación, estadísticas, histórico con PostgreSQL).
+La [Parte 2](practica-1-parte-2.html) (entrega 02/05/2026) extiende el scraper con tests automatizados, Docker + docker-compose, CI/CD con GitHub Actions, despliegue en Kubernetes (k3s/k3d) y una capa de capacidad extendida (paginación, estadísticas, histórico con PostgreSQL).
 
 **Antes del próximo sábado:**
 
