@@ -299,16 +299,13 @@ kubectl delete -f k8s/
 
 ---
 
-### Hit #8 — Capacidad extendida (obligatorio, mínimo 1 de 6)
+### Hit #8 — Capacidad extendida
 
-Extienda el scraper con **al menos una** de las siguientes capacidades. Hacer más de una suma puntos extra (hasta 2 ítems sumando), pero la entrega NO se acepta sin al menos 1.
+Extienda el scraper con **las siguientes 3 capacidades**:
 
 1. **Paginación**: traer los primeros 30 resultados en lugar de 10, navegando hasta 3 páginas.
 2. **Comparación de precios**: para cada producto, calcular precio mínimo, máximo, mediana y desvío estándar entre los resultados extraídos. Imprimir tabla resumen.
 3. **Histórico con PostgreSQL**: guardar los resultados en una instancia PostgreSQL con timestamp, para detectar cambios de precio entre corridas del CronJob (Hit #7). Implementación esperada: deployment de Postgres en el mismo cluster k3s (StatefulSet + PVC + Service), credenciales via `Secret`, schema migrations (Alembic / Flyway / Liquibase / SQL files versionados). Tabla mínima: `(producto, titulo, precio, link, tienda_oficial, scraped_at)`.
-4. **Reporte HTML**: generar una página estática (con GitHub Pages publicada por el pipeline) que muestre los resultados de la última corrida en una tabla navegable.
-5. **Page Object Model**: refactorizar el scraper para separar el código de navegación (`SearchPage`, `ResultsPage`) del código de extracción y de los tests.
-6. **Helm Chart**: empaquetar los manifiestos del Hit #7 como un chart con `values.yaml` parametrizable.
 
 ---
 
@@ -688,7 +685,7 @@ Estos no suman puntos — son condición necesaria para que la entrega sea **cor
 | **Hit #5** — manejo robusto de errores (selectores faltantes, timeouts, retries con backoff) | 15 % |
 | **Hit #6** — tests automatizados + cobertura ≥ 70 % validada en CI | 15 % |
 | **Hit #7** — `Job` + `CronJob` + `ConfigMap` + `PVC` corriendo en k3s/k3d | 20 % |
-| **Hit #8** — al menos 1 capacidad extendida implementada (paginación, stats, PostgreSQL, HTML report, POM o Helm) | 15 % |
+| **Hit #8** — capacidad extendida (paginación + stats + histórico PostgreSQL en k3s) | 15 % |
 | **ADRs** (mínimo 4 en `docs/adr/` — 2 del menú propuesto + 2 de elección propia) | 10 % |
 
 ---
