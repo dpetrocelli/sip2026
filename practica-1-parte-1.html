@@ -183,8 +183,31 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     id="toc-criterios-de-evaluación--parte-1">Criterios de evaluación —
     Parte 1</a></li>
     <li><a href="#referencias-y-bibliografía"
-    id="toc-referencias-y-bibliografía">Referencias y
-    Bibliografía</a></li>
+    id="toc-referencias-y-bibliografía">Referencias y Bibliografía</a>
+    <ul>
+    <li><a href="#hit-1--selenium-webdriver--waits"
+    id="toc-hit-1--selenium-webdriver--waits">Hit #1 — Selenium
+    WebDriver + waits</a></li>
+    <li><a href="#hit-2--browser-factory--multi-browser"
+    id="toc-hit-2--browser-factory--multi-browser">Hit #2 — Browser
+    Factory + multi-browser</a></li>
+    <li><a href="#hit-3--selectores-dom--screenshots"
+    id="toc-hit-3--selectores-dom--screenshots">Hit #3 — Selectores DOM
+    + screenshots</a></li>
+    <li><a
+    href="#headless-detection-lo-que-vivieron-en-parte-1-con-mercadolibre"
+    id="toc-headless-detection-lo-que-vivieron-en-parte-1-con-mercadolibre">Headless
+    detection (lo que vivieron en Parte 1 con MercadoLibre)</a></li>
+    <li><a href="#tests-automatizados-sobre-el-scraper-mínimos-pedidos"
+    id="toc-tests-automatizados-sobre-el-scraper-mínimos-pedidos">Tests
+    automatizados sobre el scraper (mínimos pedidos)</a></li>
+    <li><a href="#ética--legalidad-del-scraping"
+    id="toc-ética--legalidad-del-scraping">Ética / legalidad del
+    scraping</a></li>
+    <li><a href="#seguridad" id="toc-seguridad">Seguridad</a></li>
+    <li><a href="#dataset--sitio-del-tp"
+    id="toc-dataset--sitio-del-tp">Dataset / sitio del TP</a></li>
+    </ul></li>
     </ul></li>
     </ul>
     <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
@@ -284,8 +307,32 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       id="toc-criterios-de-evaluación--parte-1">Criterios de evaluación
       — Parte 1</a></li>
       <li><a href="#referencias-y-bibliografía"
-      id="toc-referencias-y-bibliografía">Referencias y
-      Bibliografía</a></li>
+      id="toc-referencias-y-bibliografía">Referencias y Bibliografía</a>
+      <ul>
+      <li><a href="#hit-1--selenium-webdriver--waits"
+      id="toc-hit-1--selenium-webdriver--waits">Hit #1 — Selenium
+      WebDriver + waits</a></li>
+      <li><a href="#hit-2--browser-factory--multi-browser"
+      id="toc-hit-2--browser-factory--multi-browser">Hit #2 — Browser
+      Factory + multi-browser</a></li>
+      <li><a href="#hit-3--selectores-dom--screenshots"
+      id="toc-hit-3--selectores-dom--screenshots">Hit #3 — Selectores
+      DOM + screenshots</a></li>
+      <li><a
+      href="#headless-detection-lo-que-vivieron-en-parte-1-con-mercadolibre"
+      id="toc-headless-detection-lo-que-vivieron-en-parte-1-con-mercadolibre">Headless
+      detection (lo que vivieron en Parte 1 con MercadoLibre)</a></li>
+      <li><a
+      href="#tests-automatizados-sobre-el-scraper-mínimos-pedidos"
+      id="toc-tests-automatizados-sobre-el-scraper-mínimos-pedidos">Tests
+      automatizados sobre el scraper (mínimos pedidos)</a></li>
+      <li><a href="#ética--legalidad-del-scraping"
+      id="toc-ética--legalidad-del-scraping">Ética / legalidad del
+      scraping</a></li>
+      <li><a href="#seguridad" id="toc-seguridad">Seguridad</a></li>
+      <li><a href="#dataset--sitio-del-tp"
+      id="toc-dataset--sitio-del-tp">Dataset / sitio del TP</a></li>
+      </ul></li>
       </ul></li>
       </ul>
       <div class="toc-controls">
@@ -764,20 +811,94 @@ obligatorios</strong></td>
 </table>
 <hr />
 <h2 id="referencias-y-bibliografía">Referencias y Bibliografía</h2>
+<p>Solo lo directamente vinculado a lo que se les pide en esta Parte 1.
+Los libros generales de testing/k8s viven en el <a
+href="practica-0.html#lectura-recomendada-y-referencias">TP 0</a> y no
+se repiten acá.</p>
+<h3 id="hit-1--selenium-webdriver--waits">Hit #1 — Selenium WebDriver +
+waits</h3>
 <ul>
-<li><strong>[SEL]</strong> Selenium Documentation. <a
-href="https://www.selenium.dev/documentation/">https://www.selenium.dev/documentation/</a></li>
-<li><strong>[W3C-WD]</strong> W3C WebDriver Specification. <a
+<li><strong>W3C WebDriver Specification (Level 2, 2023)</strong> — el
+protocolo estandarizado que hablan Selenium, chromedriver y geckodriver.
+Si dudan “¿esto es spec o es del binding?”, acá lo verifican. <a
 href="https://www.w3.org/TR/webdriver2/">https://www.w3.org/TR/webdriver2/</a></li>
-<li><strong>[CSS-SEL]</strong> MDN — CSS Selectors. <a
+<li><strong>Selenium 4 — Waiting Strategies</strong> — la documentación
+oficial sobre <code>WebDriverWait</code>,
+<code>expected_conditions</code> y por qué nunca usar
+<code>time.sleep()</code>. <a
+href="https://www.selenium.dev/documentation/webdriver/waits/">https://www.selenium.dev/documentation/webdriver/waits/</a></li>
+<li><strong>Selenium — Test Practices: Encouraged Patterns</strong> —
+POM, atomic tests, no fixed delays. La cátedra evalúa contra esta lista.
+<a
+href="https://www.selenium.dev/documentation/test_practices/encouraged/">https://www.selenium.dev/documentation/test_practices/encouraged/</a></li>
+</ul>
+<h3 id="hit-2--browser-factory--multi-browser">Hit #2 — Browser Factory
++ multi-browser</h3>
+<ul>
+<li><strong>Selenium 4 — Capabilities &amp; Driver Sessions</strong> —
+cómo configurar Chrome y Firefox sin que cada uno sea un caso especial.
+<a
+href="https://www.selenium.dev/documentation/webdriver/drivers/options/">https://www.selenium.dev/documentation/webdriver/drivers/options/</a></li>
+<li><strong>Browser Factory pattern (referencia)</strong> — Capítulo 6
+“Browser Factory” del libro <a
+href="https://leanpub.com/testautomationpatterns">Test Automation
+Patterns</a> (Gamba &amp; Graham). Resumen libre del patrón en <a
+href="https://www.softwaretestinghelp.com/page-object-model-pom-with-page-factory/">https://www.softwaretestinghelp.com/page-object-model-pom-with-page-factory/</a>.</li>
+</ul>
+<h3 id="hit-3--selectores-dom--screenshots">Hit #3 — Selectores DOM +
+screenshots</h3>
+<ul>
+<li><strong>MDN — CSS Selectors</strong> — <a
 href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors">https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors</a></li>
-<li><strong>[XPATH]</strong> MDN — XPath. <a
+<li><strong>MDN — XPath</strong> — <a
 href="https://developer.mozilla.org/en-US/docs/Web/XPath">https://developer.mozilla.org/en-US/docs/Web/XPath</a></li>
-<li><strong>[GITLEAKS]</strong> gitleaks. <a
-href="https://github.com/gitleaks/gitleaks">https://github.com/gitleaks/gitleaks</a></li>
-<li><strong>[ROBOTS]</strong> The Robots Exclusion Protocol. <a
+<li><strong>Selenium 4 — Locator Strategies</strong> — cuándo usar
+<code>By.CSS_SELECTOR</code> vs <code>By.XPATH</code> (y por qué casi
+siempre la respuesta es CSS). <a
+href="https://www.selenium.dev/documentation/webdriver/elements/locators/">https://www.selenium.dev/documentation/webdriver/elements/locators/</a></li>
+</ul>
+<h3
+id="headless-detection-lo-que-vivieron-en-parte-1-con-mercadolibre">Headless
+detection (lo que vivieron en Parte 1 con MercadoLibre)</h3>
+<ul>
+<li><strong>Vastel, A. et al. (2020).</strong> “FP-Crawlers: Studying
+the Resilience of Browser Fingerprinting to Block Crawlers”. <em>USENIX
+Security.</em> — paper directo sobre cómo los sitios detectan headless
+Chrome/Firefox y los workarounds que funcionan. <a
+href="https://hal.science/hal-02612461/document">https://hal.science/hal-02612461/document</a></li>
+<li><strong>Chrome DevTools — Headless Mode</strong> — flags
+actualizadas y diferencias <code>--headless=new</code> vs
+<code>--headless=old</code>. <a
+href="https://developer.chrome.com/docs/chromium/headless">https://developer.chrome.com/docs/chromium/headless</a></li>
+</ul>
+<h3 id="tests-automatizados-sobre-el-scraper-mínimos-pedidos">Tests
+automatizados sobre el scraper (mínimos pedidos)</h3>
+<ul>
+<li><strong>Luo, Q. et al. (2014).</strong> “An Empirical Analysis of
+Flaky Tests”. <em>FSE 2014.</em> — el paper canónico sobre por qué los
+tests E2E (como los suyos) se rompen sin razón aparente, con taxonomía
+de causas. Léanlo si quieren entender flakiness en serio. <a
+href="https://mir.cs.illinois.edu/marinov/publications/LuoETAL14FlakyTestsAnalysis.pdf">https://mir.cs.illinois.edu/marinov/publications/LuoETAL14FlakyTestsAnalysis.pdf</a></li>
+</ul>
+<h3 id="ética--legalidad-del-scraping">Ética / legalidad del
+scraping</h3>
+<ul>
+<li><strong>Robots Exclusion Protocol — RFC 9309 (2022)</strong> — la
+única RFC formal después de 25 años de tradición informal. Lean al menos
+la sección 2 (qué es legal interpretar y qué no). <a
 href="https://www.rfc-editor.org/rfc/rfc9309">https://www.rfc-editor.org/rfc/rfc9309</a></li>
-<li><strong>[ML]</strong> MercadoLibre Argentina. <a
+<li><strong>MercadoLibre Argentina — robots.txt</strong> — verifíquenlo
+antes de scrapear. <a
+href="https://www.mercadolibre.com.ar/robots.txt">https://www.mercadolibre.com.ar/robots.txt</a></li>
+</ul>
+<h3 id="seguridad">Seguridad</h3>
+<ul>
+<li><strong>gitleaks</strong> — escaneo de secrets en commits. <a
+href="https://github.com/gitleaks/gitleaks">https://github.com/gitleaks/gitleaks</a></li>
+</ul>
+<h3 id="dataset--sitio-del-tp">Dataset / sitio del TP</h3>
+<ul>
+<li><strong>MercadoLibre Argentina</strong> — <a
 href="https://www.mercadolibre.com.ar">https://www.mercadolibre.com.ar</a></li>
 </ul>
 

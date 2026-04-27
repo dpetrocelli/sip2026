@@ -325,10 +325,43 @@ cd hit3 && BROWSER=chrome python scraper.py
 
 ## Referencias y Bibliografía
 
-- **[SEL]** Selenium Documentation. <https://www.selenium.dev/documentation/>
-- **[W3C-WD]** W3C WebDriver Specification. <https://www.w3.org/TR/webdriver2/>
-- **[CSS-SEL]** MDN — CSS Selectors. <https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors>
-- **[XPATH]** MDN — XPath. <https://developer.mozilla.org/en-US/docs/Web/XPath>
-- **[GITLEAKS]** gitleaks. <https://github.com/gitleaks/gitleaks>
-- **[ROBOTS]** The Robots Exclusion Protocol. <https://www.rfc-editor.org/rfc/rfc9309>
-- **[ML]** MercadoLibre Argentina. <https://www.mercadolibre.com.ar>
+Solo lo directamente vinculado a lo que se les pide en esta Parte 1. Los libros generales de testing/k8s viven en el [TP 0](practica-0.html#lectura-recomendada-y-referencias) y no se repiten acá.
+
+### Hit #1 — Selenium WebDriver + waits
+
+- **W3C WebDriver Specification (Level 2, 2023)** — el protocolo estandarizado que hablan Selenium, chromedriver y geckodriver. Si dudan "¿esto es spec o es del binding?", acá lo verifican. <https://www.w3.org/TR/webdriver2/>
+- **Selenium 4 — Waiting Strategies** — la documentación oficial sobre `WebDriverWait`, `expected_conditions` y por qué nunca usar `time.sleep()`. <https://www.selenium.dev/documentation/webdriver/waits/>
+- **Selenium — Test Practices: Encouraged Patterns** — POM, atomic tests, no fixed delays. La cátedra evalúa contra esta lista. <https://www.selenium.dev/documentation/test_practices/encouraged/>
+
+### Hit #2 — Browser Factory + multi-browser
+
+- **Selenium 4 — Capabilities & Driver Sessions** — cómo configurar Chrome y Firefox sin que cada uno sea un caso especial. <https://www.selenium.dev/documentation/webdriver/drivers/options/>
+- **Browser Factory pattern (referencia)** — Capítulo 6 "Browser Factory" del libro [Test Automation Patterns](https://leanpub.com/testautomationpatterns) (Gamba & Graham). Resumen libre del patrón en <https://www.softwaretestinghelp.com/page-object-model-pom-with-page-factory/>.
+
+### Hit #3 — Selectores DOM + screenshots
+
+- **MDN — CSS Selectors** — <https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors>
+- **MDN — XPath** — <https://developer.mozilla.org/en-US/docs/Web/XPath>
+- **Selenium 4 — Locator Strategies** — cuándo usar `By.CSS_SELECTOR` vs `By.XPATH` (y por qué casi siempre la respuesta es CSS). <https://www.selenium.dev/documentation/webdriver/elements/locators/>
+
+### Headless detection (lo que vivieron en Parte 1 con MercadoLibre)
+
+- **Vastel, A. et al. (2020).** "FP-Crawlers: Studying the Resilience of Browser Fingerprinting to Block Crawlers". *USENIX Security.* — paper directo sobre cómo los sitios detectan headless Chrome/Firefox y los workarounds que funcionan. <https://hal.science/hal-02612461/document>
+- **Chrome DevTools — Headless Mode** — flags actualizadas y diferencias `--headless=new` vs `--headless=old`. <https://developer.chrome.com/docs/chromium/headless>
+
+### Tests automatizados sobre el scraper (mínimos pedidos)
+
+- **Luo, Q. et al. (2014).** "An Empirical Analysis of Flaky Tests". *FSE 2014.* — el paper canónico sobre por qué los tests E2E (como los suyos) se rompen sin razón aparente, con taxonomía de causas. Léanlo si quieren entender flakiness en serio. <https://mir.cs.illinois.edu/marinov/publications/LuoETAL14FlakyTestsAnalysis.pdf>
+
+### Ética / legalidad del scraping
+
+- **Robots Exclusion Protocol — RFC 9309 (2022)** — la única RFC formal después de 25 años de tradición informal. Lean al menos la sección 2 (qué es legal interpretar y qué no). <https://www.rfc-editor.org/rfc/rfc9309>
+- **MercadoLibre Argentina — robots.txt** — verifíquenlo antes de scrapear. <https://www.mercadolibre.com.ar/robots.txt>
+
+### Seguridad
+
+- **gitleaks** — escaneo de secrets en commits. <https://github.com/gitleaks/gitleaks>
+
+### Dataset / sitio del TP
+
+- **MercadoLibre Argentina** — <https://www.mercadolibre.com.ar>
