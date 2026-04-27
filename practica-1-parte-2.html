@@ -130,9 +130,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     <li><a href="#hit-7--despliegue-en-kubernetes-k3s"
     id="toc-hit-7--despliegue-en-kubernetes-k3s">Hit #7 — Despliegue en
     Kubernetes (k3s)</a></li>
-    <li><a href="#hit-8--capacidad-extendida-obligatorio-mínimo-1-de-6"
-    id="toc-hit-8--capacidad-extendida-obligatorio-mínimo-1-de-6">Hit #8
-    — Capacidad extendida (obligatorio, mínimo 1 de 6)</a></li>
+    <li><a href="#hit-8--capacidad-extendida"
+    id="toc-hit-8--capacidad-extendida">Hit #8 — Capacidad
+    extendida</a></li>
     </ul></li>
     <li><a href="#material-de-apoyo" id="toc-material-de-apoyo">Material
     de apoyo</a>
@@ -245,10 +245,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       <li><a href="#hit-7--despliegue-en-kubernetes-k3s"
       id="toc-hit-7--despliegue-en-kubernetes-k3s">Hit #7 — Despliegue
       en Kubernetes (k3s)</a></li>
-      <li><a
-      href="#hit-8--capacidad-extendida-obligatorio-mínimo-1-de-6"
-      id="toc-hit-8--capacidad-extendida-obligatorio-mínimo-1-de-6">Hit
-      #8 — Capacidad extendida (obligatorio, mínimo 1 de 6)</a></li>
+      <li><a href="#hit-8--capacidad-extendida"
+      id="toc-hit-8--capacidad-extendida">Hit #8 — Capacidad
+      extendida</a></li>
       </ul></li>
       <li><a href="#material-de-apoyo"
       id="toc-material-de-apoyo">Material de apoyo</a>
@@ -728,11 +727,9 @@ mostrando el cron activo.</li>
 los YAMLs con <code>kubectl apply --dry-run=client -f k8s/</code>.</li>
 </ul>
 <hr />
-<h3 id="hit-8--capacidad-extendida-obligatorio-mínimo-1-de-6">Hit #8 —
-Capacidad extendida (obligatorio, mínimo 1 de 6)</h3>
-<p>Extienda el scraper con <strong>al menos una</strong> de las
-siguientes capacidades. Hacer más de una suma puntos extra (hasta 2
-ítems sumando), pero la entrega NO se acepta sin al menos 1.</p>
+<h3 id="hit-8--capacidad-extendida">Hit #8 — Capacidad extendida</h3>
+<p>Extienda el scraper con <strong>las siguientes 3
+capacidades</strong>:</p>
 <ol type="1">
 <li><strong>Paginación</strong>: traer los primeros 30 resultados en
 lugar de 10, navegando hasta 3 páginas.</li>
@@ -746,14 +743,6 @@ de Postgres en el mismo cluster k3s (StatefulSet + PVC + Service),
 credenciales via <code>Secret</code>, schema migrations (Alembic /
 Flyway / Liquibase / SQL files versionados). Tabla mínima:
 <code>(producto, titulo, precio, link, tienda_oficial, scraped_at)</code>.</li>
-<li><strong>Reporte HTML</strong>: generar una página estática (con
-GitHub Pages publicada por el pipeline) que muestre los resultados de la
-última corrida en una tabla navegable.</li>
-<li><strong>Page Object Model</strong>: refactorizar el scraper para
-separar el código de navegación (<code>SearchPage</code>,
-<code>ResultsPage</code>) del código de extracción y de los tests.</li>
-<li><strong>Helm Chart</strong>: empaquetar los manifiestos del Hit #7
-como un chart con <code>values.yaml</code> parametrizable.</li>
 </ol>
 <hr />
 <h2 id="material-de-apoyo">Material de apoyo</h2>
@@ -1231,9 +1220,8 @@ validada en CI</td>
 <td>20 %</td>
 </tr>
 <tr>
-<td><strong>Hit #8</strong> — al menos 1 capacidad extendida
-implementada (paginación, stats, PostgreSQL, HTML report, POM o
-Helm)</td>
+<td><strong>Hit #8</strong> — capacidad extendida (paginación + stats +
+histórico PostgreSQL en k3s)</td>
 <td>15 %</td>
 </tr>
 <tr>
