@@ -406,16 +406,6 @@ docker run --rm -e HEADLESS=true -e BROWSER=chrome \
 # Verificá que se generen los 3 JSON en output/
 ```
 
-### 6) Comparación contra el golden master (opcional pero recomendado)
-
-La cátedra publicó la implementación de referencia con un `tooling/compare.py` que valida estructura, schema, presencia de hits, anti-patterns y secrets. Pueden correrla contra su propio repo para tener feedback antes de entregar:
-
-```bash
-git clone https://github.com/dpetrocelli/sip2026.git /tmp/sip-ref
-python /tmp/sip-ref/reference/tooling/compare.py \
-  --student . --out /tmp/mi-evaluacion.md
-cat /tmp/mi-evaluacion.md
-```
 
 El reporte indica qué hits encuentra, qué anti-patterns detecta (`time.sleep`, selectores hardcodeados, secrets, etc.) y un score estimado. **No reemplaza la corrección humana**, pero detecta los errores estructurales más comunes.
 
