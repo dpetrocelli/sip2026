@@ -76,14 +76,14 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <body>
 
 <header class="unlu-header">
-  <div class="brand">
+  <a href="index.html" class="brand" title="Volver al menú principal">
     <img src="assets/unlu_escudo.png" alt="Universidad Nacional de Luján" class="logo unlu">
     <div class="brand-text">
       <div class="institution">Universidad Nacional de Luján</div>
       <div class="department">Departamento de Ciencias Básicas</div>
     </div>
     <img src="assets/logo_dcb.png" alt="Departamento de Ciencias Básicas" class="logo dcb">
-  </div>
+  </a>
   <div class="course-bar">
     <span class="course">Seminario de Integración Profesional</span>
     <span class="year">2026</span>
@@ -203,6 +203,10 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     <li><a href="#referencias-y-bibliografía"
     id="toc-referencias-y-bibliografía">Referencias y Bibliografía</a>
     <ul>
+    <li><a
+    href="#infra-base--dockerfile--docker-compose--cicd--pre-commit"
+    id="toc-infra-base--dockerfile--docker-compose--cicd--pre-commit">Infra
+    base — Dockerfile + docker-compose + CI/CD + pre-commit</a></li>
     <li><a href="#hit-4--extracción-json-estructurada"
     id="toc-hit-4--extracción-json-estructurada">Hit #4 — Extracción
     JSON estructurada</a></li>
@@ -212,10 +216,6 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     <li><a href="#hit-6--tests-automatizados--cobertura"
     id="toc-hit-6--tests-automatizados--cobertura">Hit #6 — Tests
     automatizados + cobertura</a></li>
-    <li><a
-    href="#infra-base--dockerfile--docker-compose--cicd--pre-commit"
-    id="toc-infra-base--dockerfile--docker-compose--cicd--pre-commit">Infra
-    base — Dockerfile + docker-compose + CI/CD + pre-commit</a></li>
     <li><a href="#hit-7--kubernetes-job--cronjob--configmap--pvc"
     id="toc-hit-7--kubernetes-job--cronjob--configmap--pvc">Hit #7 —
     Kubernetes Job + CronJob + ConfigMap + PVC</a></li>
@@ -351,6 +351,10 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       <li><a href="#referencias-y-bibliografía"
       id="toc-referencias-y-bibliografía">Referencias y Bibliografía</a>
       <ul>
+      <li><a
+      href="#infra-base--dockerfile--docker-compose--cicd--pre-commit"
+      id="toc-infra-base--dockerfile--docker-compose--cicd--pre-commit">Infra
+      base — Dockerfile + docker-compose + CI/CD + pre-commit</a></li>
       <li><a href="#hit-4--extracción-json-estructurada"
       id="toc-hit-4--extracción-json-estructurada">Hit #4 — Extracción
       JSON estructurada</a></li>
@@ -360,10 +364,6 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       <li><a href="#hit-6--tests-automatizados--cobertura"
       id="toc-hit-6--tests-automatizados--cobertura">Hit #6 — Tests
       automatizados + cobertura</a></li>
-      <li><a
-      href="#infra-base--dockerfile--docker-compose--cicd--pre-commit"
-      id="toc-infra-base--dockerfile--docker-compose--cicd--pre-commit">Infra
-      base — Dockerfile + docker-compose + CI/CD + pre-commit</a></li>
       <li><a href="#hit-7--kubernetes-job--cronjob--configmap--pvc"
       id="toc-hit-7--kubernetes-job--cronjob--configmap--pvc">Hit #7 —
       Kubernetes Job + CronJob + ConfigMap + PVC</a></li>
@@ -1335,6 +1335,34 @@ Documenten el comando en el README.</p>
 libros generales de Kubernetes / containers viven en el <a
 href="practica-0.html#lectura-recomendada-y-referencias">TP 0</a> y no
 se repiten.</p>
+<h3 id="infra-base--dockerfile--docker-compose--cicd--pre-commit">Infra
+base — Dockerfile + docker-compose + CI/CD + pre-commit</h3>
+<ul>
+<li><strong>Docker — Best practices for writing Dockerfiles</strong> —
+multi-stage, layer ordering, .dockerignore. <a
+href="https://docs.docker.com/develop/develop-images/instructions/">https://docs.docker.com/develop/develop-images/instructions/</a></li>
+<li><strong>Docker Compose specification</strong> — la spec oficial v2
+de compose (ya no es “docker-compose v1” Python). <a
+href="https://compose-spec.io/">https://compose-spec.io/</a></li>
+<li><strong>GitHub Actions — Workflow syntax</strong> — toda la sintaxis
+de <code>.github/workflows/*.yml</code>. <a
+href="https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions">https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions</a></li>
+<li><strong>GitHub Actions — Using a matrix for jobs</strong> — cómo
+correr Chrome y Firefox en paralelo (lo que pide Hit #7). <a
+href="https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs">https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs</a></li>
+<li><strong>gitleaks</strong> — bloquea commits con secrets. <a
+href="https://github.com/gitleaks/gitleaks">https://github.com/gitleaks/gitleaks</a></li>
+<li><strong>gitleaks-action</strong> — el wrapper para usarlo en GH
+Actions. <a
+href="https://github.com/gitleaks/gitleaks-action">https://github.com/gitleaks/gitleaks-action</a></li>
+<li><strong>pre-commit framework</strong> — la referencia para el
+<code>.pre-commit-config.yaml</code>. <a
+href="https://pre-commit.com/">https://pre-commit.com/</a></li>
+<li><strong>Sigstore / cosign</strong> — firma criptográfica de imágenes
+Docker, <strong>estándar 2026</strong> para supply chain security (SLSA
+Level 3). Lo que viene después de gitleaks. <a
+href="https://docs.sigstore.dev/">https://docs.sigstore.dev/</a></li>
+</ul>
 <h3 id="hit-4--extracción-json-estructurada">Hit #4 — Extracción JSON
 estructurada</h3>
 <ul>
@@ -1392,34 +1420,6 @@ Control-Flow-Based Test Adequacy Criteria”. <em>ICSE 1994.</em> — el
 paper original que establece por qué la cobertura ≥ 70 % NO es la
 métrica completa pero sí un piso razonable. <a
 href="https://dl.acm.org/doi/10.5555/257734.257766">https://dl.acm.org/doi/10.5555/257734.257766</a></li>
-</ul>
-<h3 id="infra-base--dockerfile--docker-compose--cicd--pre-commit">Infra
-base — Dockerfile + docker-compose + CI/CD + pre-commit</h3>
-<ul>
-<li><strong>Docker — Best practices for writing Dockerfiles</strong> —
-multi-stage, layer ordering, .dockerignore. <a
-href="https://docs.docker.com/develop/develop-images/instructions/">https://docs.docker.com/develop/develop-images/instructions/</a></li>
-<li><strong>Docker Compose specification</strong> — la spec oficial v2
-de compose (ya no es “docker-compose v1” Python). <a
-href="https://compose-spec.io/">https://compose-spec.io/</a></li>
-<li><strong>GitHub Actions — Workflow syntax</strong> — toda la sintaxis
-de <code>.github/workflows/*.yml</code>. <a
-href="https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions">https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions</a></li>
-<li><strong>GitHub Actions — Using a matrix for jobs</strong> — cómo
-correr Chrome y Firefox en paralelo (lo que pide Hit #7). <a
-href="https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs">https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs</a></li>
-<li><strong>gitleaks</strong> — bloquea commits con secrets. <a
-href="https://github.com/gitleaks/gitleaks">https://github.com/gitleaks/gitleaks</a></li>
-<li><strong>gitleaks-action</strong> — el wrapper para usarlo en GH
-Actions. <a
-href="https://github.com/gitleaks/gitleaks-action">https://github.com/gitleaks/gitleaks-action</a></li>
-<li><strong>pre-commit framework</strong> — la referencia para el
-<code>.pre-commit-config.yaml</code>. <a
-href="https://pre-commit.com/">https://pre-commit.com/</a></li>
-<li><strong>Sigstore / cosign</strong> — firma criptográfica de imágenes
-Docker, <strong>estándar 2026</strong> para supply chain security (SLSA
-Level 3). Lo que viene después de gitleaks. <a
-href="https://docs.sigstore.dev/">https://docs.sigstore.dev/</a></li>
 </ul>
 <h3 id="hit-7--kubernetes-job--cronjob--configmap--pvc">Hit #7 —
 Kubernetes Job + CronJob + ConfigMap + PVC</h3>
