@@ -51,8 +51,8 @@
         <div class="step-status">🔓 Entrega 02/05</div>
       </a>
       <span class="flow-arrow" aria-hidden="true">→</span>
-      <a href="practica-2.html" class="flow-step open next-up" data-status="abierto">
-        <div class="step-num">TP 2</div>
+      <a href="practica-2-parte-1.html" class="flow-step open next-up" data-status="abierto">
+        <div class="step-num">TP 2 (4 partes)</div>
         <div class="step-name">Observabilidad: logs en k3s</div>
         <div class="step-status">🔓 Próximamente</div>
       </a>
@@ -114,22 +114,66 @@
       </a>
     </div>
 
-    <h2 style="margin-top: 48px;">Práctica II — Observabilidad</h2>
+    <h2 style="margin-top: 48px;">Práctica II — Observabilidad (4 partes)</h2>
     <p style="margin-top: 4px; color: var(--gray); font-size: 14px;">
-      Logging centralizado del scraper sobre k3s usando Loki + Promtail/Alloy + Grafana.
+      Logging centralizado y trazabilidad del scraper sobre k3s, recorriendo tres stacks
+      (Loki/Promtail/Alloy/Grafana, EFK y OpenTelemetry) y cerrando con una comparativa
+      arquitectónica y un ADR magisterial.
     </p>
 
     <div class="tp-grid">
-      <a href="practica-2.html" class="tp-card next-up">
-        <span class="tp-num">TP 2</span>
-        <h3>Logging centralizado: Loki + Promtail + Grafana</h3>
+      <a href="practica-2-parte-1.html" class="tp-card next-up">
+        <span class="tp-num">TP 2 · PARTE 1</span>
+        <h3>Loki + Promtail/Alloy + Grafana</h3>
         <p class="tp-desc">
-          Observabilidad del scraper desplegado en k3s: recolección de logs con
-          Promtail/Alloy, indexación en Loki, exploración y dashboards en Grafana.
-          Aplica conceptos de la Parte 2 (Job/CronJob, ConfigMap, PVC).
+          Logging centralizado del scraper en k3s: recolección de logs con Promtail/Alloy,
+          indexación en Loki, exploración y dashboards en Grafana. Aplica conceptos de la
+          Parte 2 del TP 1 (Job/CronJob, ConfigMap, PVC).
         </p>
         <div class="tp-meta">
-          <span><strong>Próximamente</strong> · Logging</span>
+          <span><strong>Próximamente · 16/05/2026</strong></span>
+          <span>→ Ver TP</span>
+        </div>
+      </a>
+
+      <a href="practica-2-parte-2.html" class="tp-card next-up">
+        <span class="tp-num">TP 2 · PARTE 2</span>
+        <h3>EFK: Elasticsearch + Fluent Bit + Kibana</h3>
+        <p class="tp-desc">
+          Logging centralizado con el stack EFK: Fluent Bit como recolector liviano,
+          Elasticsearch como motor de indexación full-text y Kibana para exploración
+          y dashboards. Comparación operativa frente a Loki.
+        </p>
+        <div class="tp-meta">
+          <span><strong>Próximamente · 23/05/2026</strong></span>
+          <span>→ Ver TP</span>
+        </div>
+      </a>
+
+      <a href="practica-2-parte-3.html" class="tp-card next-up">
+        <span class="tp-num">TP 2 · PARTE 3</span>
+        <h3>OpenTelemetry: Collector + SDK + multi-backend</h3>
+        <p class="tp-desc">
+          Instrumentación con OpenTelemetry: SDK en el scraper, OpenTelemetry Collector
+          como pipeline unificado y exportación a múltiples backends (Loki, Elastic,
+          Tempo/Jaeger). Logs, métricas y trazas correlacionadas.
+        </p>
+        <div class="tp-meta">
+          <span><strong>Próximamente · 30/05/2026</strong></span>
+          <span>→ Ver TP</span>
+        </div>
+      </a>
+
+      <a href="practica-2-parte-4.html" class="tp-card next-up">
+        <span class="tp-num">TP 2 · PARTE 4</span>
+        <h3>Cierre: comparativa y ADR magisterial</h3>
+        <p class="tp-desc">
+          Cierre de la Práctica II: comparativa cuantitativa y cualitativa de los tres
+          stacks, criterios de decisión arquitectónica y redacción de un ADR magisterial
+          que justifique la elección para un escenario productivo.
+        </p>
+        <div class="tp-meta">
+          <span><strong>Próximamente · 06/06/2026</strong></span>
           <span>→ Ver TP</span>
         </div>
       </a>
