@@ -8,18 +8,41 @@ reciente arriba).
 
 ## [Unreleased]
 
-### Added
-- Workflow de GitHub Actions (`.github/workflows/build-pages.yml`) que regenera los
-  `practica-*.html` automáticamente cuando se modifica algún `.md`, `template.html`,
-  `build.sh` o `assets/style.css` en `main`.
-- Este `CHANGELOG.md` para que los/las estudiantes puedan seguir la evolución de la
-  consigna de un vistazo.
+_Sin cambios en curso._
 
 ## [2026-04-27]
 
-### Added
-- Referencias directas (papers, documentación oficial y artículos) al final de TP1 y
-  TP2, sin intermediarios (#20).
+### Added — TP 2 nuevo: Observabilidad en 4 partes
+- **TP 2 · Parte 1** (Loki + Promtail/Alloy + Grafana, entrega 05/05/2026) (#23 + #24).
+- **TP 2 · Parte 2** (EFK = Elasticsearch + Fluent Bit + Kibana, entrega 05/05/2026 bundle con P1) (#24).
+- **TP 2 · Parte 3** (OpenTelemetry Collector + SDK + multi-backend, entrega 09/05/2026) (#24).
+- **TP 2 · Parte 4** (Cierre + ADR magisterial, entrega 09/05/2026 bundle con P3) (#24).
+- Reference de TP 2 en `reference/tp3-observability/` con Helm values pinneados (Loki/Alloy/Grafana 2026 LTS), dashboards Grafana JSON, queries LogQL, snippet de JSON logging.
+- `reference/hit8/` con skeleton PostgreSQL para TP 1·P2 Hit #8: k8s manifests (Secret, ConfigMap, StatefulSet, Service), schema migration SQL, módulo Python con psycopg3 (#23).
+- ADRs nuevos en `reference/docs/adr/`: 0007 (postgres-statefulset), 0008 (loki-vs-elk).
+- Material de apoyo de TP 2 (TP 1·P2): esqueletos de logging Python, sample tests con mocks, pre-commit Node/Java equivalentes (#23).
+- Validador `scripts/validate-site.sh` (anchors, links, assets, branding, placeholders, CSS sanity) (#23).
+- Workflow GitHub Actions (`.github/workflows/build-pages.yml`) para auto-build de HTMLs (#21).
+- Header UNLu del template clickeable como link al menú principal (#22).
+- Referencias bibliográficas al hueso por Hit en TP 1 y TP 1·P2 (papers, docs oficiales, artículos directos) sin libros generales — ya en TP 0 (#20).
+
+### Changed — calendario y estructura
+- **Calendario consolidado**: TP 1·P2 = 02/05, TP 2·P1+P2 bundle = 05/05, TP 2·P3+P4 bundle = 09/05 (#25, #27, #28).
+- TP 2 (antes 1 documento) partido en 4 partes con prev/next nav threading e index card por parte (#24).
+- Bibliografía de TP 1·P2 reordenada: Infra base primero, después por Hit (#22).
+- Hit #9 de TP 1·P2 deja de ser bonus → es obligatorio con 3 capacidades fijas (paginación + estadísticas + histórico PostgreSQL en k3s) (#19).
+- ADR numbering deduplicado en TP 2: 0007 (Loki) → 0008 (Alloy bonus) → 0009 (EFK) → 0010 (OTel) → 0011 (traces bonus) → 0012 (master magisterial) (#26).
+- Hits TP 1·P2 renumerados: secuencia 4-5-6-7-8 sin saltos (Infra base = bloqueante sin número) (#16).
+- Pin de versiones Docker obligatorio en TP 1·P2: `python:3.13-slim-trixie`, `node:24-trixie-slim`, `eclipse-temurin:25-jre-noble`, `maven:3.9-eclipse-temurin-25-noble` (#13).
+- Dockerfile + docker-compose.yml ahora son **obligatorios desde Parte 1** (antes "deseable") (#11).
+- TP 1·P2 rúbrica: Hit #4 25%, Hit #5 15%, Hit #6 15%, Hit #7 20%, Hit #8 15%, ADRs 10% = 100%, todos múltiplos de 5 (#15).
+- Reference Dockerfile pasa a Google Chrome stable + `useradd --create-home` para resolver bug crashpad de chromium-trixie y ENOENT en `~/.local/...` (#21).
+- Resource limits del Job en `reference/hit8/k8s/job.yaml` subidos a 768Mi/1.5Gi (Chrome OOMKilled con 512Mi) (#21).
+
+### Fixed
+- Footer + breadcrumb + prev/next nav del template ahora cubre la cadena completa Inicio → TP 0 → TP 1·P1 → TP 1·P2 → TP 2·P1 → P2 → P3 → P4 (#21, #24).
+- `reference/README.md` actualizado con los 8 links a las consignas vigentes.
+- Validador `validate-site.sh` reporta 8 HTMLs, 0 errors, 0 warnings.
 
 ### Changed
 - TP2 Hit #8: ahora son **3 capacidades obligatorias** en lugar de un menú de 6 a
