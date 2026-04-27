@@ -222,6 +222,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     <li><a href="#recursos-comunitarios"
     id="toc-recursos-comunitarios">Recursos comunitarios</a></li>
     </ul></li>
+    <li><a href="#glosario--términos-densos-en-una-línea-cada-uno"
+    id="toc-glosario--términos-densos-en-una-línea-cada-uno">Glosario —
+    términos densos en una línea cada uno</a></li>
     <li><a href="#validación-obligatoria-previa-al-hit-7"
     id="toc-validación-obligatoria-previa-al-hit-7">Validación
     obligatoria previa al Hit #7</a></li>
@@ -233,6 +236,11 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
   </aside>
 
   <main class="content">
+    <nav class="page-breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Inicio</a>
+      <span class="sep">›</span>
+      <span class="current">TP 0</span>
+    </nav>
     <nav class="page-nav-top">
       <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
       <span class="banner-pill">TP 0</span>
@@ -363,6 +371,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       <li><a href="#recursos-comunitarios"
       id="toc-recursos-comunitarios">Recursos comunitarios</a></li>
       </ul></li>
+      <li><a href="#glosario--términos-densos-en-una-línea-cada-uno"
+      id="toc-glosario--términos-densos-en-una-línea-cada-uno">Glosario
+      — términos densos en una línea cada uno</a></li>
       <li><a href="#validación-obligatoria-previa-al-hit-7"
       id="toc-validación-obligatoria-previa-al-hit-7">Validación
       obligatoria previa al Hit #7</a></li>
@@ -1197,6 +1208,71 @@ href="https://killercoda.com/playgrounds/scenario/kubernetes">https://killercoda
 sin instalar nada)</p></li>
 </ul>
 <hr />
+<h2 id="glosario--términos-densos-en-una-línea-cada-uno">Glosario —
+términos densos en una línea cada uno</h2>
+<ul>
+<li><strong>WebDriver (W3C protocol)</strong>: estándar W3C que define
+cómo un programa controla un browser real (clicks, navegación, lectura
+del DOM) por HTTP.</li>
+<li><strong>Headless browsing</strong>: ejecutar un browser sin interfaz
+gráfica visible, controlado solo por código. Necesario en CI y
+servidores.</li>
+<li><strong>Browser Factory (patrón)</strong>: función o clase que
+centraliza la creación del WebDriver con su config (browser, headless,
+timeouts) para no repetir código.</li>
+<li><strong>Explicit wait vs implicit wait</strong>: explicit espera una
+condición concreta (un elemento visible); implicit aplica un timeout
+global a cada <code>find_element</code>. Preferí explicit.</li>
+<li><strong>Selector CSS vs XPath</strong>: CSS es más rápido y legible
+para selectores simples; XPath permite navegar relaciones complejas
+(padres, hermanos, texto).</li>
+<li><strong>Backoff exponencial</strong>: estrategia de reintentos donde
+la espera entre intentos crece (1s, 2s, 4s, 8s) para no saturar al
+servicio caído.</li>
+<li><strong>Coverage / cobertura de código</strong>: porcentaje de
+líneas/ramas ejecutadas por los tests. Métrica útil pero no garantiza
+calidad de los tests.</li>
+<li><strong>Multi-stage Docker build</strong>: Dockerfile con varios
+<code>FROM</code>; el final copia solo los artefactos del stage de
+build, achicando la imagen y reduciendo superficie.</li>
+<li><strong>Image registry</strong>: servidor que almacena imágenes
+Docker/OCI versionadas (ej: <code>ghcr.io</code>, ECR). Ver Camino C de
+TP 0 y la tabla “Container registries”.</li>
+<li><strong>CI/CD pipeline</strong>: pipeline automático que compila,
+testea y publica el código en cada push (Continuous Integration /
+Continuous Delivery).</li>
+<li><strong>Pre-commit hook</strong>: script que corre antes de cada
+<code>git commit</code> para validar formato, lint o tests rápidos y
+bloquear commits que no pasan.</li>
+<li><strong>ADR (Architecture Decision Record)</strong>: documento corto
+en el repo que registra una decisión arquitectónica, su contexto y
+consecuencias.</li>
+<li><strong>Pod (Kubernetes)</strong>: unidad mínima desplegable en k8s:
+uno o más containers que comparten red y storage. Ver “Conceptos
+mínimos” del TP 0.</li>
+<li><strong>Job vs CronJob (Kubernetes)</strong>: Job corre una tarea
+hasta completarse una vez; CronJob lanza Jobs según una expresión cron
+(ej: cada 5 min).</li>
+<li><strong>ConfigMap (Kubernetes)</strong>: objeto que guarda
+configuración no-secreta (env vars, archivos) y la inyecta a los pods
+sin tocar la imagen.</li>
+<li><strong>PVC — PersistentVolumeClaim</strong>: pedido de
+almacenamiento persistente que un pod hace al cluster; sobrevive a
+reinicios del pod.</li>
+<li><strong>StatefulSet</strong>: controlador de k8s para apps con
+identidad estable (DBs, colas) — pods con nombre fijo y storage propio
+por réplica.</li>
+<li><strong>Secret (Kubernetes)</strong>: objeto similar a ConfigMap
+pero para datos sensibles (passwords, tokens), codificado en base64 y
+con RBAC más estricto.</li>
+<li><strong>Schema migration (DB)</strong>: cambios versionados al
+esquema de la base (crear tablas, columnas) aplicados en orden con
+herramientas tipo Alembic o Flyway.</li>
+<li><strong>Supply chain security (Sigstore/cosign)</strong>: firma
+criptográfica de imágenes para verificar quién las construyó y que no
+fueron alteradas. Estándar 2026 (SLSA L3).</li>
+</ul>
+<hr />
 <h2 id="validación-obligatoria-previa-al-hit-7">Validación obligatoria
 previa al Hit #7</h2>
 <p>Para que la entrega de la Parte 2 sea aceptada, tienen que poder
@@ -1216,6 +1292,23 @@ CronJob, un ConfigMap y un PVC (al menos a nivel “para qué
 sirve”).</label></li>
 </ul>
 <p>Si las 4 son sí, están listos para el Hit #7.</p>
+
+    <nav class="page-prev-next" aria-label="Navegación entre páginas">
+      <a class="prev-link" href="#" data-slot="prev" hidden>
+        <span class="arrow">←</span>
+        <span class="nav-meta">
+          <span class="nav-label">Anterior</span>
+          <span class="nav-title" data-slot="prev-title"></span>
+        </span>
+      </a>
+      <a class="next-link" href="#" data-slot="next" hidden>
+        <span class="nav-meta">
+          <span class="nav-label">Siguiente</span>
+          <span class="nav-title" data-slot="next-title"></span>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+    </nav>
 
     <nav class="page-nav-bottom">
       <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
@@ -1310,6 +1403,56 @@ sirve”).</label></li>
       document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
     });
   });
+})();
+
+// Populate prev/next navigation based on the current page's banner-num
+(function () {
+  const pill = document.querySelector('.banner-pill');
+  const nav = document.querySelector('.page-prev-next');
+  if (!pill || !nav) return;
+
+  const key = (pill.textContent || '').trim().toUpperCase();
+
+  // Map banner-num → { prev, next }
+  // Each entry: { href, title } (or null if not present)
+  const MAP = {
+    'TP 0': {
+      prev: null,
+      next: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' }
+    },
+    'TP 1 · PARTE 1': {
+      prev: { href: 'practica-0.html', title: 'TP 0 — Prerrequisitos' },
+      next: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' }
+    },
+    'TP 1 · PARTE 2': {
+      prev: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' },
+      next: null
+    }
+  };
+
+  const entry = MAP[key];
+  if (!entry) return;
+
+  const prevLink = nav.querySelector('[data-slot="prev"]');
+  const nextLink = nav.querySelector('[data-slot="next"]');
+  const prevTitle = nav.querySelector('[data-slot="prev-title"]');
+  const nextTitle = nav.querySelector('[data-slot="next-title"]');
+
+  if (entry.prev && prevLink && prevTitle) {
+    prevLink.setAttribute('href', entry.prev.href);
+    prevTitle.textContent = entry.prev.title;
+    prevLink.hidden = false;
+  }
+  if (entry.next && nextLink && nextTitle) {
+    nextLink.setAttribute('href', entry.next.href);
+    nextTitle.textContent = entry.next.title;
+    nextLink.hidden = false;
+  }
+
+  // If neither slot is shown, hide the whole nav
+  if ((!entry.prev) && (!entry.next)) {
+    nav.style.display = 'none';
+  }
 })();
 
 // Open all external links in a new tab (preserves the current page).

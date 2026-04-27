@@ -479,6 +479,31 @@ Los conceptos de Job, CronJob, scheduling, PVC, etc. no salieron de la nada — 
 
 ---
 
+## Glosario — términos densos en una línea cada uno
+
+- **WebDriver (W3C protocol)**: estándar W3C que define cómo un programa controla un browser real (clicks, navegación, lectura del DOM) por HTTP.
+- **Headless browsing**: ejecutar un browser sin interfaz gráfica visible, controlado solo por código. Necesario en CI y servidores.
+- **Browser Factory (patrón)**: función o clase que centraliza la creación del WebDriver con su config (browser, headless, timeouts) para no repetir código.
+- **Explicit wait vs implicit wait**: explicit espera una condición concreta (un elemento visible); implicit aplica un timeout global a cada `find_element`. Preferí explicit.
+- **Selector CSS vs XPath**: CSS es más rápido y legible para selectores simples; XPath permite navegar relaciones complejas (padres, hermanos, texto).
+- **Backoff exponencial**: estrategia de reintentos donde la espera entre intentos crece (1s, 2s, 4s, 8s) para no saturar al servicio caído.
+- **Coverage / cobertura de código**: porcentaje de líneas/ramas ejecutadas por los tests. Métrica útil pero no garantiza calidad de los tests.
+- **Multi-stage Docker build**: Dockerfile con varios `FROM`; el final copia solo los artefactos del stage de build, achicando la imagen y reduciendo superficie.
+- **Image registry**: servidor que almacena imágenes Docker/OCI versionadas (ej: `ghcr.io`, ECR). Ver Camino C de TP 0 y la tabla "Container registries".
+- **CI/CD pipeline**: pipeline automático que compila, testea y publica el código en cada push (Continuous Integration / Continuous Delivery).
+- **Pre-commit hook**: script que corre antes de cada `git commit` para validar formato, lint o tests rápidos y bloquear commits que no pasan.
+- **ADR (Architecture Decision Record)**: documento corto en el repo que registra una decisión arquitectónica, su contexto y consecuencias.
+- **Pod (Kubernetes)**: unidad mínima desplegable en k8s: uno o más containers que comparten red y storage. Ver "Conceptos mínimos" del TP 0.
+- **Job vs CronJob (Kubernetes)**: Job corre una tarea hasta completarse una vez; CronJob lanza Jobs según una expresión cron (ej: cada 5 min).
+- **ConfigMap (Kubernetes)**: objeto que guarda configuración no-secreta (env vars, archivos) y la inyecta a los pods sin tocar la imagen.
+- **PVC — PersistentVolumeClaim**: pedido de almacenamiento persistente que un pod hace al cluster; sobrevive a reinicios del pod.
+- **StatefulSet**: controlador de k8s para apps con identidad estable (DBs, colas) — pods con nombre fijo y storage propio por réplica.
+- **Secret (Kubernetes)**: objeto similar a ConfigMap pero para datos sensibles (passwords, tokens), codificado en base64 y con RBAC más estricto.
+- **Schema migration (DB)**: cambios versionados al esquema de la base (crear tablas, columnas) aplicados en orden con herramientas tipo Alembic o Flyway.
+- **Supply chain security (Sigstore/cosign)**: firma criptográfica de imágenes para verificar quién las construyó y que no fueron alteradas. Estándar 2026 (SLSA L3).
+
+---
+
 ## Validación obligatoria previa al Hit #7
 
 Para que la entrega de la Parte 2 sea aceptada, tienen que poder responder afirmativamente a las 4 preguntas. **Documenten en el README de la Parte 2 (sección "Prerrequisitos cumplidos") la evidencia de cada checkpoint** (output del comando o screenshot).
