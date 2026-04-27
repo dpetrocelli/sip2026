@@ -135,6 +135,12 @@ body {
   gap: 0;
 }
 
+/* Allow grid items to shrink below their intrinsic content size, so wide
+   children (pre, table, long URLs) trigger their own overflow-x instead of
+   stretching the grid track. Without this, the layout grows horizontally
+   on narrow viewports and breaks responsive design. */
+.layout > * { min-width: 0; }
+
 /* ============ SIDEBAR / TOC ============ */
 .toc-sidebar {
   position: sticky;
@@ -184,6 +190,8 @@ body {
   transition: all 0.15s;
   font-size: 13px;
   line-height: 1.4;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .toc-sidebar a:hover {
@@ -255,9 +263,24 @@ a {
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: border-color 0.15s;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 a:hover { border-bottom-color: var(--mid-blue); }
+
+/* Don't break navigation buttons / pills (they have short labels) */
+.back-to-menu,
+.tp-card .tp-num,
+.banner-pill,
+.toc-btn,
+.page-prev-next a,
+.flow-step,
+.unlu-header .brand,
+.unlu-footer a {
+  overflow-wrap: normal;
+  word-break: normal;
+}
 
 /* ============ LISTS ============ */
 ul, ol { padding-left: 24px; margin: 12px 0; }
@@ -276,7 +299,13 @@ code {
   padding: 2px 6px;
   border-radius: 4px;
   border: 1px solid var(--light-gray);
+  /* Allow long inline code (URLs, identifiers) to break on narrow viewports */
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
+
+/* Inline code inside pre keeps its no-wrap behavior (pre handles overflow-x) */
+pre code, pre code.sourceCode { overflow-wrap: normal; word-break: normal; }
 
 pre {
   background: #1A1A2E;
@@ -467,7 +496,8 @@ img {
     border-bottom: 1px solid var(--light-gray);
     padding: 18px 24px;
   }
-  .content { padding: 28px 24px 60px; }
+  /* !important needed to override inline style="padding:..." on index.html */
+  .content { padding: 28px 24px 60px !important; }
   .unlu-header .brand { padding: 12px 20px 8px; }
   .unlu-header .institution { font-size: 16px; }
   .unlu-header .department { font-size: 12px; }
@@ -475,6 +505,8 @@ img {
   .unlu-header .course-bar .instructor { margin-left: 0; width: 100%; }
   h1 { font-size: 26px; }
   h2 { font-size: 21px; }
+  /* Tables: allow horizontal scroll when too wide for viewport */
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 }
 
 @media (max-width: 560px) {
@@ -482,7 +514,40 @@ img {
   .unlu-header .brand .logo.dcb  { height: 38px; }
   .unlu-header .brand-text { font-size: 13px; }
   .unlu-header .institution { font-size: 14px; }
-  .content { padding: 20px 16px 40px; }
+  .unlu-header .department { font-size: 11px; line-height: 1.25; }
+  .unlu-header .brand { gap: 12px; padding: 10px 14px 6px; }
+  .unlu-header .brand .logo.dcb { height: 34px; }
+  .unlu-header .course-bar {
+    padding: 6px 14px; font-size: 11px; gap: 10px;
+    flex-direction: column; align-items: flex-start;
+  }
+  .unlu-header .course-bar .instructor { margin-left: 0; }
+  /* !important needed to override inline style="padding:..." on index.html */
+  .content { padding: 20px 14px 40px !important; }
+  /* Headings shrink for narrow screens */
+  h1 { font-size: 22px; }
+  h2 { font-size: 18px; }
+  h3 { font-size: 16px; }
+  details.section-collapsible > summary { font-size: 18px; padding-left: 12px; }
+  /* TOC sidebar narrower padding on small screens */
+  .toc-sidebar { padding: 14px 16px; }
+  /* Inline TOC tighter padding */
+  .toc-inline { padding: 12px 14px; margin: 16px 0 24px; }
+  /* Code blocks: smaller font */
+  pre { padding: 14px 16px; font-size: 12.5px; }
+  /* Make sidebar FAB smaller */
+  .sidebar-toggle-btn.sidebar-show { width: 42px; height: 42px; bottom: 16px; left: 16px; font-size: 18px; }
+  /* Floating breadcrumb spacing */
+  .page-breadcrumb { font-size: 11px; flex-wrap: wrap; }
+  /* Page nav top: tighten */
+  .page-nav-top { gap: 8px; margin-bottom: 14px; padding-bottom: 10px; }
+  .back-to-menu { font-size: 12px; padding: 7px 12px; }
+  /* TP cards / index landing: ensure they breathe */
+  .tp-grid { grid-template-columns: 1fr; gap: 14px; }
+  .tp-card { padding: 18px; }
+  .tp-card .tp-meta { flex-direction: column; gap: 4px; align-items: flex-start; }
+  /* Footer */
+  .unlu-footer { padding: 18px 14px; font-size: 12px; line-height: 1.5; }
 }
 
 /* ============ SIDEBAR TOGGLE ============ */
@@ -590,6 +655,8 @@ img {
   color: var(--dark-blue);
   text-decoration: none;
   border-bottom: 1px dotted transparent;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 .toc-inline a:hover {
   color: var(--accent);
