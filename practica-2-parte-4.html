@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <meta name="generator" content="pandoc + UNLu/DCB template">
+  <title>Práctica II · Parte 4 — Cierre: comparativa, decisiones
+arquitectónicas y ADR magisterial — UNLu DCB</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+
+<header class="unlu-header">
+  <a href="index.html" class="brand" title="Volver al menú principal">
+    <img src="assets/unlu_escudo.png" alt="Universidad Nacional de Luján" class="logo unlu">
+    <div class="brand-text">
+      <div class="institution">Universidad Nacional de Luján</div>
+      <div class="department">Departamento de Ciencias Básicas</div>
+    </div>
+    <img src="assets/logo_dcb.png" alt="Departamento de Ciencias Básicas" class="logo dcb">
+  </a>
+  <div class="course-bar">
+    <span class="course">Seminario de Integración Profesional</span>
+    <span class="year">2026</span>
+    <span class="instructor">Dr. David Petrocelli</span>
+  </div>
+</header>
+
+<button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
+
+<div class="layout">
+  <aside class="toc-sidebar" id="toc-sidebar">
+    <div class="toc-header">
+      <div class="toc-title">Contenidos</div>
+      <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
+    </div>
+    <ul>
+    <li><a href="#trabajo-práctico-nº-2--parte-4"
+    id="toc-trabajo-práctico-nº-2--parte-4">Trabajo Práctico Nº 2 —
+    Parte 4</a>
+    <ul>
+    <li><a
+    href="#cierre-comparativa-empírica-decisiones-arquitectónicas-y-adr-magisterial"
+    id="toc-cierre-comparativa-empírica-decisiones-arquitectónicas-y-adr-magisterial">Cierre:
+    comparativa empírica, decisiones arquitectónicas y ADR
+    magisterial</a></li>
+    <li><a href="#pre-requisitos"
+    id="toc-pre-requisitos">Pre-requisitos</a></li>
+    <li><a href="#requisitos-generales-y-formato-de-entrega"
+    id="toc-requisitos-generales-y-formato-de-entrega">Requisitos
+    generales y formato de entrega</a>
+    <ul>
+    <li><a href="#adr-magisterial-obligatorio"
+    id="toc-adr-magisterial-obligatorio">ADR magisterial
+    obligatorio</a></li>
+    <li><a href="#checklist-de-mediciones-reales"
+    id="toc-checklist-de-mediciones-reales">Checklist de mediciones
+    reales</a></li>
+    <li><a href="#otros-requisitos" id="toc-otros-requisitos">Otros
+    requisitos</a></li>
+    </ul></li>
+    <li><a href="#contenidos-del-programa-relacionados"
+    id="toc-contenidos-del-programa-relacionados">Contenidos del
+    programa relacionados</a></li>
+    <li><a href="#práctica" id="toc-práctica">Práctica</a>
+    <ul>
+    <li><a href="#hit-1--mediciones-empíricas-en-su-cluster"
+    id="toc-hit-1--mediciones-empíricas-en-su-cluster">Hit #1 —
+    Mediciones empíricas en SU cluster</a></li>
+    <li><a href="#hit-2--decision-matrix-por-contexto"
+    id="toc-hit-2--decision-matrix-por-contexto">Hit #2 — Decision
+    matrix por contexto</a></li>
+    <li><a href="#hit-3--adr-magisterial"
+    id="toc-hit-3--adr-magisterial">Hit #3 — ADR magisterial</a></li>
+    <li><a href="#hit-4--reflexión-sobre-vendor-lock-in"
+    id="toc-hit-4--reflexión-sobre-vendor-lock-in">Hit #4 — Reflexión
+    sobre vendor lock-in</a></li>
+    </ul></li>
+    <li><a href="#auto-verificación-previa-a-la-entrega"
+    id="toc-auto-verificación-previa-a-la-entrega">Auto-verificación
+    previa a la entrega</a>
+    <ul>
+    <li><a href="#1-mediciones-tomadas-en-el-cluster-propio-del-equipo"
+    id="toc-1-mediciones-tomadas-en-el-cluster-propio-del-equipo">1)
+    Mediciones tomadas en el cluster propio del equipo</a></li>
+    <li><a href="#2-adr--1500-palabras" id="toc-2-adr--1500-palabras">2)
+    ADR ≥ 1500 palabras</a></li>
+    <li><a href="#3-decision-matrix-completa-5--5--25-celdas"
+    id="toc-3-decision-matrix-completa-5--5--25-celdas">3) Decision
+    matrix completa (5 × 5 = 25 celdas)</a></li>
+    <li><a href="#4-reflexión-vendor-lock-in-presente-y-con-citas"
+    id="toc-4-reflexión-vendor-lock-in-presente-y-con-citas">4)
+    Reflexión vendor lock-in presente y con citas</a></li>
+    <li><a href="#5-los-3-stacks-de-partes-1-3-siguen-corriendo"
+    id="toc-5-los-3-stacks-de-partes-1-3-siguen-corriendo">5) Los 3
+    stacks de Partes 1-3 siguen corriendo</a></li>
+    </ul></li>
+    <li><a href="#criterios-de-evaluación"
+    id="toc-criterios-de-evaluación">Criterios de evaluación</a>
+    <ul>
+    <li><a href="#requisitos-bloqueantes"
+    id="toc-requisitos-bloqueantes">Requisitos bloqueantes</a></li>
+    <li><a href="#tabla-de-puntaje-100-"
+    id="toc-tabla-de-puntaje-100-">Tabla de puntaje (100 %)</a></li>
+    </ul></li>
+    <li><a href="#material-de-apoyo" id="toc-material-de-apoyo">Material
+    de apoyo</a>
+    <ul>
+    <li><a href="#plantilla-extendida-del-adr-magisterial"
+    id="toc-plantilla-extendida-del-adr-magisterial">Plantilla extendida
+    del ADR magisterial</a></li>
+    <li><a href="#cómo-medir-cada-métrica-del-hit-1--comandos-exactos"
+    id="toc-cómo-medir-cada-métrica-del-hit-1--comandos-exactos">Cómo
+    medir cada métrica del Hit #1 — comandos exactos</a></li>
+    <li><a
+    href="#empresas-reales-que-migraron-stacks-referencias-verificables"
+    id="toc-empresas-reales-que-migraron-stacks-referencias-verificables">Empresas
+    reales que migraron stacks (referencias verificables)</a></li>
+    <li><a href="#anti-patterns-comunes-en-decision-matrices"
+    id="toc-anti-patterns-comunes-en-decision-matrices">Anti-patterns
+    comunes en decision matrices</a></li>
+    <li><a href="#recomendación-honesta-de-la-cátedra"
+    id="toc-recomendación-honesta-de-la-cátedra">Recomendación honesta
+    de la cátedra</a></li>
+    </ul></li>
+    <li><a href="#cómo-entregar" id="toc-cómo-entregar">Cómo
+    entregar</a></li>
+    <li><a href="#referencias-y-bibliografía"
+    id="toc-referencias-y-bibliografía">Referencias y Bibliografía</a>
+    <ul>
+    <li><a href="#toma-de-decisiones-arquitectónicas"
+    id="toc-toma-de-decisiones-arquitectónicas">Toma de decisiones
+    arquitectónicas</a></li>
+    <li><a href="#observabilidad--fundamentos"
+    id="toc-observabilidad--fundamentos">Observabilidad —
+    fundamentos</a></li>
+    <li><a href="#comparativa-loki--efk--otel"
+    id="toc-comparativa-loki--efk--otel">Comparativa Loki / EFK /
+    OTel</a></li>
+    <li><a href="#vendor-lock-in-en-observabilidad"
+    id="toc-vendor-lock-in-en-observabilidad">Vendor lock-in en
+    observabilidad</a></li>
+    <li><a href="#empresas-reales-que-migraron-stacks"
+    id="toc-empresas-reales-que-migraron-stacks">Empresas reales que
+    migraron stacks</a></li>
+    <li><a href="#el-paper-borg-omega-kubernetes"
+    id="toc-el-paper-borg-omega-kubernetes">El paper
+    Borg-Omega-Kubernetes</a></li>
+    </ul></li>
+    </ul></li>
+    </ul>
+    <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
+      <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <nav class="page-breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Inicio</a>
+      <span class="sep">›</span>
+      <span class="current">TP 2 · PARTE 4</span>
+    </nav>
+    <nav class="page-nav-top">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+      <span class="banner-pill">TP 2 · PARTE 4</span>
+    </nav>
+
+    <details class="toc-inline" open>
+      <summary>📑 Índice del documento</summary>
+      <ul>
+      <li><a href="#trabajo-práctico-nº-2--parte-4"
+      id="toc-trabajo-práctico-nº-2--parte-4">Trabajo Práctico Nº 2 —
+      Parte 4</a>
+      <ul>
+      <li><a
+      href="#cierre-comparativa-empírica-decisiones-arquitectónicas-y-adr-magisterial"
+      id="toc-cierre-comparativa-empírica-decisiones-arquitectónicas-y-adr-magisterial">Cierre:
+      comparativa empírica, decisiones arquitectónicas y ADR
+      magisterial</a></li>
+      <li><a href="#pre-requisitos"
+      id="toc-pre-requisitos">Pre-requisitos</a></li>
+      <li><a href="#requisitos-generales-y-formato-de-entrega"
+      id="toc-requisitos-generales-y-formato-de-entrega">Requisitos
+      generales y formato de entrega</a>
+      <ul>
+      <li><a href="#adr-magisterial-obligatorio"
+      id="toc-adr-magisterial-obligatorio">ADR magisterial
+      obligatorio</a></li>
+      <li><a href="#checklist-de-mediciones-reales"
+      id="toc-checklist-de-mediciones-reales">Checklist de mediciones
+      reales</a></li>
+      <li><a href="#otros-requisitos" id="toc-otros-requisitos">Otros
+      requisitos</a></li>
+      </ul></li>
+      <li><a href="#contenidos-del-programa-relacionados"
+      id="toc-contenidos-del-programa-relacionados">Contenidos del
+      programa relacionados</a></li>
+      <li><a href="#práctica" id="toc-práctica">Práctica</a>
+      <ul>
+      <li><a href="#hit-1--mediciones-empíricas-en-su-cluster"
+      id="toc-hit-1--mediciones-empíricas-en-su-cluster">Hit #1 —
+      Mediciones empíricas en SU cluster</a></li>
+      <li><a href="#hit-2--decision-matrix-por-contexto"
+      id="toc-hit-2--decision-matrix-por-contexto">Hit #2 — Decision
+      matrix por contexto</a></li>
+      <li><a href="#hit-3--adr-magisterial"
+      id="toc-hit-3--adr-magisterial">Hit #3 — ADR magisterial</a></li>
+      <li><a href="#hit-4--reflexión-sobre-vendor-lock-in"
+      id="toc-hit-4--reflexión-sobre-vendor-lock-in">Hit #4 — Reflexión
+      sobre vendor lock-in</a></li>
+      </ul></li>
+      <li><a href="#auto-verificación-previa-a-la-entrega"
+      id="toc-auto-verificación-previa-a-la-entrega">Auto-verificación
+      previa a la entrega</a>
+      <ul>
+      <li><a
+      href="#1-mediciones-tomadas-en-el-cluster-propio-del-equipo"
+      id="toc-1-mediciones-tomadas-en-el-cluster-propio-del-equipo">1)
+      Mediciones tomadas en el cluster propio del equipo</a></li>
+      <li><a href="#2-adr--1500-palabras"
+      id="toc-2-adr--1500-palabras">2) ADR ≥ 1500 palabras</a></li>
+      <li><a href="#3-decision-matrix-completa-5--5--25-celdas"
+      id="toc-3-decision-matrix-completa-5--5--25-celdas">3) Decision
+      matrix completa (5 × 5 = 25 celdas)</a></li>
+      <li><a href="#4-reflexión-vendor-lock-in-presente-y-con-citas"
+      id="toc-4-reflexión-vendor-lock-in-presente-y-con-citas">4)
+      Reflexión vendor lock-in presente y con citas</a></li>
+      <li><a href="#5-los-3-stacks-de-partes-1-3-siguen-corriendo"
+      id="toc-5-los-3-stacks-de-partes-1-3-siguen-corriendo">5) Los 3
+      stacks de Partes 1-3 siguen corriendo</a></li>
+      </ul></li>
+      <li><a href="#criterios-de-evaluación"
+      id="toc-criterios-de-evaluación">Criterios de evaluación</a>
+      <ul>
+      <li><a href="#requisitos-bloqueantes"
+      id="toc-requisitos-bloqueantes">Requisitos bloqueantes</a></li>
+      <li><a href="#tabla-de-puntaje-100-"
+      id="toc-tabla-de-puntaje-100-">Tabla de puntaje (100 %)</a></li>
+      </ul></li>
+      <li><a href="#material-de-apoyo"
+      id="toc-material-de-apoyo">Material de apoyo</a>
+      <ul>
+      <li><a href="#plantilla-extendida-del-adr-magisterial"
+      id="toc-plantilla-extendida-del-adr-magisterial">Plantilla
+      extendida del ADR magisterial</a></li>
+      <li><a href="#cómo-medir-cada-métrica-del-hit-1--comandos-exactos"
+      id="toc-cómo-medir-cada-métrica-del-hit-1--comandos-exactos">Cómo
+      medir cada métrica del Hit #1 — comandos exactos</a></li>
+      <li><a
+      href="#empresas-reales-que-migraron-stacks-referencias-verificables"
+      id="toc-empresas-reales-que-migraron-stacks-referencias-verificables">Empresas
+      reales que migraron stacks (referencias verificables)</a></li>
+      <li><a href="#anti-patterns-comunes-en-decision-matrices"
+      id="toc-anti-patterns-comunes-en-decision-matrices">Anti-patterns
+      comunes en decision matrices</a></li>
+      <li><a href="#recomendación-honesta-de-la-cátedra"
+      id="toc-recomendación-honesta-de-la-cátedra">Recomendación honesta
+      de la cátedra</a></li>
+      </ul></li>
+      <li><a href="#cómo-entregar" id="toc-cómo-entregar">Cómo
+      entregar</a></li>
+      <li><a href="#referencias-y-bibliografía"
+      id="toc-referencias-y-bibliografía">Referencias y Bibliografía</a>
+      <ul>
+      <li><a href="#toma-de-decisiones-arquitectónicas"
+      id="toc-toma-de-decisiones-arquitectónicas">Toma de decisiones
+      arquitectónicas</a></li>
+      <li><a href="#observabilidad--fundamentos"
+      id="toc-observabilidad--fundamentos">Observabilidad —
+      fundamentos</a></li>
+      <li><a href="#comparativa-loki--efk--otel"
+      id="toc-comparativa-loki--efk--otel">Comparativa Loki / EFK /
+      OTel</a></li>
+      <li><a href="#vendor-lock-in-en-observabilidad"
+      id="toc-vendor-lock-in-en-observabilidad">Vendor lock-in en
+      observabilidad</a></li>
+      <li><a href="#empresas-reales-que-migraron-stacks"
+      id="toc-empresas-reales-que-migraron-stacks">Empresas reales que
+      migraron stacks</a></li>
+      <li><a href="#el-paper-borg-omega-kubernetes"
+      id="toc-el-paper-borg-omega-kubernetes">El paper
+      Borg-Omega-Kubernetes</a></li>
+      </ul></li>
+      </ul></li>
+      </ul>
+      <div class="toc-controls">
+        <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
+        <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
+      </div>
+    </details>
+
+<h1 id="trabajo-práctico-nº-2--parte-4">Trabajo Práctico Nº 2 — Parte
+4</h1>
+<h2
+id="cierre-comparativa-empírica-decisiones-arquitectónicas-y-adr-magisterial">Cierre:
+comparativa empírica, decisiones arquitectónicas y ADR magisterial</h2>
+<p><strong>Fecha de Entrega: 06/06/2026</strong></p>
+<blockquote>
+<p>🧭 <strong>Esto es la Parte 4 de 4 sobre observabilidad.</strong></p>
+<ul>
+<li><a href="practica-2-parte-1.html">Parte 1</a> — Loki +
+Promtail/Alloy + Grafana ✅</li>
+<li><a href="practica-2-parte-2.html">Parte 2</a> — EFK ✅</li>
+<li><a href="practica-2-parte-3.html">Parte 3</a> — OpenTelemetry
+✅</li>
+<li><strong>Parte 4 (acá)</strong> — Cierre</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>Esta parte es <strong>reflexiva y de escritura técnica</strong>, no
+operativa. Tienen 3 stacks corriendo en su cluster con métricas reales
+medidas por ustedes. La consigna acá es <strong>convertir esa
+experiencia en una decisión arquitectónica defendible</strong>, plasmada
+en un ADR magisterial que la cátedra pueda usar como ejemplo de buena
+toma de decisiones técnicas.</p>
+</blockquote>
+<blockquote>
+<p><strong>Pre-requisitos</strong>: Partes 1, 2 y 3 entregadas y
+corriendo. <strong>Necesitan tener los 3 stacks vivos</strong> durante
+la entrega para tomar las mediciones empíricas (Hit #1).</p>
+</blockquote>
+<hr />
+<h2 id="pre-requisitos">Pre-requisitos</h2>
+<ul>
+<li><strong>Parte 1 aprobada</strong> (mínimo 60/100): Loki +
+Promtail/Alloy + Grafana operativos en el namespace
+<code>observability</code>.</li>
+<li><strong>Parte 2 aprobada</strong> (mínimo 60/100): Elasticsearch +
+Fluentd/Fluent Bit + Kibana operativos en el namespace
+<code>efk</code>.</li>
+<li><strong>Parte 3 aprobada</strong> (mínimo 60/100): OpenTelemetry
+Collector haciendo fan-out hacia Loki <strong>y</strong> Elasticsearch
+(y traces a un backend de su elección). El SDK de Python instrumentando
+el scraper.</li>
+<li><strong>ADRs previos escritos</strong>:
+<code>0007-stack-de-logging.md</code> (Parte 1),
+<code>0009-stack-efk.md</code> (Parte 2), y el ADR de OpenTelemetry de
+la Parte 3. Esta Parte 4 los <strong>revisita</strong>, no los
+reemplaza.</li>
+<li><strong>Cluster con los 3 stacks vivos al momento de
+evaluar</strong>: la cátedra va a <code>kubectl get pods -A</code>
+durante la defensa para confirmar que los 3 namespaces siguen Running.
+Si alguno está caído al momento de la defensa, no se puede tomar Hit #1
+→ -15 % directo.</li>
+<li><strong>24 h de runtime mínimo</strong> antes de medir: los CronJobs
+del scraper deben haber corrido al menos un ciclo completo en cada stack
+para que los números del Hit #1 sean representativos. No midan el
+cluster recién levantado.</li>
+</ul>
+<hr />
+<h2 id="requisitos-generales-y-formato-de-entrega">Requisitos generales
+y formato de entrega</h2>
+<p>A diferencia de las Partes 1, 2 y 3, <strong>acá no se entrega código
+nuevo</strong>. Se entrega <strong>escritura técnica</strong> y
+<strong>mediciones</strong>. Eso no la hace más fácil — la hace
+distinta.</p>
+<h3 id="adr-magisterial-obligatorio">ADR magisterial obligatorio</h3>
+<ul>
+<li>Archivo:
+<code>docs/adr/0010-stack-de-observabilidad-final.md</code>.</li>
+<li>Formato Michael Nygard (Contexto · Decisión · Consecuencias)
+<strong>extendido</strong> — ver <a
+href="#hit-3--adr-magisterial">plantilla del Hit #3</a>.</li>
+<li>Longitud mínima: <strong>1500 palabras</strong>, recomendado
+1500-2000. Esto no es relleno: es lo que hace falta para integrar las 3
+experiencias de Partes 1-3 y fundamentar la decisión final.</li>
+<li><strong>Tiene que referenciar la tabla de mediciones del Hit #1
+explícitamente</strong> — al menos 3 veces a lo largo del documento,
+citando números concretos.</li>
+</ul>
+<h3 id="checklist-de-mediciones-reales">Checklist de mediciones
+reales</h3>
+<ul>
+<li>Las cifras del Hit #1 son <strong>medidas por ustedes en su propio
+cluster</strong>, no copiadas de blogs ni del paper de Grafana Labs. Si
+la cátedra pide reproducción durante la defensa y los números no se
+replican (con tolerancia ±20 %), se descuenta el Hit #1 entero.</li>
+<li>Cada medición incluye: <strong>comando exacto</strong> que la
+generó, <strong>timestamp</strong> de cuándo se tomó, <strong>estado del
+cluster</strong> en ese momento (uptime, qué CronJobs habían corrido,
+volumen de logs acumulado).</li>
+<li>Si una medición es imposible de tomar en su entorno (ej: no llegan a
+24 h de logs por límite de tiempo), declárenlo explícitamente — vale más
+una limitación honesta documentada que un número inventado.</li>
+</ul>
+<h3 id="otros-requisitos">Otros requisitos</h3>
+<ul>
+<li><p><strong>Repo público</strong> (mismo del TP 0/1/2) con todos los
+entregables nuevos en <code>docs/observability-final/</code>:</p>
+<pre><code>docs/
+├── adr/
+│   └── 0010-stack-de-observabilidad-final.md   ← ADR magisterial (Hit #3)
+└── observability-final/
+    ├── README.md                               ← índice + cómo se generaron las mediciones
+    ├── measurements.md                         ← tabla del Hit #1 + comandos exactos
+    ├── decision-matrix.md                      ← tabla del Hit #2
+    ├── vendor-lockin-essay.md                  ← reflexión del Hit #4
+    └── screenshots/
+        ├── kubectl-top-loki.png
+        ├── kubectl-top-efk.png
+        ├── kubectl-top-otel.png
+        ├── pvc-disk-usage.png
+        └── query-latency-comparison.png</code></pre></li>
+<li><p><strong>Sin código del scraper modificado</strong> en esta Parte
+4. Si tocaron el scraper para reparar algo de Partes 1-3 está bien, pero
+documenten el cambio en el README y mencionen por qué — no es el foco de
+esta entrega.</p></li>
+<li><p><strong>Defensa oral de 5 minutos</strong> durante la corrección.
+Cada equipo presenta su ADR magisterial, justifica su recomendación
+final y responde preguntas del jurado. Vale 5 % de la nota.</p></li>
+</ul>
+<hr />
+<h2 id="contenidos-del-programa-relacionados">Contenidos del programa
+relacionados</h2>
+<ul>
+<li>Toma de decisiones arquitectónicas: ADR como artefacto vivo (no se
+“termina”, se “supera”), trade-offs explícitos, criterios de
+revisión.</li>
+<li>Análisis comparativo: medición empírica vs benchmarks de marketing,
+sesgos del evaluador (familiaridad, estética, hype).</li>
+<li>Vendor lock-in: capas de abstracción, costo de migración, riesgo de
+plataforma.</li>
+<li>Total Cost of Ownership: licencia + infra + operación + capacitación
++ costo de salida.</li>
+<li>Comunicación técnica escrita: estructura del razonamiento, evidencia
+citable, separación contexto/decisión/consecuencias.</li>
+</ul>
+<hr />
+<h2 id="práctica">Práctica</h2>
+<p>Después de tres semanas levantando stacks de logging, ya tienen algo
+que casi nadie tiene en la industria: <strong>experiencia operativa
+directa con los 3 ecosistemas dominantes</strong>, corriendo
+simultáneamente sobre la misma carga de trabajo. Esa es la materia prima
+de esta Parte 4.</p>
+<p>Lo que sigue <strong>no es operar más infra</strong> — es
+<strong>reflexionar con disciplina</strong> sobre lo que ya operaron. La
+diferencia entre un ingeniero senior y uno junior no es que el senior
+sepa más comandos: es que sabe <strong>por qué eligió lo que eligió y
+bajo qué condiciones cambiaría de opinión</strong>. Esa habilidad se
+entrena escribiendo decisiones, no solo ejecutándolas.</p>
+<blockquote>
+<p>⚠️ <strong>Esta parte se evalúa por calidad de pensamiento, no por
+entregables operativos.</strong> Un repo con muchísimos archivos pero un
+ADR débil saca menos nota que un repo con un solo ADR sólido. La cátedra
+lee con detalle: prosa floja, contradicciones internas, números sin
+fuente, recomendaciones sin contexto — todo eso baja la nota.</p>
+</blockquote>
+<hr />
+<h3 id="hit-1--mediciones-empíricas-en-su-cluster">Hit #1 — Mediciones
+empíricas en SU cluster</h3>
+<p>Construyan una tabla con <strong>números reales medidos por el
+equipo</strong> sobre los 3 stacks, en el mismo cluster, durante la
+misma ventana de 24 h. La tabla va a
+<code>docs/observability-final/measurements.md</code> y se referencia
+desde el ADR del Hit #3.</p>
+<h4 id="métricas-obligatorias">Métricas obligatorias</h4>
+<ol type="1">
+<li><strong>Footprint RAM/CPU por stack</strong> (medido con
+<code>kubectl top pods</code>).</li>
+<li><strong>Disk usage del PVC tras 24 h</strong> de logs del scraper
+(medido con <code>kubectl exec ... -- du -sh</code>).</li>
+<li><strong>Query latency p50 / p95</strong> sobre la misma pregunta de
+negocio en LogQL, KQL, y la query equivalente de OTel + backend
+(idealmente la misma query Q1 del Hit #4 de Parte 1: “errores del
+scraper en la última hora por producto”).</li>
+<li><strong>Tiempo de deployment desde cero</strong>: clean cluster →
+primer log visible en el visualizador. Cronómetro en mano, una sola
+corrida (no promedio de varias).</li>
+<li><strong>Tamaño de la imagen del agente</strong>: Promtail (o Alloy)
+vs Fluent Bit (o Fluentd) vs OTel Collector.
+<code>docker image inspect</code> sobre la imagen pinneada en sus Helm
+charts.</li>
+</ol>
+<h4 id="comandos-exactos-para-cada-métrica">Comandos exactos para cada
+métrica</h4>
+<h5 id="métrica-1--footprint-ram--cpu">Métrica 1 — Footprint RAM /
+CPU</h5>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pre-requisito: metrics-server instalado en k3s (suele venir por default).</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Si no está: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Loki + Promtail + Grafana</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> top pods <span class="at">-n</span> observability <span class="at">--no-headers</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;{cpu+=$2; mem+=$3} END {print &quot;Loki stack:&quot;, cpu&quot;m CPU,&quot;, mem&quot;Mi RAM&quot;}&#39;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># EFK</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> top pods <span class="at">-n</span> efk <span class="at">--no-headers</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;{cpu+=$2; mem+=$3} END {print &quot;EFK stack:&quot;, cpu&quot;m CPU,&quot;, mem&quot;Mi RAM&quot;}&#39;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># OTel Collector (sin contar el backend al que exporta — eso ya está en los 2 anteriores)</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> top pods <span class="at">-n</span> otel <span class="at">--no-headers</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;{cpu+=$2; mem+=$3} END {print &quot;OTel stack:&quot;, cpu&quot;m CPU,&quot;, mem&quot;Mi RAM&quot;}&#39;</span></span></code></pre></div>
+<blockquote>
+<p>💡 <strong>Tomen 3 muestras espaciadas por 1 hora</strong> y reporten
+la media + desviación. Una sola medición puntual puede caer en un GC
+pause de Elasticsearch y mentirles feo.</p>
+</blockquote>
+<h5 id="métrica-2--disk-usage-del-pvc-tras-24-h">Métrica 2 — Disk usage
+del PVC tras 24 h</h5>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Loki — chunks store en filesystem</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> observability exec loki-0 <span class="at">--</span> du <span class="at">-sh</span> /var/loki/chunks /var/loki/index <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Elasticsearch — data dir</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> efk exec elasticsearch-master-0 <span class="at">--</span> du <span class="at">-sh</span> /usr/share/elasticsearch/data <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Si OTel exporta a archivos (caso poco común, solo si configuraron file exporter):</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> otel exec <span class="op">&lt;</span>otel-pod<span class="op">&gt;</span> -- du <span class="at">-sh</span> /var/lib/otel <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Si OTel solo hace fan-out a Loki/ES (caso típico), el disco se cuenta en los 2 anteriores</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># y se reporta &quot;0 (es passthrough)&quot; en la fila de OTel.</span></span></code></pre></div>
+<blockquote>
+<p>⚠️ <strong>El stack que persiste es el que cuenta.</strong> Si OTel
+solo hace <code>pipeline</code> y exporta a Loki + ES sin retener nada,
+su footprint en disco es 0 y eso es <strong>una ventaja real</strong>,
+no una trampa estadística. Anótenlo así en la tabla.</p>
+</blockquote>
+<h5 id="métrica-3--query-latency-p50--p95">Métrica 3 — Query latency p50
+/ p95</h5>
+<p>Usen la <strong>misma pregunta de negocio</strong> traducida a las 3
+queries — sino comparan peras con manzanas.</p>
+<p>Pregunta canónica: <strong>“errores del scraper en la última hora,
+agrupados por producto”</strong>.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Loki / LogQL — via API</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">time</span> curl <span class="at">-sG</span> http://localhost:3100/loki/api/v1/query_range <span class="dt">\</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--data-urlencode</span> <span class="st">&#39;query=sum by (producto) (count_over_time({namespace=&quot;ml-scraper&quot;, app=&quot;scraper&quot;} | json | level=&quot;ERROR&quot; [1h]))&#39;</span> <span class="dt">\</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--data-urlencode</span> <span class="st">&#39;start=&#39;</span><span class="va">$(</span><span class="fu">date</span> <span class="at">-u</span> <span class="at">-d</span> <span class="st">&#39;1 hour ago&#39;</span> +%s<span class="va">)</span>000000000 <span class="dt">\</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--data-urlencode</span> <span class="st">&#39;end=&#39;</span><span class="va">$(</span><span class="fu">date</span> <span class="at">-u</span> +%s<span class="va">)</span>000000000 <span class="dt">\</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">-o</span> /dev/null</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Elasticsearch / KQL — via _search</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="bu">time</span> curl <span class="at">-sX</span> POST <span class="st">&quot;http://localhost:9200/scraper-*/_search&quot;</span> <span class="at">-H</span> <span class="st">&#39;Content-Type: application/json&#39;</span> <span class="at">-d</span> <span class="st">&#39;{</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="st">  &quot;size&quot;: 0,</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="st">  &quot;query&quot;: {&quot;bool&quot;: {&quot;must&quot;: [</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="st">    {&quot;range&quot;: {&quot;@timestamp&quot;: {&quot;gte&quot;: &quot;now-1h&quot;}}},</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="st">    {&quot;term&quot;: {&quot;level&quot;: &quot;ERROR&quot;}}</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="st">  ]}},</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="st">  &quot;aggs&quot;: {&quot;by_producto&quot;: {&quot;terms&quot;: {&quot;field&quot;: &quot;producto.keyword&quot;}}}</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="st">}&#39;</span> <span class="at">-o</span> /dev/null</span></code></pre></div>
+<p>Corran <strong>10 veces cada query</strong> con <code>time</code> y
+reporten p50 (mediana) y p95. Para cálculo rápido del p95 de 10
+muestras: ordenen y tomen la 10ª (vale como aproximación pedagógica — no
+es estadísticamente robusto pero ese no es el punto).</p>
+<h5 id="métrica-4--tiempo-de-deployment-desde-cero">Métrica 4 — Tiempo
+de deployment desde cero</h5>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Borren todo y midan con cronómetro:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> delete namespace observability efk otel <span class="at">--wait</span><span class="op">=</span>true</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Loki stack</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="va">START</span><span class="op">=</span><span class="va">$(</span><span class="fu">date</span> +%s<span class="va">)</span><span class="kw">;</span> <span class="bu">cd</span> observability <span class="kw">&amp;&amp;</span> <span class="ex">./install.sh</span><span class="kw">;</span> <span class="va">END</span><span class="op">=</span><span class="va">$(</span><span class="fu">date</span> +%s<span class="va">)</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Loki stack deploy: </span><span class="va">$((END</span><span class="op">-</span><span class="va">START))</span><span class="st">s&quot;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Repetir el patrón para EFK y OTel</span></span></code></pre></div>
+<p>Tiempo “desde clean cluster hasta primer log visible en el
+visualizador” — incluye el primer Job del scraper que dispara y aparece
+en la UI. <strong>No</strong> es solo <code>helm install</code>.</p>
+<h5 id="métrica-5--tamaño-de-imagen-del-agente">Métrica 5 — Tamaño de
+imagen del agente</h5>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> image inspect grafana/promtail:3.5.6   <span class="at">--format</span><span class="op">=</span><span class="st">&#39;{{.Size}}&#39;</span> <span class="kw">|</span> <span class="fu">numfmt</span> <span class="at">--to</span><span class="op">=</span>iec</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> image inspect fluent/fluent-bit:3.2.0  <span class="at">--format</span><span class="op">=</span><span class="st">&#39;{{.Size}}&#39;</span> <span class="kw">|</span> <span class="fu">numfmt</span> <span class="at">--to</span><span class="op">=</span>iec</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> image inspect otel/opentelemetry-collector-contrib:0.116.0 <span class="at">--format</span><span class="op">=</span><span class="st">&#39;{{.Size}}&#39;</span> <span class="kw">|</span> <span class="fu">numfmt</span> <span class="at">--to</span><span class="op">=</span>iec</span></code></pre></div>
+<blockquote>
+<p>💡 Las versiones exactas las eligen ustedes — son las que
+efectivamente desplegaron. El punto es comparar <strong>lo que ustedes
+corrieron</strong>, no lo último de cada proyecto.</p>
+</blockquote>
+<h4 id="tabla-resumen-formato-obligatorio">Tabla resumen (formato
+obligatorio)</h4>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Métrica <span class="pp">|</span> Loki + Promtail + Grafana <span class="pp">|</span> EFK (ES + Fluentd + Kibana) <span class="pp">|</span> OTel Collector <span class="pp">|</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> RAM total (MiB) <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> CPU total (mCPU) <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Disco PVC tras 24 h (MiB) <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="ot"> (o </span><span class="er">&quot;</span><span class="ot">passthrough</span><span class="er">&quot;)</span><span class="dt">&gt;</span> <span class="pp">|</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Query latency p50 (ms) <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Query latency p95 (ms) <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Deploy clean → first log (s) <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Tamaño imagen agente (MiB) <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span> <span class="dt">&lt;</span><span class="kw">medido</span><span class="dt">&gt;</span> <span class="pp">|</span></span></code></pre></div>
+<p><strong>Bajo cada celda, citen el comando que generó el número y el
+timestamp.</strong> Sin esa traza, la cátedra asume que el número está
+inventado.</p>
+<hr />
+<h3 id="hit-2--decision-matrix-por-contexto">Hit #2 — Decision matrix
+por contexto</h3>
+<p>No existe “el mejor stack” en abstracto. Existe “el mejor stack para
+X equipo, X presupuesto, X regulación, X madurez operativa”. Construyan
+una <strong>matriz cruzada</strong> que defienda esa idea.</p>
+<p>Archivo:
+<code>docs/observability-final/decision-matrix.md</code>.</p>
+<h4 id="contextos-obligatorios-filas">Contextos obligatorios
+(filas)</h4>
+<ol type="1">
+<li><strong>Startup OSS-only</strong>: 3-5 devs, presupuesto cloud &lt;
+USD 200/mes, sin equipo de plataforma dedicado.</li>
+<li><strong>Mid enterprise</strong>: 50-200 devs, presupuesto OK pero
+finito, equipo de plataforma de 2-4 personas, ya tienen Grafana en
+producción para métricas.</li>
+<li><strong>Regulated (banca / salud)</strong>: requiere retención ≥ 7
+años, audit trail, encriptación en reposo y tránsito, cumplimiento (BCRA
+/ HIPAA / ISO 27001), cualquier vendor SaaS necesita DPA firmado.</li>
+<li><strong>Edge / IoT</strong>: agente corre en dispositivos con 256 MB
+RAM y conectividad intermitente, batched ingestion, no hay cluster local
+— solo collector embebido.</li>
+<li><strong>Cloud-native multi-region</strong>: aplicación en 3+
+regiones de AWS/GCP, latencia inter-región importa, federation de
+queries necesaria, equipo de SRE de 5+ personas.</li>
+</ol>
+<h4 id="stacks-obligatorios-columnas">Stacks obligatorios
+(columnas)</h4>
+<ul>
+<li><strong>Loki + Promtail/Alloy + Grafana</strong></li>
+<li><strong>EFK (Elasticsearch + Fluentd/Fluent Bit +
+Kibana)</strong></li>
+<li><strong>OpenTelemetry Collector</strong> (como capa de abstracción,
+no como backend final)</li>
+<li><strong>Datadog</strong> (managed SaaS — aunque no lo desplegaron,
+lo conocen del Hit #4 de Parte 1)</li>
+<li><strong>Splunk</strong> (enterprise on-prem o Splunk Cloud)</li>
+</ul>
+<h4 id="formato-de-cada-celda">Formato de cada celda</h4>
+<p>Cada celda tiene <strong>3 cosas</strong>:</p>
+<ol type="1">
+<li><strong>Veredicto</strong>: ✅ recomendado · ⚠️ aceptable · ❌
+desaconsejado.</li>
+<li><strong>Razón principal</strong> (1 línea, máximo 25 palabras).</li>
+<li><strong>Caveat</strong> (1 línea, máximo 20 palabras) — el “pero ojo
+con esto” que cambiaría el veredicto.</li>
+</ol>
+<p>Ejemplo de celda bien hecha (startup × Loki):</p>
+<blockquote>
+<p>✅ Recomendado. Costo $0, opera 1 persona part-time, escala fácil
+hasta cientos de GB/día. Caveat: si crecen a full-text search heavy,
+migrar a OTel-frontend ya para evitar re-instrumentar.</p>
+</blockquote>
+<p>Ejemplo de celda mal hecha (la cátedra la marca como
+insuficiente):</p>
+<blockquote>
+<p>✅ Es bueno. Caveat: tiene cosas malas.</p>
+</blockquote>
+<h4 id="tamaño-esperado">Tamaño esperado</h4>
+<p>5 contextos × 5 stacks = 25 celdas. <strong>No salten
+ninguna</strong>. Si una combinación es obvia (ej: regulated × Datadog
+SaaS sin DPA → ❌), igual escriban la razón explícita.</p>
+<hr />
+<h3 id="hit-3--adr-magisterial">Hit #3 — ADR magisterial</h3>
+<p>Este es el <strong>núcleo de la entrega</strong>. Vale 50 % de la
+nota. Todo lo otro existe para alimentarlo: las mediciones del Hit #1
+son evidencia, la matriz del Hit #2 es contexto, la reflexión del Hit #4
+es complemento. Acá se integra todo.</p>
+<p>Archivo:
+<code>docs/adr/0010-stack-de-observabilidad-final.md</code>.</p>
+<h4 id="plantilla-extendida-secciones-obligatorias">Plantilla extendida
+(secciones obligatorias)</h4>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># 0010 — Stack de observabilidad final para &lt;escenario elegido&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Date: 2026-06-XX</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Status: Accepted</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Deciders: <span class="dt">&lt;</span><span class="kw">equipo</span><span class="dt">&gt;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Supersedes: 0007, 0009 (parcialmente — ver &quot;Relación con ADRs previos&quot;)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1. Contexto</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">300-400 palabras</span><span class="co">]</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>Definan el escenario imaginario que el equipo eligió defender. No &quot;una empresa</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>genérica&quot; — un escenario concreto, con números:</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Tipo de aplicación (ej: &quot;scraper de e-commerce que crece a 100 usuarios/mes</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  via API pública&quot;).</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Tamaño del equipo (ej: &quot;4 devs full-stack, 0 SRE, 0 platform engineer&quot;).</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Presupuesto cloud mensual (ej: &quot;USD 300/mes en AWS, todo en una región&quot;).</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Restricciones regulatorias (ej: &quot;ninguna — startup pre-seed, no manejamos</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  PII&quot;).</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Volumen esperado de logs (ej: &quot;~500 MB/día hoy, proyección a 5 GB/día en</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  12 meses&quot;).</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Madurez operativa actual (ej: &quot;tenemos kubectl + GitHub Actions, nada más&quot;).</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>Justifiquen por qué este escenario es **representativo** de algo real que</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>ustedes podrían encontrarse en su primer trabajo. No inventen una mega-empresa</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>de Wall Street que no van a operar nunca.</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2. Alternativas consideradas</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">400-500 palabras</span><span class="co">]</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>Las 3 que probaron empíricamente + 2 mencionadas en partes anteriores. Para</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>cada una, **2-3 oraciones**:</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a><span class="fu">### 2.1. Loki + Promtail/Alloy + Grafana</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Qué es, cómo se compara con las otras.</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Cita a Hit #1: &quot;RAM total medida = <span class="dt">&lt;</span><span class="kw">X</span><span class="dt">&gt;</span> MiB; query latency p95 = <span class="dt">&lt;</span><span class="kw">Y</span><span class="dt">&gt;</span> ms&quot;.</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Pro principal y contra principal en SU contexto.</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a><span class="fu">### 2.2. EFK (Elasticsearch + Fluentd/Fluent Bit + Kibana)</span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Idem. Cita Hit #1.</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a><span class="fu">### 2.3. OpenTelemetry Collector + backend</span></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Idem. Cita Hit #1.</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a><span class="fu">### 2.4. Datadog Logs (managed SaaS)</span></span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>No lo probaron, pero conocen el modelo. Costo, lock-in, ergonomía.</span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Por qué quedó descartado / por qué quedó en finalista.</span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a><span class="fu">### 2.5. Splunk Cloud</span></span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Idem. Diferenciar de Datadog.</span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a><span class="fu">## 3. Decisión</span></span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">150-250 palabras</span><span class="co">]</span></span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a>**La frase del veredicto va al principio, en negrita, en una línea.**</span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a>Ejemplo: &quot;Adoptamos OpenTelemetry Collector como capa de instrumentación +</span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a>Loki como backend de logs + Grafana como visualizador, con plan de evolución</span>
+<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a>hacia Tempo (traces) en 6 meses.&quot;</span>
+<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a>Después, 2-3 párrafos:</span>
+<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Por qué esa combinación gana en el contexto definido en §1.</span>
+<span id="cb8-65"><a href="#cb8-65" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Qué hace mejor que cada alternativa de §2 (referenciando explícitamente).</span>
+<span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Qué cambia la decisión si alguno de los supuestos del §1 cambia (umbrales).</span>
+<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-68"><a href="#cb8-68" aria-hidden="true" tabindex="-1"></a><span class="fu">## 4. Trade-offs aceptados explícitos</span></span>
+<span id="cb8-69"><a href="#cb8-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-70"><a href="#cb8-70" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">200-300 palabras</span><span class="co">]</span></span>
+<span id="cb8-71"><a href="#cb8-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-72"><a href="#cb8-72" aria-hidden="true" tabindex="-1"></a>Lista de **3-5 trade-offs reales que aceptan**. No &quot;hay un trade-off pequeño&quot;,</span>
+<span id="cb8-73"><a href="#cb8-73" aria-hidden="true" tabindex="-1"></a>sino &quot;renunciamos a X y aceptamos las consecuencias Y&quot;. Ejemplo:</span>
+<span id="cb8-74"><a href="#cb8-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-75"><a href="#cb8-75" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Renunciamos a full-text search rápido**. Loki es label-first; si en 12 meses</span>
+<span id="cb8-76"><a href="#cb8-76" aria-hidden="true" tabindex="-1"></a>  necesitamos buscar substrings de 100 chars en GBs de logs, vamos a sufrir.</span>
+<span id="cb8-77"><a href="#cb8-77" aria-hidden="true" tabindex="-1"></a>  Mitigación: si llegamos a ese caso, Loki acepta filtros de línea (<span class="in">`|=`</span>) que</span>
+<span id="cb8-78"><a href="#cb8-78" aria-hidden="true" tabindex="-1"></a>  son lentos pero existen — y siempre podemos agregar ES más adelante porque</span>
+<span id="cb8-79"><a href="#cb8-79" aria-hidden="true" tabindex="-1"></a>  ya estamos hablando OTel.</span>
+<span id="cb8-80"><a href="#cb8-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-81"><a href="#cb8-81" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Aceptamos un single-binary Loki**. No tenemos HA. Si el pod muere y el PVC</span>
+<span id="cb8-82"><a href="#cb8-82" aria-hidden="true" tabindex="-1"></a>  se corrompe, perdemos los logs no-replicados. Mitigación: snapshots semanales</span>
+<span id="cb8-83"><a href="#cb8-83" aria-hidden="true" tabindex="-1"></a>  del PVC + el código sigue emitiendo a stdout (kubectl logs como fallback).</span>
+<span id="cb8-84"><a href="#cb8-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-85"><a href="#cb8-85" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>...</span>
+<span id="cb8-86"><a href="#cb8-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-87"><a href="#cb8-87" aria-hidden="true" tabindex="-1"></a><span class="fu">## 5. Evidencia empírica (Hit #1)</span></span>
+<span id="cb8-88"><a href="#cb8-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-89"><a href="#cb8-89" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">100-200 palabras</span><span class="co">]</span></span>
+<span id="cb8-90"><a href="#cb8-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-91"><a href="#cb8-91" aria-hidden="true" tabindex="-1"></a>Tabla del Hit #1 reproducida o linkeada. **Tres referencias mínimas en el</span>
+<span id="cb8-92"><a href="#cb8-92" aria-hidden="true" tabindex="-1"></a>cuerpo del ADR**:</span>
+<span id="cb8-93"><a href="#cb8-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-94"><a href="#cb8-94" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>&quot;El footprint de RAM de EFK (<span class="dt">&lt;</span><span class="kw">X</span><span class="dt">&gt;</span> MiB medido) duplica al de Loki (<span class="dt">&lt;</span><span class="kw">Y</span><span class="dt">&gt;</span> MiB)</span>
+<span id="cb8-95"><a href="#cb8-95" aria-hidden="true" tabindex="-1"></a>  en nuestro cluster. Para un equipo sin SRE dedicado, eso son <span class="dt">&lt;</span><span class="kw">Z</span><span class="dt">&gt;</span> USD/mes</span>
+<span id="cb8-96"><a href="#cb8-96" aria-hidden="true" tabindex="-1"></a>  extra de instancias EC2.&quot;</span>
+<span id="cb8-97"><a href="#cb8-97" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>&quot;La query latency p95 de Loki (<span class="dt">&lt;</span><span class="kw">X</span><span class="dt">&gt;</span> ms) está dentro del rango aceptable</span>
+<span id="cb8-98"><a href="#cb8-98" aria-hidden="true" tabindex="-1"></a>  para nuestro dashboard de incidentes (target &lt; 2 s).&quot;</span>
+<span id="cb8-99"><a href="#cb8-99" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>&quot;El tiempo de deploy clean de OTel (<span class="dt">&lt;</span><span class="kw">X</span><span class="dt">&gt;</span> s) versus EFK (<span class="dt">&lt;</span><span class="kw">Y</span><span class="dt">&gt;</span> s) reduce el</span>
+<span id="cb8-100"><a href="#cb8-100" aria-hidden="true" tabindex="-1"></a>  MTTR de un &#39;borrón total y reinstalo&#39; por un factor 3×.&quot;</span>
+<span id="cb8-101"><a href="#cb8-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-102"><a href="#cb8-102" aria-hidden="true" tabindex="-1"></a><span class="fu">## 6. Plan de evolución</span></span>
+<span id="cb8-103"><a href="#cb8-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-104"><a href="#cb8-104" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">200-300 palabras</span><span class="co">]</span></span>
+<span id="cb8-105"><a href="#cb8-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-106"><a href="#cb8-106" aria-hidden="true" tabindex="-1"></a>Qué cambiarían en 3 horizontes. Sean **específicos**, no &quot;vamos a evaluar</span>
+<span id="cb8-107"><a href="#cb8-107" aria-hidden="true" tabindex="-1"></a>de nuevo&quot;.</span>
+<span id="cb8-108"><a href="#cb8-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-109"><a href="#cb8-109" aria-hidden="true" tabindex="-1"></a><span class="fu">### 6 meses</span></span>
+<span id="cb8-110"><a href="#cb8-110" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Trigger: <span class="dt">&lt;</span><span class="kw">evento</span><span class="ot"> que dispararía el cambio</span><span class="dt">&gt;</span>.</span>
+<span id="cb8-111"><a href="#cb8-111" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Acción concreta: <span class="dt">&lt;</span><span class="kw">qué</span><span class="ot"> se hace</span><span class="dt">&gt;</span>.</span>
+<span id="cb8-112"><a href="#cb8-112" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Riesgo si no se hace: <span class="dt">&lt;</span><span class="kw">consecuencia</span><span class="dt">&gt;</span>.</span>
+<span id="cb8-113"><a href="#cb8-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-114"><a href="#cb8-114" aria-hidden="true" tabindex="-1"></a>Ejemplo: &quot;Trigger: si el volumen de logs supera 5 GB/día. Acción: agregar</span>
+<span id="cb8-115"><a href="#cb8-115" aria-hidden="true" tabindex="-1"></a>Tempo para traces (ya estamos OTel-instrumented). Riesgo: si el equipo</span>
+<span id="cb8-116"><a href="#cb8-116" aria-hidden="true" tabindex="-1"></a>crece sin traces, debugging distribuido se vuelve adivinanza.&quot;</span>
+<span id="cb8-117"><a href="#cb8-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-118"><a href="#cb8-118" aria-hidden="true" tabindex="-1"></a><span class="fu">### 12 meses</span></span>
+<span id="cb8-119"><a href="#cb8-119" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Idem</span><span class="co">]</span></span>
+<span id="cb8-120"><a href="#cb8-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-121"><a href="#cb8-121" aria-hidden="true" tabindex="-1"></a><span class="fu">### 24 meses</span></span>
+<span id="cb8-122"><a href="#cb8-122" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Idem</span><span class="co">]</span></span>
+<span id="cb8-123"><a href="#cb8-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-124"><a href="#cb8-124" aria-hidden="true" tabindex="-1"></a><span class="fu">## 7. Relación con ADRs previos</span></span>
+<span id="cb8-125"><a href="#cb8-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-126"><a href="#cb8-126" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">100-150 palabras</span><span class="co">]</span></span>
+<span id="cb8-127"><a href="#cb8-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-128"><a href="#cb8-128" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>0007 (Loki+Promtail) — qué de ese ADR sigue válido y qué se actualiza acá.</span>
+<span id="cb8-129"><a href="#cb8-129" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>0009 (EFK) — idem.</span>
+<span id="cb8-130"><a href="#cb8-130" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>ADR de OTel de Parte 3 — idem.</span>
+<span id="cb8-131"><a href="#cb8-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-132"><a href="#cb8-132" aria-hidden="true" tabindex="-1"></a>Si este ADR **supersede** completamente alguno, declárenlo. Si solo</span>
+<span id="cb8-133"><a href="#cb8-133" aria-hidden="true" tabindex="-1"></a>**actualiza parcialmente**, expliquen qué partes.</span>
+<span id="cb8-134"><a href="#cb8-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-135"><a href="#cb8-135" aria-hidden="true" tabindex="-1"></a><span class="fu">## 8. Referencias</span></span>
+<span id="cb8-136"><a href="#cb8-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-137"><a href="#cb8-137" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Mediciones empíricas: <span class="in">`docs/observability-final/measurements.md`</span>.</span>
+<span id="cb8-138"><a href="#cb8-138" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Decision matrix: <span class="in">`docs/observability-final/decision-matrix.md`</span>.</span>
+<span id="cb8-139"><a href="#cb8-139" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Reflexión vendor lock-in: <span class="in">`docs/observability-final/vendor-lockin-essay.md`</span>.</span>
+<span id="cb8-140"><a href="#cb8-140" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>CNCF Observability Whitepaper.</span>
+<span id="cb8-141"><a href="#cb8-141" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Charity Majors et al, *Observability Engineering* (O&#39;Reilly, 2022).</span>
+<span id="cb8-142"><a href="#cb8-142" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Cindy Sridharan, *Distributed Systems Observability* (O&#39;Reilly, 2018).</span>
+<span id="cb8-143"><a href="#cb8-143" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Otros que hayan citado.</span></code></pre></div>
+<h4 id="criterios-de-un-adr-magisterial-bien-hecho">Criterios de un ADR
+magisterial bien hecho</h4>
+<ul>
+<li><strong>Específico</strong>: el escenario del §1 tiene números, no
+adjetivos.</li>
+<li><strong>Honesto</strong>: el §4 admite renuncias, no las
+maquilla.</li>
+<li><strong>Basado en evidencia</strong>: el §5 cita la tabla del Hit #1
+con números, no impresiones.</li>
+<li><strong>Defendible</strong>: el equipo, en la defensa oral, puede
+sostener cada decisión sin recurrir a “lo elegimos porque nos
+gustó”.</li>
+<li><strong>Versátil</strong>: el §6 anticipa que el contexto va a
+cambiar y describe los disparadores del próximo ADR (0011).</li>
+</ul>
+<blockquote>
+<p>📚 <strong>Lectura recomendada antes de escribirlo</strong>: el
+capítulo 7 (“Documenting Architecture Decisions”) del libro <em>Software
+Architecture: The Hard Parts</em> (Ford, Richards, Sadalage, Dehghani —
+O’Reilly, 2021). 30 páginas, ejemplos reales, cambia cómo se piensa un
+ADR.</p>
+</blockquote>
+<hr />
+<h3 id="hit-4--reflexión-sobre-vendor-lock-in">Hit #4 — Reflexión sobre
+vendor lock-in</h3>
+<p>Escriban un essay corto (~500 palabras, no más de 700) sobre
+<strong>por qué OpenTelemetry como capa de abstracción cambia la
+conversación de vendor lock-in en observabilidad</strong>.</p>
+<p>Archivo:
+<code>docs/observability-final/vendor-lockin-essay.md</code>.</p>
+<h4 id="estructura-sugerida">Estructura sugerida</h4>
+<ol type="1">
+<li><p><strong>Apertura</strong>: el problema histórico (~100 palabras).
+Antes de OTel, instrumentar la aplicación significaba elegir un SDK de
+un vendor (Datadog APM, New Relic agent, AppDynamics, Dynatrace).
+Cambiar de vendor era un proyecto de 6-12 meses de re-instrumentación.
+El SDK era el lock-in real, no el backend.</p></li>
+<li><p><strong>Qué cambia con OTel</strong> (~150 palabras). El SDK es
+<strong>estándar de CNCF</strong>. La aplicación habla OTLP (protocolo
+abierto), el Collector hace fan-out a cualquier backend. Cambiar de
+Datadog a Honeycomb a Grafana Cloud pasa de ser un proyecto de 6 meses a
+un cambio de YAML del Collector. <strong>El backend deja de ser
+estratégico — pasa a ser un proveedor reemplazable</strong>.</p></li>
+<li><p><strong>Por qué CNCF graduated importa</strong> (~100 palabras).
+OTel está graduated en CNCF desde 2024. Eso no es un sello bonito:
+significa neutralidad de gobernanza, multi-vendor steering committee
+(Microsoft, Google, AWS, Splunk, Datadog, todos contribuyen), ciclo de
+release predecible, y compromiso de no-fork. Comparen con Logstash
+(Elastic, single-vendor, cambio de licencia en 2021 partió la comunidad
+→ Fluentd/Fluent Bit ganaron porque eran neutrales).</p></li>
+<li><p><strong>Casos reales</strong> (~150 palabras, mínimo 2 empresas).
+Ejemplos verificables:</p>
+<ul>
+<li><strong>Discord</strong> publicó en 2023 que migró buena parte de su
+pipeline de logging hacia ELK pero mantiene un agente OTel-compatible
+para no quedarse encerrados (<a href="https://discord.com/blog/">blog
+post de Discord engineering</a> — buscar “scaling logs”).</li>
+<li><strong>GitHub</strong> opera con Splunk + DataDog para logs y APM
+respectivamente — pero en sus charlas públicas (ej: KubeCon 2023)
+declaran que están instrumentando todo con OTel para tener
+opcionalidad.</li>
+<li><strong>Shopify</strong> migró de un stack propio a OTel +
+multi-backend (Datadog + Tempo) y lo documentó en su engineering
+blog.</li>
+<li><strong>Grafana Labs</strong>, obviamente, usa Loki y promueve OTel
+como ingestion path canónico para Loki 3.x.</li>
+<li><strong>Uber</strong> publicó cómo construyeron M3 (su sistema de
+métricas) y por qué después incorporaron OTel para no re-inventar la
+rueda en cada equipo.</li>
+</ul>
+<p><strong>Citen al menos 2 con link verificable</strong>. No
+inventen.</p></li>
+<li><p><strong>Cierre honesto</strong> (~100 palabras). OTel <strong>no
+elimina</strong> el lock-in: lo <strong>redistribuye</strong>. El nuevo
+lock-in es a OTel mismo (si OTel se fragmenta, todos sufrimos) y al
+backend de almacenamiento (los datos siguen viviendo en Loki / ES /
+Datadog / lo que sea). Pero es un lock-in <strong>más barato de
+cambiar</strong> y <strong>distribuido entre más actores</strong>. Eso
+es progreso, no nirvana.</p></li>
+</ol>
+<h4 id="tono-del-essay">Tono del essay</h4>
+<p>Sobrio, técnico, sin hype. <strong>No</strong> “OTel es el futuro
+mágico”, <strong>sí</strong> “OTel cambia el cálculo de TCO de migración
+de un orden de magnitud”. La cátedra busca razonamiento, no
+entusiasmo.</p>
+<hr />
+<h2 id="auto-verificación-previa-a-la-entrega">Auto-verificación previa
+a la entrega</h2>
+<p>5 ítems. Si falta alguno, la entrega no se acepta.</p>
+<h3 id="1-mediciones-tomadas-en-el-cluster-propio-del-equipo">1)
+Mediciones tomadas en el cluster propio del equipo</h3>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># La tabla de measurements.md tiene los 7 valores numéricos para los 3 stacks (mín. 21 celdas con números reales).</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Cada celda cita el comando y el timestamp.</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-c</span> <span class="st">&quot;^|&quot;</span> docs/observability-final/measurements.md   <span class="co"># &gt; 30 lineas tipo tabla</span></span></code></pre></div>
+<h3 id="2-adr--1500-palabras">2) ADR ≥ 1500 palabras</h3>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wc</span> <span class="at">-w</span> docs/adr/0010-stack-de-observabilidad-final.md</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Esperado: ≥ 1500. Si es &lt; 1500, está incompleto.</span></span></code></pre></div>
+<h3 id="3-decision-matrix-completa-5--5--25-celdas">3) Decision matrix
+completa (5 × 5 = 25 celdas)</h3>
+<p>Abrir <code>docs/observability-final/decision-matrix.md</code> y
+contar celdas. Cada una con veredicto + razón + caveat. <strong>Ninguna
+celda vacía o con “TBD”.</strong></p>
+<h3 id="4-reflexión-vendor-lock-in-presente-y-con-citas">4) Reflexión
+vendor lock-in presente y con citas</h3>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wc</span> <span class="at">-w</span> docs/observability-final/vendor-lockin-essay.md</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Esperado: 400-700 palabras.</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-c</span> <span class="st">&quot;https://&quot;</span> docs/observability-final/vendor-lockin-essay.md</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Esperado: ≥ 2 referencias verificables a casos reales.</span></span></code></pre></div>
+<h3 id="5-los-3-stacks-de-partes-1-3-siguen-corriendo">5) Los 3 stacks
+de Partes 1-3 siguen corriendo</h3>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pods <span class="at">-n</span> observability <span class="at">-n</span> efk <span class="at">-n</span> otel <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-v</span> Running <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-v</span> NAME</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Esperado: vacío. Cualquier pod en CrashLoopBackOff o Pending == falla.</span></span></code></pre></div>
+<p>Esto se chequea <strong>el día de la defensa</strong>, no antes. Si
+entre el push y la defensa los stacks se cayeron, no se aceptan excusas
+— son su responsabilidad.</p>
+<hr />
+<h2 id="criterios-de-evaluación">Criterios de evaluación</h2>
+<h3 id="requisitos-bloqueantes">Requisitos bloqueantes</h3>
+<ul>
+<li><strong>Partes 1, 2 y 3 entregadas y aprobadas</strong> (≥ 60/100
+cada una).</li>
+<li><strong>Los 3 stacks corriendo el día de la defensa</strong>
+(verificado en <a
+href="#5-los-3-stacks-de-partes-1-3-siguen-corriendo">auto-verificación
+#5</a>).</li>
+<li><strong>ADR <code>0010</code> existe y tiene ≥ 1500
+palabras</strong>.</li>
+</ul>
+<h3 id="tabla-de-puntaje-100-">Tabla de puntaje (100 %)</h3>
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>Peso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hit #1</strong> — Mediciones empíricas en el cluster propio
+(tabla completa, comandos citados, timestamps)</td>
+<td>15 %</td>
+</tr>
+<tr>
+<td><strong>Hit #2</strong> — Decision matrix por contexto (5 × 5
+celdas, cada una con veredicto + razón + caveat)</td>
+<td>15 %</td>
+</tr>
+<tr>
+<td><strong>Hit #3</strong> — ADR magisterial (≥ 1500 palabras, las 8
+secciones de la plantilla, evidencia citada del Hit #1)</td>
+<td>50 %</td>
+</tr>
+<tr>
+<td><strong>Hit #4</strong> — Reflexión vendor lock-in (~500 palabras, ≥
+2 casos reales con cita verificable)</td>
+<td>15 %</td>
+</tr>
+<tr>
+<td><strong>Defensa oral</strong> — 5 min explicación al jurado,
+respuestas a preguntas</td>
+<td>5 %</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>🎯 <strong>El Hit #3 vale la mitad de la nota.</strong> Es la parte
+que la cátedra lee dos veces. Inviertan ahí el 60 % de su tiempo, no en
+pulir screenshots.</p>
+</blockquote>
+<hr />
+<h2 id="material-de-apoyo">Material de apoyo</h2>
+<h3 id="plantilla-extendida-del-adr-magisterial">Plantilla extendida del
+ADR magisterial</h3>
+<p>La plantilla completa con las 8 secciones está descrita en <a
+href="#hit-3--adr-magisterial">Hit #3</a> — se desarrolla en línea, no
+se duplica acá. Apunten a esa estructura literalmente: las secciones
+tienen números (1, 2, 3…) y rangos de palabras esperados. Respeten
+ambos.</p>
+<h4 id="tamaño-esperado-por-sección">Tamaño esperado por sección</h4>
+<table>
+<thead>
+<tr>
+<th>Sección</th>
+<th>Rango de palabras</th>
+<th>Foco</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§1 Contexto</td>
+<td>300-400</td>
+<td>Escenario concreto con números</td>
+</tr>
+<tr>
+<td>§2 Alternativas</td>
+<td>400-500</td>
+<td>5 opciones, 2-3 oraciones cada una, evidencia citada</td>
+</tr>
+<tr>
+<td>§3 Decisión</td>
+<td>150-250</td>
+<td>Veredicto + por qué gana en SU contexto</td>
+</tr>
+<tr>
+<td>§4 Trade-offs</td>
+<td>200-300</td>
+<td>3-5 renuncias explícitas + mitigación</td>
+</tr>
+<tr>
+<td>§5 Evidencia</td>
+<td>100-200</td>
+<td>Tabla del Hit #1 + 3 referencias mínimo</td>
+</tr>
+<tr>
+<td>§6 Plan evolución</td>
+<td>200-300</td>
+<td>3 horizontes con triggers concretos</td>
+</tr>
+<tr>
+<td>§7 Relación ADRs previos</td>
+<td>100-150</td>
+<td>Qué supersede / actualiza</td>
+</tr>
+<tr>
+<td>§8 Referencias</td>
+<td>n/a</td>
+<td>Links + libros</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>1500-2000</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="cómo-medir-cada-métrica-del-hit-1--comandos-exactos">Cómo medir
+cada métrica del Hit #1 — comandos exactos</h3>
+<p>Los comandos están en <a
+href="#hit-1--mediciones-empíricas-en-su-cluster">Hit #1</a> y se
+reproducen acá como cheatsheet rápido:</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. RAM/CPU</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> top pods <span class="at">-n</span> <span class="op">&lt;</span>namespace<span class="op">&gt;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Disk PVC</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> exec <span class="at">-n</span> <span class="op">&lt;</span>ns<span class="op">&gt;</span> <span class="op">&lt;</span>pod<span class="op">&gt;</span> -- du <span class="at">-sh</span> <span class="op">&lt;</span>data-dir<span class="op">&gt;</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Query latency</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="bu">time</span> curl <span class="at">-sG</span> <span class="op">&lt;</span>api<span class="op">&gt;</span>/query <span class="at">--data-urlencode</span> <span class="st">&#39;query=...&#39;</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Deploy time</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="va">START</span><span class="op">=</span><span class="va">$(</span><span class="fu">date</span> +%s<span class="va">)</span><span class="kw">;</span> <span class="ex">./install.sh</span><span class="kw">;</span> <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$(($(</span><span class="fu">date</span> +%s<span class="va">)</span><span class="op">-</span><span class="va">START))</span><span class="st">s&quot;</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Imagen agente</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> image inspect <span class="op">&lt;</span>image<span class="op">&gt;</span>:<span class="op">&lt;</span>tag<span class="op">&gt;</span> --format=<span class="st">&#39;{{.Size}}&#39;</span> <span class="kw">|</span> <span class="fu">numfmt</span> <span class="at">--to</span><span class="op">=</span>iec</span></code></pre></div>
+<h3
+id="empresas-reales-que-migraron-stacks-referencias-verificables">Empresas
+reales que migraron stacks (referencias verificables)</h3>
+<p>Para el Hit #4. <strong>Verifiquen el link antes de citarlo</strong>
+— la web cambia y los blog posts a veces se mueven o desaparecen.</p>
+<table>
+<thead>
+<tr>
+<th>Empresa</th>
+<th>Stack actual (público)</th>
+<th>Movimiento documentado</th>
+<th>Fuente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Discord</td>
+<td>ELK (logs) + interno (search)</td>
+<td>Escaló de Mongo a ELK; OTel-compatible para evitar re-lock-in</td>
+<td><a
+href="https://discord.com/blog/how-discord-stores-trillions-of-messages">https://discord.com/blog/how-discord-stores-trillions-of-messages</a></td>
+</tr>
+<tr>
+<td>GitHub</td>
+<td>Splunk + Datadog APM</td>
+<td>Instrumentando todo con OTel para opcionalidad multi-backend</td>
+<td>KubeCon NA 2023 — “OpenTelemetry at GitHub” talk</td>
+</tr>
+<tr>
+<td>Shopify</td>
+<td>Datadog + Tempo (multi-backend via OTel)</td>
+<td>Migración documentada en engineering blog</td>
+<td><a
+href="https://shopify.engineering/">https://shopify.engineering/</a>
+(buscar “OpenTelemetry”)</td>
+</tr>
+<tr>
+<td>Grafana Labs</td>
+<td>Loki + Tempo + Mimir (todo casa propia)</td>
+<td>Adoptaron OTLP como ingestion path canónico desde Loki 3.x</td>
+<td><a
+href="https://grafana.com/blog/2024/09/24/grafana-loki-3.0-release/">https://grafana.com/blog/2024/09/24/grafana-loki-3.0-release/</a></td>
+</tr>
+<tr>
+<td>Uber</td>
+<td>M3 (métricas custom) + Jaeger (traces)</td>
+<td>Incorporaron OTel para que cada equipo no re-instrumente</td>
+<td><a
+href="https://www.uber.com/blog/m3/">https://www.uber.com/blog/m3/</a></td>
+</tr>
+<tr>
+<td>Cloudflare</td>
+<td>Internal log pipeline + Splunk</td>
+<td>Documentaron por qué Splunk no escaló y armaron alternativa
+propia</td>
+<td><a
+href="https://blog.cloudflare.com/log-analytics-using-clickhouse/">https://blog.cloudflare.com/log-analytics-using-clickhouse/</a></td>
+</tr>
+<tr>
+<td>Slack</td>
+<td>Splunk → ES propio</td>
+<td>Migración por costo de licencias Splunk</td>
+<td>Citado en KubeCon 2022</td>
+</tr>
+<tr>
+<td>Netflix</td>
+<td>Atlas (métricas) + interno (logs) + Mantis (events)</td>
+<td>Casi todo casa propia — caso opuesto a la abstracción OTel</td>
+<td><a
+href="https://netflixtechblog.com/">https://netflixtechblog.com/</a></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>💡 <strong>No copien la tabla</strong>. Elijan <strong>2 que les
+interesen</strong>, <strong>lean el blog post original</strong>, y citen
+con sus propias palabras. La cátedra detecta copy-paste de ChatGPT en 30
+segundos.</p>
+</blockquote>
+<h3 id="anti-patterns-comunes-en-decision-matrices">Anti-patterns
+comunes en decision matrices</h3>
+<p>Cinco trampas que la cátedra ve recurrentemente. Eviten estas — bajan
+la nota incluso si el resto está bien.</p>
+<ol type="1">
+<li><p><strong>“Lo elegí porque lo conozco”</strong> sin justificarlo en
+el contexto. Conocer el stack es un factor legítimo (TCO de
+capacitación), pero <strong>explicítelo</strong>: “Costo de capacitar al
+equipo en una herramienta nueva = ~80 horas/persona × 4 personas × USD
+30/h = USD 9.600, equivale a 6 meses de Datadog SaaS para nuestro
+volumen, por lo tanto la familiaridad con Grafana es relevante en este
+contexto”. Eso es análisis. “Lo elegí porque es lo que sé” no
+es.</p></li>
+<li><p><strong>“Es lo más popular”</strong> sin contexto. La popularidad
+correlaciona con disponibilidad de talento, ecosistema de plugins, y
+madurez de docs — pero no es el criterio en sí. Argumenten desde la
+causa, no desde el síntoma.</p></li>
+<li><p><strong>“Lo OSS siempre gana”</strong>. OSS no es gratis (TCO
+operativo). Para un equipo sin SRE, Datadog SaaS puede ser <strong>más
+barato</strong> que operar EFK on-prem si miden todas las horas de
+tuning.</p></li>
+<li><p><strong>“Lo SaaS siempre lock-in”</strong>. SaaS es un grado de
+lock-in, pero EFK self-hosted con dashboards Kibana custom
+<strong>también</strong> es lock-in (migrar Kibana a Grafana es
+no-trivial). Lock-in es un espectro, no un binario.</p></li>
+<li><p><strong>“Es lo que recomendó la cátedra”</strong> sin defenderlo.
+La cátedra tiene una recomendación, pero <strong>no es la única
+respuesta correcta</strong>. Un ADR que defiende EFK con buenos
+argumentos saca mejor nota que uno que recomienda Loki+OTel y no lo
+justifica.</p></li>
+</ol>
+<h3 id="recomendación-honesta-de-la-cátedra">Recomendación honesta de la
+cátedra</h3>
+<p>Para no dejarlos sin guía, esto es lo que la cátedra recomienda en
+cada uno de los tres arquetipos típicos del mercado argentino 2026:</p>
+<ul>
+<li><p><strong>Empresa mediana argentina con presupuesto limitado y
+preferencia por OSS</strong> (la mayoría de los lectores de este TP en
+su primer trabajo): <strong>OTel Collector + Loki + Grafana</strong>.
+Footprint razonable, costo $0 de licencia, opcionalidad gracias a OTel,
+ecosistema Grafana ya conocido en muchos equipos, escala suficiente
+hasta varios GB/día. <strong>Es la combinación
+recomendada</strong>.</p></li>
+<li><p><strong>Empresa que ya tiene Elastic en otra parte del
+stack</strong> (búsqueda de productos, tienda online con Elastic, etc.):
+<strong>EFK con OTel-frontend</strong>. Reusan la inversión en Elastic,
+mantienen full-text search potente, y OTel les deja la puerta abierta
+para migrar parcialmente sin re-instrumentar. La integración entre teams
+(search team + observability team) suele simplificarse.</p></li>
+<li><p><strong>Empresa con presupuesto y aversión total a operar infra
+de observabilidad</strong>: <strong>Datadog o Splunk Cloud</strong> (o
+New Relic en su tier gratuito si están bajo 100 GB/mes). Pagar por no
+operar es una decisión legítima — el costo de oportunidad del tiempo del
+equipo de plataforma puede superar fácilmente el costo de licencia.
+<strong>Pero asegúrense de instrumentar con OTel SDK</strong>, no con el
+SDK propietario del vendor — eso preserva la opcionalidad para el día
+que cambie el contexto.</p></li>
+</ul>
+<p>Esta recomendación <strong>no es prescripción</strong>. Si su
+escenario del Hit #3 lleva a otro lado y lo defienden con evidencia,
+sacan nota perfecta. Si copian esto sin justificarlo, sacan nota
+mediocre.</p>
+<hr />
+<h2 id="cómo-entregar">Cómo entregar</h2>
+<ol type="1">
+<li><strong>Push final al repo público</strong> (mismo repo del TP
+0/1/2) antes del <strong>06/06/2026 23:59 ART</strong>.</li>
+<li><strong>README raíz actualizado</strong> con sección “TP 2 · Parte 4
+— Cierre y ADR magisterial”:
+<ul>
+<li>Link al ADR <code>0010</code>.</li>
+<li>Link a la carpeta <code>docs/observability-final/</code>.</li>
+<li>Una línea con el veredicto final (“Recomendamos X para el escenario
+Y”) — en el README, no solo en el ADR.</li>
+</ul></li>
+<li><strong>Carpeta <code>docs/observability-final/</code></strong>
+completa según <a href="#otros-requisitos">estructura
+obligatoria</a>.</li>
+<li><strong><code>docs/adr/0010-stack-de-observabilidad-final.md</code></strong>
+≥ 1500 palabras.</li>
+<li><strong>Defensa oral agendada</strong> — la cátedra coordina
+horarios por Discord la semana del 03/06.</li>
+<li><strong>Mensaje en el canal Discord</strong> con link al repo y al
+ADR <code>0010</code>.</li>
+</ol>
+<blockquote>
+<p>📡 <strong>Canal Discord (consultas + entregas):</strong> <a
+href="https://discord.com/channels/1482135908508500148/1482135909456679139">https://discord.com/channels/1482135908508500148/1482135909456679139</a></p>
+</blockquote>
+<hr />
+<h2 id="referencias-y-bibliografía">Referencias y Bibliografía</h2>
+<p>Solo lo directamente relevante para esta Parte 4. Las referencias
+técnicas operativas viven en Partes 1, 2 y 3.</p>
+<h3 id="toma-de-decisiones-arquitectónicas">Toma de decisiones
+arquitectónicas</h3>
+<ul>
+<li><strong>Michael Nygard — “Documenting Architecture
+Decisions”</strong> (2011) — el blog post fundacional del formato ADR
+que usamos en todos los TPs. <a
+href="https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions">https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions</a></li>
+<li><strong>Ford, Richards, Sadalage, Dehghani — <em>Software
+Architecture: The Hard Parts</em></strong> (O’Reilly, 2021). Capítulo 7
+sobre ADRs es lectura obligada para esta Parte 4. ISBN
+978-1492086895.</li>
+<li><strong>ThoughtWorks Tech Radar — entry “Lightweight Architecture
+Decision Records”</strong> — Adopt desde 2018, sigue vigente. <a
+href="https://www.thoughtworks.com/radar/techniques/lightweight-architecture-decision-records">https://www.thoughtworks.com/radar/techniques/lightweight-architecture-decision-records</a></li>
+</ul>
+<h3 id="observabilidad--fundamentos">Observabilidad — fundamentos</h3>
+<ul>
+<li><strong>CNCF Observability Whitepaper</strong> (2023) — overview
+oficial de logs / metrics / traces / events / profiles desde la
+fundación que mantiene Loki, Prometheus y OpenTelemetry. <a
+href="https://github.com/cncf/tag-observability/blob/main/whitepaper.md">https://github.com/cncf/tag-observability/blob/main/whitepaper.md</a></li>
+<li><strong>Charity Majors, Liz Fong-Jones, George Miranda —
+<em>Observability Engineering</em></strong> (O’Reilly, 2022) — el libro
+que diferencia “monitoring” de “observability” y por qué importa.
+Lectura esencial para defender el ADR. ISBN 978-1492076445. <a
+href="https://www.oreilly.com/library/view/observability-engineering/9781492076438/">https://www.oreilly.com/library/view/observability-engineering/9781492076438/</a></li>
+<li><strong>Cindy Sridharan — <em>Distributed Systems
+Observability</em></strong> (O’Reilly, 2018, ~80 páginas) — el reporte
+corto que define los 3 pilares y por qué cada parte de este TP cubre
+uno. Free download. <a
+href="https://www.oreilly.com/library/view/distributed-systems-observability/9781492033431/">https://www.oreilly.com/library/view/distributed-systems-observability/9781492033431/</a></li>
+</ul>
+<h3 id="comparativa-loki--efk--otel">Comparativa Loki / EFK / OTel</h3>
+<ul>
+<li><strong>Bryan Boreham (Grafana Labs) — KubeCon talks
+2022-2024</strong> — charlas técnicas honestas sobre cuándo Loki gana y
+cuándo no. Lo importante: las 5 últimas slides de cada talk son honestas
+sobre los límites del modelo label-first. <a
+href="https://www.youtube.com/c/cloudnativefdn">https://www.youtube.com/c/cloudnativefdn</a>
+(buscar “Boreham Loki”)</li>
+<li><strong>Elastic — <em>Logging at Scale with Elasticsearch</em>
+(whitepaper)</strong> — el lado contrario, sesgado pero honesto sobre
+por qué full-text search importa cuando importa. <a
+href="https://www.elastic.co/resources">https://www.elastic.co/resources</a></li>
+<li><strong>OpenTelemetry — <em>Why OpenTelemetry?</em></strong> —
+documentación oficial sobre el problema que resuelve. Corto y directo.
+<a
+href="https://opentelemetry.io/docs/what-is-opentelemetry/">https://opentelemetry.io/docs/what-is-opentelemetry/</a></li>
+<li><strong>CNCF — <em>State of Observability 2024 Report</em></strong>
+— encuesta anual a ~1500 ingenieros sobre qué stacks usan, qué
+migraciones están planeando, y por qué. <a
+href="https://www.cncf.io/reports/">https://www.cncf.io/reports/</a></li>
+</ul>
+<h3 id="vendor-lock-in-en-observabilidad">Vendor lock-in en
+observabilidad</h3>
+<ul>
+<li><strong>Charity Majors — “What’s the Difference Between Monitoring
+and Observability?”</strong> (Honeycomb blog, 2018) — argumenta por qué
+los APMs propietarios pre-OTel son lock-in pesado. <a
+href="https://www.honeycomb.io/blog/observability-a-manifesto">https://www.honeycomb.io/blog/observability-a-manifesto</a></li>
+<li><strong>Joe Beda (ex-Heptio, ex-Google) — sobre CNCF graduation y
+por qué importa</strong> — varios posts en su blog. <a
+href="https://blog.heptio.com/">https://blog.heptio.com/</a>
+(archivado).</li>
+<li><strong>Logstash → Fluentd transition (2021-2023)</strong> — caso de
+estudio sobre cambio de licencia y fragmentación de comunidad. <a
+href="https://www.elastic.co/blog/license-change-clarification">https://www.elastic.co/blog/license-change-clarification</a></li>
+</ul>
+<h3 id="empresas-reales-que-migraron-stacks">Empresas reales que
+migraron stacks</h3>
+<p>Ver <a
+href="#empresas-reales-que-migraron-stacks-referencias-verificables">tabla
+en material de apoyo</a> — los links de cada caso están ahí, no se
+duplican acá.</p>
+<h3 id="el-paper-borg-omega-kubernetes">El paper
+Borg-Omega-Kubernetes</h3>
+<ul>
+<li><strong>Burns, Grant, Oppenheimer, Brewer, Wilkes (2016).</strong>
+“Borg, Omega, and Kubernetes: Lessons learned from three
+container-management systems over a decade”. <em>Communications of the
+ACM, 59(5).</em> Ya está en TP 0 — repaso recomendado para entender el
+contexto de “decisiones arquitectónicas en sistemas de larga vida”. <a
+href="https://research.google/pubs/pub44843/">https://research.google/pubs/pub44843/</a></li>
+</ul>
+
+    <nav class="page-prev-next" aria-label="Navegación entre páginas">
+      <a class="prev-link" href="#" data-slot="prev" hidden>
+        <span class="arrow">←</span>
+        <span class="nav-meta">
+          <span class="nav-label">Anterior</span>
+          <span class="nav-title" data-slot="prev-title"></span>
+        </span>
+      </a>
+      <a class="next-link" href="#" data-slot="next" hidden>
+        <span class="nav-meta">
+          <span class="nav-label">Siguiente</span>
+          <span class="nav-title" data-slot="next-title"></span>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+    </nav>
+
+    <nav class="page-nav-bottom">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+    </nav>
+  </main>
+</div>
+
+<footer class="unlu-footer">
+  <div>
+    UNLu · Departamento de Ciencias Básicas · Seminario de Integración Profesional <strong>2026</strong>
+    · Dr. David Petrocelli
+  </div>
+</footer>
+
+<script>
+// Sidebar show/hide toggle (preference persisted in localStorage)
+(function () {
+  const sidebar = document.getElementById('toc-sidebar');
+  const layout = document.querySelector('.layout');
+  const hideBtn = document.getElementById('sidebar-hide');
+  const showBtn = document.getElementById('sidebar-show');
+  if (!sidebar || !layout || !hideBtn || !showBtn) return;
+
+  const KEY = 'unlu.dcb.sidebar.hidden';
+
+  function apply(hidden) {
+    layout.classList.toggle('sidebar-hidden', hidden);
+    showBtn.classList.toggle('visible', hidden);
+  }
+
+  apply(localStorage.getItem(KEY) === '1');
+
+  hideBtn.addEventListener('click', () => {
+    localStorage.setItem(KEY, '1');
+    apply(true);
+  });
+  showBtn.addEventListener('click', () => {
+    localStorage.removeItem(KEY);
+    apply(false);
+  });
+})();
+
+// Wrap each H2 (and its following content until the next H2) in a <details open>
+// element so users can collapse/expand sections.
+(function () {
+  const main = document.querySelector('main.content');
+  if (!main) return;
+
+  // Collect direct-child H2 headings so we don't touch nested ones (e.g., inside details we'll create)
+  const headings = Array.from(main.children).filter(el => el.tagName === 'H2');
+
+  headings.forEach(h2 => {
+    const details = document.createElement('details');
+    details.open = true;
+    details.className = 'section-collapsible';
+
+    const summary = document.createElement('summary');
+    // Move heading content (incl. anchor) into the summary so anchors keep working
+    summary.innerHTML = h2.innerHTML;
+    if (h2.id) summary.id = h2.id;
+    details.appendChild(summary);
+
+    // Move siblings until next H2 into details
+    const parent = h2.parentNode;
+    let next = h2.nextSibling;
+    parent.replaceChild(details, h2);
+    while (next && !(next.nodeType === 1 && next.tagName === 'H2')) {
+      const node = next;
+      next = next.nextSibling;
+      details.appendChild(node);
+    }
+  });
+
+  // If there's a hash in the URL, ensure the target's <details> is open
+  function openDetailsForHash(hash) {
+    if (!hash) return;
+    const target = document.getElementById(hash.replace(/^#/, ''));
+    if (!target) return;
+    let p = target.closest('details');
+    while (p) { p.open = true; p = p.parentElement && p.parentElement.closest('details'); }
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  openDetailsForHash(window.location.hash);
+  window.addEventListener('hashchange', () => openDetailsForHash(window.location.hash));
+
+  // Wire up "Expand all" / "Collapse all" controls in the inline TOC
+  document.querySelectorAll('.toc-controls [data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const action = btn.getAttribute('data-action');
+      const open = action === 'expand-all';
+      document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
+    });
+  });
+})();
+
+// Populate prev/next navigation based on the current page's banner-num
+(function () {
+  const pill = document.querySelector('.banner-pill');
+  const nav = document.querySelector('.page-prev-next');
+  if (!pill || !nav) return;
+
+  const key = (pill.textContent || '').trim().toUpperCase();
+
+  // Map banner-num → { prev, next }
+  // Each entry: { href, title } (or null if not present)
+  const MAP = {
+    'TP 0': {
+      prev: null,
+      next: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' }
+    },
+    'TP 1 · PARTE 1': {
+      prev: { href: 'practica-0.html', title: 'TP 0 — Prerrequisitos' },
+      next: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' }
+    },
+    'TP 1 · PARTE 2': {
+      prev: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' },
+      next: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' }
+    },
+    'TP 2 · PARTE 1': {
+      prev: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' },
+      next: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' }
+    },
+    'TP 2 · PARTE 2': {
+      prev: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' },
+      next: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' }
+    },
+    'TP 2 · PARTE 3': {
+      prev: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' },
+      next: { href: 'practica-2-parte-4.html', title: 'Práctica II · Parte 4' }
+    },
+    'TP 2 · PARTE 4': {
+      prev: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' },
+      next: null
+    }
+  };
+
+  const entry = MAP[key];
+  if (!entry) return;
+
+  const prevLink = nav.querySelector('[data-slot="prev"]');
+  const nextLink = nav.querySelector('[data-slot="next"]');
+  const prevTitle = nav.querySelector('[data-slot="prev-title"]');
+  const nextTitle = nav.querySelector('[data-slot="next-title"]');
+
+  if (entry.prev && prevLink && prevTitle) {
+    prevLink.setAttribute('href', entry.prev.href);
+    prevTitle.textContent = entry.prev.title;
+    prevLink.hidden = false;
+  }
+  if (entry.next && nextLink && nextTitle) {
+    nextLink.setAttribute('href', entry.next.href);
+    nextTitle.textContent = entry.next.title;
+    nextLink.hidden = false;
+  }
+
+  // If neither slot is shown, hide the whole nav
+  if ((!entry.prev) && (!entry.next)) {
+    nav.style.display = 'none';
+  }
+})();
+
+// Open all external links in a new tab (preserves the current page).
+// Internal anchors (#hash), relative links and same-origin links stay in-tab.
+(function () {
+  const here = window.location.hostname;
+  document.querySelectorAll('a[href]').forEach(a => {
+    const href = a.getAttribute('href');
+    if (!href) return;
+    // Skip anchors and pure relative links
+    if (href.startsWith('#') || href.startsWith('/') || !/^https?:\/\//i.test(href)) return;
+    try {
+      const url = new URL(href);
+      if (url.hostname && url.hostname !== here) {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      }
+    } catch (_) {
+      // Malformed URL — ignore
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

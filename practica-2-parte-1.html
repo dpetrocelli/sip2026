@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
   <meta name="generator" content="pandoc + UNLu/DCB template">
-  <title>Práctica II — Observabilidad: Logging centralizado — UNLu
-DCB</title>
+  <title>Práctica II · Parte 1 — Logging centralizado con Loki +
+Promtail/Alloy + Grafana — UNLu DCB</title>
   <link rel="stylesheet" href="assets/style.css">
   <style type="text/css">
 html { -webkit-text-size-adjust: 100%; }
@@ -100,13 +100,15 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
     </div>
     <ul>
-    <li><a href="#trabajo-práctico-nº-2"
-    id="toc-trabajo-práctico-nº-2">Trabajo Práctico Nº 2</a>
+    <li><a href="#trabajo-práctico-nº-2--parte-1"
+    id="toc-trabajo-práctico-nº-2--parte-1">Trabajo Práctico Nº 2 —
+    Parte 1</a>
     <ul>
     <li><a
-    href="#observabilidad--logging-centralizado-del-scraper-en-k3s"
-    id="toc-observabilidad--logging-centralizado-del-scraper-en-k3s">Observabilidad
-    — Logging centralizado del scraper en k3s</a></li>
+    href="#observabilidad--logging-centralizado-del-scraper-en-k3s-con-loki--promtailalloy--grafana"
+    id="toc-observabilidad--logging-centralizado-del-scraper-en-k3s-con-loki--promtailalloy--grafana">Observabilidad
+    — Logging centralizado del scraper en k3s con Loki + Promtail/Alloy
+    + Grafana</a></li>
     <li><a href="#requisitos-consideraciones-y-formato-de-entrega"
     id="toc-requisitos-consideraciones-y-formato-de-entrega">Requisitos,
     consideraciones y formato de entrega</a>
@@ -256,23 +258,25 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     <nav class="page-breadcrumb" aria-label="Breadcrumb">
       <a href="index.html">Inicio</a>
       <span class="sep">›</span>
-      <span class="current">TP 2</span>
+      <span class="current">TP 2 · PARTE 1</span>
     </nav>
     <nav class="page-nav-top">
       <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
-      <span class="banner-pill">TP 2</span>
+      <span class="banner-pill">TP 2 · PARTE 1</span>
     </nav>
 
     <details class="toc-inline" open>
       <summary>📑 Índice del documento</summary>
       <ul>
-      <li><a href="#trabajo-práctico-nº-2"
-      id="toc-trabajo-práctico-nº-2">Trabajo Práctico Nº 2</a>
+      <li><a href="#trabajo-práctico-nº-2--parte-1"
+      id="toc-trabajo-práctico-nº-2--parte-1">Trabajo Práctico Nº 2 —
+      Parte 1</a>
       <ul>
       <li><a
-      href="#observabilidad--logging-centralizado-del-scraper-en-k3s"
-      id="toc-observabilidad--logging-centralizado-del-scraper-en-k3s">Observabilidad
-      — Logging centralizado del scraper en k3s</a></li>
+      href="#observabilidad--logging-centralizado-del-scraper-en-k3s-con-loki--promtailalloy--grafana"
+      id="toc-observabilidad--logging-centralizado-del-scraper-en-k3s-con-loki--promtailalloy--grafana">Observabilidad
+      — Logging centralizado del scraper en k3s con Loki +
+      Promtail/Alloy + Grafana</a></li>
       <li><a href="#requisitos-consideraciones-y-formato-de-entrega"
       id="toc-requisitos-consideraciones-y-formato-de-entrega">Requisitos,
       consideraciones y formato de entrega</a>
@@ -420,19 +424,41 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       </div>
     </details>
 
-<h1 id="trabajo-práctico-nº-2">Trabajo Práctico Nº 2</h1>
+<h1 id="trabajo-práctico-nº-2--parte-1">Trabajo Práctico Nº 2 — Parte
+1</h1>
 <h2
-id="observabilidad--logging-centralizado-del-scraper-en-k3s">Observabilidad
-— Logging centralizado del scraper en k3s</h2>
+id="observabilidad--logging-centralizado-del-scraper-en-k3s-con-loki--promtailalloy--grafana">Observabilidad
+— Logging centralizado del scraper en k3s con Loki + Promtail/Alloy +
+Grafana</h2>
 <p><strong>Fecha de Entrega: 16/05/2026</strong></p>
 <blockquote>
-<p>Este TP arranca <strong>donde terminó el <a
+<p>🧭 <strong>Esto es la Parte 1 de 4 sobre observabilidad.</strong> El
+recorrido del TP 2 te lleva por los 3 stacks principales del 2026:</p>
+<ul>
+<li><strong>Parte 1 (acá)</strong> — Loki + Promtail/Alloy + Grafana (lo
+más simple, OSS, label-based).</li>
+<li><strong><a href="practica-2-parte-2.html">Parte 2</a></strong> — EFK
+= Elasticsearch + Fluentd/Fluent Bit + Kibana (full-text search, Elastic
+ecosystem).</li>
+<li><strong><a href="practica-2-parte-3.html">Parte 3</a></strong> —
+OpenTelemetry Collector + SDK (vendor-neutral, multi-signal).</li>
+<li><strong><a href="practica-2-parte-4.html">Parte 4</a></strong> —
+Cierre: decisiones arquitectónicas + ADR comparativo de los 3
+stacks.</li>
+</ul>
+<p>El objetivo del recorrido NO es que terminen “casados” con un stack —
+es que entiendan los <strong>trade-offs</strong> y elijan informados.
+Spoiler: la cátedra recomienda terminar con <strong>OTel</strong> como
+capa de abstracción + <strong>Loki</strong> como backend.</p>
+</blockquote>
+<blockquote>
+<p>Esta Parte 1 arranca <strong>donde terminó el <a
 href="practica-1-parte-2.html">TP 1 — Parte 2</a></strong>: el scraper
 ya corre como <code>Job</code> y <code>CronJob</code> en el cluster k3s
 (Hit #7), ya tiene <code>logging</code> estructurado básico en Python
 (Hit #5) y ya escribe el histórico a Postgres (Hit #8). Lo que falta — y
-este TP lo resuelve — es <strong>mirar lo que pasa</strong>: cuando un
-CronJob de las 3 AM falla, hoy hay que pelearle a
+esta parte lo resuelve — es <strong>mirar lo que pasa</strong>: cuando
+un CronJob de las 3 AM falla, hoy hay que pelearle a
 <code>kubectl logs --previous</code> y rezar para que el pod no se haya
 recolectado todavía. Acá montamos el stack de logging centralizado que
 hace ese problema desaparecer.</p>
@@ -459,8 +485,8 @@ GB resident set + chunks store del PVC.</li>
 consideraciones y formato de entrega</h2>
 <p>Aplican los mismos requisitos generales del TP 1 (repo público,
 README por hit, video, integración con IA documentada, sin secrets
-commiteados) <strong>más</strong> los siguientes específicos de este
-TP.</p>
+commiteados) <strong>más</strong> los siguientes específicos de esta
+Parte 1.</p>
 <h3 id="infra-base-obligatoria--bloqueante">Infra base obligatoria —
 bloqueante</h3>
 <blockquote>
@@ -583,10 +609,13 @@ Plantilla y referencias en el TP 1 · Parte 2 — no se repiten acá.</p>
 <p>Este ADR no es de relleno: la decisión real importa porque el costo,
 la complejidad operativa y el lock-in de cada opción son muy distintos.
 El ADR tiene que mencionar al menos: requerimiento de retención (7 días
-en este TP), recursos del cluster (un solo nodo k3s), familiaridad del
-equipo, costo (Loki + Grafana son OSS; Datadog/Splunk no), y por qué
+en esta Parte 1), recursos del cluster (un solo nodo k3s), familiaridad
+del equipo, costo (Loki + Grafana son OSS; Datadog/Splunk no), y por qué
 descartaron las otras 4-5 alternativas de la <a
-href="#material-de-apoyo">tabla de comparación de opciones</a>.</p></li>
+href="#material-de-apoyo">tabla de comparación de opciones</a>. Ojo: en
+la <strong>Parte 4</strong> vamos a revisitar este ADR a la luz de lo
+aprendido en EFK (Parte 2) y OTel (Parte 3), así que escribilo sabiendo
+que va a ser desafiado.</p></li>
 <li><p><strong>Bonus opcional — 1 ADR adicional</strong>
 (<code>0008-promtail-vs-alloy.md</code>) si optan por Alloy en lugar de
 Promtail. Tiene que justificar por qué Alloy a sabiendas de que Promtail
@@ -645,7 +674,8 @@ regresionar.</p></li>
 relacionados</h2>
 <ul>
 <li>Observabilidad: los tres pilares (logs, métricas, traces) y por qué
-este TP cubre solo logs.</li>
+esta Parte 1 cubre solo logs (las métricas y traces aparecen recién con
+OTel en la Parte 3).</li>
 <li>Arquitectura de logging centralizado: agente por nodo (DaemonSet) +
 collector + storage + visualizador.</li>
 <li>Loki: modelo “label-first” (igual que Prometheus) vs el modelo
@@ -890,7 +920,7 @@ Loki → Grafana está cerrado end-to-end.</p>
 id="hit-2--recolección-de-logs-del-scraper-con-labels-kubernetes">Hit #2
 — Recolección de logs del scraper con labels Kubernetes</h3>
 <p>El default de Promtail captura <strong>todo</strong> el cluster. Para
-este TP nos enfocamos en el scraper. Refinen el
+esta Parte 1 nos enfocamos en el scraper. Refinen el
 <code>scrape_configs</code> para:</p>
 <ol type="1">
 <li>Filtrar solo el namespace donde corre el scraper
@@ -1278,7 +1308,7 @@ efectivamente disparó (screenshot del mensaje en Discord).</p>
 <li><strong>Push final al repo público</strong> (mismo repo del TP 1, no
 abrir uno nuevo) antes del <strong>16/05/2026 23:59 ART</strong>.</li>
 <li><strong>README raíz actualizado</strong> con una sección nueva “TP 2
-— Observabilidad”:
+· Parte 1 — Observabilidad con Loki”:
 <ul>
 <li>Cómo ejecutar <code>observability/install.sh</code> desde cero.</li>
 <li>Variables de entorno requeridas
@@ -1447,7 +1477,7 @@ sea <strong>corregible</strong>. Si falta cualquiera, la nota es 0.</p>
 <ul>
 <li><strong>TP 1 · Parte 2 entregado y aprobado</strong> (mínimo
 60/100). El scraper tiene que estar corriendo como CronJob en k3s al
-momento de evaluar este TP.</li>
+momento de evaluar esta Parte 1.</li>
 <li><strong><code>observability/install.sh</code></strong> funciona en
 un cluster limpio con un solo comando (verificado en <a
 href="#1-installsh-corre-limpio-en-cluster-vacío">auto-verificación
@@ -1575,7 +1605,7 @@ scraper</td>
 <td>Full-text search rapidísima, ecosistema maduro</td>
 <td>Heavy: ES single-node ya pide 2 GB RAM, no entra cómodo en k3s
 local</td>
-<td>OSS, <strong>NO usar en este TP</strong></td>
+<td>OSS, <strong>se aborda en la Parte 2</strong></td>
 </tr>
 <tr>
 <td><strong>Datadog Logs</strong></td>
@@ -1606,13 +1636,15 @@ local</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Para este TP, las únicas opciones aceptables son</strong>:
-<strong>Loki + Promtail + Grafana</strong> (default recomendado) o
-<strong>Loki + Alloy + Grafana</strong> (con ADR
-<code>0008-promtail-vs-alloy.md</code> justificándolo). Vector y
-OpenTelemetry Collector se aceptan también si los equipos quieren
-explorar — requieren ADR adicional. EFK / Datadog / Splunk <strong>no se
-aceptan</strong> (no caben en el cluster local o no son OSS).</p>
+<p><strong>Para esta Parte 1, las únicas opciones aceptables
+son</strong>: <strong>Loki + Promtail + Grafana</strong> (default
+recomendado) o <strong>Loki + Alloy + Grafana</strong> (con ADR
+<code>0008-promtail-vs-alloy.md</code> justificándolo). Vector se acepta
+también si los equipos quieren explorar — requiere ADR adicional. EFK
+aparece en la <strong>Parte 2</strong> y OpenTelemetry en la
+<strong>Parte 3</strong> — no anticipen acá. Datadog / Splunk <strong>no
+se aceptan</strong> en ninguna parte (no son OSS o no caben en el
+cluster local).</p>
 <h3 id="esqueleto-de-installsh">Esqueleto de
 <code>install.sh</code></h3>
 <div class="sourceCode" id="cb40"><pre
@@ -1693,7 +1725,7 @@ class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb41-1">
 <span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Equipo familiarizado con Grafana (lo vimos en otra materia).</span>
 <span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>Alternativas consideradas: Loki+Promtail, Loki+Alloy, Vector+Loki, OTel+Loki,</span>
-<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>EFK, Datadog, Splunk. Tabla comparativa en TP 2 / Material de apoyo.</span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>EFK, Datadog, Splunk. Tabla comparativa en TP 2 · Parte 1 / Material de apoyo.</span>
 <span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decisión</span></span>
 <span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a></span>
@@ -1972,10 +2004,22 @@ href="https://research.google/pubs/pub36356/">https://research.google/pubs/pub36
     },
     'TP 1 · PARTE 2': {
       prev: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' },
-      next: { href: 'practica-2.html', title: 'Práctica II — Observabilidad' }
+      next: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' }
     },
-    'TP 2': {
+    'TP 2 · PARTE 1': {
       prev: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' },
+      next: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' }
+    },
+    'TP 2 · PARTE 2': {
+      prev: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' },
+      next: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' }
+    },
+    'TP 2 · PARTE 3': {
+      prev: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' },
+      next: { href: 'practica-2-parte-4.html', title: 'Práctica II · Parte 4' }
+    },
+    'TP 2 · PARTE 4': {
+      prev: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' },
       next: null
     }
   };

@@ -1,0 +1,2390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <meta name="generator" content="pandoc + UNLu/DCB template">
+  <title>Práctica II · Parte 2 — Logging centralizado con EFK
+(Elasticsearch + Fluent Bit + Kibana) — UNLu DCB</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+
+<header class="unlu-header">
+  <a href="index.html" class="brand" title="Volver al menú principal">
+    <img src="assets/unlu_escudo.png" alt="Universidad Nacional de Luján" class="logo unlu">
+    <div class="brand-text">
+      <div class="institution">Universidad Nacional de Luján</div>
+      <div class="department">Departamento de Ciencias Básicas</div>
+    </div>
+    <img src="assets/logo_dcb.png" alt="Departamento de Ciencias Básicas" class="logo dcb">
+  </a>
+  <div class="course-bar">
+    <span class="course">Seminario de Integración Profesional</span>
+    <span class="year">2026</span>
+    <span class="instructor">Dr. David Petrocelli</span>
+  </div>
+</header>
+
+<button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
+
+<div class="layout">
+  <aside class="toc-sidebar" id="toc-sidebar">
+    <div class="toc-header">
+      <div class="toc-title">Contenidos</div>
+      <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
+    </div>
+    <ul>
+    <li><a href="#trabajo-práctico-nº-2--parte-2"
+    id="toc-trabajo-práctico-nº-2--parte-2">Trabajo Práctico Nº 2 —
+    Parte 2</a>
+    <ul>
+    <li><a
+    href="#observabilidad--logging-centralizado-con-efk-elasticsearch--fluent-bit--kibana"
+    id="toc-observabilidad--logging-centralizado-con-efk-elasticsearch--fluent-bit--kibana">Observabilidad
+    — Logging centralizado con EFK (Elasticsearch + Fluent Bit +
+    Kibana)</a></li>
+    <li><a href="#pre-requisitos"
+    id="toc-pre-requisitos">Pre-requisitos</a></li>
+    <li><a href="#requisitos-consideraciones-y-formato-de-entrega"
+    id="toc-requisitos-consideraciones-y-formato-de-entrega">Requisitos,
+    consideraciones y formato de entrega</a>
+    <ul>
+    <li><a href="#infra-base-obligatoria--bloqueante"
+    id="toc-infra-base-obligatoria--bloqueante">Infra base obligatoria —
+    bloqueante</a></li>
+    <li><a href="#otros-requisitos" id="toc-otros-requisitos">Otros
+    requisitos</a></li>
+    </ul></li>
+    <li><a href="#contenidos-del-programa-relacionados"
+    id="toc-contenidos-del-programa-relacionados">Contenidos del
+    programa relacionados</a></li>
+    <li><a href="#práctica" id="toc-práctica">Práctica</a>
+    <ul>
+    <li><a
+    href="#hit-1--deploy-del-eck-operator--elasticsearch-single-node--kibana"
+    id="toc-hit-1--deploy-del-eck-operator--elasticsearch-single-node--kibana">Hit
+    #1 — Deploy del ECK Operator + Elasticsearch single-node +
+    Kibana</a></li>
+    <li><a href="#hit-2--fluent-bit-como-daemonset-pipeline-al-scraper"
+    id="toc-hit-2--fluent-bit-como-daemonset-pipeline-al-scraper">Hit #2
+    — Fluent Bit como DaemonSet, pipeline al scraper</a></li>
+    <li><a href="#hit-3--index-pattern--ilm-rollover-retention-7-días"
+    id="toc-hit-3--index-pattern--ilm-rollover-retention-7-días">Hit #3
+    — Index pattern + ILM (rollover, retention 7 días)</a></li>
+    <li><a href="#hit-4--cookbook-kql-6-queries-útiles"
+    id="toc-hit-4--cookbook-kql-6-queries-útiles">Hit #4 — Cookbook KQL:
+    6+ queries útiles</a></li>
+    <li><a
+    href="#hit-5--dashboard-kibana-provisionado-as-code-ndjson--import-api"
+    id="toc-hit-5--dashboard-kibana-provisionado-as-code-ndjson--import-api">Hit
+    #5 — Dashboard Kibana provisionado as-code (NDJSON + import
+    API)</a></li>
+    <li><a href="#hit-6--alertas-via-kibana-alerting-opcional-bonus-5-"
+    id="toc-hit-6--alertas-via-kibana-alerting-opcional-bonus-5-">Hit #6
+    — Alertas via Kibana Alerting (opcional, bonus +5 %)</a></li>
+    </ul></li>
+    <li><a href="#cómo-entregar" id="toc-cómo-entregar">Cómo
+    entregar</a></li>
+    <li><a href="#auto-verificación-previa-a-la-entrega"
+    id="toc-auto-verificación-previa-a-la-entrega">Auto-verificación
+    previa a la entrega</a>
+    <ul>
+    <li><a href="#1-installsh-corre-limpio-en-cluster-vacío"
+    id="toc-1-installsh-corre-limpio-en-cluster-vacío">1)
+    <code>install.sh</code> corre limpio en cluster vacío</a></li>
+    <li><a href="#2-elasticsearch-está-green-y-kibana-available"
+    id="toc-2-elasticsearch-está-green-y-kibana-available">2)
+    Elasticsearch está <code>green</code> y Kibana
+    <code>available</code></a></li>
+    <li><a
+    href="#3-fluent-bit-daemonset-está-running-en-todos-los-nodos"
+    id="toc-3-fluent-bit-daemonset-está-running-en-todos-los-nodos">3)
+    Fluent Bit DaemonSet está Running en todos los nodos</a></li>
+    <li><a href="#4-elasticsearch-responde-a-queries-via-http"
+    id="toc-4-elasticsearch-responde-a-queries-via-http">4)
+    Elasticsearch responde a queries via HTTP</a></li>
+    <li><a href="#5-ilm-policy-scraper-logs-aplicada"
+    id="toc-5-ilm-policy-scraper-logs-aplicada">5) ILM policy
+    <code>scraper-logs</code> aplicada</a></li>
+    <li><a href="#6-las-6-queries-kql-del-hit-4-corren-sin-error"
+    id="toc-6-las-6-queries-kql-del-hit-4-corren-sin-error">6) Las 6
+    queries KQL del Hit #4 corren sin error</a></li>
+    <li><a href="#7-dashboard-provisionado-aparece-en-la-ui"
+    id="toc-7-dashboard-provisionado-aparece-en-la-ui">7) Dashboard
+    provisionado aparece en la UI</a></li>
+    <li><a
+    href="#8-gitleaks-no-detecta-el-password-de-elastic-ni-el-webhook-discord"
+    id="toc-8-gitleaks-no-detecta-el-password-de-elastic-ni-el-webhook-discord">8)
+    <code>gitleaks</code> no detecta el password de Elastic ni el
+    webhook Discord</a></li>
+    </ul></li>
+    <li><a href="#common-pitfalls" id="toc-common-pitfalls">Common
+    pitfalls</a>
+    <ul>
+    <li><a href="#vmmax_map_count-muy-bajo-en-el-host"
+    id="toc-vmmax_map_count-muy-bajo-en-el-host"><code>vm.max_map_count</code>
+    muy bajo en el host</a></li>
+    <li><a href="#cluster-yellow-permanente"
+    id="toc-cluster-yellow-permanente">Cluster <code>yellow</code>
+    permanente</a></li>
+    <li><a href="#fluent-bit-no-manda-nada-a-es"
+    id="toc-fluent-bit-no-manda-nada-a-es">Fluent Bit no manda nada a
+    ES</a></li>
+    <li><a href="#kbn-xsrf-true-falta-en-el-import"
+    id="toc-kbn-xsrf-true-falta-en-el-import"><code>kbn-xsrf: true</code>
+    falta en el import</a></li>
+    <li><a href="#el-ndjson-exportado-no-incluye-el-data-view"
+    id="toc-el-ndjson-exportado-no-incluye-el-data-view">El NDJSON
+    exportado no incluye el data view</a></li>
+    <li><a href="#memoria--el-cluster-local-muere"
+    id="toc-memoria--el-cluster-local-muere">Memoria — el cluster local
+    muere</a></li>
+    <li><a href="#confundir-kql-con-lucene-query-language"
+    id="toc-confundir-kql-con-lucene-query-language">Confundir KQL con
+    Lucene query language</a></li>
+    </ul></li>
+    <li><a href="#criterios-de-evaluación"
+    id="toc-criterios-de-evaluación">Criterios de evaluación</a>
+    <ul>
+    <li><a href="#requisitos-bloqueantes"
+    id="toc-requisitos-bloqueantes">Requisitos bloqueantes</a></li>
+    <li><a href="#tabla-de-puntaje-100-"
+    id="toc-tabla-de-puntaje-100-">Tabla de puntaje (100 %)</a></li>
+    </ul></li>
+    <li><a href="#material-de-apoyo" id="toc-material-de-apoyo">Material
+    de apoyo</a>
+    <ul>
+    <li><a
+    href="#tabla-comparativa-loki-parte-1-vs-efk-parte-2--números-honestos"
+    id="toc-tabla-comparativa-loki-parte-1-vs-efk-parte-2--números-honestos">Tabla
+    comparativa Loki (Parte 1) vs EFK (Parte 2) — números
+    honestos</a></li>
+    <li><a href="#esqueleto-de-installsh"
+    id="toc-esqueleto-de-installsh">Esqueleto de
+    <code>install.sh</code></a></li>
+    <li><a href="#esqueleto-de-fluent-bit-configyaml-referencia-rápida"
+    id="toc-esqueleto-de-fluent-bit-configyaml-referencia-rápida">Esqueleto
+    de <code>fluent-bit-config.yaml</code> (referencia rápida)</a></li>
+    <li><a href="#esqueleto-de-query-kql-referencia-rápida"
+    id="toc-esqueleto-de-query-kql-referencia-rápida">Esqueleto de query
+    KQL (referencia rápida)</a></li>
+    <li><a href="#esqueleto-de-adr-0009-stack-de-logging-efkmd"
+    id="toc-esqueleto-de-adr-0009-stack-de-logging-efkmd">Esqueleto de
+    ADR <code>0009-stack-de-logging-efk.md</code></a></li>
+    <li><a href="#plantilla-del-adr-comparativo-final-parte-4"
+    id="toc-plantilla-del-adr-comparativo-final-parte-4">Plantilla del
+    ADR comparativo final (Parte 4)</a></li>
+    </ul></li>
+    <li><a href="#referencias-y-bibliografía"
+    id="toc-referencias-y-bibliografía">Referencias y Bibliografía</a>
+    <ul>
+    <li><a href="#hit-1--eck-operator--elasticsearch--kibana"
+    id="toc-hit-1--eck-operator--elasticsearch--kibana">Hit #1 — ECK
+    Operator + Elasticsearch + Kibana</a></li>
+    <li><a href="#hit-2--fluent-bit--pipeline-kubernetes"
+    id="toc-hit-2--fluent-bit--pipeline-kubernetes">Hit #2 — Fluent Bit
+    + pipeline Kubernetes</a></li>
+    <li><a href="#hit-3--index-lifecycle-management"
+    id="toc-hit-3--index-lifecycle-management">Hit #3 — Index Lifecycle
+    Management</a></li>
+    <li><a href="#hit-4--kql" id="toc-hit-4--kql">Hit #4 — KQL</a></li>
+    <li><a href="#hit-5--saved-objects-api--dashboards"
+    id="toc-hit-5--saved-objects-api--dashboards">Hit #5 — Saved Objects
+    API + dashboards</a></li>
+    <li><a href="#hit-6--kibana-alerting-bonus"
+    id="toc-hit-6--kibana-alerting-bonus">Hit #6 — Kibana Alerting
+    (bonus)</a></li>
+    <li><a href="#licencia-y-alternativas-oss"
+    id="toc-licencia-y-alternativas-oss">Licencia y alternativas
+    OSS</a></li>
+    <li><a href="#comparativa-loki-vs-elasticsearch"
+    id="toc-comparativa-loki-vs-elasticsearch">Comparativa Loki vs
+    Elasticsearch</a></li>
+    </ul></li>
+    </ul></li>
+    </ul>
+    <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
+      <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <nav class="page-breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Inicio</a>
+      <span class="sep">›</span>
+      <span class="current">TP 2 · PARTE 2</span>
+    </nav>
+    <nav class="page-nav-top">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+      <span class="banner-pill">TP 2 · PARTE 2</span>
+    </nav>
+
+    <details class="toc-inline" open>
+      <summary>📑 Índice del documento</summary>
+      <ul>
+      <li><a href="#trabajo-práctico-nº-2--parte-2"
+      id="toc-trabajo-práctico-nº-2--parte-2">Trabajo Práctico Nº 2 —
+      Parte 2</a>
+      <ul>
+      <li><a
+      href="#observabilidad--logging-centralizado-con-efk-elasticsearch--fluent-bit--kibana"
+      id="toc-observabilidad--logging-centralizado-con-efk-elasticsearch--fluent-bit--kibana">Observabilidad
+      — Logging centralizado con EFK (Elasticsearch + Fluent Bit +
+      Kibana)</a></li>
+      <li><a href="#pre-requisitos"
+      id="toc-pre-requisitos">Pre-requisitos</a></li>
+      <li><a href="#requisitos-consideraciones-y-formato-de-entrega"
+      id="toc-requisitos-consideraciones-y-formato-de-entrega">Requisitos,
+      consideraciones y formato de entrega</a>
+      <ul>
+      <li><a href="#infra-base-obligatoria--bloqueante"
+      id="toc-infra-base-obligatoria--bloqueante">Infra base obligatoria
+      — bloqueante</a></li>
+      <li><a href="#otros-requisitos" id="toc-otros-requisitos">Otros
+      requisitos</a></li>
+      </ul></li>
+      <li><a href="#contenidos-del-programa-relacionados"
+      id="toc-contenidos-del-programa-relacionados">Contenidos del
+      programa relacionados</a></li>
+      <li><a href="#práctica" id="toc-práctica">Práctica</a>
+      <ul>
+      <li><a
+      href="#hit-1--deploy-del-eck-operator--elasticsearch-single-node--kibana"
+      id="toc-hit-1--deploy-del-eck-operator--elasticsearch-single-node--kibana">Hit
+      #1 — Deploy del ECK Operator + Elasticsearch single-node +
+      Kibana</a></li>
+      <li><a
+      href="#hit-2--fluent-bit-como-daemonset-pipeline-al-scraper"
+      id="toc-hit-2--fluent-bit-como-daemonset-pipeline-al-scraper">Hit
+      #2 — Fluent Bit como DaemonSet, pipeline al scraper</a></li>
+      <li><a href="#hit-3--index-pattern--ilm-rollover-retention-7-días"
+      id="toc-hit-3--index-pattern--ilm-rollover-retention-7-días">Hit
+      #3 — Index pattern + ILM (rollover, retention 7 días)</a></li>
+      <li><a href="#hit-4--cookbook-kql-6-queries-útiles"
+      id="toc-hit-4--cookbook-kql-6-queries-útiles">Hit #4 — Cookbook
+      KQL: 6+ queries útiles</a></li>
+      <li><a
+      href="#hit-5--dashboard-kibana-provisionado-as-code-ndjson--import-api"
+      id="toc-hit-5--dashboard-kibana-provisionado-as-code-ndjson--import-api">Hit
+      #5 — Dashboard Kibana provisionado as-code (NDJSON + import
+      API)</a></li>
+      <li><a
+      href="#hit-6--alertas-via-kibana-alerting-opcional-bonus-5-"
+      id="toc-hit-6--alertas-via-kibana-alerting-opcional-bonus-5-">Hit
+      #6 — Alertas via Kibana Alerting (opcional, bonus +5 %)</a></li>
+      </ul></li>
+      <li><a href="#cómo-entregar" id="toc-cómo-entregar">Cómo
+      entregar</a></li>
+      <li><a href="#auto-verificación-previa-a-la-entrega"
+      id="toc-auto-verificación-previa-a-la-entrega">Auto-verificación
+      previa a la entrega</a>
+      <ul>
+      <li><a href="#1-installsh-corre-limpio-en-cluster-vacío"
+      id="toc-1-installsh-corre-limpio-en-cluster-vacío">1)
+      <code>install.sh</code> corre limpio en cluster vacío</a></li>
+      <li><a href="#2-elasticsearch-está-green-y-kibana-available"
+      id="toc-2-elasticsearch-está-green-y-kibana-available">2)
+      Elasticsearch está <code>green</code> y Kibana
+      <code>available</code></a></li>
+      <li><a
+      href="#3-fluent-bit-daemonset-está-running-en-todos-los-nodos"
+      id="toc-3-fluent-bit-daemonset-está-running-en-todos-los-nodos">3)
+      Fluent Bit DaemonSet está Running en todos los nodos</a></li>
+      <li><a href="#4-elasticsearch-responde-a-queries-via-http"
+      id="toc-4-elasticsearch-responde-a-queries-via-http">4)
+      Elasticsearch responde a queries via HTTP</a></li>
+      <li><a href="#5-ilm-policy-scraper-logs-aplicada"
+      id="toc-5-ilm-policy-scraper-logs-aplicada">5) ILM policy
+      <code>scraper-logs</code> aplicada</a></li>
+      <li><a href="#6-las-6-queries-kql-del-hit-4-corren-sin-error"
+      id="toc-6-las-6-queries-kql-del-hit-4-corren-sin-error">6) Las 6
+      queries KQL del Hit #4 corren sin error</a></li>
+      <li><a href="#7-dashboard-provisionado-aparece-en-la-ui"
+      id="toc-7-dashboard-provisionado-aparece-en-la-ui">7) Dashboard
+      provisionado aparece en la UI</a></li>
+      <li><a
+      href="#8-gitleaks-no-detecta-el-password-de-elastic-ni-el-webhook-discord"
+      id="toc-8-gitleaks-no-detecta-el-password-de-elastic-ni-el-webhook-discord">8)
+      <code>gitleaks</code> no detecta el password de Elastic ni el
+      webhook Discord</a></li>
+      </ul></li>
+      <li><a href="#common-pitfalls" id="toc-common-pitfalls">Common
+      pitfalls</a>
+      <ul>
+      <li><a href="#vmmax_map_count-muy-bajo-en-el-host"
+      id="toc-vmmax_map_count-muy-bajo-en-el-host"><code>vm.max_map_count</code>
+      muy bajo en el host</a></li>
+      <li><a href="#cluster-yellow-permanente"
+      id="toc-cluster-yellow-permanente">Cluster <code>yellow</code>
+      permanente</a></li>
+      <li><a href="#fluent-bit-no-manda-nada-a-es"
+      id="toc-fluent-bit-no-manda-nada-a-es">Fluent Bit no manda nada a
+      ES</a></li>
+      <li><a href="#kbn-xsrf-true-falta-en-el-import"
+      id="toc-kbn-xsrf-true-falta-en-el-import"><code>kbn-xsrf: true</code>
+      falta en el import</a></li>
+      <li><a href="#el-ndjson-exportado-no-incluye-el-data-view"
+      id="toc-el-ndjson-exportado-no-incluye-el-data-view">El NDJSON
+      exportado no incluye el data view</a></li>
+      <li><a href="#memoria--el-cluster-local-muere"
+      id="toc-memoria--el-cluster-local-muere">Memoria — el cluster
+      local muere</a></li>
+      <li><a href="#confundir-kql-con-lucene-query-language"
+      id="toc-confundir-kql-con-lucene-query-language">Confundir KQL con
+      Lucene query language</a></li>
+      </ul></li>
+      <li><a href="#criterios-de-evaluación"
+      id="toc-criterios-de-evaluación">Criterios de evaluación</a>
+      <ul>
+      <li><a href="#requisitos-bloqueantes"
+      id="toc-requisitos-bloqueantes">Requisitos bloqueantes</a></li>
+      <li><a href="#tabla-de-puntaje-100-"
+      id="toc-tabla-de-puntaje-100-">Tabla de puntaje (100 %)</a></li>
+      </ul></li>
+      <li><a href="#material-de-apoyo"
+      id="toc-material-de-apoyo">Material de apoyo</a>
+      <ul>
+      <li><a
+      href="#tabla-comparativa-loki-parte-1-vs-efk-parte-2--números-honestos"
+      id="toc-tabla-comparativa-loki-parte-1-vs-efk-parte-2--números-honestos">Tabla
+      comparativa Loki (Parte 1) vs EFK (Parte 2) — números
+      honestos</a></li>
+      <li><a href="#esqueleto-de-installsh"
+      id="toc-esqueleto-de-installsh">Esqueleto de
+      <code>install.sh</code></a></li>
+      <li><a
+      href="#esqueleto-de-fluent-bit-configyaml-referencia-rápida"
+      id="toc-esqueleto-de-fluent-bit-configyaml-referencia-rápida">Esqueleto
+      de <code>fluent-bit-config.yaml</code> (referencia
+      rápida)</a></li>
+      <li><a href="#esqueleto-de-query-kql-referencia-rápida"
+      id="toc-esqueleto-de-query-kql-referencia-rápida">Esqueleto de
+      query KQL (referencia rápida)</a></li>
+      <li><a href="#esqueleto-de-adr-0009-stack-de-logging-efkmd"
+      id="toc-esqueleto-de-adr-0009-stack-de-logging-efkmd">Esqueleto de
+      ADR <code>0009-stack-de-logging-efk.md</code></a></li>
+      <li><a href="#plantilla-del-adr-comparativo-final-parte-4"
+      id="toc-plantilla-del-adr-comparativo-final-parte-4">Plantilla del
+      ADR comparativo final (Parte 4)</a></li>
+      </ul></li>
+      <li><a href="#referencias-y-bibliografía"
+      id="toc-referencias-y-bibliografía">Referencias y Bibliografía</a>
+      <ul>
+      <li><a href="#hit-1--eck-operator--elasticsearch--kibana"
+      id="toc-hit-1--eck-operator--elasticsearch--kibana">Hit #1 — ECK
+      Operator + Elasticsearch + Kibana</a></li>
+      <li><a href="#hit-2--fluent-bit--pipeline-kubernetes"
+      id="toc-hit-2--fluent-bit--pipeline-kubernetes">Hit #2 — Fluent
+      Bit + pipeline Kubernetes</a></li>
+      <li><a href="#hit-3--index-lifecycle-management"
+      id="toc-hit-3--index-lifecycle-management">Hit #3 — Index
+      Lifecycle Management</a></li>
+      <li><a href="#hit-4--kql" id="toc-hit-4--kql">Hit #4 —
+      KQL</a></li>
+      <li><a href="#hit-5--saved-objects-api--dashboards"
+      id="toc-hit-5--saved-objects-api--dashboards">Hit #5 — Saved
+      Objects API + dashboards</a></li>
+      <li><a href="#hit-6--kibana-alerting-bonus"
+      id="toc-hit-6--kibana-alerting-bonus">Hit #6 — Kibana Alerting
+      (bonus)</a></li>
+      <li><a href="#licencia-y-alternativas-oss"
+      id="toc-licencia-y-alternativas-oss">Licencia y alternativas
+      OSS</a></li>
+      <li><a href="#comparativa-loki-vs-elasticsearch"
+      id="toc-comparativa-loki-vs-elasticsearch">Comparativa Loki vs
+      Elasticsearch</a></li>
+      </ul></li>
+      </ul></li>
+      </ul>
+      <div class="toc-controls">
+        <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
+        <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
+      </div>
+    </details>
+
+<h1 id="trabajo-práctico-nº-2--parte-2">Trabajo Práctico Nº 2 — Parte
+2</h1>
+<h2
+id="observabilidad--logging-centralizado-con-efk-elasticsearch--fluent-bit--kibana">Observabilidad
+— Logging centralizado con EFK (Elasticsearch + Fluent Bit +
+Kibana)</h2>
+<p><strong>Fecha de Entrega: 23/05/2026</strong></p>
+<blockquote>
+<p>🧭 <strong>Esto es la Parte 2 de 4 sobre observabilidad.</strong></p>
+<ul>
+<li><a href="practica-2-parte-1.html">Parte 1</a> — Loki +
+Promtail/Alloy + Grafana ✅ (ya entregaron)</li>
+<li><strong>Parte 2 (acá)</strong> — EFK = Elasticsearch + Fluent Bit +
+Kibana</li>
+<li><a href="practica-2-parte-3.html">Parte 3</a> — OpenTelemetry
+Collector + SDK</li>
+<li><a href="practica-2-parte-4.html">Parte 4</a> — Cierre: decisiones
+arquitectónicas + ADR comparativo</li>
+</ul>
+<p>Esta Parte 2 NO reemplaza a Parte 1 — los dos stacks van a coexistir
+en el mismo cluster (namespaces distintos: <code>observability</code>
+para Loki, <code>elastic</code> para EFK). Eso es <strong>a
+propósito</strong>: van a poder comparar latencia, footprint y ergonomía
+con datos reales.</p>
+</blockquote>
+<blockquote>
+<p><strong>Pre-requisitos</strong>: TP 2 · Parte 1 entregada (Loki
+funcionando con logs del scraper). Cluster k3s con al menos <strong>8 GB
+de RAM libre</strong> + <strong>15 GB de disco</strong> — Elasticsearch
+es <strong>mucho más pesado</strong> que Loki, y este es el primer
+mensaje pedagógico de la Parte 2.</p>
+</blockquote>
+<hr />
+<h2 id="pre-requisitos">Pre-requisitos</h2>
+<ul>
+<li><strong>TP 2 · Parte 1 entregada y funcionando</strong>: Loki +
+Promtail + Grafana corriendo en namespace <code>observability</code>,
+con el scraper emitiendo JSON estructurado del Hit #3 de Parte 1. Si no
+levanta Loki, no se evalúa esta Parte 2 — la comparativa final (Parte 4)
+necesita los dos stacks vivos al mismo tiempo.</li>
+<li><strong>TP 1 · Parte 2 vigente</strong>: scraper como
+<code>Job</code>/<code>CronJob</code> en <code>ml-scraper</code>, con
+<code>logging_setup.py</code> emitiendo JSON line-delimited a stdout
+(Hit #5 / Hit #3 reformateado en Parte 1).</li>
+<li><strong>Cluster k3s/k3d con recursos extra</strong>: a diferencia de
+Parte 1 (~6 GB), acá necesitan <strong>8 GB libres adicionales</strong>.
+Elasticsearch single-node pide 2 GB de heap como piso operativo y Kibana
+se suma con ~1 GB. Si están corriendo todo en una laptop, cierren
+Chrome.</li>
+<li><strong>Disco</strong>: <strong>15 GB libres</strong> para los PVCs
+de Elasticsearch (10 GB datos + 2 GB snapshots + buffers). Más que los 5
+GB que pedía Loki — full-text index pesa.</li>
+<li><strong>Helm 3 instalado</strong> (≥ 3.16) y
+<strong><code>kubectl</code> ≥ 1.30</strong>. Mismo set de Parte 1.</li>
+<li><strong>Familiaridad con CRDs</strong>: ECK (Elastic Cloud on
+Kubernetes) trabaja con custom resources (<code>Elasticsearch</code>,
+<code>Kibana</code>). Si nunca instalaron un operator con CRDs, repasen
+el <a href="practica-0.html">TP 0 — Operators</a>.</li>
+</ul>
+<hr />
+<h2 id="requisitos-consideraciones-y-formato-de-entrega">Requisitos,
+consideraciones y formato de entrega</h2>
+<p>Aplican los mismos requisitos generales del TP 1 + Parte 1 (repo
+público, README por hit, video, integración con IA documentada, sin
+secrets commiteados) <strong>más</strong> los siguientes específicos de
+esta Parte 2.</p>
+<h3 id="infra-base-obligatoria--bloqueante">Infra base obligatoria —
+bloqueante</h3>
+<blockquote>
+<p>🚧 <strong>Sin esto la entrega no se puede evaluar.</strong> La
+cátedra corre tu <code>helm install</code> + <code>kubectl apply</code>
++ abre Kibana en el browser para verificar dashboards y queries. Si el
+stack no levanta, no se llega a corregir nada más → <strong>nota
+0</strong>. Mismo criterio que Parte 1.</p>
+</blockquote>
+<ul>
+<li><p><strong>Carpeta <code>efk/</code> en el repo</strong> (no
+<code>observability/</code> — ese ya está ocupado por Loki):</p>
+<pre><code>efk/
+├── README.md                       ← cómo levantar el stack en una corrida
+├── helm/
+│   ├── eck-operator-values.yaml    ← values del Helm chart del ECK Operator
+│   └── fluent-bit-values.yaml      ← values pinneados de fluent/fluent-bit
+├── manifests/
+│   ├── namespace.yaml              ← namespace `elastic`
+│   ├── elasticsearch.yaml          ← CR Elasticsearch (ECK CRD)
+│   ├── kibana.yaml                 ← CR Kibana (ECK CRD)
+│   ├── kibana-nodeport.yaml        ← Service NodePort 30001 (Kibana)
+│   └── ilm-policy.json             ← Index Lifecycle Management policy
+├── dashboards/
+│   └── scraper-overview.ndjson     ← dashboard exportado as-code (Hit #5)
+├── queries/
+│   └── kql-cookbook.md             ← las 6+ queries del Hit #4
+└── install.sh                      ← script idempotente con todos los pasos</code></pre></li>
+<li><p><strong>Script <code>efk/install.sh</code> reproducible</strong>,
+levanta el stack desde cero con un solo comando:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> efk <span class="kw">&amp;&amp;</span> <span class="ex">./install.sh</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Output esperado al final:</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   ✓ ECK Operator running          (kubectl get pod -n elastic-system)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   ✓ Elasticsearch green           (kubectl get elasticsearch -n elastic)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   ✓ Kibana available              (NodePort 30001 abierto)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   ✓ Fluent Bit DaemonSet ready    (1 pod por nodo, status Running)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   ✓ ILM policy &#39;scraper-logs&#39; aplicada</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   ✓ Index pattern &#39;scraper-*&#39; creado</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   ✓ Dashboard &#39;Scraper Overview&#39; importado via API</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#   → Abrir https://&lt;node-ip&gt;:30001  (elastic / &lt;ver secret&gt;)</span></span></code></pre></div></li>
+<li><p><strong>Versiones pinneadas a abril 2026</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Chart / CRD</th>
+<th>Versión</th>
+<th>Repo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ECK Operator</td>
+<td><code>elastic/eck-operator</code></td>
+<td><code>2.16.x</code></td>
+<td><a href="https://helm.elastic.co">https://helm.elastic.co</a></td>
+</tr>
+<tr>
+<td>Elasticsearch</td>
+<td>CRD <code>elasticsearch.k8s.elastic.co/v1</code></td>
+<td><code>8.17.x</code></td>
+<td>(gestionado por ECK Operator)</td>
+</tr>
+<tr>
+<td>Kibana</td>
+<td>CRD <code>kibana.k8s.elastic.co/v1</code></td>
+<td><code>8.17.x</code></td>
+<td>(gestionado por ECK Operator)</td>
+</tr>
+<tr>
+<td>Fluent Bit</td>
+<td><code>fluent/fluent-bit</code></td>
+<td><code>0.48.x</code> (app <code>3.2.x</code>)</td>
+<td><a
+href="https://fluent.github.io/helm-charts">https://fluent.github.io/helm-charts</a></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>NO usen Fluentd</strong> (el agente original del acrónimo
+“EFK”). Fluent Bit es el sucesor de Fluentd para el caso de
+<strong>agente por nodo</strong>: ~10× menos memoria (40 MB resident vs
+400 MB), escrito en C, mismo proyecto CNCF. Fluentd sigue siendo válido
+como <strong>aggregator</strong> central, pero para DaemonSet en 2026
+todo el mundo usa Fluent Bit. Si entregan con Fluentd, la cátedra lo
+cuenta como mal calibrado (-5 %).</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>NO usen el chart <code>elastic/elasticsearch</code>
+“legacy”</strong>. Está deprecado desde 2023 a favor del <strong>ECK
+Operator</strong> que gestiona el cluster via CRDs. Es el camino oficial
+Elastic 2026 — y simplifica mucho operaciones como rolling upgrades,
+cert management, y rotación de TLS.</p>
+</blockquote></li>
+<li><p><strong>Secret de admin (<code>elastic</code> user) gestionado
+por ECK</strong> — el operator lo crea automáticamente.
+<strong>Nunca</strong> lo commiteen. Para leerlo:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> elastic get secret elastic-es-elastic-user <span class="at">-o</span> jsonpath=<span class="st">&#39;{.data.elastic}&#39;</span> <span class="kw">|</span> <span class="fu">base64</span> <span class="at">-d</span></span></code></pre></div>
+<p>El <code>install.sh</code> lo recupera y lo pasa por env var al paso
+de import del dashboard del Hit #5 — sin escribirlo a archivo.</p></li>
+<li><p><strong><code>gitleaks</code> en pre-commit y CI</strong>: igual
+que Parte 1. Los certs auto-firmados generados por ECK no se commitean
+(ECK los regenera en cada install). Si commitean por error la password
+del usuario <code>elastic</code> o un cert real, el push falla.</p></li>
+</ul>
+<h3 id="otros-requisitos">Otros requisitos</h3>
+<ul>
+<li><p><strong>ADR obligatorio</strong>:
+<code>docs/adr/0009-stack-de-logging-efk.md</code> (continúa la
+numeración después del <code>0008-promtail-vs-alloy.md</code> opcional
+de Parte 1). <strong>No</strong> justifica adoptar EFK como stack
+principal — justifica <strong>por qué se evaluó EFK en paralelo a
+Loki</strong> y qué dimensiones se midieron (footprint, latencia de
+query, ergonomía, licencia). La conclusión queda
+<strong>abierta</strong> para que la Parte 4 la consolide. Mismo formato
+Michael Nygard.</p>
+<blockquote>
+<p>📜 <strong>Importante — licencia</strong>. Elasticsearch / Kibana
+usan <strong>Elastic License v2 (ELv2)</strong> desde 2021 (post-fork
+con OpenSearch). <strong>NO es OSS</strong> según OSI: prohíbe ofrecer
+Elasticsearch as-a-service compitiendo con Elastic. Para uso académico /
+interno como este TP es libre, pero <strong>es relevante para el ADR de
+Parte 4</strong> porque cambia el escenario de adopción en empresa. Si
+quieren un equivalente 100 % OSS, la alternativa es <strong>OpenSearch +
+OpenSearch Dashboards</strong> (fork AWS, Apache 2.0). Mencionar esto en
+el ADR no es opcional.</p>
+</blockquote></li>
+<li><p><strong>NO romper Parte 1</strong>. El stack Loki sigue corriendo
+en <code>observability</code>. El stack EFK va en <code>elastic</code>.
+Los dos leen los mismos logs del scraper (<code>ml-scraper</code>
+namespace) — eso permite el experimento de comparativa. Si para hacer
+entrar EFK matan a Loki, perdieron Parte 1 y Parte 4 al mismo
+tiempo.</p></li>
+<li><p><strong>Resources limitados — calibración honesta</strong>. EFK
+es pesado. Estos son los techos aceptables:</p>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Requests</th>
+<th>Limits</th>
+<th>Storage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ECK Operator</td>
+<td>50m CPU, 128Mi RAM</td>
+<td>100m CPU, 256Mi RAM</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Elasticsearch (1 nodo)</td>
+<td>500m CPU, <strong>1Gi RAM</strong></td>
+<td>1000m CPU, <strong>2Gi RAM</strong></td>
+<td><strong>10Gi PVC</strong> <code>local-path</code></td>
+</tr>
+<tr>
+<td>Kibana</td>
+<td>200m CPU, 512Mi RAM</td>
+<td>500m CPU, <strong>1Gi RAM</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Fluent Bit (DaemonSet)</td>
+<td>50m CPU, 64Mi RAM</td>
+<td>200m CPU, 128Mi RAM</td>
+<td>— (lee del host)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>💡 <strong>Comparen con la tabla equivalente de Parte 1</strong>:
+Loki single-binary pedía 256 Mi / 512 Mi de RAM. Elasticsearch pide
+<strong>4× más</strong> y todavía estamos en single-node sin réplicas.
+Esa diferencia se va a sentir cuando arranquen los dos al mismo tiempo —
+tomen nota para el ADR.</p>
+</blockquote></li>
+<li><p><strong>JVM heap explícito</strong>: Elasticsearch corre sobre
+JVM y por default toma 50 % de la RAM del container. Con 2 GiB de limit,
+<strong>fijen <code>ES_JAVA_OPTS: "-Xms1g -Xmx1g"</code></strong> (1 GB
+heap) en el manifest. Si dejan el default y el pod tiene 2 GiB, ES toma
+1 GiB de heap igual, pero <strong>explícito es mejor que mágico</strong>
+— y el ADR lo va a pedir.</p></li>
+</ul>
+<hr />
+<h2 id="contenidos-del-programa-relacionados">Contenidos del programa
+relacionados</h2>
+<ul>
+<li>Observabilidad: comparativa de stacks de logging — Loki
+(label-first, Parte 1) vs EFK (full-text inverted index).</li>
+<li>Elasticsearch: motor Lucene-based, inverted index, sharding, ILM
+(hot/warm/cold/delete).</li>
+<li>Fluent Bit: agente liviano en C (CNCF graduated), pipeline Input →
+Parser → Filter → Output.</li>
+<li>Kibana: Discover, Dashboard, KQL (Kibana Query Language) vs Lucene
+query (legacy).</li>
+<li>Kubernetes Operators: CRD-based lifecycle management (ECK como caso
+de estudio).</li>
+<li>Index lifecycle management: rollover por tamaño/edad/docs, retention
+as-policy.</li>
+<li>Licenciamiento OSS vs source-available: SSPL, ELv2, Apache 2.0 —
+implicancia en decisiones de stack.</li>
+<li>Patrones operativos en EFK: shard sizing, refresh intervals, query
+DSL vs KQL.</li>
+</ul>
+<hr />
+<h2 id="práctica">Práctica</h2>
+<p>En la Parte 1 montaron <strong>Loki + Promtail + Grafana</strong> y
+vieron que el modelo “label-first” es simple, barato y suficiente para
+queries operacionales tipo “errores por producto en 24h”. Lo que
+<strong>no</strong> vieron es lo que pasa cuando alguien pregunta:</p>
+<blockquote>
+<p>“Encontrame todos los logs donde aparezca la substring
+<code>MercadoLibre cookie expired</code> en cualquier campo, incluyendo
+los stacktraces.”</p>
+</blockquote>
+<p>Con LogQL eso es un grep lineal sobre todos los chunks del stream —
+funciona, pero es lento (segundos a minutos según volumen).
+Elasticsearch construye un <strong>inverted index</strong> sobre el
+cuerpo del log: la misma query es <strong>milisegundos</strong>, sin
+importar cuántos GB tenés. Ese es <strong>el</strong> caso de uso donde
+EFK gana. La pregunta del TP es: <strong>¿vale el costo extra de RAM +
+ops complexity + license restriction?</strong></p>
+<p>Para responderla con datos vamos a:</p>
+<ol type="1">
+<li>Levantar EFK al lado de Loki (no en lugar de).</li>
+<li>Mandar <strong>los mismos logs del scraper</strong> a los dos stacks
+(Promtail los manda a Loki, Fluent Bit los manda a Elasticsearch).</li>
+<li>Correr queries equivalentes en ambos y comparar latencia, ergonomía
+y footprint.</li>
+<li>Documentar todo en el ADR <code>0009</code> para que la Parte 4
+cierre la decisión.</li>
+</ol>
+<p>Restricciones idénticas a Parte 1 (cluster local, sin cloud, sin
+servicios pagos) — pero ahora con menos margen de RAM. Si el cluster no
+aguanta, <strong>bajen Loki temporalmente</strong> durante el desarrollo
+y vuelvan a subir los dos para la entrega final. Documentenlo en el
+README del repo.</p>
+<hr />
+<h3
+id="hit-1--deploy-del-eck-operator--elasticsearch-single-node--kibana">Hit
+#1 — Deploy del ECK Operator + Elasticsearch single-node + Kibana</h3>
+<p>ECK (Elastic Cloud on Kubernetes) es el operator oficial de Elastic.
+Maneja el lifecycle de Elasticsearch / Kibana / Beats / APM Server vía
+CRDs. Para esta Parte 2 alcanza con <code>Elasticsearch</code> y
+<code>Kibana</code>.</p>
+<h4 id="11--namespace-y-repo-helm">1.1 — Namespace y repo Helm</h4>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> create namespace elastic</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> create namespace elastic-system   <span class="co"># convención: el operator vive aparte</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> repo add elastic https://helm.elastic.co</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> repo update</span></code></pre></div>
+<h4 id="12--instalar-el-eck-operator">1.2 — Instalar el ECK
+Operator</h4>
+<p><code>efk/helm/eck-operator-values.yaml</code>:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># El operator vigila todo el cluster pero corre en su propio namespace</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">managedNamespaces</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">elastic</span><span class="kw">]</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">resources</span><span class="kw">:</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">requests</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">cpu</span><span class="kw">:</span><span class="at"> 50m</span><span class="kw">,</span><span class="at">  </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 128Mi </span><span class="kw">}</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">limits</span><span class="kw">:</span><span class="at">   </span><span class="kw">{</span><span class="at"> </span><span class="fu">cpu</span><span class="kw">:</span><span class="at"> 100m</span><span class="kw">,</span><span class="at"> </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 256Mi </span><span class="kw">}</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># El operator NO es la pieza que necesita HA en este TP</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">replicaCount</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> install eck-operator elastic/eck-operator <span class="dt">\</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--version</span> 2.16.0 <span class="dt">\</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--namespace</span> elastic-system <span class="dt">\</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--values</span> efk/helm/eck-operator-values.yaml</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> elastic-system rollout status statefulset/elastic-operator <span class="at">--timeout</span><span class="op">=</span>180s</span></code></pre></div>
+<blockquote>
+<p>💡 <strong>Por qué <code>StatefulSet</code> y no
+<code>Deployment</code></strong>: el operator usa leader election sobre
+un PVC para garantizar que sólo una instancia haga reconciliation a la
+vez. Es transparente — pero si lo ven en
+<code>kubectl get sts -n elastic-system</code>, no es bug.</p>
+</blockquote>
+<h4 id="13--custom-resource-elasticsearch-1-nodo-modo-single-node">1.3 —
+Custom Resource <code>Elasticsearch</code> (1 nodo, modo
+single-node)</h4>
+<p><code>efk/manifests/elasticsearch.yaml</code>:</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> elasticsearch.k8s.elastic.co/v1</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kind</span><span class="kw">:</span><span class="at"> Elasticsearch</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">metadata</span><span class="kw">:</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> scraper</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">namespace</span><span class="kw">:</span><span class="at"> elastic</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="fl">8.17.3</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">  # Para producción se usan al menos 3 nodos (master quorum). Para el TP, single-node</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">  # es lo único que entra en RAM. ECK acepta un solo nodo si discovery.type=single-node.</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">nodeSets</span><span class="kw">:</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> default</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">count</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">config</span><span class="kw">:</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">node.roles</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">&quot;master&quot;</span><span class="kw">,</span><span class="at"> </span><span class="st">&quot;data&quot;</span><span class="kw">,</span><span class="at"> </span><span class="st">&quot;ingest&quot;</span><span class="kw">]</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">        # Sin esta línea, ES espera al menos 2 masters y queda en &quot;yellow&quot; para siempre.</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">node.store.allow_mmap</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">        # En cluster local hay un solo nodo =&gt; single-shard, sin réplicas.</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">index.number_of_shards</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">index.number_of_replicas</span><span class="kw">:</span><span class="at"> </span><span class="dv">0</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">podTemplate</span><span class="kw">:</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">containers</span><span class="kw">:</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> elasticsearch</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">env</span><span class="kw">:</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co">                # Heap fijo: 1 GB (50% del limit de 2 GiB)</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="at">                </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> ES_JAVA_OPTS</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="at">                  </span><span class="fu">value</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;-Xms1g -Xmx1g&quot;</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">resources</span><span class="kw">:</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="at">                </span><span class="fu">requests</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">cpu</span><span class="kw">:</span><span class="at"> 500m</span><span class="kw">,</span><span class="at">  </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 1Gi </span><span class="kw">}</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="at">                </span><span class="fu">limits</span><span class="kw">:</span><span class="at">   </span><span class="kw">{</span><span class="at"> </span><span class="fu">cpu</span><span class="kw">:</span><span class="at"> 1000m</span><span class="kw">,</span><span class="at"> </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 2Gi </span><span class="kw">}</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">volumeClaimTemplates</span><span class="kw">:</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="kw">-</span><span class="at"> </span><span class="fu">metadata</span><span class="kw">:</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">name</span><span class="kw">:</span><span class="at"> elasticsearch-data</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">accessModes</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">ReadWriteOnce</span><span class="kw">]</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">storageClassName</span><span class="kw">:</span><span class="at"> local-path</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">resources</span><span class="kw">:</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">requests</span><span class="kw">:</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="at">                </span><span class="fu">storage</span><span class="kw">:</span><span class="at"> 10Gi</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> efk/manifests/elasticsearch.yaml</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># El cluster pasa por phases: ApplyingChanges → Ready. Tarda 1-3 min en arrancar la JVM.</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> elastic get elasticsearch scraper <span class="at">-w</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Esperar a HEALTH=green PHASE=Ready</span></span></code></pre></div>
+<p>Verificar via API:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="va">PASSWORD</span><span class="op">=</span><span class="va">$(</span><span class="ex">kubectl</span> <span class="at">-n</span> elastic get secret scraper-es-elastic-user <span class="dt">\</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-o</span> jsonpath=<span class="st">&#39;{.data.elastic}&#39;</span> <span class="kw">|</span> <span class="fu">base64</span> <span class="at">-d</span><span class="va">)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> elastic port-forward svc/scraper-es-http 9200:9200 <span class="kw">&amp;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sleep</span> 2</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-k</span> <span class="at">-u</span> <span class="st">&quot;elastic:</span><span class="va">$PASSWORD</span><span class="st">&quot;</span> https://localhost:9200/_cluster/health <span class="kw">|</span> <span class="ex">jq</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Esperado: { &quot;status&quot;: &quot;green&quot;, &quot;number_of_nodes&quot;: 1, ... }</span></span></code></pre></div>
+<h4 id="14--custom-resource-kibana">1.4 — Custom Resource
+<code>Kibana</code></h4>
+<p><code>efk/manifests/kibana.yaml</code>:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> kibana.k8s.elastic.co/v1</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kind</span><span class="kw">:</span><span class="at"> Kibana</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">metadata</span><span class="kw">:</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> scraper</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">namespace</span><span class="kw">:</span><span class="at"> elastic</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="fl">8.17.3</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">count</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">elasticsearchRef</span><span class="kw">:</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> scraper</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">podTemplate</span><span class="kw">:</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">containers</span><span class="kw">:</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> kibana</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">resources</span><span class="kw">:</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">requests</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">cpu</span><span class="kw">:</span><span class="at"> 200m</span><span class="kw">,</span><span class="at"> </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 512Mi </span><span class="kw">}</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">limits</span><span class="kw">:</span><span class="at">   </span><span class="kw">{</span><span class="at"> </span><span class="fu">cpu</span><span class="kw">:</span><span class="at"> 500m</span><span class="kw">,</span><span class="at"> </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 1Gi </span><span class="kw">}</span></span></code></pre></div>
+<p><code>efk/manifests/kibana-nodeport.yaml</code>:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> v1</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kind</span><span class="kw">:</span><span class="at"> Service</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">metadata</span><span class="kw">:</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> kibana-nodeport</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">namespace</span><span class="kw">:</span><span class="at"> elastic</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">type</span><span class="kw">:</span><span class="at"> NodePort</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">selector</span><span class="kw">:</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">common.k8s.elastic.co/type</span><span class="kw">:</span><span class="at"> kibana</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">kibana.k8s.elastic.co/name</span><span class="kw">:</span><span class="at"> scraper</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> https</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">port</span><span class="kw">:</span><span class="at"> </span><span class="dv">5601</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">targetPort</span><span class="kw">:</span><span class="at"> </span><span class="dv">5601</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">nodePort</span><span class="kw">:</span><span class="at"> </span><span class="dv">30001</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> efk/manifests/kibana.yaml</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> efk/manifests/kibana-nodeport.yaml</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> elastic rollout status deployment/scraper-kb <span class="at">--timeout</span><span class="op">=</span>180s</span></code></pre></div>
+<h4 id="output-esperado-del-hit-1">Output esperado del Hit #1</h4>
+<pre><code>$ kubectl -n elastic get elasticsearch,kibana
+NAME           HEALTH   NODES   VERSION   PHASE   AGE
+scraper        green    1       8.17.3    Ready   4m
+
+NAME           HEALTH   NODES   VERSION   AGE
+scraper        green    1       8.17.3    3m
+
+$ kubectl -n elastic get pods
+NAME                       READY   STATUS    RESTARTS   AGE
+scraper-es-default-0       1/1     Running   0          4m
+scraper-kb-69b8c4d4-xxxxx  1/1     Running   0          3m</code></pre>
+<p>Abrir <code>https://&lt;node-ip&gt;:30001</code> → aceptar cert
+auto-firmado → login con <code>elastic</code> + el password recuperado
+del secret. <strong>Tienen que ver el welcome page de Kibana
+8.17</strong>. No hay datos todavía — eso llega en el Hit #2.</p>
+<hr />
+<h3 id="hit-2--fluent-bit-como-daemonset-pipeline-al-scraper">Hit #2 —
+Fluent Bit como DaemonSet, pipeline al scraper</h3>
+<p>Acá es donde el modelo se diferencia de Promtail (Parte 1). Fluent
+Bit tiene un pipeline explícito de <strong>Input → Parser → Filter →
+Output</strong> que se configura por secciones — más expresivo, más
+verboso, pero permite cosas que Promtail no (multiline, parsers en C
+nativo, output a múltiples backends en paralelo).</p>
+<p>El objetivo de este Hit: que <strong>los mismos JSON logs del scraper
+que ya van a Loki</strong> vayan también a Elasticsearch, parseados,
+enriquecidos con metadata Kubernetes, e indexados en
+<code>scraper-logs-*</code>.</p>
+<h4 id="21--helm-chart-oficial-fluent-bit">2.1 — Helm chart oficial
+Fluent Bit</h4>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> repo add fluent https://fluent.github.io/helm-charts</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> repo update</span></code></pre></div>
+<h4 id="22--values-con-pipeline-explícito">2.2 — Values con pipeline
+explícito</h4>
+<p><code>efk/helm/fluent-bit-values.yaml</code>:</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imagen oficial CNCF, no la de &quot;fluent-bit-eck&quot;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">image</span><span class="kw">:</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">repository</span><span class="kw">:</span><span class="at"> fluent/fluent-bit</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">tag</span><span class="kw">:</span><span class="at"> </span><span class="fl">3.2.4</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">resources</span><span class="kw">:</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">requests</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">cpu</span><span class="kw">:</span><span class="at"> 50m</span><span class="kw">,</span><span class="at">  </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 64Mi </span><span class="kw">}</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">limits</span><span class="kw">:</span><span class="at">   </span><span class="kw">{</span><span class="at"> </span><span class="fu">cpu</span><span class="kw">:</span><span class="at"> 200m</span><span class="kw">,</span><span class="at"> </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 128Mi </span><span class="kw">}</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Tolera taints del control plane (k3s single-node)</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tolerations</span><span class="kw">:</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">effect</span><span class="kw">:</span><span class="at"> NoSchedule</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">operator</span><span class="kw">:</span><span class="at"> Exists</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co"># RBAC para leer pod metadata via API</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="fu">serviceAccount</span><span class="kw">:</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">create</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="fu">rbac</span><span class="kw">:</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">create</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Necesita acceder al secret de ES para autenticarse</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="fu">extraVolumes</span><span class="kw">:</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> es-certs</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">secret</span><span class="kw">:</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">secretName</span><span class="kw">:</span><span class="at"> scraper-es-http-certs-public</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="fu">extraVolumeMounts</span><span class="kw">:</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> es-certs</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">mountPath</span><span class="kw">:</span><span class="at"> /etc/fluent-bit/certs</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">readOnly</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="fu">env</span><span class="kw">:</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> ES_PASSWORD</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">valueFrom</span><span class="kw">:</span></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">secretKeyRef</span><span class="kw">:</span></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">name</span><span class="kw">:</span><span class="at"> scraper-es-elastic-user</span></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">key</span><span class="kw">:</span><span class="at"> elastic</span></span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="fu">config</span><span class="kw">:</span></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a><span class="fu">  service</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>    [SERVICE]</span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>        Daemon         Off</span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>        Flush          5</span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>        Log_Level      info</span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>        Parsers_File   /fluent-bit/etc/parsers.conf</span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>        HTTP_Server    On</span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a>        HTTP_Listen    0.0.0.0</span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>        HTTP_Port      2020</span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a><span class="fu">  inputs</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>    [INPUT]</span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a>        Name              tail</span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>        Tag               kube.*</span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a>        Path              /var/log/containers/*ml-scraper*.log</span>
+<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a>        Parser            cri</span>
+<span id="cb15-55"><a href="#cb15-55" aria-hidden="true" tabindex="-1"></a>        DB                /var/log/flb_kube.db</span>
+<span id="cb15-56"><a href="#cb15-56" aria-hidden="true" tabindex="-1"></a>        Mem_Buf_Limit     5MB</span>
+<span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a>        Skip_Long_Lines   On</span>
+<span id="cb15-58"><a href="#cb15-58" aria-hidden="true" tabindex="-1"></a>        Refresh_Interval  10</span>
+<span id="cb15-59"><a href="#cb15-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a><span class="fu">  filters</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb15-61"><a href="#cb15-61" aria-hidden="true" tabindex="-1"></a>    [FILTER]</span>
+<span id="cb15-62"><a href="#cb15-62" aria-hidden="true" tabindex="-1"></a>        Name                kubernetes</span>
+<span id="cb15-63"><a href="#cb15-63" aria-hidden="true" tabindex="-1"></a>        Match               kube.*</span>
+<span id="cb15-64"><a href="#cb15-64" aria-hidden="true" tabindex="-1"></a>        Kube_URL            https://kubernetes.default.svc:443</span>
+<span id="cb15-65"><a href="#cb15-65" aria-hidden="true" tabindex="-1"></a>        Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt</span>
+<span id="cb15-66"><a href="#cb15-66" aria-hidden="true" tabindex="-1"></a>        Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token</span>
+<span id="cb15-67"><a href="#cb15-67" aria-hidden="true" tabindex="-1"></a>        Merge_Log           On</span>
+<span id="cb15-68"><a href="#cb15-68" aria-hidden="true" tabindex="-1"></a>        Merge_Log_Key       log_processed</span>
+<span id="cb15-69"><a href="#cb15-69" aria-hidden="true" tabindex="-1"></a>        K8S-Logging.Parser  On</span>
+<span id="cb15-70"><a href="#cb15-70" aria-hidden="true" tabindex="-1"></a>        K8S-Logging.Exclude On</span>
+<span id="cb15-71"><a href="#cb15-71" aria-hidden="true" tabindex="-1"></a>        Annotations         Off</span>
+<span id="cb15-72"><a href="#cb15-72" aria-hidden="true" tabindex="-1"></a>        Labels              On</span>
+<span id="cb15-73"><a href="#cb15-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-74"><a href="#cb15-74" aria-hidden="true" tabindex="-1"></a>    # Sólo nos quedamos con pods cuyo label app=scraper (igual que Hit #2 de Parte 1)</span>
+<span id="cb15-75"><a href="#cb15-75" aria-hidden="true" tabindex="-1"></a>    [FILTER]</span>
+<span id="cb15-76"><a href="#cb15-76" aria-hidden="true" tabindex="-1"></a>        Name    grep</span>
+<span id="cb15-77"><a href="#cb15-77" aria-hidden="true" tabindex="-1"></a>        Match   kube.*</span>
+<span id="cb15-78"><a href="#cb15-78" aria-hidden="true" tabindex="-1"></a>        Regex   $kubernetes[&#39;labels&#39;][&#39;app&#39;] ^scraper$</span>
+<span id="cb15-79"><a href="#cb15-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-80"><a href="#cb15-80" aria-hidden="true" tabindex="-1"></a>    # Parsea el JSON-line emitido por logging_setup.py (ya estructurado del Hit #3 de Parte 1)</span>
+<span id="cb15-81"><a href="#cb15-81" aria-hidden="true" tabindex="-1"></a>    [FILTER]</span>
+<span id="cb15-82"><a href="#cb15-82" aria-hidden="true" tabindex="-1"></a>        Name         parser</span>
+<span id="cb15-83"><a href="#cb15-83" aria-hidden="true" tabindex="-1"></a>        Match        kube.*</span>
+<span id="cb15-84"><a href="#cb15-84" aria-hidden="true" tabindex="-1"></a>        Key_Name     log</span>
+<span id="cb15-85"><a href="#cb15-85" aria-hidden="true" tabindex="-1"></a>        Parser       json_scraper</span>
+<span id="cb15-86"><a href="#cb15-86" aria-hidden="true" tabindex="-1"></a>        Reserve_Data On</span>
+<span id="cb15-87"><a href="#cb15-87" aria-hidden="true" tabindex="-1"></a>        Preserve_Key Off</span>
+<span id="cb15-88"><a href="#cb15-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-89"><a href="#cb15-89" aria-hidden="true" tabindex="-1"></a><span class="fu">  outputs</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb15-90"><a href="#cb15-90" aria-hidden="true" tabindex="-1"></a>    [OUTPUT]</span>
+<span id="cb15-91"><a href="#cb15-91" aria-hidden="true" tabindex="-1"></a>        Name              es</span>
+<span id="cb15-92"><a href="#cb15-92" aria-hidden="true" tabindex="-1"></a>        Match             kube.*</span>
+<span id="cb15-93"><a href="#cb15-93" aria-hidden="true" tabindex="-1"></a>        Host              scraper-es-http.elastic.svc.cluster.local</span>
+<span id="cb15-94"><a href="#cb15-94" aria-hidden="true" tabindex="-1"></a>        Port              9200</span>
+<span id="cb15-95"><a href="#cb15-95" aria-hidden="true" tabindex="-1"></a>        HTTP_User         elastic</span>
+<span id="cb15-96"><a href="#cb15-96" aria-hidden="true" tabindex="-1"></a>        HTTP_Passwd       ${ES_PASSWORD}</span>
+<span id="cb15-97"><a href="#cb15-97" aria-hidden="true" tabindex="-1"></a>        tls               On</span>
+<span id="cb15-98"><a href="#cb15-98" aria-hidden="true" tabindex="-1"></a>        tls.verify        Off</span>
+<span id="cb15-99"><a href="#cb15-99" aria-hidden="true" tabindex="-1"></a>        Suppress_Type_Name On</span>
+<span id="cb15-100"><a href="#cb15-100" aria-hidden="true" tabindex="-1"></a>        Logstash_Format   On</span>
+<span id="cb15-101"><a href="#cb15-101" aria-hidden="true" tabindex="-1"></a>        Logstash_Prefix   scraper-logs</span>
+<span id="cb15-102"><a href="#cb15-102" aria-hidden="true" tabindex="-1"></a>        Logstash_DateFormat %Y.%m.%d</span>
+<span id="cb15-103"><a href="#cb15-103" aria-hidden="true" tabindex="-1"></a>        Time_Key          @timestamp</span>
+<span id="cb15-104"><a href="#cb15-104" aria-hidden="true" tabindex="-1"></a>        Replace_Dots      On</span>
+<span id="cb15-105"><a href="#cb15-105" aria-hidden="true" tabindex="-1"></a>        Retry_Limit       5</span>
+<span id="cb15-106"><a href="#cb15-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-107"><a href="#cb15-107" aria-hidden="true" tabindex="-1"></a><span class="fu">  customParsers</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb15-108"><a href="#cb15-108" aria-hidden="true" tabindex="-1"></a>    [PARSER]</span>
+<span id="cb15-109"><a href="#cb15-109" aria-hidden="true" tabindex="-1"></a>        Name        cri</span>
+<span id="cb15-110"><a href="#cb15-110" aria-hidden="true" tabindex="-1"></a>        Format      regex</span>
+<span id="cb15-111"><a href="#cb15-111" aria-hidden="true" tabindex="-1"></a>        Regex       ^(?&lt;time&gt;[^ ]+) (?&lt;stream&gt;stdout|stderr) (?&lt;logtag&gt;[^ ]*) (?&lt;log&gt;.*)$</span>
+<span id="cb15-112"><a href="#cb15-112" aria-hidden="true" tabindex="-1"></a>        Time_Key    time</span>
+<span id="cb15-113"><a href="#cb15-113" aria-hidden="true" tabindex="-1"></a>        Time_Format %Y-%m-%dT%H:%M:%S.%L%z</span>
+<span id="cb15-114"><a href="#cb15-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-115"><a href="#cb15-115" aria-hidden="true" tabindex="-1"></a>    [PARSER]</span>
+<span id="cb15-116"><a href="#cb15-116" aria-hidden="true" tabindex="-1"></a>        Name         json_scraper</span>
+<span id="cb15-117"><a href="#cb15-117" aria-hidden="true" tabindex="-1"></a>        Format       json</span>
+<span id="cb15-118"><a href="#cb15-118" aria-hidden="true" tabindex="-1"></a>        Time_Key     timestamp</span>
+<span id="cb15-119"><a href="#cb15-119" aria-hidden="true" tabindex="-1"></a>        Time_Format  %Y-%m-%dT%H:%M:%S%z</span>
+<span id="cb15-120"><a href="#cb15-120" aria-hidden="true" tabindex="-1"></a>        Time_Keep    On</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> install fluent-bit fluent/fluent-bit <span class="dt">\</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--version</span> 0.48.5 <span class="dt">\</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--namespace</span> elastic <span class="dt">\</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--values</span> efk/helm/fluent-bit-values.yaml</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> elastic rollout status ds/fluent-bit <span class="at">--timeout</span><span class="op">=</span>120s</span></code></pre></div>
+<blockquote>
+<p>💡 <strong>Por qué <code>Logstash_Format</code> si no usamos
+Logstash</strong>: el output <code>es</code> de Fluent Bit usa la
+convención de <strong>índices con sufijo de fecha</strong>
+(<code>scraper-logs-2026.05.10</code>) — esa convención la heredó de
+Logstash y se la sigue llamando “Logstash format” aunque acá no haya
+Logstash en ningún lado. Tener un índice por día es lo que después
+permite el rollover de ILM (Hit #3) sin pelear con scripts.</p>
+</blockquote>
+<h4 id="23--disparar-tráfico-para-validar">2.3 — Disparar tráfico para
+validar</h4>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> ml-scraper create job <span class="at">--from</span><span class="op">=</span>cronjob/scraper-hourly scraper-efk-test-1</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> ml-scraper wait <span class="at">--for</span><span class="op">=</span>condition=complete job/scraper-efk-test-1 <span class="at">--timeout</span><span class="op">=</span>600s</span></code></pre></div>
+<h4 id="output-esperado-del-hit-2">Output esperado del Hit #2</h4>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificar que el índice se creó y tiene docs</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> elastic port-forward svc/scraper-es-http 9200:9200 <span class="kw">&amp;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sleep</span> 2</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="va">PASSWORD</span><span class="op">=</span><span class="va">$(</span><span class="ex">kubectl</span> <span class="at">-n</span> elastic get secret scraper-es-elastic-user <span class="at">-o</span> jsonpath=<span class="st">&#39;{.data.elastic}&#39;</span> <span class="kw">|</span> <span class="fu">base64</span> <span class="at">-d</span><span class="va">)</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sk</span> <span class="at">-u</span> <span class="st">&quot;elastic:</span><span class="va">$PASSWORD</span><span class="st">&quot;</span> <span class="st">&quot;https://localhost:9200/_cat/indices?v&quot;</span> <span class="kw">|</span> <span class="fu">grep</span> scraper</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Esperado: yellow  open  scraper-logs-2026.05.10  ...  N docs</span></span></code></pre></div>
+<p>Y en Kibana → <strong>Stack Management</strong> → <strong>Index
+Management</strong> → tiene que aparecer
+<code>scraper-logs-YYYY.MM.DD</code>. En <strong>Discover</strong>
+(después de crear el data view del Hit #3) van a aparecer los logs con
+todos los campos JSON parseados: <code>level</code>,
+<code>producto</code>, <code>logger</code>, <code>message</code>,
+<code>kubernetes.namespace</code>, <code>kubernetes.pod_name</code>,
+etc.</p>
+<p><strong>Capturen un screenshot</strong> de Kibana → Discover
+mostrando los campos extraídos y commitéenlo en
+<code>efk/screenshots/hit2-fluentbit-discover.png</code>.</p>
+<hr />
+<h3 id="hit-3--index-pattern--ilm-rollover-retention-7-días">Hit #3 —
+Index pattern + ILM (rollover, retention 7 días)</h3>
+<p>Sin política de retención, Elasticsearch acumula índices
+indefinidamente y termina llenando el disco. <strong>ILM (Index
+Lifecycle Management)</strong> es el equivalente Elastic del
+<code>retention_period: 168h</code> que usaron en Loki Parte 1 — pero
+más expresivo: define <strong>fases</strong> (hot / warm / cold / frozen
+/ delete) con transiciones por edad, tamaño o número de docs.</p>
+<p>Para esta Parte 2 alcanza con un ciclo simple: <strong>hot 1 día →
+warm 6 días → delete</strong>.</p>
+<h4 id="31--crear-data-view-en-kibana">3.1 — Crear data view en
+Kibana</h4>
+<p>Stack Management → <strong>Data Views</strong> → <strong>Create data
+view</strong>:</p>
+<ul>
+<li>Nombre: <code>scraper-logs</code></li>
+<li>Index pattern: <code>scraper-logs-*</code></li>
+<li>Timestamp field: <code>@timestamp</code></li>
+</ul>
+<p>Guardar. Esto permite que Discover, Dashboards, y Lens “vean” los
+índices.</p>
+<h4 id="32--ilm-policy">3.2 — ILM policy</h4>
+<p><code>efk/manifests/ilm-policy.json</code>:</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;policy&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;phases&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;hot&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;min_age&quot;</span><span class="fu">:</span> <span class="st">&quot;0ms&quot;</span><span class="fu">,</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;actions&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>          <span class="dt">&quot;rollover&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>            <span class="dt">&quot;max_age&quot;</span><span class="fu">:</span> <span class="st">&quot;1d&quot;</span><span class="fu">,</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>            <span class="dt">&quot;max_primary_shard_size&quot;</span><span class="fu">:</span> <span class="st">&quot;1gb&quot;</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>          <span class="fu">},</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>          <span class="dt">&quot;set_priority&quot;</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">&quot;priority&quot;</span><span class="fu">:</span> <span class="dv">100</span> <span class="fu">}</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">},</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;warm&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;min_age&quot;</span><span class="fu">:</span> <span class="st">&quot;1d&quot;</span><span class="fu">,</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;actions&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>          <span class="dt">&quot;shrink&quot;</span><span class="fu">:</span>      <span class="fu">{</span> <span class="dt">&quot;number_of_shards&quot;</span><span class="fu">:</span> <span class="dv">1</span> <span class="fu">},</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>          <span class="dt">&quot;forcemerge&quot;</span><span class="fu">:</span>  <span class="fu">{</span> <span class="dt">&quot;max_num_segments&quot;</span><span class="fu">:</span> <span class="dv">1</span> <span class="fu">},</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>          <span class="dt">&quot;set_priority&quot;</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">&quot;priority&quot;</span><span class="fu">:</span> <span class="dv">50</span> <span class="fu">}</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>      <span class="fu">},</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;delete&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;min_age&quot;</span><span class="fu">:</span> <span class="st">&quot;7d&quot;</span><span class="fu">,</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;actions&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>          <span class="dt">&quot;delete&quot;</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">&quot;delete_searchable_snapshot&quot;</span><span class="fu">:</span> <span class="kw">true</span> <span class="fu">}</span></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>Aplicar via API:</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="va">PASSWORD</span><span class="op">=</span><span class="va">$(</span><span class="ex">kubectl</span> <span class="at">-n</span> elastic get secret scraper-es-elastic-user <span class="at">-o</span> jsonpath=<span class="st">&#39;{.data.elastic}&#39;</span> <span class="kw">|</span> <span class="fu">base64</span> <span class="at">-d</span><span class="va">)</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sk</span> <span class="at">-u</span> <span class="st">&quot;elastic:</span><span class="va">$PASSWORD</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-X</span> PUT <span class="st">&quot;https://localhost:9200/_ilm/policy/scraper-logs&quot;</span> <span class="dt">\</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;Content-Type: application/json&quot;</span> <span class="dt">\</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> @efk/manifests/ilm-policy.json</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Esperado: {&quot;acknowledged&quot;: true}</span></span></code></pre></div>
+<h4 id="33--index-template-que-asocia-ilm-a-scraper-logs-">3.3 — Index
+template que asocia ILM a <code>scraper-logs-*</code></h4>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sk</span> <span class="at">-u</span> <span class="st">&quot;elastic:</span><span class="va">$PASSWORD</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-X</span> PUT <span class="st">&quot;https://localhost:9200/_index_template/scraper-logs-template&quot;</span> <span class="dt">\</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;Content-Type: application/json&quot;</span> <span class="dt">\</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;index_patterns&quot;: [&quot;scraper-logs-*&quot;],</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;template&quot;: {</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="st">      &quot;settings&quot;: {</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="st">        &quot;number_of_shards&quot;: 1,</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="st">        &quot;number_of_replicas&quot;: 0,</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="st">        &quot;index.lifecycle.name&quot;: &quot;scraper-logs&quot;,</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="st">        &quot;index.lifecycle.rollover_alias&quot;: &quot;scraper-logs&quot;</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="st">      }</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="st">  }&#39;</span></span></code></pre></div>
+<blockquote>
+<p>⚠️ <strong>Single-node = <code>number_of_replicas: 0</code></strong>
+o el cluster queda en <code>yellow</code> permanente. En producción real
+(3+ nodos) usen <code>number_of_replicas: 1</code> mínimo.</p>
+</blockquote>
+<h4 id="output-esperado-del-hit-3">Output esperado del Hit #3</h4>
+<p>En Kibana → <strong>Stack Management</strong> → <strong>Index
+Lifecycle Policies</strong> → aparece la policy
+<code>scraper-logs</code> con las 3 fases. Y en <strong>Index
+Management</strong> → cada índice <code>scraper-logs-YYYY.MM.DD</code>
+tiene la columna <strong>Lifecycle policy = scraper-logs</strong> y
+muestra la fase actual.</p>
+<p>Para ver que el rollover efectivamente funciona durante el desarrollo
+(sin esperar 24h), pueden forzarlo:</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sk</span> <span class="at">-u</span> <span class="st">&quot;elastic:</span><span class="va">$PASSWORD</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-X</span> POST <span class="st">&quot;https://localhost:9200/scraper-logs/_rollover&quot;</span> <span class="dt">\</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;Content-Type: application/json&quot;</span> <span class="dt">\</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{&quot;conditions&quot;:{&quot;max_age&quot;:&quot;0ms&quot;}}&#39;</span></span></code></pre></div>
+<p><strong>Capturen el screenshot</strong> de la policy en
+<code>efk/screenshots/hit3-ilm-policy.png</code>.</p>
+<hr />
+<h3 id="hit-4--cookbook-kql-6-queries-útiles">Hit #4 — Cookbook KQL: 6+
+queries útiles</h3>
+<p>Documenten en <code>efk/queries/kql-cookbook.md</code> <strong>al
+menos 6 queries en KQL</strong> (Kibana Query Language, NO Lucene query
+— <code>language: lucene</code> está deprecado desde 8.0). Cada query
+lleva: pregunta de negocio · query · screenshot del resultado ·
+comentario.</p>
+<blockquote>
+<p>💡 <strong>KQL vs Lucene query</strong>: Lucene es el lenguaje viejo
+(<code>field:value AND field:value</code>). KQL es el nuevo
+(<code>field: value and field: value</code>), case-insensitive en
+operadores, soporta wildcards más predecibles, y es el default de Kibana
+8+. <strong>Para esta entrega usen KQL exclusivamente.</strong> En el
+cookbook dejen una nota mencionando el equivalente Lucene de cada query
+— la cátedra valora que sepan que existe la diferencia.</p>
+</blockquote>
+<p>Mínimo obligatorio (6 queries que la cátedra valida — pueden agregar
+más):</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Pregunta</th>
+<th>Query KQL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Q1</td>
+<td>Errores por producto en las últimas 24h</td>
+<td><code>level: "ERROR" and producto: *</code> (filtro de tiempo en el
+time picker)</td>
+</tr>
+<tr>
+<td>Q2</td>
+<td>Top selectores faltantes (filtros que el scraper no encontró)</td>
+<td><code>message: "Filtro * no disponible" and producto: *</code></td>
+</tr>
+<tr>
+<td>Q3</td>
+<td>Distribución de duración del Job (campo <code>job_duration_ms</code>
+del scraper)</td>
+<td><code>event: "scrape_completado" and job_duration_ms &gt;= 0</code>
+(visualizar como histograma)</td>
+</tr>
+<tr>
+<td>Q4</td>
+<td>Logs con timeout de Selenium en cualquier producto</td>
+<td><code>message: *timeout* and (logger: "selenium*" or logger: "extractors")</code></td>
+</tr>
+<tr>
+<td>Q5</td>
+<td>Eventos del CronJob específico (correlación por
+<code>job_name</code>)</td>
+<td><code>kubernetes.labels.job_name: "scraper-test-1"</code></td>
+</tr>
+<tr>
+<td>Q6</td>
+<td>Errores que NO sean del módulo de Postgres (excluir false positives
+conocidos)</td>
+<td><code>level: "ERROR" and not logger: "psycopg*"</code></td>
+</tr>
+</tbody>
+</table>
+<p>Para cada una, documenten en el cookbook:</p>
+<ol type="1">
+<li><strong>La pregunta de negocio</strong> (1 línea).</li>
+<li><strong>La query KQL exacta</strong> (sin <code>_source</code>
+filters — KQL no maneja eso, eso es Query DSL).</li>
+<li><strong>El equivalente Lucene</strong> (1 línea, para mostrar que
+entendieron la diferencia).</li>
+<li><strong>Un screenshot</strong> del resultado en Discover, con time
+range relevante visible.</li>
+<li><strong>Por qué la query está escrita así</strong> — sobre todo:
+cuándo conviene <code>*</code> (wildcard expensive) vs un campo
+<code>keyword</code> (fast).</li>
+</ol>
+<blockquote>
+<p>📚 <strong>Documentación KQL canónica</strong>: <a
+href="https://www.elastic.co/guide/en/kibana/current/kuery-query.html">https://www.elastic.co/guide/en/kibana/current/kuery-query.html</a>.
+Cortita y al hueso. La sección “Query and filter context” es la que se
+les va a hacer útil cuando pasen una query de Discover a un panel de
+dashboard.</p>
+</blockquote>
+<h4 id="equivalente-entre-kql-y-logql">Equivalente entre KQL y
+LogQL</h4>
+<p>Comparen mentalmente con las queries del cookbook de Parte 1.
+<strong>Q1 acá vs Q1 de Parte 1</strong>: ambas responden la misma
+pregunta, pero el modelo es distinto — Loki cuenta sobre streams
+etiquetados, Elasticsearch agrega sobre documents indexados. El ADR
+<code>0009</code> tiene que tocar este punto.</p>
+<hr />
+<h3
+id="hit-5--dashboard-kibana-provisionado-as-code-ndjson--import-api">Hit
+#5 — Dashboard Kibana provisionado as-code (NDJSON + import API)</h3>
+<p>A diferencia de Grafana (donde el dashboard JSON va a un ConfigMap
+montado), Kibana usa <strong>import via REST API</strong>: los saved
+objects se exportan como <strong>NDJSON</strong> (newline-delimited
+JSON, un objeto por línea) y se importan con
+<code>POST /api/saved_objects/_import</code>.</p>
+<h4 id="51--construir-el-dashboard-en-la-ui">5.1 — Construir el
+dashboard en la UI</h4>
+<p>Construyan <strong>un dashboard único</strong> en Kibana → Dashboards
+→ <strong>Create dashboard</strong> con al menos 6 paneles (más que los
+5 del dashboard equivalente de Parte 1 — Kibana es más rico para
+visualizaciones agregadas):</p>
+<ol type="1">
+<li><strong>Metric</strong> — Total de eventos hoy
+(<code>@timestamp</code> last 24h).</li>
+<li><strong>Metric</strong> — % de eventos <code>level: "ERROR"</code>
+vs total.</li>
+<li><strong>Bar chart vertical</strong> — Top 5 productos con más
+errores (Q1 del cookbook).</li>
+<li><strong>Pie chart</strong> — Distribución por <code>level</code>
+(INFO / WARNING / ERROR).</li>
+<li><strong>Line chart</strong> — Eventos por minuto last 6h, breakdown
+por <code>level</code>.</li>
+<li><strong>Table</strong> — Última corrida exitosa por producto (Q de
+“max @timestamp by producto where event=scrape_completado”).</li>
+</ol>
+<p>Bonus aceptado (no obligatorio):</p>
+<ul>
+<li><strong>Heatmap</strong> — Distribución hora-del-día × producto de
+errores last 7d (revela patrones tipo “ML rate-limita en horario
+laboral”).</li>
+<li><strong>Lens (auto)</strong> — campo <code>job_duration_ms</code>
+con percentiles 50 / 95 / 99.</li>
+</ul>
+<h4 id="52--exportar-a-ndjson">5.2 — Exportar a NDJSON</h4>
+<p>Stack Management → <strong>Saved Objects</strong> → seleccionar el
+dashboard + sus visualizaciones + el data view → <strong>Export</strong>
+→ guardar como <code>efk/dashboards/scraper-overview.ndjson</code>.</p>
+<blockquote>
+<p>⚠️ <strong>Marcar “Include related objects”</strong> o el NDJSON va a
+quedar incompleto y el import en otro cluster va a fallar con “Missing
+references”.</p>
+</blockquote>
+<h4 id="53--import-via-api-en-installsh">5.3 — Import via API en
+<code>install.sh</code></h4>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="va">PASSWORD</span><span class="op">=</span><span class="va">$(</span><span class="ex">kubectl</span> <span class="at">-n</span> elastic get secret scraper-es-elastic-user <span class="at">-o</span> jsonpath=<span class="st">&#39;{.data.elastic}&#39;</span> <span class="kw">|</span> <span class="fu">base64</span> <span class="at">-d</span><span class="va">)</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Port-forward a Kibana</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> elastic port-forward svc/scraper-kb-http 5601:5601 <span class="kw">&amp;</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="va">PF_PID</span><span class="op">=</span><span class="va">$!</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sleep</span> 5</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sk</span> <span class="at">-u</span> <span class="st">&quot;elastic:</span><span class="va">$PASSWORD</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">-X</span> POST <span class="st">&quot;https://localhost:5601/api/saved_objects/_import?overwrite=true&quot;</span> <span class="dt">\</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;kbn-xsrf: true&quot;</span> <span class="dt">\</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">-F</span> file=@efk/dashboards/scraper-overview.ndjson <span class="kw">|</span> <span class="ex">jq</span> <span class="st">&#39;.success&#39;</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Esperado: true</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="bu">kill</span> <span class="va">$PF_PID</span></span></code></pre></div>
+<blockquote>
+<p>💡 <strong>El header <code>kbn-xsrf: true</code> es
+obligatorio</strong>. Kibana exige CSRF token en todos los
+POST/PUT/DELETE — sin ese header el request falla con 400 incluso con
+auth válida. Es el primer pitfall que encuentran todos en su primer
+intento.</p>
+</blockquote>
+<h4 id="output-esperado-del-hit-5">Output esperado del Hit #5</h4>
+<p>Después de re-aplicar y re-disparar el
+<code>scraper-efk-test-1</code>:</p>
+<ul>
+<li>En Kibana → Dashboards → aparece <strong>Scraper
+Overview</strong>.</li>
+<li>Los 6 paneles muestran datos reales (no “No results found”).</li>
+<li>El dashboard se renderea en menos de 5 segundos contra los datos del
+último día.</li>
+</ul>
+<p><strong>Capturen el screenshot final en
+<code>efk/screenshots/hit5-dashboard.png</code></strong> — esto es lo
+que la cátedra mira primero.</p>
+<hr />
+<h3 id="hit-6--alertas-via-kibana-alerting-opcional-bonus-5-">Hit #6 —
+Alertas via Kibana Alerting (opcional, bonus +5 %)</h3>
+<p>Configuren <strong>una rule en Kibana Alerting</strong> que dispare
+cuando se cumpla:</p>
+<blockquote>
+<p>Más de <strong>5 eventos <code>level: "ERROR"</code></strong> del
+scraper en cualquier ventana de <strong>1 hora</strong>.</p>
+</blockquote>
+<p>Notificación al <strong>mismo Discord webhook</strong> que usaron en
+Parte 1 — eso permite que la alerta de Loki y la de EFK aparezcan en el
+mismo canal y la cátedra pueda verificar las dos.</p>
+<h4 id="estructura-mínima">Estructura mínima</h4>
+<ul>
+<li><p><strong>Connector Discord</strong> en Stack Management →
+<strong>Alerts and Insights</strong> → <strong>Connectors</strong> →
+<strong>Create connector</strong> → tipo <strong>Webhook</strong>
+(Kibana no tiene un connector “Discord” nativo, pero Discord acepta
+webhooks genéricos POST con JSON).</p>
+<blockquote>
+<p>🔒 <strong>Igual que Parte 1, el webhook URL es secret.</strong> No
+commitearlo. Pasen <code>DISCORD_WEBHOOK_URL</code> al install.sh por
+env var y créenlo via API:</p>
+</blockquote>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sk</span> <span class="at">-u</span> <span class="st">&quot;elastic:</span><span class="va">$PASSWORD</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-X</span> POST <span class="st">&quot;https://localhost:5601/api/actions/connector&quot;</span> <span class="dt">\</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;kbn-xsrf: true&quot;</span> <span class="dt">\</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;Content-Type: application/json&quot;</span> <span class="dt">\</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&quot;{</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="st">    </span><span class="dt">\&quot;</span><span class="st">name</span><span class="dt">\&quot;</span><span class="st">: </span><span class="dt">\&quot;</span><span class="st">discord-sip2026</span><span class="dt">\&quot;</span><span class="st">,</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="st">    </span><span class="dt">\&quot;</span><span class="st">connector_type_id</span><span class="dt">\&quot;</span><span class="st">: </span><span class="dt">\&quot;</span><span class="st">.webhook</span><span class="dt">\&quot;</span><span class="st">,</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="st">    </span><span class="dt">\&quot;</span><span class="st">config</span><span class="dt">\&quot;</span><span class="st">: {</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="st">      </span><span class="dt">\&quot;</span><span class="st">url</span><span class="dt">\&quot;</span><span class="st">: </span><span class="dt">\&quot;</span><span class="va">${DISCORD_WEBHOOK_URL}</span><span class="dt">\&quot;</span><span class="st">,</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="st">      </span><span class="dt">\&quot;</span><span class="st">method</span><span class="dt">\&quot;</span><span class="st">: </span><span class="dt">\&quot;</span><span class="st">post</span><span class="dt">\&quot;</span><span class="st">,</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="st">      </span><span class="dt">\&quot;</span><span class="st">headers</span><span class="dt">\&quot;</span><span class="st">: { </span><span class="dt">\&quot;</span><span class="st">Content-Type</span><span class="dt">\&quot;</span><span class="st">: </span><span class="dt">\&quot;</span><span class="st">application/json</span><span class="dt">\&quot;</span><span class="st"> }</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="st">  }&quot;</span></span></code></pre></div></li>
+<li><p><strong>Rule type</strong>: <strong>Elasticsearch query</strong>
+(KQL). Ejemplo:</p>
+<ul>
+<li><p>Index: <code>scraper-logs-*</code></p></li>
+<li><p>Time field: <code>@timestamp</code></p></li>
+<li><p>Query: <code>level: "ERROR"</code></p></li>
+<li><p>Threshold: <code>IS ABOVE 5</code></p></li>
+<li><p>Time window: <code>1h</code></p></li>
+<li><p>Check every: <code>5m</code></p></li>
+<li><p>Action: el connector Discord con body:</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;content&quot;</span><span class="fu">:</span> <span class="st">&quot;ALERTA SIP 2026 (EFK): {{context.hits}} errores del scraper en 1h. Producto top: {{context.value}}&quot;</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></li>
+</ul></li>
+<li><p><strong>Test</strong>: simulen el threshold bajándolo a
+<code>IS ABOVE 0</code> durante la corrida de evaluación,
+<strong>o</strong> disparen 6 jobs forzados con bug intencional para que
+generen ERRORs reales.</p></li>
+</ul>
+<p>Documenten en <code>efk/README.md</code> cómo se setea
+<code>DISCORD_WEBHOOK_URL</code> y commiteen el screenshot del mensaje
+de alerta en
+<code>efk/screenshots/hit6-discord-alert-efk.png</code>.</p>
+<hr />
+<h2 id="cómo-entregar">Cómo entregar</h2>
+<ol type="1">
+<li><strong>Push final al repo público</strong> (mismo repo del TP 1 +
+Parte 1) antes del <strong>23/05/2026 23:59 ART</strong>.</li>
+<li><strong>README raíz actualizado</strong> con sección nueva “TP 2 ·
+Parte 2 — EFK”:
+<ul>
+<li>Cómo ejecutar <code>efk/install.sh</code> desde cero.</li>
+<li>Variables de entorno requeridas (<code>DISCORD_WEBHOOK_URL</code>
+opcional para Hit #6 — la password de <code>elastic</code> la genera ECK
+sola).</li>
+<li>Link al <code>efk/README.md</code> con detalles.</li>
+</ul></li>
+<li><strong>Carpeta <code>efk/</code></strong> completa según <a
+href="#infra-base-obligatoria--bloqueante">estructura
+obligatoria</a>.</li>
+<li><strong><code>docs/adr/0009-stack-de-logging-efk.md</code></strong>
+comparando ergonomía / footprint / licencia vs Loki.</li>
+<li><strong>Carpeta <code>efk/screenshots/</code></strong> con mínimo:
+<ul>
+<li><code>hit2-fluentbit-discover.png</code> — Discover mostrando los
+logs con campos JSON parseados.</li>
+<li><code>hit3-ilm-policy.png</code> — la policy
+<code>scraper-logs</code> con sus 3 fases.</li>
+<li><code>hit5-dashboard.png</code> — dashboard Scraper Overview
+renderizado con datos reales.</li>
+<li>(bonus) <code>hit6-discord-alert-efk.png</code> — alerta de EFK en
+Discord.</li>
+</ul></li>
+<li><strong>Video corto (3-5 min)</strong> mostrando:
+<code>install.sh</code> corriendo de cero, Kibana abriéndose en
+<code>:30001</code>, demo de las 6 queries del Hit #4 en Discover,
+dashboard del Hit #5 con datos.</li>
+<li><strong>Mensaje en el canal Discord de la materia</strong> con link
+al repo + video.</li>
+</ol>
+<blockquote>
+<p>📡 <strong>Canal Discord</strong>: <a
+href="https://discord.com/channels/1482135908508500148/1482135909456679139">https://discord.com/channels/1482135908508500148/1482135909456679139</a>
+Antes de pedir ayuda, revisá <a href="#common-pitfalls">Common
+pitfalls</a>.</p>
+</blockquote>
+<hr />
+<h2 id="auto-verificación-previa-a-la-entrega">Auto-verificación previa
+a la entrega</h2>
+<p>Si algo de esta lista falla, <strong>no entregues</strong>. 8 puntos
+seguros que se pierden con 5 minutos de checklist.</p>
+<h3 id="1-installsh-corre-limpio-en-cluster-vacío">1)
+<code>install.sh</code> corre limpio en cluster vacío</h3>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> delete namespace elastic <span class="at">--wait</span><span class="op">=</span>true</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> delete namespace elastic-system <span class="at">--wait</span><span class="op">=</span>true</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> efk <span class="kw">&amp;&amp;</span> <span class="ex">./install.sh</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Tiene que terminar con exit 0 y los 7 ✓ del output esperado del Hit #1</span></span></code></pre></div>
+<h3 id="2-elasticsearch-está-green-y-kibana-available">2) Elasticsearch
+está <code>green</code> y Kibana <code>available</code></h3>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> elastic get elasticsearch,kibana</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># elasticsearch HEALTH=green PHASE=Ready</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># kibana HEALTH=green</span></span></code></pre></div>
+<h3 id="3-fluent-bit-daemonset-está-running-en-todos-los-nodos">3)
+Fluent Bit DaemonSet está Running en todos los nodos</h3>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> elastic get ds fluent-bit</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># DESIRED == READY (en cluster single-node ambos = 1)</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> elastic logs ds/fluent-bit <span class="kw">|</span> <span class="fu">tail</span> <span class="at">-20</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Tiene que mostrar líneas tipo &quot;[output:es:es.0] HTTP status=200/201&quot;</span></span></code></pre></div>
+<h3 id="4-elasticsearch-responde-a-queries-via-http">4) Elasticsearch
+responde a queries via HTTP</h3>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="va">PASSWORD</span><span class="op">=</span><span class="va">$(</span><span class="ex">kubectl</span> <span class="at">-n</span> elastic get secret scraper-es-elastic-user <span class="at">-o</span> jsonpath=<span class="st">&#39;{.data.elastic}&#39;</span> <span class="kw">|</span> <span class="fu">base64</span> <span class="at">-d</span><span class="va">)</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> elastic port-forward svc/scraper-es-http 9200:9200 <span class="kw">&amp;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sleep</span> 2</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sk</span> <span class="at">-u</span> <span class="st">&quot;elastic:</span><span class="va">$PASSWORD</span><span class="st">&quot;</span> <span class="st">&quot;https://localhost:9200/_cat/indices?v&quot;</span> <span class="kw">|</span> <span class="fu">grep</span> scraper-logs</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Esperado: al menos 1 línea con &quot;open&quot; e índice yellow/green con docs &gt; 0</span></span></code></pre></div>
+<h3 id="5-ilm-policy-scraper-logs-aplicada">5) ILM policy
+<code>scraper-logs</code> aplicada</h3>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sk</span> <span class="at">-u</span> <span class="st">&quot;elastic:</span><span class="va">$PASSWORD</span><span class="st">&quot;</span> <span class="st">&quot;https://localhost:9200/_ilm/policy/scraper-logs&quot;</span> <span class="kw">|</span> <span class="ex">jq</span> <span class="st">&#39;.scraper-logs.policy.phases | keys&#39;</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Esperado: [&quot;delete&quot;,&quot;hot&quot;,&quot;warm&quot;]</span></span></code></pre></div>
+<h3 id="6-las-6-queries-kql-del-hit-4-corren-sin-error">6) Las 6 queries
+KQL del Hit #4 corren sin error</h3>
+<p>Abran Kibana → Discover → data view <code>scraper-logs</code> →
+peguen cada query del cookbook. <strong>Ninguna debe dar error de
+sintaxis</strong>. Pueden devolver 0 resultados si no hay datos en ese
+rango, pero no rojo.</p>
+<h3 id="7-dashboard-provisionado-aparece-en-la-ui">7) Dashboard
+provisionado aparece en la UI</h3>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Después de install.sh:</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Abrir Kibana → Dashboards → buscar &quot;Scraper Overview&quot; → tiene que estar</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Abrirlo → los 6 paneles tienen que renderear (datos o &quot;No results&quot;, pero no error)</span></span></code></pre></div>
+<h3
+id="8-gitleaks-no-detecta-el-password-de-elastic-ni-el-webhook-discord">8)
+<code>gitleaks</code> no detecta el password de Elastic ni el webhook
+Discord</h3>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gitleaks</span> detect <span class="at">--no-git</span> <span class="at">--verbose</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Esperado: 0 leaks. Ni la password de &quot;elastic&quot; ni el DISCORD_WEBHOOK_URL en el repo.</span></span></code></pre></div>
+<hr />
+<h2 id="common-pitfalls">Common pitfalls</h2>
+<h3
+id="vmmax_map_count-muy-bajo-en-el-host"><code>vm.max_map_count</code>
+muy bajo en el host</h3>
+<p>Elasticsearch necesita <code>vm.max_map_count &gt;= 262144</code>. En
+k3d / Docker Desktop el default es 65536 y ES se cae al arrancar con
+error
+<code>max virtual memory areas vm.max_map_count [65530] is too low</code>.
+Mitigación:</p>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> sysctl <span class="at">-w</span> vm.max_map_count=262144</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Persistir en /etc/sysctl.d/99-elastic.conf</span></span></code></pre></div>
+<p>En k3d puro hay que ejecutarlo en el host del Docker, no dentro del
+contenedor.</p>
+<h3 id="cluster-yellow-permanente">Cluster <code>yellow</code>
+permanente</h3>
+<p>Causa #1: <code>number_of_replicas</code> &gt; 0 con un solo nodo.
+Las réplicas no pueden asignarse y el cluster queda <code>yellow</code>.
+Solución: en single-node siempre <code>replicas: 0</code>.</p>
+<p>Causa #2: el .kibana_* internal index tiene réplicas hardcoded.
+Inofensivo en single-node, pero molesta en logs. Documentado en el ADR
+como “expected en dev cluster”.</p>
+<h3 id="fluent-bit-no-manda-nada-a-es">Fluent Bit no manda nada a
+ES</h3>
+<p>Mirar
+<code>kubectl -n elastic logs ds/fluent-bit | grep -i error</code>.
+Causas frecuentes:</p>
+<ol type="1">
+<li><strong>TLS verify falla</strong> — el cert auto-firmado de ES no es
+trusted. Mitigación: <code>tls.verify Off</code> en el output
+<code>es</code> (ok para single-cluster local; <strong>NO</strong> hacer
+esto en prod).</li>
+<li><strong>Auth falla</strong> — verificar que el secret
+<code>scraper-es-elastic-user</code> está montado y que
+<code>${ES_PASSWORD}</code> se sustituye en runtime.</li>
+<li><strong>Pipeline backpressure</strong> — si ES está OOMeando, Fluent
+Bit empieza a tirar <code>[ warn] [engine] failed to flush chunk</code>.
+La solución no es subir <code>Mem_Buf_Limit</code> — es bajar el ingest
+o subir el heap de ES.</li>
+</ol>
+<h3 id="kbn-xsrf-true-falta-en-el-import"><code>kbn-xsrf: true</code>
+falta en el import</h3>
+<p>Si el <code>curl</code> al endpoint <code>_import</code> devuelve 400
+con <code>"Request must contain a kbn-xsrf header"</code>, agreguen el
+header. Es el footgun #1 de la API de Kibana — todo POST / PUT / DELETE
+lo necesita.</p>
+<h3 id="el-ndjson-exportado-no-incluye-el-data-view">El NDJSON exportado
+no incluye el data view</h3>
+<p>Cuando exportan el dashboard sin marcar “Include related objects”, el
+archivo no incluye el data view <code>scraper-logs</code> y al importar
+en un cluster limpio explota con “Missing references: index-pattern:
+scraper-logs”. <strong>Siempre exportar con la opción
+tildada.</strong></p>
+<h3 id="memoria--el-cluster-local-muere">Memoria — el cluster local
+muere</h3>
+<p>Síntoma: <code>kubectl get pods -A</code> muestra Loki y/o ES en
+<code>OOMKilled</code>. Causa: 6 GB no alcanzan para los dos stacks +
+Postgres + scraper. Mitigación durante el desarrollo: mantener uno de
+los dos stacks en <code>replicas: 0</code> y subirlos los dos sólo para
+la corrida final de evaluación. Documentarlo en
+<code>efk/README.md</code> (“comportamiento esperado en cluster &lt; 8
+GB”).</p>
+<h3 id="confundir-kql-con-lucene-query-language">Confundir KQL con
+Lucene query language</h3>
+<p>Si pegan <code>level:ERROR AND producto:iphone</code> (sin espacios
+después de <code>:</code>, <code>AND</code> mayúscula), funciona en
+Lucene pero NO en KQL — KQL espera
+<code>level: "ERROR" and producto: "iphone"</code>. La barra de Discover
+por default usa KQL desde 8.x; el toggle a Lucene está en el ícono de la
+lupita.</p>
+<hr />
+<h2 id="criterios-de-evaluación">Criterios de evaluación</h2>
+<h3 id="requisitos-bloqueantes">Requisitos bloqueantes</h3>
+<ul>
+<li><strong>TP 2 · Parte 1 entregada y aprobada</strong> (≥ 60/100). Los
+dos stacks van a coexistir, sin Parte 1 no hay comparativa.</li>
+<li><strong><code>efk/install.sh</code></strong> funciona en cluster
+limpio (verificado en <a
+href="#1-installsh-corre-limpio-en-cluster-vacío">auto-verificación
+#1</a>).</li>
+<li><strong>Versiones pinneadas</strong> a 8.17.x (ES/Kibana), 2.16.x
+(ECK), 3.2.x (Fluent Bit). No <code>latest</code>.</li>
+<li><strong>No usar Fluentd</strong>. Si entregaron con Fluentd, -5 %
+automático.</li>
+<li><strong>No usar el chart deprecado
+<code>elastic/elasticsearch</code></strong> — sólo ECK Operator.</li>
+<li><strong>Sin secrets en el repo</strong>
+(<code>gitleaks detect</code> da 0 — verificado en <a
+href="#8-gitleaks-no-detecta-el-password-de-elastic-ni-el-webhook-discord">auto-verificación
+#8</a>).</li>
+<li><strong>Auto-verificación completa ejecutada</strong> antes del push
+final.</li>
+</ul>
+<h3 id="tabla-de-puntaje-100-">Tabla de puntaje (100 %)</h3>
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>Peso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hit #1</strong> — ECK Operator + Elasticsearch (green) +
+Kibana corriendo</td>
+<td>20 %</td>
+</tr>
+<tr>
+<td><strong>Hit #2</strong> — Fluent Bit DaemonSet + pipeline al scraper
++ parser JSON funcionando</td>
+<td>20 %</td>
+</tr>
+<tr>
+<td><strong>Hit #3</strong> — ILM policy <code>scraper-logs</code> (3
+fases) + index template asociado</td>
+<td>15 %</td>
+</tr>
+<tr>
+<td><strong>Hit #4</strong> — <code>kql-cookbook.md</code> con las 6
+queries documentadas (pregunta + KQL + equivalente Lucene + por
+qué)</td>
+<td>15 %</td>
+</tr>
+<tr>
+<td><strong>Hit #5</strong> — dashboard
+<code>scraper-overview.ndjson</code> importado as-code y mostrando datos
+reales</td>
+<td>20 %</td>
+</tr>
+<tr>
+<td><strong>ADR <code>0009-stack-de-logging-efk.md</code></strong>
+comparando contra Loki en footprint / latency / lic.</td>
+<td>10 %</td>
+</tr>
+<tr>
+<td><strong>Bonus Hit #6</strong> — alerta a Discord funcionando +
+screenshot</td>
+<td>+5 %</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="material-de-apoyo">Material de apoyo</h2>
+<h3
+id="tabla-comparativa-loki-parte-1-vs-efk-parte-2--números-honestos">Tabla
+comparativa Loki (Parte 1) vs EFK (Parte 2) — números honestos</h3>
+<p>Esta tabla es <strong>el insumo principal del ADR
+<code>0009</code></strong> y de la decisión final de la Parte 4. Mídanla
+en su propio cluster — los números abajo son referencia ballpark con
+datos del scraper.</p>
+<table>
+<thead>
+<tr>
+<th>Dimensión</th>
+<th>Loki + Promtail + Grafana</th>
+<th>EFK = Elasticsearch + Fluent Bit + Kibana</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>RAM resident del backend</strong></td>
+<td>~250-400 Mi (Loki single-binary)</td>
+<td>~1.5-2.0 Gi (ES single-node con heap 1G)</td>
+</tr>
+<tr>
+<td><strong>RAM resident del agente</strong></td>
+<td>~50-100 Mi (Promtail)</td>
+<td>~40-80 Mi (Fluent Bit, escrito en C — más liviano)</td>
+</tr>
+<tr>
+<td><strong>RAM resident del visualizador</strong></td>
+<td>~150-250 Mi (Grafana)</td>
+<td>~600-900 Mi (Kibana, Node.js + Chrome PDF)</td>
+</tr>
+<tr>
+<td><strong>Total RAM stack</strong></td>
+<td><strong>~0.5-0.8 Gi</strong></td>
+<td><strong>~2.5-3.0 Gi</strong> (5× más pesado)</td>
+</tr>
+<tr>
+<td><strong>Disco para 7 días retention</strong></td>
+<td>~500 Mi - 2 Gi (chunks comprimidos)</td>
+<td>~3-8 Gi (índice invertido + .doc files)</td>
+</tr>
+<tr>
+<td><strong>Latency query “errores 24h”</strong></td>
+<td>~100-300 ms (filtros sobre labels)</td>
+<td>~20-80 ms (inverted index hit)</td>
+</tr>
+<tr>
+<td><strong>Latency query full-text “encontrar substring”</strong></td>
+<td><strong>~5-30 segundos</strong> (grep lineal sobre chunks)</td>
+<td>~50-200 ms (inverted index)</td>
+</tr>
+<tr>
+<td><strong>Cardinality tolerance</strong></td>
+<td>Baja — explota con &gt; 100 valores únicos por label</td>
+<td>Alta — Lucene maneja millones de terms por field</td>
+</tr>
+<tr>
+<td><strong>Setup complexity</strong></td>
+<td>3 charts Helm + 1 ConfigMap dashboard</td>
+<td>ECK Operator + 2 CRDs + 1 chart Fluent Bit + import API</td>
+</tr>
+<tr>
+<td><strong>Query language</strong></td>
+<td>LogQL (label-first, PromQL-like)</td>
+<td>KQL (campo-valor, intuitivo) + Query DSL JSON (avanzado)</td>
+</tr>
+<tr>
+<td><strong>Visualización</strong></td>
+<td>Grafana (dashboards as-code, alerting maduro)</td>
+<td>Kibana (Lens auto, machine learning add-on, más
+visualizaciones)</td>
+</tr>
+<tr>
+<td><strong>Licencia</strong></td>
+<td><strong>Apache 2.0</strong> (verdaderamente OSS)</td>
+<td><strong>Elastic License v2</strong> (source-available, <strong>NO
+OSS</strong>, prohíbe SaaS competing)</td>
+</tr>
+<tr>
+<td><strong>Alternativa OSS</strong></td>
+<td>— (ya es Apache 2.0)</td>
+<td>OpenSearch + OpenSearch Dashboards (fork AWS, Apache 2.0)</td>
+</tr>
+<tr>
+<td><strong>Costo cluster local</strong></td>
+<td>$0 — entra cómodo en 6 GB</td>
+<td>$0 — pero pide 8 GB mínimo</td>
+</tr>
+<tr>
+<td><strong>Costo cloud (estimado, 100 GB/día)</strong></td>
+<td>~$30/mes (Grafana Cloud Logs)</td>
+<td>~$200/mes (Elastic Cloud) — <strong>6-7× más caro</strong></td>
+</tr>
+<tr>
+<td><strong>Curva de aprendizaje</strong></td>
+<td>Empinada al principio (LogQL es nuevo), después rápida</td>
+<td>Empinada al principio (Query DSL es complejo), KQL es amigable</td>
+</tr>
+<tr>
+<td><strong>Caso donde gana</strong></td>
+<td>Logs operacionales, label-driven, bajo volumen</td>
+<td>Full-text search, alta cardinalidad, búsqueda exploratoria</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Lectura honesta de la tabla</strong>:</p>
+<ul>
+<li><strong>Si lo único que querés es “ver logs del scraper agrupados
+por producto”</strong>, Loki gana en costo / simplicidad por al menos
+5×.</li>
+<li><strong>Si tu caso de uso real incluye “encontrame el log con esta
+substring de 100 chars”</strong> — auditoría, debugging post-mortem,
+security investigations — EFK es <strong>insustituible</strong>. LogQL
+no compite ahí.</li>
+<li><strong>Si vas a ir a SaaS / cloud</strong>, el costo de EFK /
+Elastic Cloud es <strong>6-7× el de Grafana Cloud Logs</strong> para el
+mismo volumen. Eso pesa mucho en empresa.</li>
+<li><strong>Si el equipo se preocupa por OSS de verdad</strong> (no
+source-available), Elasticsearch sale del menú. La opción es
+<strong>OpenSearch</strong> — el fork AWS post-cambio de licencia 2021.
+Compatible al 99 % con dashboards Kibana actuales hasta Kibana 7.10
+(después divergen).</li>
+</ul>
+<h3 id="esqueleto-de-installsh">Esqueleto de
+<code>install.sh</code></h3>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env bash</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-euo</span> pipefail</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="va">DIR</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$(</span><span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$(</span><span class="fu">dirname</span> <span class="st">&quot;</span><span class="va">${BASH_SOURCE</span><span class="op">[</span><span class="dv">0</span><span class="op">]</span><span class="va">}</span><span class="st">&quot;</span><span class="va">)</span><span class="st">&quot;</span> <span class="kw">&amp;&amp;</span> <span class="bu">pwd</span><span class="va">)</span><span class="st">&quot;</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;→ Namespaces&quot;</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> create namespace elastic        <span class="at">--dry-run</span><span class="op">=</span>client <span class="at">-o</span> yaml <span class="kw">|</span> <span class="ex">kubectl</span> apply <span class="at">-f</span> <span class="at">-</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> create namespace elastic-system <span class="at">--dry-run</span><span class="op">=</span>client <span class="at">-o</span> yaml <span class="kw">|</span> <span class="ex">kubectl</span> apply <span class="at">-f</span> <span class="at">-</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;→ Helm repos&quot;</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> repo add elastic https://helm.elastic.co <span class="op">&gt;</span>/dev/null <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">||</span> <span class="fu">true</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> repo add fluent  https://fluent.github.io/helm-charts <span class="op">&gt;</span>/dev/null <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">||</span> <span class="fu">true</span></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> repo update <span class="op">&gt;</span>/dev/null</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;→ ECK Operator&quot;</span></span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> upgrade <span class="at">--install</span> eck-operator elastic/eck-operator <span class="dt">\</span></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">--version</span> 2.16.0 <span class="dt">\</span></span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">--namespace</span> elastic-system <span class="dt">\</span></span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">--values</span> <span class="st">&quot;</span><span class="va">$DIR</span><span class="st">/helm/eck-operator-values.yaml&quot;</span> <span class="dt">\</span></span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">--wait</span> <span class="at">--timeout</span> 5m</span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;→ Elasticsearch + Kibana via CRDs&quot;</span></span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> <span class="st">&quot;</span><span class="va">$DIR</span><span class="st">/manifests/elasticsearch.yaml&quot;</span></span>
+<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> <span class="st">&quot;</span><span class="va">$DIR</span><span class="st">/manifests/kibana.yaml&quot;</span></span>
+<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> <span class="st">&quot;</span><span class="va">$DIR</span><span class="st">/manifests/kibana-nodeport.yaml&quot;</span></span>
+<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-27"><a href="#cb34-27" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;→ Esperando Elasticsearch ready (puede tardar 2-3 min)&quot;</span></span>
+<span id="cb34-28"><a href="#cb34-28" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> elastic wait <span class="at">--for</span><span class="op">=</span>jsonpath=<span class="st">&#39;{.status.health}&#39;</span>=green elasticsearch/scraper <span class="at">--timeout</span><span class="op">=</span>300s</span>
+<span id="cb34-29"><a href="#cb34-29" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> elastic wait <span class="at">--for</span><span class="op">=</span>jsonpath=<span class="st">&#39;{.status.health}&#39;</span>=green kibana/scraper <span class="at">--timeout</span><span class="op">=</span>300s</span>
+<span id="cb34-30"><a href="#cb34-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-31"><a href="#cb34-31" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;→ Fluent Bit&quot;</span></span>
+<span id="cb34-32"><a href="#cb34-32" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> upgrade <span class="at">--install</span> fluent-bit fluent/fluent-bit <span class="dt">\</span></span>
+<span id="cb34-33"><a href="#cb34-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">--version</span> 0.48.5 <span class="dt">\</span></span>
+<span id="cb34-34"><a href="#cb34-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">--namespace</span> elastic <span class="dt">\</span></span>
+<span id="cb34-35"><a href="#cb34-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">--values</span> <span class="st">&quot;</span><span class="va">$DIR</span><span class="st">/helm/fluent-bit-values.yaml&quot;</span> <span class="dt">\</span></span>
+<span id="cb34-36"><a href="#cb34-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">--wait</span> <span class="at">--timeout</span> 3m</span>
+<span id="cb34-37"><a href="#cb34-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-38"><a href="#cb34-38" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;→ ILM policy + index template&quot;</span></span>
+<span id="cb34-39"><a href="#cb34-39" aria-hidden="true" tabindex="-1"></a><span class="va">PASSWORD</span><span class="op">=</span><span class="va">$(</span><span class="ex">kubectl</span> <span class="at">-n</span> elastic get secret scraper-es-elastic-user <span class="at">-o</span> jsonpath=<span class="st">&#39;{.data.elastic}&#39;</span> <span class="kw">|</span> <span class="fu">base64</span> <span class="at">-d</span><span class="va">)</span></span>
+<span id="cb34-40"><a href="#cb34-40" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> elastic port-forward svc/scraper-es-http 9200:9200 <span class="op">&gt;</span>/dev/null <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">&amp;</span></span>
+<span id="cb34-41"><a href="#cb34-41" aria-hidden="true" tabindex="-1"></a><span class="va">PF_ES</span><span class="op">=</span><span class="va">$!</span></span>
+<span id="cb34-42"><a href="#cb34-42" aria-hidden="true" tabindex="-1"></a><span class="bu">trap</span> <span class="st">&quot;kill </span><span class="va">$PF_ES</span><span class="st"> 2&gt;/dev/null || true&quot;</span> EXIT</span>
+<span id="cb34-43"><a href="#cb34-43" aria-hidden="true" tabindex="-1"></a><span class="fu">sleep</span> 3</span>
+<span id="cb34-44"><a href="#cb34-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-45"><a href="#cb34-45" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sk</span> <span class="at">-u</span> <span class="st">&quot;elastic:</span><span class="va">$PASSWORD</span><span class="st">&quot;</span> <span class="at">-X</span> PUT <span class="st">&quot;https://localhost:9200/_ilm/policy/scraper-logs&quot;</span> <span class="dt">\</span></span>
+<span id="cb34-46"><a href="#cb34-46" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;Content-Type: application/json&quot;</span> <span class="at">-d</span> @<span class="st">&quot;</span><span class="va">$DIR</span><span class="st">/manifests/ilm-policy.json&quot;</span> <span class="op">&gt;</span>/dev/null</span>
+<span id="cb34-47"><a href="#cb34-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-48"><a href="#cb34-48" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sk</span> <span class="at">-u</span> <span class="st">&quot;elastic:</span><span class="va">$PASSWORD</span><span class="st">&quot;</span> <span class="at">-X</span> PUT <span class="st">&quot;https://localhost:9200/_index_template/scraper-logs-template&quot;</span> <span class="dt">\</span></span>
+<span id="cb34-49"><a href="#cb34-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;Content-Type: application/json&quot;</span> <span class="at">-d</span> <span class="st">&#39;{</span></span>
+<span id="cb34-50"><a href="#cb34-50" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;index_patterns&quot;: [&quot;scraper-logs-*&quot;],</span></span>
+<span id="cb34-51"><a href="#cb34-51" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;template&quot;: {</span></span>
+<span id="cb34-52"><a href="#cb34-52" aria-hidden="true" tabindex="-1"></a><span class="st">      &quot;settings&quot;: {</span></span>
+<span id="cb34-53"><a href="#cb34-53" aria-hidden="true" tabindex="-1"></a><span class="st">        &quot;number_of_shards&quot;: 1,</span></span>
+<span id="cb34-54"><a href="#cb34-54" aria-hidden="true" tabindex="-1"></a><span class="st">        &quot;number_of_replicas&quot;: 0,</span></span>
+<span id="cb34-55"><a href="#cb34-55" aria-hidden="true" tabindex="-1"></a><span class="st">        &quot;index.lifecycle.name&quot;: &quot;scraper-logs&quot;,</span></span>
+<span id="cb34-56"><a href="#cb34-56" aria-hidden="true" tabindex="-1"></a><span class="st">        &quot;index.lifecycle.rollover_alias&quot;: &quot;scraper-logs&quot;</span></span>
+<span id="cb34-57"><a href="#cb34-57" aria-hidden="true" tabindex="-1"></a><span class="st">      }</span></span>
+<span id="cb34-58"><a href="#cb34-58" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb34-59"><a href="#cb34-59" aria-hidden="true" tabindex="-1"></a><span class="st">  }&#39;</span> <span class="op">&gt;</span>/dev/null</span>
+<span id="cb34-60"><a href="#cb34-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-61"><a href="#cb34-61" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;→ Import dashboard NDJSON&quot;</span></span>
+<span id="cb34-62"><a href="#cb34-62" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> <span class="at">-n</span> elastic port-forward svc/scraper-kb-http 5601:5601 <span class="op">&gt;</span>/dev/null <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">&amp;</span></span>
+<span id="cb34-63"><a href="#cb34-63" aria-hidden="true" tabindex="-1"></a><span class="va">PF_KB</span><span class="op">=</span><span class="va">$!</span></span>
+<span id="cb34-64"><a href="#cb34-64" aria-hidden="true" tabindex="-1"></a><span class="bu">trap</span> <span class="st">&quot;kill </span><span class="va">$PF_ES</span><span class="st"> </span><span class="va">$PF_KB</span><span class="st"> 2&gt;/dev/null || true&quot;</span> EXIT</span>
+<span id="cb34-65"><a href="#cb34-65" aria-hidden="true" tabindex="-1"></a><span class="fu">sleep</span> 5</span>
+<span id="cb34-66"><a href="#cb34-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-67"><a href="#cb34-67" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sk</span> <span class="at">-u</span> <span class="st">&quot;elastic:</span><span class="va">$PASSWORD</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb34-68"><a href="#cb34-68" aria-hidden="true" tabindex="-1"></a>  <span class="at">-X</span> POST <span class="st">&quot;https://localhost:5601/api/saved_objects/_import?overwrite=true&quot;</span> <span class="dt">\</span></span>
+<span id="cb34-69"><a href="#cb34-69" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;kbn-xsrf: true&quot;</span> <span class="dt">\</span></span>
+<span id="cb34-70"><a href="#cb34-70" aria-hidden="true" tabindex="-1"></a>  <span class="at">-F</span> file=@<span class="st">&quot;</span><span class="va">$DIR</span><span class="st">/dashboards/scraper-overview.ndjson&quot;</span> <span class="op">&gt;</span>/dev/null</span>
+<span id="cb34-71"><a href="#cb34-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-72"><a href="#cb34-72" aria-hidden="true" tabindex="-1"></a><span class="va">NODE_IP</span><span class="op">=</span><span class="va">$(</span><span class="ex">kubectl</span> get nodes <span class="at">-o</span> jsonpath=<span class="st">&#39;{.items[0].status.addresses[?(@.type==&quot;InternalIP&quot;)].address}&#39;</span><span class="va">)</span></span>
+<span id="cb34-73"><a href="#cb34-73" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb34-74"><a href="#cb34-74" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;✓ ECK Operator running&quot;</span></span>
+<span id="cb34-75"><a href="#cb34-75" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;✓ Elasticsearch green&quot;</span></span>
+<span id="cb34-76"><a href="#cb34-76" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;✓ Kibana available&quot;</span></span>
+<span id="cb34-77"><a href="#cb34-77" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;✓ Fluent Bit DaemonSet ready&quot;</span></span>
+<span id="cb34-78"><a href="#cb34-78" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;✓ ILM policy &#39;scraper-logs&#39; aplicada&quot;</span></span>
+<span id="cb34-79"><a href="#cb34-79" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;✓ Index template asociado&quot;</span></span>
+<span id="cb34-80"><a href="#cb34-80" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;✓ Dashboard &#39;Scraper Overview&#39; importado&quot;</span></span>
+<span id="cb34-81"><a href="#cb34-81" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;→ Abrir https://</span><span class="va">${NODE_IP}</span><span class="st">:30001   (elastic / </span><span class="dt">\$</span><span class="st">(kubectl -n elastic get secret scraper-es-elastic-user -o jsonpath=&#39;{.data.elastic}&#39; | base64 -d))&quot;</span></span></code></pre></div>
+<p><code>chmod +x install.sh</code> antes de commitear.</p>
+<h3 id="esqueleto-de-fluent-bit-configyaml-referencia-rápida">Esqueleto
+de <code>fluent-bit-config.yaml</code> (referencia rápida)</h3>
+<p>Si ven errores en el pipeline de Fluent Bit, este es el esqueleto
+mínimo que <strong>funciona</strong> — cualquier error suyo está en una
+de estas 4 secciones:</p>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode ini"><code class="sourceCode ini"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[SERVICE]</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="dt">    Daemon         Off</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="dt">    Flush          5</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="dt">    Log_Level      info</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="dt">    Parsers_File   parsers.conf</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="kw">[INPUT]</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="dt">    Name              tail</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a><span class="dt">    Tag               kube.*</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a><span class="dt">    Path              /var/log/containers/*.log</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a><span class="dt">    Parser            cri</span></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a><span class="dt">    DB                /var/log/flb_kube.db</span></span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a><span class="kw">[FILTER]</span></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a><span class="dt">    Name                kubernetes</span></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a><span class="dt">    Match               kube.*</span></span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a><span class="dt">    Kube_URL            https://kubernetes.default.svc:443</span></span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a><span class="dt">    Merge_Log           On</span></span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a><span class="dt">    K8S-Logging.Parser  On</span></span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a><span class="kw">[FILTER]</span></span>
+<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a><span class="dt">    Name    grep</span></span>
+<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a><span class="dt">    Match   kube.*</span></span>
+<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a><span class="dt">    Regex   $kubernetes</span><span class="kw">[&#39;labels&#39;][&#39;app&#39;]</span><span class="dt"> ^scraper$</span></span>
+<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a><span class="kw">[OUTPUT]</span></span>
+<span id="cb35-27"><a href="#cb35-27" aria-hidden="true" tabindex="-1"></a><span class="dt">    Name              es</span></span>
+<span id="cb35-28"><a href="#cb35-28" aria-hidden="true" tabindex="-1"></a><span class="dt">    Match             kube.*</span></span>
+<span id="cb35-29"><a href="#cb35-29" aria-hidden="true" tabindex="-1"></a><span class="dt">    Host              scraper-es-http.elastic.svc.cluster.local</span></span>
+<span id="cb35-30"><a href="#cb35-30" aria-hidden="true" tabindex="-1"></a><span class="dt">    Port              9200</span></span>
+<span id="cb35-31"><a href="#cb35-31" aria-hidden="true" tabindex="-1"></a><span class="dt">    HTTP_User         elastic</span></span>
+<span id="cb35-32"><a href="#cb35-32" aria-hidden="true" tabindex="-1"></a><span class="dt">    HTTP_Passwd       ${ES_PASSWORD}</span></span>
+<span id="cb35-33"><a href="#cb35-33" aria-hidden="true" tabindex="-1"></a><span class="dt">    tls               On</span></span>
+<span id="cb35-34"><a href="#cb35-34" aria-hidden="true" tabindex="-1"></a><span class="dt">    tls.verify        Off</span></span>
+<span id="cb35-35"><a href="#cb35-35" aria-hidden="true" tabindex="-1"></a><span class="dt">    Logstash_Format   On</span></span>
+<span id="cb35-36"><a href="#cb35-36" aria-hidden="true" tabindex="-1"></a><span class="dt">    Logstash_Prefix   scraper-logs</span></span>
+<span id="cb35-37"><a href="#cb35-37" aria-hidden="true" tabindex="-1"></a><span class="dt">    Replace_Dots      On</span></span></code></pre></div>
+<h3 id="esqueleto-de-query-kql-referencia-rápida">Esqueleto de query KQL
+(referencia rápida)</h3>
+<pre class="text"><code># Sintaxis básica — campo: valor
+level: &quot;ERROR&quot;
+
+# AND / OR / NOT (lower-case en KQL)
+level: &quot;ERROR&quot; and producto: &quot;iphone&quot;
+level: &quot;ERROR&quot; or level: &quot;WARNING&quot;
+level: &quot;ERROR&quot; and not logger: &quot;psycopg*&quot;
+
+# Wildcard (caro en campos text, barato en keyword)
+message: *timeout*
+producto: *
+
+# Rangos
+job_duration_ms &gt;= 5000
+@timestamp &gt;= &quot;2026-05-10T00:00:00Z&quot; and @timestamp &lt; &quot;2026-05-11T00:00:00Z&quot;
+
+# Existence
+producto: *
+
+# Nested fields (kubernetes metadata)
+kubernetes.namespace: &quot;ml-scraper&quot; and kubernetes.labels.app: &quot;scraper&quot;
+
+# Múltiples valores (in)
+level: (&quot;ERROR&quot; or &quot;WARNING&quot;) and producto: (&quot;iphone&quot; or &quot;samsung&quot;)</code></pre>
+<h3 id="esqueleto-de-adr-0009-stack-de-logging-efkmd">Esqueleto de ADR
+<code>0009-stack-de-logging-efk.md</code></h3>
+<p>Mismo formato Michael Nygard de los ADRs anteriores. Esqueleto
+mínimo:</p>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># 0009 — Evaluación de EFK como segundo stack de logging</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Date: 2026-05-20</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Status: Proposed (cierre formal en ADR 0010 de Parte 4)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Deciders: <span class="dt">&lt;</span><span class="kw">equipo</span><span class="dt">&gt;</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="fu">## Contexto</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>En Parte 1 adoptamos Loki + Promtail + Grafana (ADR 0007). En Parte 2 desplegamos EFK</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>en paralelo con dos objetivos: (a) obtener datos comparativos reales sobre el mismo</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>workload (scraper) y (b) entender los trade-offs antes de cerrar la decisión final</span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>en Parte 4 con OTel.</span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>Restricciones medidas:</span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Cluster k3s single-node, ~8 GB RAM totales (con Loki y EFK simultáneos: ~3.5 GB).</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Mismos logs JSON del scraper (Hit #3 de Parte 1) van a los dos stacks.</span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Retención 7 días en ambos.</span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Licenciamiento: Loki es Apache 2.0; Elasticsearch es Elastic License v2 (source-available,</span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>  NO OSS según OSI). En contexto académico no afecta; en empresa puede ser bloqueante.</span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decisión</span></span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a>NO se decide reemplazar Loki por EFK ni viceversa en esta Parte 2. La decisión se difiere</span>
+<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a>al ADR 0010 (Parte 4) cuando se haya evaluado también OTel.</span>
+<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a>Lo que sí se decide acá:</span>
+<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Mantener los dos stacks corriendo en paralelo durante el TP.</span>
+<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Documentar las dimensiones de comparación (ver tabla en TP 2 · Parte 2).</span>
+<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Marcar EFK como &quot;candidato fuerte&quot; cuando el caso de uso requiera full-text search</span>
+<span id="cb37-30"><a href="#cb37-30" aria-hidden="true" tabindex="-1"></a>  pesado, y &quot;candidato descartado&quot; cuando el footprint o licencia importen.</span>
+<span id="cb37-31"><a href="#cb37-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-32"><a href="#cb37-32" aria-hidden="true" tabindex="-1"></a><span class="fu">## Consecuencias</span></span>
+<span id="cb37-33"><a href="#cb37-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-34"><a href="#cb37-34" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Se gana visibilidad real sobre los trade-offs (no opinión, datos del propio cluster).</span>
+<span id="cb37-35"><a href="#cb37-35" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Se gana experiencia con ECK Operator + ILM + KQL — útil aunque no se adopte EFK como</span>
+<span id="cb37-36"><a href="#cb37-36" aria-hidden="true" tabindex="-1"></a>  principal.</span>
+<span id="cb37-37"><a href="#cb37-37" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Se pierde RAM (~3.5 GB) durante el desarrollo. Mitigado bajando uno de los dos stacks</span>
+<span id="cb37-38"><a href="#cb37-38" aria-hidden="true" tabindex="-1"></a>  durante coding y subiendo ambos para evaluación.</span>
+<span id="cb37-39"><a href="#cb37-39" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Riesgo: introducir dependencia de Elastic License v2 en el repo. Mitigado: sólo se</span>
+<span id="cb37-40"><a href="#cb37-40" aria-hidden="true" tabindex="-1"></a>  usan imágenes oficiales, no se redistribuye Elasticsearch ni se ofrece como servicio.</span>
+<span id="cb37-41"><a href="#cb37-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-42"><a href="#cb37-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## Métricas medidas (en NUESTRO cluster)</span></span>
+<span id="cb37-43"><a href="#cb37-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-44"><a href="#cb37-44" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>RAM Loki stack:    <span class="in">`&lt;medir&gt;`</span> Mi</span>
+<span id="cb37-45"><a href="#cb37-45" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>RAM EFK stack:     <span class="in">`&lt;medir&gt;`</span> Mi (ratio: <span class="in">`&lt;calcular&gt;`</span>×)</span>
+<span id="cb37-46"><a href="#cb37-46" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Latency Q1 (errores por producto 24h):</span>
+<span id="cb37-47"><a href="#cb37-47" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Loki:   <span class="in">`&lt;medir&gt;`</span> ms</span>
+<span id="cb37-48"><a href="#cb37-48" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>EFK:    <span class="in">`&lt;medir&gt;`</span> ms</span>
+<span id="cb37-49"><a href="#cb37-49" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Latency full-text &quot;encontrar substring de 50 chars&quot; en 7 días de logs:</span>
+<span id="cb37-50"><a href="#cb37-50" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Loki:   <span class="in">`&lt;medir&gt;`</span> seg</span>
+<span id="cb37-51"><a href="#cb37-51" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>EFK:    <span class="in">`&lt;medir&gt;`</span> ms</span>
+<span id="cb37-52"><a href="#cb37-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-53"><a href="#cb37-53" aria-hidden="true" tabindex="-1"></a><span class="fu">## Referencias</span></span>
+<span id="cb37-54"><a href="#cb37-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-55"><a href="#cb37-55" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Tabla comparativa de la cátedra: TP 2 · Parte 2 / Material de apoyo</span>
+<span id="cb37-56"><a href="#cb37-56" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Elastic License v2: https://www.elastic.co/licensing/elastic-license</span>
+<span id="cb37-57"><a href="#cb37-57" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>OpenSearch (alternativa OSS): https://opensearch.org/</span></code></pre></div>
+<h3 id="plantilla-del-adr-comparativo-final-parte-4">Plantilla del ADR
+comparativo final (Parte 4)</h3>
+<p>La Parte 4 va a consolidar los ADR <code>0007</code> (Loki),
+<code>0009</code> (EFK) y el que produzca la Parte 3 (OTel) en un
+<strong>ADR <code>0010-stack-de-observabilidad-final.md</code></strong>.
+La cátedra ya tiene un esqueleto preparado — no se entrega en esta Parte
+2, pero <strong>escriban el <code>0009</code> sabiendo que va a ser
+revisitado</strong>. Si lo escriben honesto y con datos, la Parte 4 va a
+ser corta. Si lo escriben con “Loki es mejor porque sí”, la Parte 4 los
+va a obligar a re-medir.</p>
+<hr />
+<h2 id="referencias-y-bibliografía">Referencias y Bibliografía</h2>
+<p>Solo lo directamente vinculado a esta Parte 2. Los libros generales
+viven en TP 0; las referencias de Parte 1 viven en
+<code>TP3-1.md</code>. No se repiten.</p>
+<h3 id="hit-1--eck-operator--elasticsearch--kibana">Hit #1 — ECK
+Operator + Elasticsearch + Kibana</h3>
+<ul>
+<li><strong>Elastic Cloud on Kubernetes — Quickstart</strong> — el
+camino oficial Elastic 2026 para K8s. Cubre la instalación del operator
+y los primeros CRDs. <a
+href="https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-quickstart.html">https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-quickstart.html</a></li>
+<li><strong>ECK Operator — Release notes</strong> — chequear que la
+versión que usen (2.16.x) está soportada con Elasticsearch 8.17.x. <a
+href="https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-release-notes.html">https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-release-notes.html</a></li>
+<li><strong>Elasticsearch — Single-node configuration</strong> —
+<code>discovery.type: single-node</code> y por qué solo aplica para
+dev/test, nunca producción. <a
+href="https://www.elastic.co/guide/en/elasticsearch/reference/current/discovery-settings.html">https://www.elastic.co/guide/en/elasticsearch/reference/current/discovery-settings.html</a></li>
+<li><strong>Kibana — Configure Kibana on Kubernetes (ECK)</strong> — el
+CRD <code>Kibana</code>, <code>elasticsearchRef</code>, y cómo se monta
+el secret de auto-discovery. <a
+href="https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-kibana.html">https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-kibana.html</a></li>
+</ul>
+<h3 id="hit-2--fluent-bit--pipeline-kubernetes">Hit #2 — Fluent Bit +
+pipeline Kubernetes</h3>
+<ul>
+<li><strong>Fluent Bit — Kubernetes filter</strong> — la sección clave
+del pipeline: cómo enriquecer cada record con
+<code>kubernetes.labels.*</code>, <code>kubernetes.namespace</code>,
+etc. <a
+href="https://docs.fluentbit.io/manual/pipeline/filters/kubernetes">https://docs.fluentbit.io/manual/pipeline/filters/kubernetes</a></li>
+<li><strong>Fluent Bit — Tail input plugin</strong> — opciones del
+<code>[INPUT]</code> que recolecta de <code>/var/log/containers/</code>:
+<code>Path</code>, <code>Parser</code>, <code>DB</code>,
+<code>Refresh_Interval</code>. <a
+href="https://docs.fluentbit.io/manual/pipeline/inputs/tail">https://docs.fluentbit.io/manual/pipeline/inputs/tail</a></li>
+<li><strong>Fluent Bit — Elasticsearch output</strong> —
+<code>Logstash_Format</code>, <code>tls.verify</code>,
+<code>Replace_Dots</code>, retry semantics. <a
+href="https://docs.fluentbit.io/manual/pipeline/outputs/elasticsearch">https://docs.fluentbit.io/manual/pipeline/outputs/elasticsearch</a></li>
+<li><strong>Fluent Bit — Helm chart values</strong> — referencia
+completa de <code>values.yaml</code> para el chart oficial. <a
+href="https://github.com/fluent/helm-charts/tree/main/charts/fluent-bit">https://github.com/fluent/helm-charts/tree/main/charts/fluent-bit</a></li>
+<li><strong>CNCF — Fluent Bit vs Fluentd</strong> — la comparativa
+oficial donde se argumenta por qué Fluent Bit es la elección moderna
+para DaemonSet. <a
+href="https://docs.fluentbit.io/manual/about/fluentd-and-fluent-bit">https://docs.fluentbit.io/manual/about/fluentd-and-fluent-bit</a></li>
+</ul>
+<h3 id="hit-3--index-lifecycle-management">Hit #3 — Index Lifecycle
+Management</h3>
+<ul>
+<li><strong>Elasticsearch — ILM overview</strong> — el modelo
+hot/warm/cold/frozen/delete y cuándo aplica cada uno. <a
+href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index-lifecycle-management.html">https://www.elastic.co/guide/en/elasticsearch/reference/current/index-lifecycle-management.html</a></li>
+<li><strong>Elasticsearch — Rollover action</strong> —
+<code>max_age</code>, <code>max_primary_shard_size</code>,
+<code>max_docs</code> — la unidad de la fase hot. <a
+href="https://www.elastic.co/guide/en/elasticsearch/reference/current/ilm-rollover.html">https://www.elastic.co/guide/en/elasticsearch/reference/current/ilm-rollover.html</a></li>
+<li><strong>Elasticsearch — Index templates</strong> — cómo asociar ILM
+policies a un patrón de índices via template. <a
+href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index-templates.html">https://www.elastic.co/guide/en/elasticsearch/reference/current/index-templates.html</a></li>
+</ul>
+<h3 id="hit-4--kql">Hit #4 — KQL</h3>
+<ul>
+<li><strong>Kibana — KQL syntax</strong> — sintaxis de KQL:
+<code>field: value</code>,
+<code>and</code>/<code>or</code>/<code>not</code>, wildcards, ranges. <a
+href="https://www.elastic.co/guide/en/kibana/current/kuery-query.html">https://www.elastic.co/guide/en/kibana/current/kuery-query.html</a></li>
+<li><strong>Kibana — Query DSL vs KQL</strong> — cuándo conviene cada
+uno (KQL para Discover / dashboards; Query DSL para visualizations
+complejas con aggregations custom). <a
+href="https://www.elastic.co/guide/en/kibana/current/discover-search-for-relevance.html">https://www.elastic.co/guide/en/kibana/current/discover-search-for-relevance.html</a></li>
+<li><strong>Elasticsearch — Query DSL</strong> (referencia, no
+obligatorio para esta entrega) — el JSON query language que está debajo
+de KQL. <a
+href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html">https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html</a></li>
+</ul>
+<h3 id="hit-5--saved-objects-api--dashboards">Hit #5 — Saved Objects API
++ dashboards</h3>
+<ul>
+<li><strong>Kibana — Saved Objects API</strong> — <code>_export</code>,
+<code>_import</code>, <code>_resolve_import_errors</code>. La que usa el
+<code>install.sh</code>. <a
+href="https://www.elastic.co/guide/en/kibana/current/saved-objects-api.html">https://www.elastic.co/guide/en/kibana/current/saved-objects-api.html</a></li>
+<li><strong>Kibana — Import saved objects via API</strong> — el ejemplo
+exacto del <code>curl</code> con <code>kbn-xsrf</code> y
+<code>multipart/form-data</code>. <a
+href="https://www.elastic.co/guide/en/kibana/current/saved-objects-api-import.html">https://www.elastic.co/guide/en/kibana/current/saved-objects-api-import.html</a></li>
+<li><strong>Kibana — Dashboard NDJSON format</strong> — la estructura de
+los saved objects exportados (data view, lens, dashboard). <a
+href="https://www.elastic.co/guide/en/kibana/current/dashboard.html">https://www.elastic.co/guide/en/kibana/current/dashboard.html</a></li>
+</ul>
+<h3 id="hit-6--kibana-alerting-bonus">Hit #6 — Kibana Alerting
+(bonus)</h3>
+<ul>
+<li><strong>Kibana Alerting — Rule types</strong> — los tipos de rule
+disponibles (Elasticsearch query, Threshold, Anomaly detection). <a
+href="https://www.elastic.co/guide/en/kibana/current/alerting-getting-started.html">https://www.elastic.co/guide/en/kibana/current/alerting-getting-started.html</a></li>
+<li><strong>Kibana Alerting — Webhook connector</strong> — el connector
+genérico que usamos para mandar a Discord (Discord acepta el body JSON
+estándar). <a
+href="https://www.elastic.co/guide/en/kibana/current/webhook-action-type.html">https://www.elastic.co/guide/en/kibana/current/webhook-action-type.html</a></li>
+</ul>
+<h3 id="licencia-y-alternativas-oss">Licencia y alternativas OSS</h3>
+<ul>
+<li><strong>Elastic License v2</strong> — el texto oficial de la
+licencia source-available que aplica a Elasticsearch / Kibana desde
+2021. <a
+href="https://www.elastic.co/licensing/elastic-license">https://www.elastic.co/licensing/elastic-license</a></li>
+<li><strong>OpenSearch — Project home</strong> — el fork de AWS
+post-cambio de licencia, Apache 2.0. La alternativa real si “OSS” es
+requisito hard. <a
+href="https://opensearch.org/">https://opensearch.org/</a></li>
+<li><strong>OSI — License Compatibility / SSPL discussion</strong> — por
+qué Elastic License v2 (y SSPL antes) no son OSS según OSI. Lectura para
+el ADR. <a
+href="https://opensource.org/licenses">https://opensource.org/licenses</a></li>
+</ul>
+<h3 id="comparativa-loki-vs-elasticsearch">Comparativa Loki vs
+Elasticsearch</h3>
+<ul>
+<li><strong>Grafana — “Like Prometheus, but for logs”</strong>
+(referenciado en Parte 1) — el blog post fundacional donde se argumenta
+el costo de Elasticsearch vs Loki. Reléanlo con los datos de su propio
+cluster en mano. <a
+href="https://grafana.com/blog/2018/12/12/loki-prometheus-inspired-open-source-logging-for-cloud-natives/">https://grafana.com/blog/2018/12/12/loki-prometheus-inspired-open-source-logging-for-cloud-natives/</a></li>
+<li><strong>Elastic — “Why Elasticsearch for logs”</strong> — la
+posición oficial de Elastic, con énfasis en full-text search y
+aggregations. Sirve para balancear el blog post de Grafana en el ADR. <a
+href="https://www.elastic.co/observability/log-monitoring">https://www.elastic.co/observability/log-monitoring</a></li>
+</ul>
+
+    <nav class="page-prev-next" aria-label="Navegación entre páginas">
+      <a class="prev-link" href="#" data-slot="prev" hidden>
+        <span class="arrow">←</span>
+        <span class="nav-meta">
+          <span class="nav-label">Anterior</span>
+          <span class="nav-title" data-slot="prev-title"></span>
+        </span>
+      </a>
+      <a class="next-link" href="#" data-slot="next" hidden>
+        <span class="nav-meta">
+          <span class="nav-label">Siguiente</span>
+          <span class="nav-title" data-slot="next-title"></span>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+    </nav>
+
+    <nav class="page-nav-bottom">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+    </nav>
+  </main>
+</div>
+
+<footer class="unlu-footer">
+  <div>
+    UNLu · Departamento de Ciencias Básicas · Seminario de Integración Profesional <strong>2026</strong>
+    · Dr. David Petrocelli
+  </div>
+</footer>
+
+<script>
+// Sidebar show/hide toggle (preference persisted in localStorage)
+(function () {
+  const sidebar = document.getElementById('toc-sidebar');
+  const layout = document.querySelector('.layout');
+  const hideBtn = document.getElementById('sidebar-hide');
+  const showBtn = document.getElementById('sidebar-show');
+  if (!sidebar || !layout || !hideBtn || !showBtn) return;
+
+  const KEY = 'unlu.dcb.sidebar.hidden';
+
+  function apply(hidden) {
+    layout.classList.toggle('sidebar-hidden', hidden);
+    showBtn.classList.toggle('visible', hidden);
+  }
+
+  apply(localStorage.getItem(KEY) === '1');
+
+  hideBtn.addEventListener('click', () => {
+    localStorage.setItem(KEY, '1');
+    apply(true);
+  });
+  showBtn.addEventListener('click', () => {
+    localStorage.removeItem(KEY);
+    apply(false);
+  });
+})();
+
+// Wrap each H2 (and its following content until the next H2) in a <details open>
+// element so users can collapse/expand sections.
+(function () {
+  const main = document.querySelector('main.content');
+  if (!main) return;
+
+  // Collect direct-child H2 headings so we don't touch nested ones (e.g., inside details we'll create)
+  const headings = Array.from(main.children).filter(el => el.tagName === 'H2');
+
+  headings.forEach(h2 => {
+    const details = document.createElement('details');
+    details.open = true;
+    details.className = 'section-collapsible';
+
+    const summary = document.createElement('summary');
+    // Move heading content (incl. anchor) into the summary so anchors keep working
+    summary.innerHTML = h2.innerHTML;
+    if (h2.id) summary.id = h2.id;
+    details.appendChild(summary);
+
+    // Move siblings until next H2 into details
+    const parent = h2.parentNode;
+    let next = h2.nextSibling;
+    parent.replaceChild(details, h2);
+    while (next && !(next.nodeType === 1 && next.tagName === 'H2')) {
+      const node = next;
+      next = next.nextSibling;
+      details.appendChild(node);
+    }
+  });
+
+  // If there's a hash in the URL, ensure the target's <details> is open
+  function openDetailsForHash(hash) {
+    if (!hash) return;
+    const target = document.getElementById(hash.replace(/^#/, ''));
+    if (!target) return;
+    let p = target.closest('details');
+    while (p) { p.open = true; p = p.parentElement && p.parentElement.closest('details'); }
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  openDetailsForHash(window.location.hash);
+  window.addEventListener('hashchange', () => openDetailsForHash(window.location.hash));
+
+  // Wire up "Expand all" / "Collapse all" controls in the inline TOC
+  document.querySelectorAll('.toc-controls [data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const action = btn.getAttribute('data-action');
+      const open = action === 'expand-all';
+      document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
+    });
+  });
+})();
+
+// Populate prev/next navigation based on the current page's banner-num
+(function () {
+  const pill = document.querySelector('.banner-pill');
+  const nav = document.querySelector('.page-prev-next');
+  if (!pill || !nav) return;
+
+  const key = (pill.textContent || '').trim().toUpperCase();
+
+  // Map banner-num → { prev, next }
+  // Each entry: { href, title } (or null if not present)
+  const MAP = {
+    'TP 0': {
+      prev: null,
+      next: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' }
+    },
+    'TP 1 · PARTE 1': {
+      prev: { href: 'practica-0.html', title: 'TP 0 — Prerrequisitos' },
+      next: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' }
+    },
+    'TP 1 · PARTE 2': {
+      prev: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' },
+      next: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' }
+    },
+    'TP 2 · PARTE 1': {
+      prev: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' },
+      next: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' }
+    },
+    'TP 2 · PARTE 2': {
+      prev: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' },
+      next: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' }
+    },
+    'TP 2 · PARTE 3': {
+      prev: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' },
+      next: { href: 'practica-2-parte-4.html', title: 'Práctica II · Parte 4' }
+    },
+    'TP 2 · PARTE 4': {
+      prev: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' },
+      next: null
+    }
+  };
+
+  const entry = MAP[key];
+  if (!entry) return;
+
+  const prevLink = nav.querySelector('[data-slot="prev"]');
+  const nextLink = nav.querySelector('[data-slot="next"]');
+  const prevTitle = nav.querySelector('[data-slot="prev-title"]');
+  const nextTitle = nav.querySelector('[data-slot="next-title"]');
+
+  if (entry.prev && prevLink && prevTitle) {
+    prevLink.setAttribute('href', entry.prev.href);
+    prevTitle.textContent = entry.prev.title;
+    prevLink.hidden = false;
+  }
+  if (entry.next && nextLink && nextTitle) {
+    nextLink.setAttribute('href', entry.next.href);
+    nextTitle.textContent = entry.next.title;
+    nextLink.hidden = false;
+  }
+
+  // If neither slot is shown, hide the whole nav
+  if ((!entry.prev) && (!entry.next)) {
+    nav.style.display = 'none';
+  }
+})();
+
+// Open all external links in a new tab (preserves the current page).
+// Internal anchors (#hash), relative links and same-origin links stay in-tab.
+(function () {
+  const here = window.location.hostname;
+  document.querySelectorAll('a[href]').forEach(a => {
+    const href = a.getAttribute('href');
+    if (!href) return;
+    // Skip anchors and pure relative links
+    if (href.startsWith('#') || href.startsWith('/') || !/^https?:\/\//i.test(href)) return;
+    try {
+      const url = new URL(href);
+      if (url.hostname && url.hostname !== here) {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      }
+    } catch (_) {
+      // Malformed URL — ignore
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
