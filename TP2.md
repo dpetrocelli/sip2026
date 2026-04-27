@@ -14,10 +14,42 @@
 
 Aplican los mismos requisitos generales de la Parte 1, **más** los siguientes:
 
-- **Pipeline de CI/CD obligatorio** (GitHub Actions). Debe correr el scraper en headless contra Chrome y Firefox y publicar los artefactos generados (JSON + screenshots).
-- **Dockerfile obligatorio + `docker-compose.yml` obligatorio**. La solución debe poder ejecutarse íntegramente desde un contenedor sin necesidad de instalar drivers ni navegadores en la máquina host. El `docker-compose.yml` debe levantar el scraper con `docker compose up` (al menos un servicio para correr los 3 productos contra Chrome o Firefox según env var); facilita la evaluación uniforme entre proyectos en distintos lenguajes.
-- **Tests automatizados obligatorios** (`pytest` / `JUnit` / `Jest`) corriendo en CI sobre matriz de browsers, con **cobertura ≥ 70 %** medida por la herramienta estándar del lenguaje (`coverage.py`, `jest --coverage`, `jacoco`). El pipeline debe **fallar** si la cobertura cae debajo del umbral.
-- **Pre-commit hooks obligatorios** (`pre-commit` framework o equivalente nativo del lenguaje). Como mínimo: `gitleaks` para detectar secrets, y el linter del lenguaje (`ruff` para Python, `eslint` para Node, `checkstyle`/`spotless` para Java). Esto fuerza que los problemas se detecten **antes** de pushear, no recién en CI.
+### Infra base obligatoria — bloqueante
+
+> 🚧 **Sin esto no se puede evaluar la entrega.** El resto de los hits se valida **a través** de esta infra (la cátedra corre tu pipeline + tu `docker compose up` + tu Job en k8s para corregir Hits 4-8). Si la infra no funciona, no se llega a corregir nada más → **nota 0**. No suma puntos en la rúbrica porque es condición necesaria para que la entrega exista.
+
+- **Dockerfile multi-stage obligatorio** que empaquete el scraper con Chrome + Firefox + drivers, ejecutable con un solo comando:
+
+  ```bash
+  docker run --rm -v $(pwd)/output:/app/output ml-scraper:latest --browser firefox
+  ```
+
+  Pin de versiones obligatorio (no `:latest` en bases). Esqueleto multi-stage [más abajo](#esqueleto-del-dockerfile-multi-stage-infra-base).
+
+- **`docker-compose.yml` obligatorio** que levante el scraper con un solo comando, sin tener que recordar los flags de `docker run`. Mínimo: servicio `scraper` con `BROWSER`/`HEADLESS` parametrizables vía env y mount `./output:/app/output`. Idealmente también un servicio `lint` invocable con `docker compose run --rm lint`:
+
+  ```bash
+  docker compose up scraper          # corre los 3 productos contra el browser default
+  BROWSER=firefox docker compose up scraper
+  docker compose run --rm lint       # lint sin instalar nada local
+  ```
+
+- **Pipeline GitHub Actions** (`.github/workflows/scrape.yml`) que:
+  1. Construya la imagen Docker.
+  2. Corra el scraper headless contra **Chrome y Firefox** (jobs en paralelo, matriz).
+  3. Ejecute los **tests del Hit #6** + verifique **cobertura ≥ 70 %** (el pipeline debe fallar si cae debajo del umbral, medido con `coverage.py` / `jest --coverage` / `jacoco` según stack).
+  4. Publique JSON + screenshots + reporte de cobertura como **artifacts** del workflow.
+  5. Falle si **gitleaks** detecta secrets hardcodeados.
+
+- **Pre-commit hooks** locales (`.pre-commit-config.yaml` o equivalente nativo del stack) con mínimo:
+  - `gitleaks` — bloquea commits con secrets.
+  - Linter del lenguaje (`ruff` / `eslint` / `checkstyle`).
+  - Formatter (`black` / `prettier` / `spotless`).
+
+  Documenten en el README cómo activarlos: `pre-commit install` (Python/Node) o equivalente del stack. Esto fuerza que los problemas se detecten **antes** de pushear, no recién en CI.
+
+### Otros requisitos
+
 - **Mínimo 4 ADRs** (Architecture Decision Records) en `docs/adr/`, formato Markdown corto (1 página máx cada uno). Composición obligatoria:
   - **2 ADRs elegidos del menú abajo** (los que más aplican a las decisiones que efectivamente tomaron).
   - **2 ADRs de su elección** (decisiones reales del equipo que no estén en el menú — por ejemplo: lenguaje del scraper, registry público que usaron, dep manager, esquema de versionado de la imagen, política de logs, manejo de secrets, etc.).
@@ -34,7 +66,8 @@ Aplican los mismos requisitos generales de la Parte 1, **más** los siguientes:
   | `0004-estrategia-selectores.md` | Por qué la estrategia de selectores que usaron (estructura semántica vs `data-*` vs XPath posicional) y cómo planean adaptarse a cambios de DOM de ML. |
   | `0005-estrategia-retries.md` | Por qué retries con backoff exponencial (y no circuit breaker, fail-fast, o sin retries). Parámetros elegidos (intentos, base delay) y por qué. |
   | `0006-pre-commit-vs-ci.md` | Qué se valida en pre-commit local vs CI remoto, y por qué la división. Trade-off de tiempo de feedback vs costo de CI. |
-- Mantener las **buenas prácticas** ya exigidas en Parte 1: explicit waits, selectores en módulo aparte, logs estructurados, no commitear secrets, gitleaks en CI.
+
+- Mantener las **buenas prácticas** ya exigidas en Parte 1: explicit waits, selectores en módulo aparte, logs estructurados, no commitear secrets.
 
 ---
 
@@ -110,42 +143,6 @@ Escriba un set de **tests automatizados** (`pytest` / `JUnit` / `Jest`) que vali
 Los tests deben correr en CI tanto en Chrome como en Firefox.
 
 **Cobertura mínima: 70 %.** Configure el reporte de cobertura (`coverage.py` + `pytest-cov`, `jest --coverage`, `jacoco`) y agregue una etapa al pipeline de CI que **falle si la cobertura cae debajo del 70 %**. Publique el reporte HTML como artifact del workflow.
-
----
-
-### Infra base obligatoria — Dockerfile + docker-compose + CI/CD + pre-commit
-
-> 🚧 **Sin esto no se puede evaluar la entrega.** El resto de los hits se valida **a través** de esta infra (la cátedra corre tu pipeline + tu `docker compose up` + tu Job en k8s para evaluar). Es requisito bloqueante (no suma puntos en la rúbrica, pero sin esto la nota es 0).
-
-Construya un **Dockerfile** que empaquete el scraper junto con Chrome, Firefox y los drivers, de modo que se pueda ejecutar con un único comando:
-
-```bash
-docker run --rm -v $(pwd)/output:/app/output ml-scraper:latest --browser firefox
-```
-
-Construya además un **`docker-compose.yml`** que levante el scraper con un solo comando, sin tener que recordar los flags de `docker run`. Como mínimo debe definir un servicio `scraper` (con `BROWSER` y `HEADLESS` parametrizables vía env) y mapear `./output:/app/output` para persistir los JSON. Idealmente también un servicio `lint` (`ruff check` / `eslint`) que se invoque con `docker compose run --rm lint`:
-
-```bash
-docker compose up scraper          # corre los 3 productos contra el browser default
-BROWSER=firefox docker compose up scraper
-docker compose run --rm lint       # lint sin instalar nada local
-```
-
-Configure un **GitHub Actions workflow** (`.github/workflows/scrape.yml`) que:
-
-1. Construya la imagen Docker.
-2. Corra el scraper en headless contra Chrome y Firefox (jobs en paralelo, matriz).
-3. Ejecute los tests del Hit #6 y verifique cobertura ≥ 70 %.
-4. Publique los JSON, screenshots y reporte de cobertura como **artifacts** del workflow.
-5. Falle si gitleaks detecta secrets hardcodeados.
-
-**Pre-commit hooks locales obligatorios.** Agregue un archivo `.pre-commit-config.yaml` (o equivalente) con, como mínimo:
-
-- `gitleaks` — bloquea commits con secrets.
-- Linter del lenguaje (`ruff` / `eslint` / `checkstyle`).
-- Formatter (`black` / `prettier` / `spotless`).
-
-Documente en el README cómo activarlos: `pre-commit install` (Python/Node) o el equivalente del stack.
 
 ---
 

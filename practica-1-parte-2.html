@@ -111,7 +111,14 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     MercadoLibre</a></li>
     <li><a href="#requisitos-consideraciones-y-formato-de-entrega"
     id="toc-requisitos-consideraciones-y-formato-de-entrega">Requisitos,
-    consideraciones y formato de entrega</a></li>
+    consideraciones y formato de entrega</a>
+    <ul>
+    <li><a href="#infra-base-obligatoria--bloqueante"
+    id="toc-infra-base-obligatoria--bloqueante">Infra base obligatoria —
+    bloqueante</a></li>
+    <li><a href="#otros-requisitos" id="toc-otros-requisitos">Otros
+    requisitos</a></li>
+    </ul></li>
     <li><a href="#contenidos-del-programa-relacionados"
     id="toc-contenidos-del-programa-relacionados">Contenidos del
     programa relacionados</a></li>
@@ -120,11 +127,6 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     <li><a href="#hit-4" id="toc-hit-4">Hit #4</a></li>
     <li><a href="#hit-5" id="toc-hit-5">Hit #5</a></li>
     <li><a href="#hit-6" id="toc-hit-6">Hit #6</a></li>
-    <li><a
-    href="#infra-base-obligatoria--dockerfile--docker-compose--cicd--pre-commit"
-    id="toc-infra-base-obligatoria--dockerfile--docker-compose--cicd--pre-commit">Infra
-    base obligatoria — Dockerfile + docker-compose + CI/CD +
-    pre-commit</a></li>
     <li><a href="#hit-7--despliegue-en-kubernetes-k3s"
     id="toc-hit-7--despliegue-en-kubernetes-k3s">Hit #7 — Despliegue en
     Kubernetes (k3s)</a></li>
@@ -224,7 +226,14 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       MercadoLibre</a></li>
       <li><a href="#requisitos-consideraciones-y-formato-de-entrega"
       id="toc-requisitos-consideraciones-y-formato-de-entrega">Requisitos,
-      consideraciones y formato de entrega</a></li>
+      consideraciones y formato de entrega</a>
+      <ul>
+      <li><a href="#infra-base-obligatoria--bloqueante"
+      id="toc-infra-base-obligatoria--bloqueante">Infra base obligatoria
+      — bloqueante</a></li>
+      <li><a href="#otros-requisitos" id="toc-otros-requisitos">Otros
+      requisitos</a></li>
+      </ul></li>
       <li><a href="#contenidos-del-programa-relacionados"
       id="toc-contenidos-del-programa-relacionados">Contenidos del
       programa relacionados</a></li>
@@ -233,11 +242,6 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       <li><a href="#hit-4" id="toc-hit-4">Hit #4</a></li>
       <li><a href="#hit-5" id="toc-hit-5">Hit #5</a></li>
       <li><a href="#hit-6" id="toc-hit-6">Hit #6</a></li>
-      <li><a
-      href="#infra-base-obligatoria--dockerfile--docker-compose--cicd--pre-commit"
-      id="toc-infra-base-obligatoria--dockerfile--docker-compose--cicd--pre-commit">Infra
-      base obligatoria — Dockerfile + docker-compose + CI/CD +
-      pre-commit</a></li>
       <li><a href="#hit-7--despliegue-en-kubernetes-k3s"
       id="toc-hit-7--despliegue-en-kubernetes-k3s">Hit #7 — Despliegue
       en Kubernetes (k3s)</a></li>
@@ -340,31 +344,69 @@ funcional no podés cumplir esa parte.</li>
 consideraciones y formato de entrega</h2>
 <p>Aplican los mismos requisitos generales de la Parte 1,
 <strong>más</strong> los siguientes:</p>
+<h3 id="infra-base-obligatoria--bloqueante">Infra base obligatoria —
+bloqueante</h3>
+<blockquote>
+<p>🚧 <strong>Sin esto no se puede evaluar la entrega.</strong> El resto
+de los hits se valida <strong>a través</strong> de esta infra (la
+cátedra corre tu pipeline + tu <code>docker compose up</code> + tu Job
+en k8s para corregir Hits 4-8). Si la infra no funciona, no se llega a
+corregir nada más → <strong>nota 0</strong>. No suma puntos en la
+rúbrica porque es condición necesaria para que la entrega exista.</p>
+</blockquote>
 <ul>
-<li><p><strong>Pipeline de CI/CD obligatorio</strong> (GitHub Actions).
-Debe correr el scraper en headless contra Chrome y Firefox y publicar
-los artefactos generados (JSON + screenshots).</p></li>
-<li><p><strong>Dockerfile obligatorio + <code>docker-compose.yml</code>
-obligatorio</strong>. La solución debe poder ejecutarse íntegramente
-desde un contenedor sin necesidad de instalar drivers ni navegadores en
-la máquina host. El <code>docker-compose.yml</code> debe levantar el
-scraper con <code>docker compose up</code> (al menos un servicio para
-correr los 3 productos contra Chrome o Firefox según env var); facilita
-la evaluación uniforme entre proyectos en distintos lenguajes.</p></li>
-<li><p><strong>Tests automatizados obligatorios</strong>
-(<code>pytest</code> / <code>JUnit</code> / <code>Jest</code>) corriendo
-en CI sobre matriz de browsers, con <strong>cobertura ≥ 70 %</strong>
-medida por la herramienta estándar del lenguaje
-(<code>coverage.py</code>, <code>jest --coverage</code>,
-<code>jacoco</code>). El pipeline debe <strong>fallar</strong> si la
-cobertura cae debajo del umbral.</p></li>
-<li><p><strong>Pre-commit hooks obligatorios</strong>
-(<code>pre-commit</code> framework o equivalente nativo del lenguaje).
-Como mínimo: <code>gitleaks</code> para detectar secrets, y el linter
-del lenguaje (<code>ruff</code> para Python, <code>eslint</code> para
-Node, <code>checkstyle</code>/<code>spotless</code> para Java). Esto
-fuerza que los problemas se detecten <strong>antes</strong> de pushear,
-no recién en CI.</p></li>
+<li><p><strong>Dockerfile multi-stage obligatorio</strong> que empaquete
+el scraper con Chrome + Firefox + drivers, ejecutable con un solo
+comando:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-v</span> <span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span>/output:/app/output ml-scraper:latest <span class="at">--browser</span> firefox</span></code></pre></div>
+<p>Pin de versiones obligatorio (no <code>:latest</code> en bases).
+Esqueleto multi-stage <a
+href="#esqueleto-del-dockerfile-multi-stage-infra-base">más
+abajo</a>.</p></li>
+<li><p><strong><code>docker-compose.yml</code> obligatorio</strong> que
+levante el scraper con un solo comando, sin tener que recordar los flags
+de <code>docker run</code>. Mínimo: servicio <code>scraper</code> con
+<code>BROWSER</code>/<code>HEADLESS</code> parametrizables vía env y
+mount <code>./output:/app/output</code>. Idealmente también un servicio
+<code>lint</code> invocable con
+<code>docker compose run --rm lint</code>:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up scraper          <span class="co"># corre los 3 productos contra el browser default</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="va">BROWSER</span><span class="op">=</span>firefox <span class="ex">docker</span> compose up scraper</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose run <span class="at">--rm</span> lint       <span class="co"># lint sin instalar nada local</span></span></code></pre></div></li>
+<li><p><strong>Pipeline GitHub Actions</strong>
+(<code>.github/workflows/scrape.yml</code>) que:</p>
+<ol type="1">
+<li>Construya la imagen Docker.</li>
+<li>Corra el scraper headless contra <strong>Chrome y Firefox</strong>
+(jobs en paralelo, matriz).</li>
+<li>Ejecute los <strong>tests del Hit #6</strong> + verifique
+<strong>cobertura ≥ 70 %</strong> (el pipeline debe fallar si cae debajo
+del umbral, medido con <code>coverage.py</code> /
+<code>jest --coverage</code> / <code>jacoco</code> según stack).</li>
+<li>Publique JSON + screenshots + reporte de cobertura como
+<strong>artifacts</strong> del workflow.</li>
+<li>Falle si <strong>gitleaks</strong> detecta secrets
+hardcodeados.</li>
+</ol></li>
+<li><p><strong>Pre-commit hooks</strong> locales
+(<code>.pre-commit-config.yaml</code> o equivalente nativo del stack)
+con mínimo:</p>
+<ul>
+<li><code>gitleaks</code> — bloquea commits con secrets.</li>
+<li>Linter del lenguaje (<code>ruff</code> / <code>eslint</code> /
+<code>checkstyle</code>).</li>
+<li>Formatter (<code>black</code> / <code>prettier</code> /
+<code>spotless</code>).</li>
+</ul>
+<p>Documenten en el README cómo activarlos:
+<code>pre-commit install</code> (Python/Node) o equivalente del stack.
+Esto fuerza que los problemas se detecten <strong>antes</strong> de
+pushear, no recién en CI.</p></li>
+</ul>
+<h3 id="otros-requisitos">Otros requisitos</h3>
+<ul>
 <li><p><strong>Mínimo 4 ADRs</strong> (Architecture Decision Records) en
 <code>docs/adr/</code>, formato Markdown corto (1 página máx cada uno).
 Composición obligatoria:</p>
@@ -429,7 +471,7 @@ división. Trade-off de tiempo de feedback vs costo de CI.</td>
 </table></li>
 <li><p>Mantener las <strong>buenas prácticas</strong> ya exigidas en
 Parte 1: explicit waits, selectores en módulo aparte, logs
-estructurados, no commitear secrets, gitleaks en CI.</p></li>
+estructurados, no commitear secrets.</p></li>
 </ul>
 <hr />
 <h2 id="contenidos-del-programa-relacionados">Contenidos del programa
@@ -527,58 +569,6 @@ cobertura (<code>coverage.py</code> + <code>pytest-cov</code>,
 <code>jest --coverage</code>, <code>jacoco</code>) y agregue una etapa
 al pipeline de CI que <strong>falle si la cobertura cae debajo del 70
 %</strong>. Publique el reporte HTML como artifact del workflow.</p>
-<hr />
-<h3
-id="infra-base-obligatoria--dockerfile--docker-compose--cicd--pre-commit">Infra
-base obligatoria — Dockerfile + docker-compose + CI/CD + pre-commit</h3>
-<blockquote>
-<p>🚧 <strong>Sin esto no se puede evaluar la entrega.</strong> El resto
-de los hits se valida <strong>a través</strong> de esta infra (la
-cátedra corre tu pipeline + tu <code>docker compose up</code> + tu Job
-en k8s para evaluar). Es requisito bloqueante (no suma puntos en la
-rúbrica, pero sin esto la nota es 0).</p>
-</blockquote>
-<p>Construya un <strong>Dockerfile</strong> que empaquete el scraper
-junto con Chrome, Firefox y los drivers, de modo que se pueda ejecutar
-con un único comando:</p>
-<div class="sourceCode" id="cb1"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-v</span> <span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span>/output:/app/output ml-scraper:latest <span class="at">--browser</span> firefox</span></code></pre></div>
-<p>Construya además un <strong><code>docker-compose.yml</code></strong>
-que levante el scraper con un solo comando, sin tener que recordar los
-flags de <code>docker run</code>. Como mínimo debe definir un servicio
-<code>scraper</code> (con <code>BROWSER</code> y <code>HEADLESS</code>
-parametrizables vía env) y mapear <code>./output:/app/output</code> para
-persistir los JSON. Idealmente también un servicio <code>lint</code>
-(<code>ruff check</code> / <code>eslint</code>) que se invoque con
-<code>docker compose run --rm lint</code>:</p>
-<div class="sourceCode" id="cb2"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up scraper          <span class="co"># corre los 3 productos contra el browser default</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="va">BROWSER</span><span class="op">=</span>firefox <span class="ex">docker</span> compose up scraper</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose run <span class="at">--rm</span> lint       <span class="co"># lint sin instalar nada local</span></span></code></pre></div>
-<p>Configure un <strong>GitHub Actions workflow</strong>
-(<code>.github/workflows/scrape.yml</code>) que:</p>
-<ol type="1">
-<li>Construya la imagen Docker.</li>
-<li>Corra el scraper en headless contra Chrome y Firefox (jobs en
-paralelo, matriz).</li>
-<li>Ejecute los tests del Hit #6 y verifique cobertura ≥ 70 %.</li>
-<li>Publique los JSON, screenshots y reporte de cobertura como
-<strong>artifacts</strong> del workflow.</li>
-<li>Falle si gitleaks detecta secrets hardcodeados.</li>
-</ol>
-<p><strong>Pre-commit hooks locales obligatorios.</strong> Agregue un
-archivo <code>.pre-commit-config.yaml</code> (o equivalente) con, como
-mínimo:</p>
-<ul>
-<li><code>gitleaks</code> — bloquea commits con secrets.</li>
-<li>Linter del lenguaje (<code>ruff</code> / <code>eslint</code> /
-<code>checkstyle</code>).</li>
-<li>Formatter (<code>black</code> / <code>prettier</code> /
-<code>spotless</code>).</li>
-</ul>
-<p>Documente en el README cómo activarlos:
-<code>pre-commit install</code> (Python/Node) o el equivalente del
-stack.</p>
 <hr />
 <h3 id="hit-7--despliegue-en-kubernetes-k3s">Hit #7 — Despliegue en
 Kubernetes (k3s)</h3>
