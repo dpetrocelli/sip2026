@@ -2,7 +2,7 @@
 
 ## Robustez, Tests, Docker, Kubernetes y CI/CD sobre el scraper de MercadoLibre
 
-**Fecha de Entrega: 02/05/2026**
+**Fecha de Entrega: 09/05/2026**
 
 **Pre-requisitos:**
 - Haber entregado la **Parte 1** (Hits #1–#3). Esta segunda parte continúa el mismo proyecto y arranca con el Hit #4 (extracción estructurada a JSON), que es la base sobre la que se construye el resto.
@@ -341,7 +341,7 @@ Extienda el scraper con **las siguientes 3 capacidades**:
 
 ## Cómo entregar
 
-1. **Push final al repo público** antes del 02/05/2026 23:59 ART.
+1. **Push final al repo público** antes del 09/05/2026 23:59 ART.
 2. **README raíz actualizado** con:
    - Sección "Prerrequisitos cumplidos" mostrando evidencia del checklist del [TP 0](practica-0.html).
    - Cómo correr Parte 1 + Parte 2 (Docker, k3s/k3d).
