@@ -8,9 +8,8 @@
 UNLu DCB</title>
   <link rel="stylesheet" href="assets/style.css">
   <style type="text/css">
-html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -505,40 +504,40 @@ reales de empresas).</li>
 <p><strong>Menú de ADRs propuestos</strong> (elijan 2):</p>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th>Archivo sugerido</th>
 <th>Decisión a documentar</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td><code>0001-framework-automatizacion.md</code></td>
 <td>Por qué Selenium (y no Playwright/Puppeteer/Cypress) — o al revés si
 eligieron otro.</td>
 </tr>
-<tr>
+<tr class="even">
 <td><code>0002-multi-browser.md</code></td>
 <td>Por qué soportar Chrome <strong>y</strong> Firefox simultáneo, en
 lugar de uno solo.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><code>0003-orquestacion-batch.md</code></td>
 <td>Por qué Kubernetes Job/CronJob (y no <code>docker-compose</code> +
 cron del host, o un Deployment con sidecar).</td>
 </tr>
-<tr>
+<tr class="even">
 <td><code>0004-estrategia-selectores.md</code></td>
 <td>Por qué la estrategia de selectores que usaron (estructura semántica
 vs <code>data-*</code> vs XPath posicional) y cómo planean adaptarse a
 cambios de DOM de ML.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><code>0005-estrategia-retries.md</code></td>
 <td>Por qué retries con backoff exponencial (y no circuit breaker,
 fail-fast, o sin retries). Parámetros elegidos (intentos, base delay) y
 por qué.</td>
 </tr>
-<tr>
+<tr class="even">
 <td><code>0006-pre-commit-vs-ci.md</code></td>
 <td>Qué se valida en pre-commit local vs CI remoto, y por qué la
 división. Trade-off de tiempo de feedback vs costo de CI.</td>
@@ -985,38 +984,38 @@ abajo</a>) — los 8 comandos pasaron.</li>
 <h3 id="tabla-de-puntaje-100-">Tabla de puntaje (100 %)</h3>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th>Criterio</th>
 <th>Peso</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td><strong>Hit #4</strong> — extracción estructurada a JSON de los 3
 productos con todos los campos</td>
 <td>25 %</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>Hit #5</strong> — manejo robusto de errores (selectores
 faltantes, timeouts, retries con backoff)</td>
 <td>15 %</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Hit #6</strong> — tests automatizados + cobertura ≥ 70 %
 validada en CI</td>
 <td>15 %</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>Hit #7</strong> — <code>Job</code> + <code>CronJob</code> +
 <code>ConfigMap</code> + <code>PVC</code> corriendo en k3s/k3d</td>
 <td>20 %</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Hit #8</strong> — capacidad extendida (paginación + stats +
 histórico PostgreSQL en k3s)</td>
 <td>15 %</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>ADRs</strong> (mínimo 4 en <code>docs/adr/</code> — 2 del
 menú propuesto + 2 de elección propia)</td>
 <td>10 %</td>
@@ -1031,7 +1030,7 @@ lenguaje</h3>
 cada stack:</p>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th>Stack</th>
 <th>Coverage tool</th>
 <th>Linter</th>
@@ -1040,7 +1039,7 @@ cada stack:</p>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td><strong>Python 3.13</strong></td>
 <td><code>coverage.py</code> + <code>pytest-cov</code> (gate:
 <code>--cov-fail-under=70</code>)</td>
@@ -1049,7 +1048,7 @@ cada stack:</p>
 <td><code>pre-commit</code> (<a
 href="https://pre-commit.com/">pre-commit.com</a>)</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>Node.js 20</strong></td>
 <td><code>jest --coverage</code> con <code>coverageThreshold</code> ≥ 70
 %</td>
@@ -1058,7 +1057,7 @@ href="https://pre-commit.com/">pre-commit.com</a>)</td>
 <td><code>husky</code> + <code>lint-staged</code> o
 <code>pre-commit</code></td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Java 17</strong></td>
 <td><code>jacoco</code>
 (<code>&lt;minimum&gt;0.70&lt;/minimum&gt;</code> en
@@ -1094,7 +1093,7 @@ class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb15-1">
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Date:** YYYY-MM-DD</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Status:** Accepted | Proposed | Deprecated | Superseded by 000Y</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Deciders:** <span class="dt">&lt;</span><span class="kw">integrantes</span><span class="ot"> que tomaron la decisión</span><span class="dt">&gt;</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Deciders:** <span class="dt">&lt;</span><span class="kw">integrantes</span> <span class="er">que</span> <span class="er">tomaron</span> <span class="er">la</span> <span class="er">decisión</span><span class="dt">&gt;</span></span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="fu">## Contexto</span></span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
@@ -1191,21 +1190,21 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a h
 <p><strong>Equivalentes nombrados:</strong></p>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th>Stack</th>
 <th>Librería recomendada</th>
 <th>Por qué</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>Node.js</td>
 <td><code>pino</code> (o <code>winston</code>)</td>
 <td>pino es el más rápido y emite JSON nativo (ideal para
 <code>kubectl logs</code> + parsers). winston es más config-friendly
 pero más lento.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Java</td>
 <td>SLF4J + Logback</td>
 <td><code>logback.xml</code> con
