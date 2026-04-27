@@ -197,8 +197,31 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     id="toc-tabla-de-puntaje-100-">Tabla de puntaje (100 %)</a></li>
     </ul></li>
     <li><a href="#referencias-y-bibliografía"
-    id="toc-referencias-y-bibliografía">Referencias y
-    Bibliografía</a></li>
+    id="toc-referencias-y-bibliografía">Referencias y Bibliografía</a>
+    <ul>
+    <li><a href="#hit-4--extracción-json-estructurada"
+    id="toc-hit-4--extracción-json-estructurada">Hit #4 — Extracción
+    JSON estructurada</a></li>
+    <li><a href="#hit-5--robustez-retries-y-logging"
+    id="toc-hit-5--robustez-retries-y-logging">Hit #5 — Robustez,
+    retries y logging</a></li>
+    <li><a href="#hit-6--tests-automatizados--cobertura"
+    id="toc-hit-6--tests-automatizados--cobertura">Hit #6 — Tests
+    automatizados + cobertura</a></li>
+    <li><a
+    href="#infra-base--dockerfile--docker-compose--cicd--pre-commit"
+    id="toc-infra-base--dockerfile--docker-compose--cicd--pre-commit">Infra
+    base — Dockerfile + docker-compose + CI/CD + pre-commit</a></li>
+    <li><a href="#hit-7--kubernetes-job--cronjob--configmap--pvc"
+    id="toc-hit-7--kubernetes-job--cronjob--configmap--pvc">Hit #7 —
+    Kubernetes Job + CronJob + ConfigMap + PVC</a></li>
+    <li><a href="#hit-8--paginación--estadísticas--postgresql"
+    id="toc-hit-8--paginación--estadísticas--postgresql">Hit #8 —
+    Paginación + estadísticas + PostgreSQL</a></li>
+    <li><a href="#adrs" id="toc-adrs">ADRs</a></li>
+    <li><a href="#dataset--sitio-del-tp"
+    id="toc-dataset--sitio-del-tp">Dataset / sitio del TP</a></li>
+    </ul></li>
     </ul></li>
     </ul>
     <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
@@ -312,8 +335,31 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       id="toc-tabla-de-puntaje-100-">Tabla de puntaje (100 %)</a></li>
       </ul></li>
       <li><a href="#referencias-y-bibliografía"
-      id="toc-referencias-y-bibliografía">Referencias y
-      Bibliografía</a></li>
+      id="toc-referencias-y-bibliografía">Referencias y Bibliografía</a>
+      <ul>
+      <li><a href="#hit-4--extracción-json-estructurada"
+      id="toc-hit-4--extracción-json-estructurada">Hit #4 — Extracción
+      JSON estructurada</a></li>
+      <li><a href="#hit-5--robustez-retries-y-logging"
+      id="toc-hit-5--robustez-retries-y-logging">Hit #5 — Robustez,
+      retries y logging</a></li>
+      <li><a href="#hit-6--tests-automatizados--cobertura"
+      id="toc-hit-6--tests-automatizados--cobertura">Hit #6 — Tests
+      automatizados + cobertura</a></li>
+      <li><a
+      href="#infra-base--dockerfile--docker-compose--cicd--pre-commit"
+      id="toc-infra-base--dockerfile--docker-compose--cicd--pre-commit">Infra
+      base — Dockerfile + docker-compose + CI/CD + pre-commit</a></li>
+      <li><a href="#hit-7--kubernetes-job--cronjob--configmap--pvc"
+      id="toc-hit-7--kubernetes-job--cronjob--configmap--pvc">Hit #7 —
+      Kubernetes Job + CronJob + ConfigMap + PVC</a></li>
+      <li><a href="#hit-8--paginación--estadísticas--postgresql"
+      id="toc-hit-8--paginación--estadísticas--postgresql">Hit #8 —
+      Paginación + estadísticas + PostgreSQL</a></li>
+      <li><a href="#adrs" id="toc-adrs">ADRs</a></li>
+      <li><a href="#dataset--sitio-del-tp"
+      id="toc-dataset--sitio-del-tp">Dataset / sitio del TP</a></li>
+      </ul></li>
       </ul></li>
       </ul>
       <div class="toc-controls">
@@ -1233,32 +1279,181 @@ menú propuesto + 2 de elección propia)</td>
 </table>
 <hr />
 <h2 id="referencias-y-bibliografía">Referencias y Bibliografía</h2>
+<p>Solo lo directamente vinculado a lo que se les pide en Parte 2. Los
+libros generales de Kubernetes / containers viven en el <a
+href="practica-0.html#lectura-recomendada-y-referencias">TP 0</a> y no
+se repiten.</p>
+<h3 id="hit-4--extracción-json-estructurada">Hit #4 — Extracción JSON
+estructurada</h3>
 <ul>
-<li><strong>[SEL]</strong> Selenium Documentation. <a
-href="https://www.selenium.dev/documentation/">https://www.selenium.dev/documentation/</a></li>
-<li><strong>[POM]</strong> Page Object Model — Selenium Wiki. <a
-href="https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/">https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/</a></li>
-<li><strong>[GH-ACTIONS]</strong> GitHub Actions Documentation. <a
-href="https://docs.github.com/en/actions">https://docs.github.com/en/actions</a></li>
-<li><strong>[DOCKER]</strong> Docker — Best practices for writing
-Dockerfiles. <a
-href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/">https://docs.docker.com/develop/develop-images/dockerfile_best-practices/</a></li>
-<li><strong>[GITLEAKS]</strong> gitleaks. <a
+<li><strong>JSON Schema</strong> — el estándar para validar la
+estructura del output. Si quieren ir un paso más, agreguen un test que
+valide cada <code>output/*.json</code> contra un schema. <a
+href="https://json-schema.org/">https://json-schema.org/</a></li>
+<li><strong>Python <code>json</code> stdlib / Node <code>JSON</code>
+global / Jackson (Java)</strong> — APIs nativas de cada stack. Sin
+librerías externas alcanza para el Hit #4.</li>
+</ul>
+<h3 id="hit-5--robustez-retries-y-logging">Hit #5 — Robustez, retries y
+logging</h3>
+<ul>
+<li><strong>AWS Builders’ Library — Timeouts, retries and backoff with
+jitter</strong> (Marc Brooker, 2019) — el artículo de referencia técnica
+sobre por qué backoff exponencial <strong>necesita jitter</strong> para
+no causar thundering herd. Cortito y al hueso. <a
+href="https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/">https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/</a></li>
+<li><strong>Google SRE Book — Cap. 22: Addressing Cascading
+Failures</strong> — cuándo los retries empeoran el problema en lugar de
+arreglarlo. <a
+href="https://sre.google/sre-book/addressing-cascading-failures/">https://sre.google/sre-book/addressing-cascading-failures/</a></li>
+<li><strong><code>tenacity</code> (Python)</strong> — librería estándar
+de facto para retries con backoff (alternativa a escribir el decorador a
+mano). <a
+href="https://tenacity.readthedocs.io/">https://tenacity.readthedocs.io/</a></li>
+<li><strong>Python <code>logging</code> HOWTO</strong> — niveles,
+handlers, rotación. Lo que se les pide en Hit #5 está acá. <a
+href="https://docs.python.org/3/howto/logging.html">https://docs.python.org/3/howto/logging.html</a></li>
+</ul>
+<h3 id="hit-6--tests-automatizados--cobertura">Hit #6 — Tests
+automatizados + cobertura</h3>
+<ul>
+<li><strong>pytest documentation</strong> — fixtures, parametrize,
+markers. <a
+href="https://docs.pytest.org/">https://docs.pytest.org/</a></li>
+<li><strong><code>coverage.py</code></strong> — la lib que mide
+cobertura para Python (la usa <code>pytest-cov</code> por debajo). Lean
+la sección “Excluding code from coverage” para saber qué excluir y qué
+no. <a
+href="https://coverage.readthedocs.io/">https://coverage.readthedocs.io/</a></li>
+<li><strong><code>pytest-cov</code></strong> — plugin que integra
+coverage con pytest + el flag <code>--cov-fail-under=70</code> que les
+piden. <a
+href="https://pytest-cov.readthedocs.io/">https://pytest-cov.readthedocs.io/</a></li>
+<li><strong>Equivalentes</strong>: <a
+href="https://jestjs.io/docs/cli#--coverageboolean"><code>jest --coverage</code></a>
+(Node) · <a
+href="https://www.eclemma.org/jacoco/trunk/doc/maven.html"><code>jacoco-maven-plugin</code></a>
+(Java)</li>
+<li><strong>Hutchins, M.; Foster, H.; Goradia, T.; Ostrand, T.
+(1994).</strong> “Experiments on the Effectiveness of Dataflow- and
+Control-Flow-Based Test Adequacy Criteria”. <em>ICSE 1994.</em> — el
+paper original que establece por qué la cobertura ≥ 70 % NO es la
+métrica completa pero sí un piso razonable. <a
+href="https://dl.acm.org/doi/10.5555/257734.257766">https://dl.acm.org/doi/10.5555/257734.257766</a></li>
+</ul>
+<h3 id="infra-base--dockerfile--docker-compose--cicd--pre-commit">Infra
+base — Dockerfile + docker-compose + CI/CD + pre-commit</h3>
+<ul>
+<li><strong>Docker — Best practices for writing Dockerfiles</strong> —
+multi-stage, layer ordering, .dockerignore. <a
+href="https://docs.docker.com/develop/develop-images/instructions/">https://docs.docker.com/develop/develop-images/instructions/</a></li>
+<li><strong>Docker Compose specification</strong> — la spec oficial v2
+de compose (ya no es “docker-compose v1” Python). <a
+href="https://compose-spec.io/">https://compose-spec.io/</a></li>
+<li><strong>GitHub Actions — Workflow syntax</strong> — toda la sintaxis
+de <code>.github/workflows/*.yml</code>. <a
+href="https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions">https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions</a></li>
+<li><strong>GitHub Actions — Using a matrix for jobs</strong> — cómo
+correr Chrome y Firefox en paralelo (lo que pide Hit #7). <a
+href="https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs">https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs</a></li>
+<li><strong>gitleaks</strong> — bloquea commits con secrets. <a
 href="https://github.com/gitleaks/gitleaks">https://github.com/gitleaks/gitleaks</a></li>
-<li><strong>[PRECOMMIT]</strong> pre-commit framework. <a
+<li><strong>gitleaks-action</strong> — el wrapper para usarlo en GH
+Actions. <a
+href="https://github.com/gitleaks/gitleaks-action">https://github.com/gitleaks/gitleaks-action</a></li>
+<li><strong>pre-commit framework</strong> — la referencia para el
+<code>.pre-commit-config.yaml</code>. <a
 href="https://pre-commit.com/">https://pre-commit.com/</a></li>
-<li><strong>[K3S]</strong> k3s — Lightweight Kubernetes. <a
-href="https://docs.k3s.io/">https://docs.k3s.io/</a></li>
-<li><strong>[K3D]</strong> k3d — k3s in Docker. <a
-href="https://k3d.io/">https://k3d.io/</a></li>
-<li><strong>[K8S-JOB]</strong> Kubernetes Jobs. <a
+<li><strong>Sigstore / cosign</strong> — firma criptográfica de imágenes
+Docker, <strong>estándar 2026</strong> para supply chain security (SLSA
+Level 3). Lo que viene después de gitleaks. <a
+href="https://docs.sigstore.dev/">https://docs.sigstore.dev/</a></li>
+</ul>
+<h3 id="hit-7--kubernetes-job--cronjob--configmap--pvc">Hit #7 —
+Kubernetes Job + CronJob + ConfigMap + PVC</h3>
+<ul>
+<li><strong>Kubernetes — Jobs</strong> — toda la spec de
+<code>batch/v1.Job</code> con backoffLimit, activeDeadlineSeconds,
+ttlSecondsAfterFinished. <a
 href="https://kubernetes.io/docs/concepts/workloads/controllers/job/">https://kubernetes.io/docs/concepts/workloads/controllers/job/</a></li>
-<li><strong>[K8S-CRON]</strong> Kubernetes CronJob. <a
+<li><strong>Kubernetes — CronJob</strong> — schedule syntax +
+<code>concurrencyPolicy</code> +
+<code>successfulJobsHistoryLimit</code>. <a
 href="https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/">https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/</a></li>
-<li><strong>[ADR]</strong> Architecture Decision Records — Michael
-Nygard. <a
+<li><strong>Kubernetes — ConfigMaps</strong> — incluye la sección sobre
+<code>immutable: true</code> (recomendada para producción). <a
+href="https://kubernetes.io/docs/concepts/configuration/configmap/">https://kubernetes.io/docs/concepts/configuration/configmap/</a></li>
+<li><strong>Kubernetes — Persistent Volumes</strong> — el modelo PV/PVC
++ storage classes (<code>local-path</code> que viene en k3s). <a
+href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/">https://kubernetes.io/docs/concepts/storage/persistent-volumes/</a></li>
+<li><strong>Kubernetes Patterns — Cap. 7: Batch Job + Cap. 8: Periodic
+Job</strong> (Ibryam &amp; Huß, O’Reilly 2023) — los patterns canónicos
+para lo que estamos haciendo en este hit. Ver capítulo en el <a
+href="https://www.oreilly.com/library/view/kubernetes-patterns-2nd/9781098131678/">libro</a>.</li>
+</ul>
+<h3 id="hit-8--paginación--estadísticas--postgresql">Hit #8 — Paginación
++ estadísticas + PostgreSQL</h3>
+<ul>
+<li><strong>PostgreSQL Documentation</strong> — manual oficial. La
+sección <a
+href="https://www.postgresql.org/docs/current/mvcc.html">Concurrency
+Control</a> es relevante para entender por qué inserts concurrentes
+desde múltiples corridas del CronJob no se pisan. <a
+href="https://www.postgresql.org/docs/">https://www.postgresql.org/docs/</a></li>
+<li><strong>PostgreSQL en Kubernetes — operadores oficiales:</strong>
+<ul>
+<li><strong>CloudNativePG</strong> (recomendado en 2026) — operador de
+PostgreSQL nativo Kubernetes, mantenido por EDB. <a
+href="https://cloudnative-pg.io/">https://cloudnative-pg.io/</a></li>
+<li><strong>Zalando Postgres Operator</strong> — alternativa madura
+usada en producción por Zalando. <a
+href="https://github.com/zalando/postgres-operator">https://github.com/zalando/postgres-operator</a></li>
+<li>Para el TP les alcanza con un <code>StatefulSet</code> simple +
+<code>PVC</code> + <code>Secret</code> — los operadores son la forma
+“production-grade” para que conozcan que existen.</li>
+</ul></li>
+<li><strong>Schema migrations:</strong>
+<ul>
+<li><strong>Alembic</strong> (Python / SQLAlchemy) — <a
+href="https://alembic.sqlalchemy.org/">https://alembic.sqlalchemy.org/</a></li>
+<li><strong>Flyway</strong> (Java/multi-stack) — <a
+href="https://documentation.red-gate.com/fd/">https://documentation.red-gate.com/fd/</a></li>
+<li><strong>Liquibase</strong> — <a
+href="https://docs.liquibase.com/">https://docs.liquibase.com/</a></li>
+<li><strong>Refactoring Databases — Ambler &amp; Sadalage</strong>
+(Addison-Wesley 2006) — el libro fundacional sobre por qué las
+migrations versionadas son no-negociables en producción. Sigue vigente.
+<a
+href="https://databaserefactoring.com/">https://databaserefactoring.com/</a></li>
+</ul></li>
+<li><strong>Estadística básica (mediana, desvío estándar):</strong>
+<ul>
+<li><strong>Python <code>statistics</code> stdlib</strong> —
+<code>statistics.median</code>, <code>statistics.stdev</code>. Sin numpy
+alcanza para Hit #8. <a
+href="https://docs.python.org/3/library/statistics.html">https://docs.python.org/3/library/statistics.html</a></li>
+<li><strong>Equivalentes</strong>: <a
+href="https://lodash.com/docs#mean"><code>Math.std</code> lodash</a> o
+<a
+href="https://d3js.org/d3-array/summarize"><code>d3.deviation</code></a>
+en Node · <a
+href="https://commons.apache.org/proper/commons-math/userguide/stat.html"><code>DescriptiveStatistics</code></a>
+de Apache Commons Math en Java.</li>
+</ul></li>
+</ul>
+<h3 id="adrs">ADRs</h3>
+<ul>
+<li><strong>Architecture Decision Records — Michael Nygard’s
+collection</strong> — colección canónica con 30+ templates y 100+
+ejemplos reales de empresas. <a
 href="https://github.com/joelparkerhenderson/architecture-decision-record">https://github.com/joelparkerhenderson/architecture-decision-record</a></li>
-<li><strong>[ML]</strong> MercadoLibre Argentina. <a
+<li><strong>“Documenting Architecture Decisions”</strong> — Nygard, 2011
+— el post fundacional. <a
+href="https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions">https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions</a></li>
+</ul>
+<h3 id="dataset--sitio-del-tp">Dataset / sitio del TP</h3>
+<ul>
+<li><strong>MercadoLibre Argentina</strong> — <a
 href="https://www.mercadolibre.com.ar">https://www.mercadolibre.com.ar</a></li>
 </ul>
 

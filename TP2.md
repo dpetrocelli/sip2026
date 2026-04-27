@@ -692,15 +692,68 @@ Estos no suman puntos — son condición necesaria para que la entrega sea **cor
 
 ## Referencias y Bibliografía
 
-- **[SEL]** Selenium Documentation. <https://www.selenium.dev/documentation/>
-- **[POM]** Page Object Model — Selenium Wiki. <https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/>
-- **[GH-ACTIONS]** GitHub Actions Documentation. <https://docs.github.com/en/actions>
-- **[DOCKER]** Docker — Best practices for writing Dockerfiles. <https://docs.docker.com/develop/develop-images/dockerfile_best-practices/>
-- **[GITLEAKS]** gitleaks. <https://github.com/gitleaks/gitleaks>
-- **[PRECOMMIT]** pre-commit framework. <https://pre-commit.com/>
-- **[K3S]** k3s — Lightweight Kubernetes. <https://docs.k3s.io/>
-- **[K3D]** k3d — k3s in Docker. <https://k3d.io/>
-- **[K8S-JOB]** Kubernetes Jobs. <https://kubernetes.io/docs/concepts/workloads/controllers/job/>
-- **[K8S-CRON]** Kubernetes CronJob. <https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/>
-- **[ADR]** Architecture Decision Records — Michael Nygard. <https://github.com/joelparkerhenderson/architecture-decision-record>
-- **[ML]** MercadoLibre Argentina. <https://www.mercadolibre.com.ar>
+Solo lo directamente vinculado a lo que se les pide en Parte 2. Los libros generales de Kubernetes / containers viven en el [TP 0](practica-0.html#lectura-recomendada-y-referencias) y no se repiten.
+
+### Hit #4 — Extracción JSON estructurada
+
+- **JSON Schema** — el estándar para validar la estructura del output. Si quieren ir un paso más, agreguen un test que valide cada `output/*.json` contra un schema. <https://json-schema.org/>
+- **Python `json` stdlib / Node `JSON` global / Jackson (Java)** — APIs nativas de cada stack. Sin librerías externas alcanza para el Hit #4.
+
+### Hit #5 — Robustez, retries y logging
+
+- **AWS Builders' Library — Timeouts, retries and backoff with jitter** (Marc Brooker, 2019) — el artículo de referencia técnica sobre por qué backoff exponencial **necesita jitter** para no causar thundering herd. Cortito y al hueso. <https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/>
+- **Google SRE Book — Cap. 22: Addressing Cascading Failures** — cuándo los retries empeoran el problema en lugar de arreglarlo. <https://sre.google/sre-book/addressing-cascading-failures/>
+- **`tenacity` (Python)** — librería estándar de facto para retries con backoff (alternativa a escribir el decorador a mano). <https://tenacity.readthedocs.io/>
+- **Python `logging` HOWTO** — niveles, handlers, rotación. Lo que se les pide en Hit #5 está acá. <https://docs.python.org/3/howto/logging.html>
+
+### Hit #6 — Tests automatizados + cobertura
+
+- **pytest documentation** — fixtures, parametrize, markers. <https://docs.pytest.org/>
+- **`coverage.py`** — la lib que mide cobertura para Python (la usa `pytest-cov` por debajo). Lean la sección "Excluding code from coverage" para saber qué excluir y qué no. <https://coverage.readthedocs.io/>
+- **`pytest-cov`** — plugin que integra coverage con pytest + el flag `--cov-fail-under=70` que les piden. <https://pytest-cov.readthedocs.io/>
+- **Equivalentes**: [`jest --coverage`](https://jestjs.io/docs/cli#--coverageboolean) (Node) · [`jacoco-maven-plugin`](https://www.eclemma.org/jacoco/trunk/doc/maven.html) (Java)
+- **Hutchins, M.; Foster, H.; Goradia, T.; Ostrand, T. (1994).** "Experiments on the Effectiveness of Dataflow- and Control-Flow-Based Test Adequacy Criteria". *ICSE 1994.* — el paper original que establece por qué la cobertura ≥ 70 % NO es la métrica completa pero sí un piso razonable. <https://dl.acm.org/doi/10.5555/257734.257766>
+
+### Infra base — Dockerfile + docker-compose + CI/CD + pre-commit
+
+- **Docker — Best practices for writing Dockerfiles** — multi-stage, layer ordering, .dockerignore. <https://docs.docker.com/develop/develop-images/instructions/>
+- **Docker Compose specification** — la spec oficial v2 de compose (ya no es "docker-compose v1" Python). <https://compose-spec.io/>
+- **GitHub Actions — Workflow syntax** — toda la sintaxis de `.github/workflows/*.yml`. <https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions>
+- **GitHub Actions — Using a matrix for jobs** — cómo correr Chrome y Firefox en paralelo (lo que pide Hit #7). <https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs>
+- **gitleaks** — bloquea commits con secrets. <https://github.com/gitleaks/gitleaks>
+- **gitleaks-action** — el wrapper para usarlo en GH Actions. <https://github.com/gitleaks/gitleaks-action>
+- **pre-commit framework** — la referencia para el `.pre-commit-config.yaml`. <https://pre-commit.com/>
+- **Sigstore / cosign** — firma criptográfica de imágenes Docker, **estándar 2026** para supply chain security (SLSA Level 3). Lo que viene después de gitleaks. <https://docs.sigstore.dev/>
+
+### Hit #7 — Kubernetes Job + CronJob + ConfigMap + PVC
+
+- **Kubernetes — Jobs** — toda la spec de `batch/v1.Job` con backoffLimit, activeDeadlineSeconds, ttlSecondsAfterFinished. <https://kubernetes.io/docs/concepts/workloads/controllers/job/>
+- **Kubernetes — CronJob** — schedule syntax + `concurrencyPolicy` + `successfulJobsHistoryLimit`. <https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/>
+- **Kubernetes — ConfigMaps** — incluye la sección sobre `immutable: true` (recomendada para producción). <https://kubernetes.io/docs/concepts/configuration/configmap/>
+- **Kubernetes — Persistent Volumes** — el modelo PV/PVC + storage classes (`local-path` que viene en k3s). <https://kubernetes.io/docs/concepts/storage/persistent-volumes/>
+- **Kubernetes Patterns — Cap. 7: Batch Job + Cap. 8: Periodic Job** (Ibryam & Huß, O'Reilly 2023) — los patterns canónicos para lo que estamos haciendo en este hit. Ver capítulo en el [libro](https://www.oreilly.com/library/view/kubernetes-patterns-2nd/9781098131678/).
+
+### Hit #8 — Paginación + estadísticas + PostgreSQL
+
+- **PostgreSQL Documentation** — manual oficial. La sección [Concurrency Control](https://www.postgresql.org/docs/current/mvcc.html) es relevante para entender por qué inserts concurrentes desde múltiples corridas del CronJob no se pisan. <https://www.postgresql.org/docs/>
+- **PostgreSQL en Kubernetes — operadores oficiales:**
+  - **CloudNativePG** (recomendado en 2026) — operador de PostgreSQL nativo Kubernetes, mantenido por EDB. <https://cloudnative-pg.io/>
+  - **Zalando Postgres Operator** — alternativa madura usada en producción por Zalando. <https://github.com/zalando/postgres-operator>
+  - Para el TP les alcanza con un `StatefulSet` simple + `PVC` + `Secret` — los operadores son la forma "production-grade" para que conozcan que existen.
+- **Schema migrations:**
+  - **Alembic** (Python / SQLAlchemy) — <https://alembic.sqlalchemy.org/>
+  - **Flyway** (Java/multi-stack) — <https://documentation.red-gate.com/fd/>
+  - **Liquibase** — <https://docs.liquibase.com/>
+  - **Refactoring Databases — Ambler & Sadalage** (Addison-Wesley 2006) — el libro fundacional sobre por qué las migrations versionadas son no-negociables en producción. Sigue vigente. <https://databaserefactoring.com/>
+- **Estadística básica (mediana, desvío estándar):**
+  - **Python `statistics` stdlib** — `statistics.median`, `statistics.stdev`. Sin numpy alcanza para Hit #8. <https://docs.python.org/3/library/statistics.html>
+  - **Equivalentes**: [`Math.std` lodash](https://lodash.com/docs#mean) o [`d3.deviation`](https://d3js.org/d3-array/summarize) en Node · [`DescriptiveStatistics`](https://commons.apache.org/proper/commons-math/userguide/stat.html) de Apache Commons Math en Java.
+
+### ADRs
+
+- **Architecture Decision Records — Michael Nygard's collection** — colección canónica con 30+ templates y 100+ ejemplos reales de empresas. <https://github.com/joelparkerhenderson/architecture-decision-record>
+- **"Documenting Architecture Decisions"** — Nygard, 2011 — el post fundacional. <https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions>
+
+### Dataset / sitio del TP
+
+- **MercadoLibre Argentina** — <https://www.mercadolibre.com.ar>
