@@ -474,12 +474,12 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 id="observabilidad--logging-centralizado-con-efk-elasticsearch--fluent-bit--kibana">Observabilidad
 — Logging centralizado con EFK (Elasticsearch + Fluent Bit +
 Kibana)</h2>
-<p><strong>Fecha de Entrega: 02/05/2026</strong></p>
+<p><strong>Fecha de Entrega: 05/05/2026</strong></p>
 <blockquote>
 <p>🧭 <strong>Esto es la Parte 2 de 4 sobre observabilidad.</strong></p>
 <ul>
 <li><a href="practica-2-parte-1.html">Parte 1</a> — Loki +
-Promtail/Alloy + Grafana ✅ (ya entregaron)</li>
+Promtail/Alloy + Grafana</li>
 <li><strong>Parte 2 (acá)</strong> — EFK = Elasticsearch + Fluent Bit +
 Kibana</li>
 <li><a href="practica-2-parte-3.html">Parte 3</a> — OpenTelemetry
@@ -494,11 +494,18 @@ propósito</strong>: van a poder comparar latencia, footprint y ergonomía
 con datos reales.</p>
 </blockquote>
 <blockquote>
-<p><strong>Pre-requisitos</strong>: TP 2 · Parte 1 entregada (Loki
-funcionando con logs del scraper). Cluster k3s con al menos <strong>8 GB
-de RAM libre</strong> + <strong>15 GB de disco</strong> — Elasticsearch
-es <strong>mucho más pesado</strong> que Loki, y este es el primer
-mensaje pedagógico de la Parte 2.</p>
+<p>🤝 <strong>Partes 1 y 2 se entregan el mismo día (05/05) en un solo
+push final.</strong> Pueden trabajar en paralelo: Loki es más rápido de
+levantar y deja datos acumulándose mientras montás EFK. Cuando llegás al
+cookbook de queries (Hit #4 acá), ya tenés 1-2 h de logs reales en ambos
+backends para comparar.</p>
+</blockquote>
+<blockquote>
+<p><strong>Pre-requisitos</strong>: Loki desplegado de Parte 1 (puede
+ser en paralelo en este mismo push). Cluster k3s con al menos <strong>8
+GB de RAM libre</strong> + <strong>15 GB de disco</strong> —
+Elasticsearch es <strong>mucho más pesado</strong> que Loki, y este es
+el primer mensaje pedagógico de la Parte 2.</p>
 </blockquote>
 <hr />
 <h2 id="pre-requisitos">Pre-requisitos</h2>
@@ -1461,7 +1468,7 @@ de alerta en
 <h2 id="cómo-entregar">Cómo entregar</h2>
 <ol type="1">
 <li><strong>Push final al repo público</strong> (mismo repo del TP 1 +
-Parte 1) antes del <strong>02/05/2026 23:59 ART</strong>.</li>
+Parte 1) antes del <strong>05/05/2026 23:59 ART</strong>.</li>
 <li><strong>README raíz actualizado</strong> con sección nueva “TP 2 ·
 Parte 2 — EFK”:
 <ul>
