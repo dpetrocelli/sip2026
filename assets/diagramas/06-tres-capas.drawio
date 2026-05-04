@@ -72,7 +72,7 @@
 <mxGeometry x="50" y="370" width="400" height="22" as="geometry" />
 </mxCell>
 <mxCell id="lane2-sub" value="Todo lo que NO es blockchain vive acá. Es donde paga el conocimiento de TP0 (k3s) y TP2 (observabilidad)." style="text;html=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#1e40af;align=left;verticalAlign=top;" vertex="1" parent="1">
-<mxGeometry x="50" y="392" width="900" height="20" as="geometry" />
+<mxGeometry x="50" y="392" width="700" height="20" as="geometry" />
 </mxCell>
 
 <mxCell id="api" value="🔌  Backend API&#10;Node / Python&#10;(REST/GraphQL)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;fontStyle=1;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
@@ -91,17 +91,22 @@
 <mxGeometry x="1060" y="450" width="220" height="100" as="geometry" />
 </mxCell>
 
-<mxCell id="e_fe_api" value="REST (datos indexados)" style="endArrow=classic;startArrow=classic;html=1;strokeWidth=2;strokeColor=#2563eb;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#1e3a8a;labelBackgroundColor=#eff6ff;exitX=0.1;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="fe" target="api">
+<mxCell id="e_fe_api" value="REST (datos indexados)" style="endArrow=classic;startArrow=classic;html=1;strokeWidth=2;strokeColor=#2563eb;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#1e3a8a;labelBackgroundColor=#ffffff;exitX=0.1;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="fe" target="api">
 <mxGeometry relative="1" as="geometry">
 <Array as="points">
-<mxPoint x="792" y="410"/>
-<mxPoint x="180" y="410"/>
+<mxPoint x="792" y="430"/>
+<mxPoint x="180" y="430"/>
 </Array>
 </mxGeometry>
 </mxCell>
 
-<mxCell id="e_fe_ipfs" value="GET imagen NFT" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#2563eb;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#1e3a8a;labelBackgroundColor=#eff6ff;exitX=0.7;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="fe" target="ipfs">
-<mxGeometry relative="1" as="geometry"/>
+<mxCell id="e_fe_ipfs" value="GET imagen NFT" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#2563eb;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#1e3a8a;labelBackgroundColor=#ffffff;exitX=0.7;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="fe" target="ipfs">
+<mxGeometry relative="1" as="geometry">
+<Array as="points">
+<mxPoint x="984" y="430"/>
+<mxPoint x="920" y="430"/>
+</Array>
+</mxGeometry>
 </mxCell>
 
 <mxCell id="e_api_db" value="SELECT" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#2563eb;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#1e3a8a;labelBackgroundColor=#eff6ff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="api" target="db">
