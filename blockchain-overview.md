@@ -4,13 +4,11 @@
 
 > Recuerden que el **core de la asignatura** es el desarrollo de un sistema informático, y que **independientemente del dominio o tipo de sistema que propongan** (e-commerce, plataforma de servicios, marketplace, sistema de reservas, etc.), todos los proyectos deberán **incorporar obligatoriamente una pasarela de pago como parte de su arquitectura**.
 >
-> La pasarela debe contemplar el **registro y validación de transacciones usando blockchain** y modelar correctamente: la conexión entre pagador y receptor, la gestión de transacciones, la confirmación del pago y el registro inmutable de la operación.
+> La pasarela debe contemplar el **registro y validación de transacciones usando blockchain real, en testnet** y modelar correctamente: la conexión entre pagador y receptor, la gestión de transacciones, la confirmación del pago y el registro inmutable de la operación.
 >
 > El **MVP funcional con la red de pagos basada en blockchain** representa el **70 % del criterio de evaluación técnica** del trabajo.
 
-> ⚠️ **Aclaración del cuerpo docente — cómo lo vamos a hacer en este Seminario**: aunque el TPC general habilita "simulada o real", **acá no aceptamos simulado**. La pasarela tiene que correr **real sobre Sepolia (testnet de Ethereum)**: contrato deployado y verificado en Etherscan, transacciones firmadas desde MetaMask, eventos `Paid(...)` consumibles por su backend. Sepolia es testnet — **no se gasta plata real, el ETH sale gratis de un faucet** — pero el rail es exactamente el mismo que mainnet. Simular un "pago blockchain" con una tabla en Postgres no cuenta.
-
-**Estas 4 clases son el camino corto y técnico para llegar ahí**: integrar pagos reales en Sepolia en su proyecto, sin importar si eligieron VibeCheck, DepFund, RNW o IDEAFY — o cualquier otro dominio.
+**Estas 4 clases son el camino corto y técnico para llegar ahí**: integrar pagos reales en Sepolia (testnet de Ethereum) en su proyecto, sin importar si eligieron VibeCheck, DepFund, RNW o IDEAFY — o cualquier otro dominio.
 
 > **Analogía rápida**: lo que vamos a hacer es **igual a integrar MercadoPago** en una app — solo que el rail de pago es la blockchain de Ethereum (testnet Sepolia), y el "saldo" del usuario son tokens USDC en su wallet, no pesos en MP.
 

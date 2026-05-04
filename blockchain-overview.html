@@ -154,29 +154,18 @@ plataforma de servicios, marketplace, sistema de reservas, etc.), todos
 los proyectos deberán <strong>incorporar obligatoriamente una pasarela
 de pago como parte de su arquitectura</strong>.</p>
 <p>La pasarela debe contemplar el <strong>registro y validación de
-transacciones usando blockchain</strong> y modelar correctamente: la
-conexión entre pagador y receptor, la gestión de transacciones, la
-confirmación del pago y el registro inmutable de la operación.</p>
+transacciones usando blockchain real, en testnet</strong> y modelar
+correctamente: la conexión entre pagador y receptor, la gestión de
+transacciones, la confirmación del pago y el registro inmutable de la
+operación.</p>
 <p>El <strong>MVP funcional con la red de pagos basada en
 blockchain</strong> representa el <strong>70 % del criterio de
 evaluación técnica</strong> del trabajo.</p>
 </blockquote>
-<blockquote>
-<p>⚠️ <strong>Aclaración del cuerpo docente — cómo lo vamos a hacer en
-este Seminario</strong>: aunque el TPC general habilita “simulada o
-real”, <strong>acá no aceptamos simulado</strong>. La pasarela tiene que
-correr <strong>real sobre Sepolia (testnet de Ethereum)</strong>:
-contrato deployado y verificado en Etherscan, transacciones firmadas
-desde MetaMask, eventos <code>Paid(...)</code> consumibles por su
-backend. Sepolia es testnet — <strong>no se gasta plata real, el ETH
-sale gratis de un faucet</strong> — pero el rail es exactamente el mismo
-que mainnet. Simular un “pago blockchain” con una tabla en Postgres no
-cuenta.</p>
-</blockquote>
 <p><strong>Estas 4 clases son el camino corto y técnico para llegar
-ahí</strong>: integrar pagos reales en Sepolia en su proyecto, sin
-importar si eligieron VibeCheck, DepFund, RNW o IDEAFY — o cualquier
-otro dominio.</p>
+ahí</strong>: integrar pagos reales en Sepolia (testnet de Ethereum) en
+su proyecto, sin importar si eligieron VibeCheck, DepFund, RNW o IDEAFY
+— o cualquier otro dominio.</p>
 <blockquote>
 <p><strong>Analogía rápida</strong>: lo que vamos a hacer es
 <strong>igual a integrar MercadoPago</strong> en una app — solo que el
