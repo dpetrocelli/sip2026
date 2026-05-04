@@ -61,11 +61,8 @@
     <li><a href="#3--qué-vive-dónde--público-vs-privado"
     id="toc-3--qué-vive-dónde--público-vs-privado">3 · Qué vive dónde —
     público vs privado</a></li>
-    <li><a href="#4--arquitectura-real-del-sistema"
-    id="toc-4--arquitectura-real-del-sistema">4 · Arquitectura real del
-    sistema</a></li>
-    <li><a href="#5--pasarela-de-pago--el-corazón-del-tp"
-    id="toc-5--pasarela-de-pago--el-corazón-del-tp">5 · Pasarela de pago
+    <li><a href="#4--pasarela-de-pago--el-corazón-del-tp"
+    id="toc-4--pasarela-de-pago--el-corazón-del-tp">4 · Pasarela de pago
     — el corazón del TP</a></li>
     </ul></li>
     <li><a href="#el-contrato-base-que-se-llevan"
@@ -125,11 +122,8 @@
       <li><a href="#3--qué-vive-dónde--público-vs-privado"
       id="toc-3--qué-vive-dónde--público-vs-privado">3 · Qué vive dónde
       — público vs privado</a></li>
-      <li><a href="#4--arquitectura-real-del-sistema"
-      id="toc-4--arquitectura-real-del-sistema">4 · Arquitectura real
-      del sistema</a></li>
-      <li><a href="#5--pasarela-de-pago--el-corazón-del-tp"
-      id="toc-5--pasarela-de-pago--el-corazón-del-tp">5 · Pasarela de
+      <li><a href="#4--pasarela-de-pago--el-corazón-del-tp"
+      id="toc-4--pasarela-de-pago--el-corazón-del-tp">4 · Pasarela de
       pago — el corazón del TP</a></li>
       </ul></li>
       <li><a href="#el-contrato-base-que-se-llevan"
@@ -263,7 +257,7 @@ plugar el patrón a VibeCheck/DepFund/RNW/IDEAFY</td>
 </table>
 <hr />
 <h2 id="diagramas-hero">Diagramas hero</h2>
-<p>Estos 6 diagramas cubren todo el modelo mental. Recurrir a ellos
+<p>Estos 5 diagramas cubren todo el modelo mental. Recurrir a ellos
 durante el desarrollo de su sistema.</p>
 <h3 id="0--las-3-capas--mapa-global-del-sistema">0 · Las 3 capas — mapa
 global del sistema</h3>
@@ -315,20 +309,7 @@ cualquiera</strong>.</p>
 <p><img src="assets/diagramas/03-que-vive-donde.png"
 alt="Qué vive dónde" /></p>
 <hr />
-<h3 id="4--arquitectura-real-del-sistema">4 · Arquitectura real del
-sistema</h3>
-<p><strong>Su sistema completo</strong>: Frontend (Vercel) + Backend
-Web2 (k3s) + Smart Contract (Sepolia) + IPFS para archivos pesados +
-Indexer (The Graph) + Observabilidad (Loki/Tenderly/Sentry).</p>
-<blockquote>
-<p><strong>El contrato es UNA pieza</strong> del sistema, no es todo.
-Vendría siendo el “servicio de pagos” en una app tradicional. El resto
-(UI, API, BD, monitoreo) sigue siendo lo de siempre.</p>
-</blockquote>
-<p><img src="assets/diagramas/04-sistema-real.png"
-alt="Arquitectura híbrida" /></p>
-<hr />
-<h3 id="5--pasarela-de-pago--el-corazón-del-tp">5 · Pasarela de pago —
+<h3 id="4--pasarela-de-pago--el-corazón-del-tp">4 · Pasarela de pago —
 el corazón del TP</h3>
 <p><strong>Dos caminos</strong>:</p>
 <ul>

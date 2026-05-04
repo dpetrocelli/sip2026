@@ -44,7 +44,7 @@
 
 ## Diagramas hero
 
-Estos 6 diagramas cubren todo el modelo mental. Recurrir a ellos durante el desarrollo de su sistema.
+Estos 5 diagramas cubren todo el modelo mental. Recurrir a ellos durante el desarrollo de su sistema.
 
 ### 0 · Las 3 capas — mapa global del sistema
 
@@ -82,17 +82,7 @@ Mapa de qué se puede compartir y qué nunca. Lo rojo (private key, frase BIP-39
 
 ---
 
-### 4 · Arquitectura real del sistema
-
-**Su sistema completo**: Frontend (Vercel) + Backend Web2 (k3s) + Smart Contract (Sepolia) + IPFS para archivos pesados + Indexer (The Graph) + Observabilidad (Loki/Tenderly/Sentry).
-
-> **El contrato es UNA pieza** del sistema, no es todo. Vendría siendo el "servicio de pagos" en una app tradicional. El resto (UI, API, BD, monitoreo) sigue siendo lo de siempre.
-
-![Arquitectura híbrida](assets/diagramas/04-sistema-real.png)
-
----
-
-### 5 · Pasarela de pago — el corazón del TP
+### 4 · Pasarela de pago — el corazón del TP
 
 **Dos caminos**:
 - **A — Crypto-nativo**: el usuario ya tiene USDC. Conecta wallet → approve → pay. Su contrato cobra y emite evento.
