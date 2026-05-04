@@ -49,6 +49,9 @@
     <li><a href="#diagramas-hero" id="toc-diagramas-hero">Diagramas
     hero</a>
     <ul>
+    <li><a href="#0--las-3-capas--mapa-global-del-sistema"
+    id="toc-0--las-3-capas--mapa-global-del-sistema">0 · Las 3 capas —
+    mapa global del sistema</a></li>
     <li><a href="#1--el-ciclo-de-un-smart-contract"
     id="toc-1--el-ciclo-de-un-smart-contract">1 · El ciclo de un smart
     contract</a></li>
@@ -110,6 +113,9 @@
       <li><a href="#diagramas-hero" id="toc-diagramas-hero">Diagramas
       hero</a>
       <ul>
+      <li><a href="#0--las-3-capas--mapa-global-del-sistema"
+      id="toc-0--las-3-capas--mapa-global-del-sistema">0 · Las 3 capas —
+      mapa global del sistema</a></li>
       <li><a href="#1--el-ciclo-de-un-smart-contract"
       id="toc-1--el-ciclo-de-un-smart-contract">1 · El ciclo de un smart
       contract</a></li>
@@ -257,8 +263,24 @@ plugar el patrón a VibeCheck/DepFund/RNW/IDEAFY</td>
 </table>
 <hr />
 <h2 id="diagramas-hero">Diagramas hero</h2>
-<p>Estos 5 diagramas cubren todo el modelo mental. Recurrir a ellos
+<p>Estos 6 diagramas cubren todo el modelo mental. Recurrir a ellos
 durante el desarrollo de su sistema.</p>
+<h3 id="0--las-3-capas--mapa-global-del-sistema">0 · Las 3 capas — mapa
+global del sistema</h3>
+<p>El mapa mental de más alto nivel: <strong>edge / cliente</strong>
+(browser + wallet del usuario, frontend en Vercel) · <strong>web2 infra
+en k3s</strong> (backend, indexer, Postgres, IPFS, Loki/Grafana — todo
+lo que NO es blockchain) · <strong>on-chain en Sepolia</strong>
+(contrato + USDC + state inmutable). Todo lo que ya saben de TP0 (k3s) y
+TP2 (observabilidad) paga acá, en la capa del medio.</p>
+<p><img src="assets/diagramas/06-tres-capas.png"
+alt="Las 3 capas" /></p>
+<blockquote>
+<p><strong>Regla práctica</strong>: si lo pueden romper sin pedirle
+permiso a nadie → es suyo (k3s o Vercel). Si necesitan firma + gas → es
+on-chain.</p>
+</blockquote>
+<hr />
 <h3 id="1--el-ciclo-de-un-smart-contract">1 · El ciclo de un smart
 contract</h3>
 <p>Del archivo <code>.sol</code> que escribís, al contrato deployado, al

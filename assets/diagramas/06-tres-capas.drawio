@@ -1,0 +1,185 @@
+<mxfile host="vscode-drawio" version="1.9.0" type="device">
+<diagram name="tres-capas" id="diag-three-layers">
+<mxGraphModel dx="1440" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="900" math="0" shadow="0">
+<root>
+<mxCell id="0" />
+<mxCell id="1" parent="0" />
+
+<mxCell id="title" value="Las 3 capas de un sistema con blockchain" style="text;html=1;strokeColor=none;fillColor=none;fontSize=22;fontColor=#111827;verticalAlign=middle;align=left;fontStyle=1;" vertex="1" parent="1">
+<mxGeometry x="40" y="20" width="1200" height="34" as="geometry" />
+</mxCell>
+<mxCell id="subtitle" value="Edge / Cliente · Web2 infra (k3s) · On-chain (Sepolia) — quién hace qué y dónde vive" style="text;html=1;strokeColor=none;fillColor=none;fontSize=13;fontColor=#6b7280;verticalAlign=middle;align=left;" vertex="1" parent="1">
+<mxGeometry x="40" y="52" width="1200" height="22" as="geometry" />
+</mxCell>
+
+<mxCell id="lane1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff7ed;strokeColor=#f59e0b;strokeWidth=1;dashed=1;" vertex="1" parent="1">
+<mxGeometry x="30" y="90" width="1380" height="200" as="geometry" />
+</mxCell>
+<mxCell id="lane1-label" value="EDGE / CLIENTE" style="text;html=1;strokeColor=none;fillColor=none;fontSize=14;fontColor=#92400e;fontStyle=1;align=left;verticalAlign=top;" vertex="1" parent="1">
+<mxGeometry x="50" y="100" width="400" height="22" as="geometry" />
+</mxCell>
+<mxCell id="lane1-sub" value="Browser del usuario + Vercel. La wallet es del usuario, nunca toca su infra." style="text;html=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#92400e;align=left;verticalAlign=top;" vertex="1" parent="1">
+<mxGeometry x="50" y="122" width="700" height="20" as="geometry" />
+</mxCell>
+
+<mxCell id="user" value="👤  Usuario final&#10;(browser)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;fontStyle=1;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="80" y="180" width="220" height="80" as="geometry" />
+</mxCell>
+<mxCell id="mm" value="🦊  MetaMask&#10;(extensión browser)&#10;custodia la PK" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="380" y="180" width="240" height="80" as="geometry" />
+</mxCell>
+<mxCell id="fe" value="⚛️  Frontend Next.js&#10;Vercel · wagmi · viem · RainbowKit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff7ed;strokeColor=#d97706;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;fontStyle=1;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="700" y="180" width="320" height="80" as="geometry" />
+</mxCell>
+<mxCell id="rpc" value="🌐  RPC público&#10;(Alchemy / Infura)&#10;testnet Sepolia" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3f4f6;strokeColor=#6b7280;strokeWidth=2;shadow=1;fontSize=12;fontColor=#111827;verticalAlign=middle;align=center;arcSize=10;dashed=1;" vertex="1" parent="1">
+<mxGeometry x="1100" y="180" width="280" height="80" as="geometry" />
+</mxCell>
+
+<mxCell id="lane2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#2563eb;strokeWidth=1;dashed=1;" vertex="1" parent="1">
+<mxGeometry x="30" y="310" width="1380" height="240" as="geometry" />
+</mxCell>
+<mxCell id="lane2-label" value="WEB2 INFRA  ·  k3s" style="text;html=1;strokeColor=none;fillColor=none;fontSize=14;fontColor=#1e40af;fontStyle=1;align=left;verticalAlign=top;" vertex="1" parent="1">
+<mxGeometry x="50" y="320" width="400" height="22" as="geometry" />
+</mxCell>
+<mxCell id="lane2-sub" value="Todo lo que NO es blockchain vive acá. Es donde paga el conocimiento de TP0 (k3s) y TP2 (observabilidad)." style="text;html=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#1e40af;align=left;verticalAlign=top;" vertex="1" parent="1">
+<mxGeometry x="50" y="342" width="900" height="20" as="geometry" />
+</mxCell>
+
+<mxCell id="api" value="🔌  Backend API&#10;Node / Python&#10;(REST/GraphQL)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;fontStyle=1;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="80" y="400" width="220" height="100" as="geometry" />
+</mxCell>
+<mxCell id="indexer" value="🔍  Indexer worker&#10;viem.watchEvent&#10;listener de Paid(...)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;fontStyle=1;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="340" y="400" width="220" height="100" as="geometry" />
+</mxCell>
+<mxCell id="db" value="🐘  Postgres&#10;cache de eventos&#10;listas paginadas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="600" y="400" width="200" height="100" as="geometry" />
+</mxCell>
+<mxCell id="ipfs" value="📦  IPFS (kubo)&#10;metadata NFT&#10;imágenes pesadas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="840" y="400" width="200" height="100" as="geometry" />
+</mxCell>
+<mxCell id="obs" value="📊  Loki + Grafana&#10;logs + dashboards&#10;(reusan TP2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="1080" y="400" width="220" height="100" as="geometry" />
+</mxCell>
+
+<mxCell id="lane3" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ecfdf5;strokeColor=#059669;strokeWidth=1;dashed=1;" vertex="1" parent="1">
+<mxGeometry x="30" y="570" width="1380" height="200" as="geometry" />
+</mxCell>
+<mxCell id="lane3-label" value="ON-CHAIN  ·  Sepolia (Ethereum testnet)" style="text;html=1;strokeColor=none;fillColor=none;fontSize=14;fontColor=#065f46;fontStyle=1;align=left;verticalAlign=top;" vertex="1" parent="1">
+<mxGeometry x="50" y="580" width="600" height="22" as="geometry" />
+</mxCell>
+<mxCell id="lane3-sub" value="Inmutable · público · descentralizado. Acá vive el state crítico (ownership, balances). No corre en su cluster." style="text;html=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#065f46;align=left;verticalAlign=top;" vertex="1" parent="1">
+<mxGeometry x="50" y="602" width="900" height="20" as="geometry" />
+</mxCell>
+
+<mxCell id="gateway" value="💳  PaymentGateway.sol&#10;cobra USDC, emite Paid(...)&#10;hook _onPaid extensible" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#059669;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;fontStyle=1;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="80" y="650" width="280" height="90" as="geometry" />
+</mxCell>
+<mxCell id="usdc" value="💵  USDC (Circle)&#10;ERC-20 oficial Sepolia&#10;0x1c7D…7238" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#059669;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="400" y="650" width="240" height="90" as="geometry" />
+</mxCell>
+<mxCell id="state" value="🎟️  Token state&#10;NFTs (ERC-721) · balances&#10;ownership inmutable" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#059669;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="680" y="650" width="280" height="90" as="geometry" />
+</mxCell>
+<mxCell id="etherscan" value="🔎  Etherscan&#10;UI pública del contrato&#10;(verificación + lectura)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#059669;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="1000" y="650" width="280" height="90" as="geometry" />
+</mxCell>
+
+<mxCell id="e1" value="https" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#d97706;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#92400e;labelBackgroundColor=#fff7ed;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="user" target="fe">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e2" value="firma tx" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#d97706;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#92400e;labelBackgroundColor=#fff7ed;exitX=0.5;exitY=1;entryX=0.5;entryY=1;" edge="1" parent="1" source="user" target="mm">
+<mxGeometry relative="1" as="geometry">
+<Array as="points">
+<mxPoint x="190" y="290"/>
+<mxPoint x="500" y="290"/>
+</Array>
+</mxGeometry>
+</mxCell>
+
+<mxCell id="e3" value="REST&#xa;(datos indexados)" style="endArrow=classic;startArrow=classic;html=1;strokeWidth=2;strokeColor=#2563eb;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#1e3a8a;labelBackgroundColor=#eff6ff;exitX=0.3;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="fe" target="api">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e4" value="GET imagen NFT" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#2563eb;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#1e3a8a;labelBackgroundColor=#eff6ff;exitX=0.7;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="fe" target="ipfs">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+
+<mxCell id="e5" value="RPC: read view fns" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#6b7280;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#374151;labelBackgroundColor=#f3f4f6;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;dashed=1;" edge="1" parent="1" source="fe" target="rpc">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e6" value="tx firmada" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#d97706;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#92400e;labelBackgroundColor=#fff7ed;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="mm" target="rpc">
+<mxGeometry relative="1" as="geometry">
+<Array as="points">
+<mxPoint x="1080" y="220"/>
+</Array>
+</mxGeometry>
+</mxCell>
+
+<mxCell id="e7" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#059669;edgeStyle=orthogonalEdgeStyle;rounded=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="rpc" target="gateway">
+<mxGeometry relative="1" as="geometry">
+<Array as="points">
+<mxPoint x="1240" y="540"/>
+<mxPoint x="220" y="540"/>
+</Array>
+</mxGeometry>
+</mxCell>
+
+<mxCell id="e8" value="watchEvent(Paid)" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#059669;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#065f46;labelBackgroundColor=#ecfdf5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="indexer" target="gateway">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e9" value="INSERT" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#2563eb;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#1e3a8a;labelBackgroundColor=#eff6ff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="indexer" target="db">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e10" value="SELECT" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#2563eb;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#1e3a8a;labelBackgroundColor=#eff6ff;exitX=1;exitY=0.5;entryX=0;entryY=0.7;" edge="1" parent="1" source="api" target="db">
+<mxGeometry relative="1" as="geometry">
+<Array as="points">
+<mxPoint x="320" y="470"/>
+<mxPoint x="320" y="470"/>
+</Array>
+</mxGeometry>
+</mxCell>
+<mxCell id="e11" value="logs" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#9ca3af;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#374151;labelBackgroundColor=#eff6ff;dashed=1;exitX=1;exitY=0.2;entryX=0;entryY=0.2;" edge="1" parent="1" source="api" target="obs">
+<mxGeometry relative="1" as="geometry">
+<Array as="points">
+<mxPoint x="320" y="420"/>
+<mxPoint x="1060" y="420"/>
+</Array>
+</mxGeometry>
+</mxCell>
+
+<mxCell id="e12" value="state ownership" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#059669;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#065f46;labelBackgroundColor=#ecfdf5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="gateway" target="state">
+<mxGeometry relative="1" as="geometry">
+<Array as="points">
+<mxPoint x="660" y="695"/>
+</Array>
+</mxGeometry>
+</mxCell>
+<mxCell id="e13" value="transferFrom" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#059669;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#065f46;labelBackgroundColor=#ecfdf5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="gateway" target="usdc">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e14" value="lectura pública" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#059669;edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=11;fontColor=#065f46;labelBackgroundColor=#ecfdf5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;dashed=1;" edge="1" parent="1" source="state" target="etherscan">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+
+<mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9ca3af;strokeWidth=1;arcSize=8;" vertex="1" parent="1">
+<mxGeometry x="40" y="800" width="1360" height="80" as="geometry" />
+</mxCell>
+<mxCell id="legend-title" value="Mapa mental — qué cae en cada capa" style="text;html=1;strokeColor=none;fillColor=none;fontSize=12;fontColor=#111827;fontStyle=1;align=left;verticalAlign=top;" vertex="1" parent="1">
+<mxGeometry x="60" y="810" width="500" height="20" as="geometry" />
+</mxCell>
+<mxCell id="legend-1" value="🟧  EDGE — frontend en Vercel + wallet del usuario. NO es infra suya." style="text;html=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#374151;align=left;verticalAlign=top;" vertex="1" parent="1">
+<mxGeometry x="60" y="836" width="450" height="18" as="geometry" />
+</mxCell>
+<mxCell id="legend-2" value="🟦  k3s — backend, indexer, Postgres, IPFS, Loki/Grafana. Acá pagan TP0 + TP2." style="text;html=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#374151;align=left;verticalAlign=top;" vertex="1" parent="1">
+<mxGeometry x="60" y="854" width="500" height="18" as="geometry" />
+</mxCell>
+<mxCell id="legend-3" value="🟩  ON-CHAIN — el contrato y el state crítico. Inmutable, público, fuera de su control operativo." style="text;html=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#374151;align=left;verticalAlign=top;" vertex="1" parent="1">
+<mxGeometry x="560" y="836" width="600" height="18" as="geometry" />
+</mxCell>
+<mxCell id="legend-4" value="Regla práctica: si lo pueden romper sin pedirle permiso a nadie → es suyo (k3s o Vercel). Si necesitan firma + gas → es on-chain." style="text;html=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#374151;align=left;verticalAlign=top;fontStyle=2;" vertex="1" parent="1">
+<mxGeometry x="560" y="854" width="800" height="18" as="geometry" />
+</mxCell>
+
+</root>
+</mxGraphModel>
+</diagram>
+</mxfile>
