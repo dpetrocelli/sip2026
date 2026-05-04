@@ -1,0 +1,98 @@
+<mxfile host="vscode-drawio" version="1.9.0" type="device">
+<diagram name="que-vive-donde" id="diag-3ad58462">
+<mxGraphModel dx="1280" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1280" pageHeight="1000" math="0" shadow="0">
+<root>
+<mxCell id="0" />
+<mxCell id="1" parent="0" />
+<mxCell id="text-1298f2ca" value="Qué vive dónde — público vs privado" style="text;html=1;strokeColor=none;fillColor=none;fontSize=22;fontColor=#111827;verticalAlign=middle;align=left;fontStyle=1;" vertex="1" parent="1">
+<mxGeometry x="40" y="30" width="1200" height="40" as="geometry" />
+</mxCell>
+<mxCell id="text-240cb0a9" value="Si compartís algo del lado rojo, perdés el control. Lo verde es por diseño público." style="text;html=1;strokeColor=none;fillColor=none;fontSize=13;fontColor=#6b7280;verticalAlign=middle;align=left;" vertex="1" parent="1">
+<mxGeometry x="40" y="64" width="1200" height="22" as="geometry" />
+</mxCell>
+<mxCell id="col-priv" value="🔴  PRIVADO  —  NUNCA compartir" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;dashed=1;fontSize=14;fontStyle=1;fontColor=#b85450;verticalAlign=top;align=left;spacingTop=10;spacingLeft=14;arcSize=8;" vertex="1" parent="1">
+<mxGeometry x="40" y="110" width="580" height="760" as="geometry" />
+</mxCell>
+<mxCell id="col-pub" value="🟢  PÚBLICO  —  todos lo leen" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;dashed=1;fontSize=14;fontStyle=1;fontColor=#82b366;verticalAlign=top;align=left;spacingTop=10;spacingLeft=14;arcSize=8;" vertex="1" parent="1">
+<mxGeometry x="660" y="110" width="580" height="760" as="geometry" />
+</mxCell>
+<mxCell id="seed" value="🔑  Frase de 12 palabras (BIP-39)
+Genera la PK. La raíz de todo." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;fontStyle=1;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="80" y="180" width="500" height="80" as="geometry" />
+</mxCell>
+<mxCell id="pk" value="🔐  Private Key (PK)
+Firma todas las txs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;fontStyle=1;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="80" y="300" width="500" height="70" as="geometry" />
+</mxCell>
+<mxCell id="mm-ks" value="🦊  MetaMask keystore
+PK encriptada con la pwd de MetaMask" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;shadow=1;fontSize=12;fontColor=#111827;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="80" y="410" width="500" height="70" as="geometry" />
+</mxCell>
+<mxCell id="fnd-ks" value="💻  Foundry keystore
+~/.foundry/keystores/dev-wallet
+(misma PK, otra encriptación)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;shadow=1;fontSize=12;fontColor=#111827;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="80" y="520" width="500" height="80" as="geometry" />
+</mxCell>
+<mxCell id="env" value="📋  .env del proyecto
+ETHERSCAN_API_KEY · RPC URLs privadas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;shadow=1;fontSize=12;fontColor=#111827;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="80" y="640" width="500" height="70" as="geometry" />
+</mxCell>
+<mxCell id="edge-69e605e2" value="deriva (BIP-32)" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#b91c1c;edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;fontSize=11;fontColor=#b91c1c;fontStyle=1;labelBackgroundColor=#ffffff;labelBorderColor=none;" edge="1" parent="1" source="seed" target="pk">
+<mxGeometry relative="1" as="geometry">
+</mxGeometry>
+</mxCell>
+<mxCell id="edge-c152ae1b" value="encripta" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#b91c1c;edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.3;exitY=1.0;exitDx=0;exitDy=0;entryX=0.3;entryY=0.0;entryDx=0;entryDy=0;fontSize=11;fontColor=#b91c1c;labelBackgroundColor=#ffffff;labelBorderColor=none;" edge="1" parent="1" source="pk" target="mm-ks">
+<mxGeometry relative="1" as="geometry">
+</mxGeometry>
+</mxCell>
+<mxCell id="edge-98f2a2d7" value="encripta" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#b91c1c;edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.7;exitY=1.0;exitDx=0;exitDy=0;entryX=0.7;entryY=0.0;entryDx=0;entryDy=0;fontSize=11;fontColor=#b91c1c;labelBackgroundColor=#ffffff;labelBorderColor=none;" edge="1" parent="1" source="pk" target="fnd-ks">
+<mxGeometry relative="1" as="geometry">
+</mxGeometry>
+</mxCell>
+<mxCell id="addr" value="📬  Tu address (EOA)
+0xe8FEF…27f26  ·  ~42 chars hex" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;fontStyle=1;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="700" y="180" width="500" height="80" as="geometry" />
+</mxCell>
+<mxCell id="txs" value="📋  Tus transacciones
+(en cada bloque, para siempre)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="700" y="300" width="500" height="70" as="geometry" />
+</mxCell>
+<mxCell id="bytecode" value="💻  Bytecode @ contract address
+(qué hace el contrato, en hex)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="700" y="410" width="500" height="70" as="geometry" />
+</mxCell>
+<mxCell id="storage" value="💾  Storage del contrato
+(todas las variables son leíbles)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="700" y="520" width="500" height="80" as="geometry" />
+</mxCell>
+<mxCell id="es-src" value="📄  Source verificado en Etherscan
+(.sol legible si lo subiste)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;shadow=1;fontSize=13;fontColor=#111827;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="700" y="640" width="500" height="70" as="geometry" />
+</mxCell>
+<mxCell id="edge-d45ed866" value="firma → tx" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#065f46;edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;fontSize=11;fontColor=#065f46;labelBackgroundColor=#ffffff;labelBorderColor=none;" edge="1" parent="1" source="addr" target="txs">
+<mxGeometry relative="1" as="geometry">
+</mxGeometry>
+</mxCell>
+<mxCell id="edge-ebfdd85a" value="ejecuta" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#065f46;edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;fontSize=11;fontColor=#065f46;labelBackgroundColor=#ffffff;labelBorderColor=none;" edge="1" parent="1" source="bytecode" target="storage">
+<mxGeometry relative="1" as="geometry">
+</mxGeometry>
+</mxCell>
+<mxCell id="edge-9c5a9924" value="match bytecode" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#065f46;edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;fontSize=11;fontColor=#065f46;labelBackgroundColor=#ffffff;labelBorderColor=none;" edge="1" parent="1" source="bytecode" target="es-src">
+<mxGeometry relative="1" as="geometry">
+</mxGeometry>
+</mxCell>
+<mxCell id="edge-776b8384" value="deriva la address" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#9333ea;edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;dashed=1;exitX=0.5;exitY=0.0;exitDx=0;exitDy=0;entryX=0.5;entryY=1.0;entryDx=0;entryDy=0;fontSize=11;fontColor=#9333ea;fontStyle=1;labelBackgroundColor=#ffffff;labelBorderColor=none;" edge="1" parent="1" source="pk" target="addr">
+<mxGeometry relative="1" as="geometry">
+<Array as="points">
+<mxPoint x="330" y="275" />
+<mxPoint x="950" y="275" />
+</Array>
+</mxGeometry>
+</mxCell>
+<mxCell id="box-a3517f6c" value="💡  La PK es lo único secreto. La address es pública por diseño. Todo lo on-chain es público para siempre." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;shadow=1;fontSize=14;fontColor=#111827;fontStyle=1;verticalAlign=middle;align=center;arcSize=10;" vertex="1" parent="1">
+<mxGeometry x="40" y="890" width="1200" height="50" as="geometry" />
+</mxCell>
+</root>
+</mxGraphModel>
+</diagram>
+</mxfile>

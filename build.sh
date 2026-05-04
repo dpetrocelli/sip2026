@@ -78,6 +78,36 @@ render "TP3-4.md" \
   "Práctica II · Parte 4 — Cierre: comparativa, decisiones arquitectónicas y ADR magisterial" \
   "TP 2 · PARTE 4"
 
+# --- Blockchain · Overview — hub con 5 diagramas + roadmap de 4 clases ---
+render "blockchain-overview.md" \
+  "blockchain-overview.html" \
+  "Blockchain & Pasarela de Pago — Overview" \
+  "BLOCKCHAIN"
+
+# --- Blockchain · Clase 1 — Fundamentos + setup + primer contrato ---
+render "blockchain-clase-1.md" \
+  "blockchain-clase-1.html" \
+  "Blockchain · Clase 1 — Fundamentos + setup + tu primer contrato" \
+  "BC · CLASE 1"
+
+# --- Blockchain · Clase 2 — ERC-20 + PaymentGateway + Reentrancy ---
+render "blockchain-clase-2.md" \
+  "blockchain-clase-2.html" \
+  "Blockchain · Clase 2 — ERC-20 + PaymentGateway + Reentrancy" \
+  "BC · CLASE 2"
+
+# --- Blockchain · Clase 3 — Frontend + integración + onramp testnet ---
+render "blockchain-clase-3.md" \
+  "blockchain-clase-3.html" \
+  "Blockchain · Clase 3 — Frontend + integración + onramp testnet" \
+  "BC · CLASE 3"
+
+# --- Blockchain · Clase 4 — NFTs gamificados + tokenomics + Slither ---
+render "blockchain-clase-4.md" \
+  "blockchain-clase-4.html" \
+  "Blockchain · Clase 4 — NFTs gamificados + tokenomics + Slither" \
+  "BC · CLASE 4"
+
 echo ""
 echo "Done. Open with:"
 echo "  xdg-open $DIR/index.html"

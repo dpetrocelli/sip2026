@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <meta name="generator" content="pandoc + UNLu/DCB template">
+  <title>Blockchain · Clase 4 — NFTs gamificados + tokenomics + Slither
+— UNLu DCB</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+
+<header class="unlu-header">
+  <a href="index.html" class="brand" title="Volver al menú principal">
+    <img src="assets/unlu_escudo.png" alt="Universidad Nacional de Luján" class="logo unlu">
+    <div class="brand-text">
+      <div class="institution">Universidad Nacional de Luján</div>
+      <div class="department">Departamento de Ciencias Básicas</div>
+    </div>
+    <img src="assets/logo_dcb.png" alt="Departamento de Ciencias Básicas" class="logo dcb">
+  </a>
+  <div class="course-bar">
+    <span class="course">Seminario de Integración Profesional</span>
+    <span class="year">2026</span>
+    <span class="instructor">Dr. David Petrocelli</span>
+  </div>
+</header>
+
+<button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
+
+<div class="layout">
+  <aside class="toc-sidebar" id="toc-sidebar">
+    <div class="toc-header">
+      <div class="toc-title">Contenidos</div>
+      <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
+    </div>
+    <ul>
+    <li><a
+    href="#blockchain--clase-4--nfts-gamificados-set-bonus--tokenomics--slither"
+    id="toc-blockchain--clase-4--nfts-gamificados-set-bonus--tokenomics--slither">Blockchain
+    · Clase 4 — NFTs gamificados (Set Bonus) + tokenomics + Slither</a>
+    <ul>
+    <li><a href="#qué-vamos-a-hacer-hoy"
+    id="toc-qué-vamos-a-hacer-hoy">¿Qué vamos a hacer hoy?</a></li>
+    <li><a href="#parte-1--erc-721-base-qué-es-un-nft"
+    id="toc-parte-1--erc-721-base-qué-es-un-nft">Parte 1 — ERC-721 base
+    (qué es un NFT)</a>
+    <ul>
+    <li><a href="#el-esqueleto-con-openzeppelin"
+    id="toc-el-esqueleto-con-openzeppelin">El esqueleto con
+    OpenZeppelin</a></li>
+    </ul></li>
+    <li><a href="#parte-2--set-bonus-nft-pattern-figuritas-con-piezas"
+    id="toc-parte-2--set-bonus-nft-pattern-figuritas-con-piezas">Parte 2
+    — Set Bonus NFT pattern (figuritas con piezas)</a>
+    <ul>
+    <li><a href="#el-concepto" id="toc-el-concepto">El concepto</a></li>
+    <li><a href="#implementación-mínima"
+    id="toc-implementación-mínima">Implementación mínima</a></li>
+    <li><a href="#cómo-se-conecta-al-paymentgateway"
+    id="toc-cómo-se-conecta-al-paymentgateway">Cómo se conecta al
+    PaymentGateway</a></li>
+    </ul></li>
+    <li><a href="#parte-3--tokenomics-básica"
+    id="toc-parte-3--tokenomics-básica">Parte 3 — Tokenomics básica</a>
+    <ul>
+    <li><a href="#los-4-mecanismos-clásicos"
+    id="toc-los-4-mecanismos-clásicos">Los 4 mecanismos
+    clásicos</a></li>
+    <li><a href="#burn-por-transacción-1--tx"
+    id="toc-burn-por-transacción-1--tx">Burn por transacción (1% /
+    tx)</a></li>
+    <li><a href="#dividendos-en-usdt-depfund--rnw--ideafy"
+    id="toc-dividendos-en-usdt-depfund--rnw--ideafy">Dividendos en USDT
+    (DepFund / RNW / IDEAFY)</a></li>
+    <li><a href="#niveles-de-fan--inversor-gamification-del-holding"
+    id="toc-niveles-de-fan--inversor-gamification-del-holding">Niveles
+    de fan / inversor (gamification del holding)</a></li>
+    </ul></li>
+    <li><a href="#parte-4--análisis-estático-con-slither"
+    id="toc-parte-4--análisis-estático-con-slither">Parte 4 — Análisis
+    estático con Slither</a>
+    <ul>
+    <li><a href="#instalación" id="toc-instalación">Instalación</a></li>
+    <li><a href="#correrlo-sobre-tu-paymentgateway"
+    id="toc-correrlo-sobre-tu-paymentgateway">Correrlo sobre tu
+    PaymentGateway</a></li>
+    <li><a
+    href="#las-warnings-que-probablemente-vean-y-cómo-arreglarlas"
+    id="toc-las-warnings-que-probablemente-vean-y-cómo-arreglarlas">Las
+    warnings que probablemente vean (y cómo arreglarlas)</a></li>
+    <li><a href="#documentar-lo-que-no-arreglás"
+    id="toc-documentar-lo-que-no-arreglás">Documentar lo que NO
+    arreglás</a></li>
+    </ul></li>
+    <li><a href="#parte-5--cómo-plugar-el-stack-a-tu-proyecto"
+    id="toc-parte-5--cómo-plugar-el-stack-a-tu-proyecto">Parte 5 — Cómo
+    plugar el stack a tu proyecto</a>
+    <ul>
+    <li><a href="#mapa-proyecto-por-proyecto"
+    id="toc-mapa-proyecto-por-proyecto">Mapa proyecto por
+    proyecto</a></li>
+    <li><a href="#esqueleto-del-_onpaid-por-proyecto"
+    id="toc-esqueleto-del-_onpaid-por-proyecto">Esqueleto del
+    <code>_onPaid</code> por proyecto</a></li>
+    </ul></li>
+    <li><a
+    href="#parte-6--decisiones-de-arquitectura-qué-red-usar-para-producción"
+    id="toc-parte-6--decisiones-de-arquitectura-qué-red-usar-para-producción">Parte
+    6 — Decisiones de arquitectura: qué red usar para producción</a>
+    <ul>
+    <li><a href="#comparativa-rápida"
+    id="toc-comparativa-rápida">Comparativa rápida</a></li>
+    <li><a href="#cuál-elegir-según-el-proyecto"
+    id="toc-cuál-elegir-según-el-proyecto">Cuál elegir según el
+    proyecto</a></li>
+    <li><a href="#lo-que-cambia-para-mover-sepolia--otra-red"
+    id="toc-lo-que-cambia-para-mover-sepolia--otra-red">Lo que cambia
+    para mover Sepolia → otra red</a></li>
+    </ul></li>
+    <li><a href="#parte-7--demo-final-del-módulo-qué-se-llevan"
+    id="toc-parte-7--demo-final-del-módulo-qué-se-llevan">Parte 7 — Demo
+    final del módulo (qué se llevan)</a></li>
+    <li><a href="#tarea-final-del-tp--entregable"
+    id="toc-tarea-final-del-tp--entregable">Tarea final del TP —
+    entregable</a>
+    <ul>
+    <li><a href="#qué-entregar" id="toc-qué-entregar">Qué
+    entregar</a></li>
+    <li><a href="#criterios-de-evaluación-alineados-con-el-sip"
+    id="toc-criterios-de-evaluación-alineados-con-el-sip">Criterios de
+    evaluación (alineados con el SIP)</a></li>
+    </ul></li>
+    <li><a href="#cierre--qué-nos-llevamos-del-módulo"
+    id="toc-cierre--qué-nos-llevamos-del-módulo">Cierre — qué nos
+    llevamos del módulo</a></li>
+    <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
+    falla</a></li>
+    </ul></li>
+    </ul>
+    <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
+      <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <nav class="page-breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Inicio</a>
+      <span class="sep">›</span>
+      <span class="current">BC · CLASE 4</span>
+    </nav>
+    <nav class="page-nav-top">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+      <span class="banner-pill">BC · CLASE 4</span>
+    </nav>
+
+    <details class="toc-inline" open>
+      <summary>📑 Índice del documento</summary>
+      <ul>
+      <li><a
+      href="#blockchain--clase-4--nfts-gamificados-set-bonus--tokenomics--slither"
+      id="toc-blockchain--clase-4--nfts-gamificados-set-bonus--tokenomics--slither">Blockchain
+      · Clase 4 — NFTs gamificados (Set Bonus) + tokenomics +
+      Slither</a>
+      <ul>
+      <li><a href="#qué-vamos-a-hacer-hoy"
+      id="toc-qué-vamos-a-hacer-hoy">¿Qué vamos a hacer hoy?</a></li>
+      <li><a href="#parte-1--erc-721-base-qué-es-un-nft"
+      id="toc-parte-1--erc-721-base-qué-es-un-nft">Parte 1 — ERC-721
+      base (qué es un NFT)</a>
+      <ul>
+      <li><a href="#el-esqueleto-con-openzeppelin"
+      id="toc-el-esqueleto-con-openzeppelin">El esqueleto con
+      OpenZeppelin</a></li>
+      </ul></li>
+      <li><a href="#parte-2--set-bonus-nft-pattern-figuritas-con-piezas"
+      id="toc-parte-2--set-bonus-nft-pattern-figuritas-con-piezas">Parte
+      2 — Set Bonus NFT pattern (figuritas con piezas)</a>
+      <ul>
+      <li><a href="#el-concepto" id="toc-el-concepto">El
+      concepto</a></li>
+      <li><a href="#implementación-mínima"
+      id="toc-implementación-mínima">Implementación mínima</a></li>
+      <li><a href="#cómo-se-conecta-al-paymentgateway"
+      id="toc-cómo-se-conecta-al-paymentgateway">Cómo se conecta al
+      PaymentGateway</a></li>
+      </ul></li>
+      <li><a href="#parte-3--tokenomics-básica"
+      id="toc-parte-3--tokenomics-básica">Parte 3 — Tokenomics
+      básica</a>
+      <ul>
+      <li><a href="#los-4-mecanismos-clásicos"
+      id="toc-los-4-mecanismos-clásicos">Los 4 mecanismos
+      clásicos</a></li>
+      <li><a href="#burn-por-transacción-1--tx"
+      id="toc-burn-por-transacción-1--tx">Burn por transacción (1% /
+      tx)</a></li>
+      <li><a href="#dividendos-en-usdt-depfund--rnw--ideafy"
+      id="toc-dividendos-en-usdt-depfund--rnw--ideafy">Dividendos en
+      USDT (DepFund / RNW / IDEAFY)</a></li>
+      <li><a href="#niveles-de-fan--inversor-gamification-del-holding"
+      id="toc-niveles-de-fan--inversor-gamification-del-holding">Niveles
+      de fan / inversor (gamification del holding)</a></li>
+      </ul></li>
+      <li><a href="#parte-4--análisis-estático-con-slither"
+      id="toc-parte-4--análisis-estático-con-slither">Parte 4 — Análisis
+      estático con Slither</a>
+      <ul>
+      <li><a href="#instalación"
+      id="toc-instalación">Instalación</a></li>
+      <li><a href="#correrlo-sobre-tu-paymentgateway"
+      id="toc-correrlo-sobre-tu-paymentgateway">Correrlo sobre tu
+      PaymentGateway</a></li>
+      <li><a
+      href="#las-warnings-que-probablemente-vean-y-cómo-arreglarlas"
+      id="toc-las-warnings-que-probablemente-vean-y-cómo-arreglarlas">Las
+      warnings que probablemente vean (y cómo arreglarlas)</a></li>
+      <li><a href="#documentar-lo-que-no-arreglás"
+      id="toc-documentar-lo-que-no-arreglás">Documentar lo que NO
+      arreglás</a></li>
+      </ul></li>
+      <li><a href="#parte-5--cómo-plugar-el-stack-a-tu-proyecto"
+      id="toc-parte-5--cómo-plugar-el-stack-a-tu-proyecto">Parte 5 —
+      Cómo plugar el stack a tu proyecto</a>
+      <ul>
+      <li><a href="#mapa-proyecto-por-proyecto"
+      id="toc-mapa-proyecto-por-proyecto">Mapa proyecto por
+      proyecto</a></li>
+      <li><a href="#esqueleto-del-_onpaid-por-proyecto"
+      id="toc-esqueleto-del-_onpaid-por-proyecto">Esqueleto del
+      <code>_onPaid</code> por proyecto</a></li>
+      </ul></li>
+      <li><a
+      href="#parte-6--decisiones-de-arquitectura-qué-red-usar-para-producción"
+      id="toc-parte-6--decisiones-de-arquitectura-qué-red-usar-para-producción">Parte
+      6 — Decisiones de arquitectura: qué red usar para producción</a>
+      <ul>
+      <li><a href="#comparativa-rápida"
+      id="toc-comparativa-rápida">Comparativa rápida</a></li>
+      <li><a href="#cuál-elegir-según-el-proyecto"
+      id="toc-cuál-elegir-según-el-proyecto">Cuál elegir según el
+      proyecto</a></li>
+      <li><a href="#lo-que-cambia-para-mover-sepolia--otra-red"
+      id="toc-lo-que-cambia-para-mover-sepolia--otra-red">Lo que cambia
+      para mover Sepolia → otra red</a></li>
+      </ul></li>
+      <li><a href="#parte-7--demo-final-del-módulo-qué-se-llevan"
+      id="toc-parte-7--demo-final-del-módulo-qué-se-llevan">Parte 7 —
+      Demo final del módulo (qué se llevan)</a></li>
+      <li><a href="#tarea-final-del-tp--entregable"
+      id="toc-tarea-final-del-tp--entregable">Tarea final del TP —
+      entregable</a>
+      <ul>
+      <li><a href="#qué-entregar" id="toc-qué-entregar">Qué
+      entregar</a></li>
+      <li><a href="#criterios-de-evaluación-alineados-con-el-sip"
+      id="toc-criterios-de-evaluación-alineados-con-el-sip">Criterios de
+      evaluación (alineados con el SIP)</a></li>
+      </ul></li>
+      <li><a href="#cierre--qué-nos-llevamos-del-módulo"
+      id="toc-cierre--qué-nos-llevamos-del-módulo">Cierre — qué nos
+      llevamos del módulo</a></li>
+      <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
+      falla</a></li>
+      </ul></li>
+      </ul>
+      <div class="toc-controls">
+        <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
+        <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
+      </div>
+    </details>
+
+<h1
+id="blockchain--clase-4--nfts-gamificados-set-bonus--tokenomics--slither">Blockchain
+· Clase 4 — NFTs gamificados (Set Bonus) + tokenomics + Slither</h1>
+<blockquote>
+<p><strong>Objetivo de la clase</strong>: cerrar el módulo. Que al final
+de las 4 hs tengan <strong>el stack completo plugado a su
+proyecto</strong> (VibeCheck / DepFund / RNW / IDEAFY):
+<code>PaymentGateway</code> (clase 2) + ERC-20 (clase 2) + ERC-721 con
+<strong>Set Bonus</strong> (hoy) + frontend (clase 3) + análisis
+estático con <strong>Slither</strong>. El entregable del TP final cae
+naturalmente de acá.</p>
+</blockquote>
+<blockquote>
+<p><strong>Pre-requisitos</strong>: clases 1, 2 y 3 hechas. Tienen
+<code>PaymentGateway</code> deployado en Sepolia, su token ERC-20
+(<code>$VBK</code> / <code>$DPF</code> / <code>$RNW</code> /
+<code>$IDEA</code>), y un frontend con MetaMask conectado. <strong>Si
+algo de eso no está, paren y completen primero</strong> — sin esa base
+la clase de hoy no tiene dónde apoyarse.</p>
+</blockquote>
+<hr />
+<h2 id="qué-vamos-a-hacer-hoy">¿Qué vamos a hacer hoy?</h2>
+<ol type="1">
+<li><strong>ERC-721 base</strong> — qué es un NFT y por qué es el
+estándar correcto para tickets, shares, coleccionables.</li>
+<li><strong>Set Bonus pattern</strong> — figuritas con piezas que
+combinan en sets (tipo Diablo / álbum Panini). El truco es la
+<strong>gamification on-chain</strong>.</li>
+<li><strong>Tokenomics básica</strong> — burn por transacción,
+dividendos en USDT, staking, governance, niveles de fan/inversor.</li>
+<li><strong>Análisis estático con Slither</strong> — correrlo sobre su
+<code>PaymentGateway</code> y arreglar las warnings que aparezcan.</li>
+<li><strong>Plugar el stack a su proyecto</strong> — exactamente qué
+cambia para VibeCheck vs DepFund vs RNW vs IDEAFY.</li>
+<li><strong>Decisión de red</strong> — Sepolia (testnet) vs Polygon vs
+Base vs Arbitrum (L2 de mainnet) para producción.</li>
+<li><strong>Demo final del módulo</strong> — qué se llevan al cerrar las
+4 clases.</li>
+<li><strong>Tarea final del TP</strong> — el entregable.</li>
+</ol>
+<p>Al cierre: cada equipo tiene el contrato completo del módulo
+enchufado a su proyecto, con su tokenomics propia y auditado por
+Slither.</p>
+<hr />
+<h2 id="parte-1--erc-721-base-qué-es-un-nft">Parte 1 — ERC-721 base (qué
+es un NFT)</h2>
+<p>ERC-20 (clase 2) representa <strong>dinero</strong>: 100 unidades de
+<code>$VBK</code> son intercambiables, no tienen identidad. ERC-721
+representa <strong>ítems únicos</strong>: cada token tiene un
+<code>tokenId</code> distinto, su propio dueño, su propia metadata.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>ERC-20 (clase 2)</th>
+<th>ERC-721 (hoy)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Identidad</td>
+<td>No tiene — es un saldo</td>
+<td>Cada token es único (<code>tokenId</code>)</td>
+</tr>
+<tr>
+<td>Operaciones</td>
+<td><code>transfer</code>, <code>approve</code></td>
+<td><code>transferFrom(from,to,tokenId)</code>,
+<code>ownerOf(tokenId)</code></td>
+</tr>
+<tr>
+<td>Caso de uso</td>
+<td>Moneda interna, dividendos</td>
+<td>Ticket, share, badge, coleccionable</td>
+</tr>
+<tr>
+<td>Storage</td>
+<td><code>mapping(address =&gt; uint256) balances</code></td>
+<td><code>mapping(uint256 =&gt; address) owners</code></td>
+</tr>
+<tr>
+<td>Metadata</td>
+<td>symbol + name</td>
+<td>URI por token (<code>tokenURI(tokenId)</code>) que apunta a JSON con
+foto, atributos, etc.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cada NFT tiene:</strong></p>
+<ul>
+<li>Un <code>tokenId</code> (uint256 único).</li>
+<li>Un <code>ownerOf(tokenId)</code> (la wallet dueña).</li>
+<li>Un <code>tokenURI(tokenId)</code> (link a metadata, usualmente
+IPFS).</li>
+</ul>
+<h3 id="el-esqueleto-con-openzeppelin">El esqueleto con
+OpenZeppelin</h3>
+<p>No escribimos ERC-721 desde cero. Heredamos de OpenZeppelin (auditado
+por miles de proyectos productivos):</p>
+<pre class="solidity"><code>// SPDX-License-Identifier: MIT
+pragma solidity 0.8.24;
+
+import {ERC721} from &quot;@openzeppelin/contracts/token/ERC721/ERC721.sol&quot;;
+import {ERC721URIStorage} from &quot;@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol&quot;;
+import {Ownable} from &quot;@openzeppelin/contracts/access/Ownable.sol&quot;;
+
+contract VibeTicket is ERC721URIStorage, Ownable {
+    uint256 private _nextId;
+
+    constructor() ERC721(&quot;VibeCheck Ticket&quot;, &quot;VIBE&quot;) Ownable(msg.sender) {}
+
+    function mint(address to, string calldata uri) external onlyOwner returns (uint256) {
+        uint256 id = ++_nextId;
+        _mint(to, id);
+        _setTokenURI(id, uri);
+        return id;
+    }
+
+    function burn(uint256 id) external {
+        require(ownerOf(id) == msg.sender, &quot;not owner&quot;);
+        _burn(id);
+    }
+}</code></pre>
+<p><strong>Línea por línea</strong> (lo que importa):</p>
+<table>
+<thead>
+<tr>
+<th>Pieza</th>
+<th>Por qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ERC721URIStorage</code></td>
+<td>Te da <code>tokenURI</code> por token (no una URI global).</td>
+</tr>
+<tr>
+<td><code>Ownable</code></td>
+<td>Solo el deployer puede llamar <code>mint</code> (o quien le
+transfieran ownership).</td>
+</tr>
+<tr>
+<td><code>_mint(to, id)</code></td>
+<td>Crea el NFT y se lo asigna a <code>to</code>. <strong>Usamos
+<code>_mint</code>, no <code>_safeMint</code></strong> —
+<code>_safeMint</code> rompe en fuzz tests porque chequea si
+<code>to</code> es contrato.</td>
+</tr>
+<tr>
+<td><code>_setTokenURI(id, uri)</code></td>
+<td>Guarda la metadata por token.</td>
+</tr>
+<tr>
+<td><code>_burn(id)</code></td>
+<td>Destruye el NFT. <code>ownerOf(id)</code> revierte después.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚡ <strong>Soulbound = NFT que no se transfiere</strong>. Para
+tickets que NO se deberían revender (fraude, reventa abusiva), se
+override <code>_update</code> para revertir transfers. Lo necesitan
+según el caso de uso (VibeCheck <strong>sí</strong> quiere reventa
+controlada, DepFund <strong>no</strong> quiere que el token de gobierno
+migre sin más).</p>
+</blockquote>
+<hr />
+<h2 id="parte-2--set-bonus-nft-pattern-figuritas-con-piezas">Parte 2 —
+Set Bonus NFT pattern (figuritas con piezas)</h2>
+<p>Acá viene la diferencia clave entre “un NFT cualquiera” y
+<strong>gamification de verdad</strong>. El patrón Set Bonus es lo que
+mantiene a los usuarios volviendo: <strong>piezas random que combinan en
+sets más valiosos</strong>.</p>
+<p><strong>Analogía rápida</strong>: el álbum Panini del Mundial. Tenés
+18 figuritas de un equipo. Si las juntás todas, valen más que la suma de
+las partes. Si te falta una, vas a tradear con un amigo. Eso es Set
+Bonus.</p>
+<h3 id="el-concepto">El concepto</h3>
+<p>Cada compra/inversión en su sistema mintea <strong>una pieza
+random</strong> de un grid:</p>
+<ul>
+<li><strong>VibeCheck</strong>: pieza del cartel del evento (escenario,
+DJ, público, etc).</li>
+<li><strong>DepFund</strong>: pieza del plano del complejo (cancha, bar,
+vestuarios, gym).</li>
+<li><strong>RNW</strong>: pieza de la grilla solar/eólica (panel,
+inversor, batería).</li>
+<li><strong>IDEAFY</strong>: pieza del portfolio del creador (proyecto
+A, B, C).</li>
+</ul>
+<p><strong>Las piezas contiguas suman un bonus en
+tokenomics</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Piezas contiguas</th>
+<th>Bonus típico</th>
+<th>Ejemplo (DepFund)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td>+0.5% dividendos</td>
+<td>“Cancha”</td>
+</tr>
+<tr>
+<td>5</td>
+<td>+1% dividendos + badge bronce</td>
+<td>“Ala deportiva”</td>
+</tr>
+<tr>
+<td>8</td>
+<td>+2% dividendos + governance x2</td>
+<td>“Sector completo”</td>
+</tr>
+<tr>
+<td>12+</td>
+<td>NFT exclusivo + tier máximo</td>
+<td>“Complejo fundador”</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rareza en cada drop</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Probabilidad</th>
+<th>Qué hace</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Común</td>
+<td>60%</td>
+<td>Pieza normal</td>
+</tr>
+<tr>
+<td>Rara</td>
+<td>25%</td>
+<td>Pieza especial (cuenta como 1.5)</td>
+</tr>
+<tr>
+<td>Épica</td>
+<td>12%</td>
+<td>Wildcard parcial (encaja en cualquier slot adyacente)</td>
+</tr>
+<tr>
+<td>Legendaria</td>
+<td>3%</td>
+<td>Wildcard total (encaja en cualquier slot del grid)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="implementación-mínima">Implementación mínima</h3>
+<pre class="solidity"><code>// SPDX-License-Identifier: MIT
+pragma solidity 0.8.24;
+
+import {ERC721} from &quot;@openzeppelin/contracts/token/ERC721/ERC721.sol&quot;;
+import {Ownable} from &quot;@openzeppelin/contracts/access/Ownable.sol&quot;;
+
+contract SetBonusNFT is ERC721, Ownable {
+    enum Rarity { Common, Rare, Epic, Legendary }
+
+    struct Piece {
+        uint8 slot;       // 0..N — qué pieza del grid es
+        Rarity rarity;
+    }
+
+    mapping(uint256 =&gt; Piece) public pieces;
+    uint256 private _nextId;
+
+    event PieceMinted(address indexed to, uint256 indexed tokenId, uint8 slot, Rarity rarity);
+
+    constructor() ERC721(&quot;VibeCheck Pieces&quot;, &quot;VIBE-P&quot;) Ownable(msg.sender) {}
+
+    /// Llamado por el PaymentGateway cuando alguien paga.
+    function mintRandom(address to, bytes32 entropy) external onlyOwner returns (uint256) {
+        uint256 id = ++_nextId;
+        uint8 slot = uint8(uint256(entropy) % 12);     // 12 slots en el grid
+        Rarity rarity = _rollRarity(entropy);
+
+        pieces[id] = Piece(slot, rarity);
+        _mint(to, id);
+        emit PieceMinted(to, id, slot, rarity);
+        return id;
+    }
+
+    function _rollRarity(bytes32 entropy) private pure returns (Rarity) {
+        uint256 r = uint256(keccak256(abi.encode(entropy, &quot;rarity&quot;))) % 100;
+        if (r &lt; 60) return Rarity.Common;
+        if (r &lt; 85) return Rarity.Rare;
+        if (r &lt; 97) return Rarity.Epic;
+        return Rarity.Legendary;
+    }
+
+    /// Cuenta cuántos slots únicos posee `holder`.
+    /// El cálculo del bonus real (off-chain o en otro contrato) usa esto.
+    function uniqueSlotsOf(address holder, uint256[] calldata ids) external view returns (uint8) {
+        uint16 mask;
+        for (uint256 i = 0; i &lt; ids.length; i++) {
+            require(ownerOf(ids[i]) == holder, &quot;not owner&quot;);
+            mask |= uint16(1) &lt;&lt; pieces[ids[i]].slot;
+        }
+        // popcount: cuántos bits están en 1
+        uint8 count;
+        while (mask != 0) { count += uint8(mask &amp; 1); mask &gt;&gt;= 1; }
+        return count;
+    }
+}</code></pre>
+<blockquote>
+<p>⚠️ <strong>Aviso de seguridad</strong>:
+<code>block.timestamp</code>/<code>block.prevrandao</code> <strong>no
+son aleatorios reales</strong>. Para producción real con dinero serio se
+usa <strong>Chainlink VRF</strong> (oracle que da randomness
+verificable). En la testnet del TP final,
+<code>keccak256(blockhash, sender, nonce)</code> alcanza para la nota —
+pero declarenlo explícitamente en <code>SECURITY.md</code> como riesgo
+conocido.</p>
+</blockquote>
+<h3 id="cómo-se-conecta-al-paymentgateway">Cómo se conecta al
+PaymentGateway</h3>
+<p>Cada vez que el <code>PaymentGateway</code> recibe un pago, mintea
+una pieza random al pagador. Es la versión “real” del
+<code>_onPaid</code> que dejamos como hook abstracto en clase 2:</p>
+<pre class="solidity"><code>function _onPaid(address payer, uint256 amount, bytes32 action) internal override {
+    // mintea pieza random como &quot;loot box&quot; cada vez que pagan
+    bytes32 entropy = keccak256(abi.encode(payer, amount, block.prevrandao, action));
+    setBonusNFT.mintRandom(payer, entropy);
+}</code></pre>
+<p><strong>El loop es</strong>: pagar → recibir pieza random → ver el
+grid en el frontend → si están cerca de un combo, comprar otro ticket o
+tradear con un amigo. El sistema crea su propia demanda.</p>
+<hr />
+<h2 id="parte-3--tokenomics-básica">Parte 3 — Tokenomics básica</h2>
+<p>Ahora que tienen ERC-20 + ERC-721 + Set Bonus + PaymentGateway, falta
+atar todo con una <strong>tokenomics que cierre</strong>: por qué
+alguien compra el token, cómo se gana, cómo se gasta, cómo se sostiene
+en el tiempo.</p>
+<h3 id="los-4-mecanismos-clásicos">Los 4 mecanismos clásicos</h3>
+<table>
+<thead>
+<tr>
+<th>Mecanismo</th>
+<th>Qué hace</th>
+<th>Cuándo usarlo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Burn</strong> (1% / tx)</td>
+<td>Quema parte del token en cada transferencia → supply baja → precio
+sube</td>
+<td>$VBK, $IDEA. <strong>Tokens utility con muchas tx.</strong></td>
+</tr>
+<tr>
+<td><strong>Dividendos USDT</strong> (mensual)</td>
+<td>Smart contract distribuye USDT a holders proporcionalmente</td>
+<td>$DPF, $RNW. <strong>Tokens security con activo real
+detrás.</strong></td>
+</tr>
+<tr>
+<td><strong>Staking</strong> (bloquear N días)</td>
+<td>Lockear tokens → APY extra + voto x2</td>
+<td>Los 4 — incentiva no vender.</td>
+</tr>
+<tr>
+<td><strong>Governance</strong></td>
+<td>Holders votan decisiones (qué proyecto se financia, ampliación,
+operador)</td>
+<td>Los 4 — alinea inversor con plataforma.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="burn-por-transacción-1--tx">Burn por transacción (1% / tx)</h3>
+<pre class="solidity"><code>// extiende ERC20
+function _update(address from, address to, uint256 value) internal override {
+    if (from != address(0) &amp;&amp; to != address(0)) {
+        uint256 burnAmount = value / 100;          // 1%
+        super._update(from, address(0), burnAmount); // burn
+        super._update(from, to, value - burnAmount); // resto
+    } else {
+        super._update(from, to, value);             // mint o burn directo
+    }
+}</code></pre>
+<blockquote>
+<p>⚠️ <strong>Cuidado</strong>: si una DEX (Uniswap) calcula slippage
+sin saber del burn, las swaps fallan. Para listing público se usa
+<strong>whitelist</strong> (la DEX queda exenta del burn). En testnet
+ignorenlo.</p>
+</blockquote>
+<h3 id="dividendos-en-usdt-depfund--rnw--ideafy">Dividendos en USDT
+(DepFund / RNW / IDEAFY)</h3>
+<p>El contrato del proyecto recibe USDT mensual y lo reparte a los
+holders del sub-token según su balance:</p>
+<pre class="solidity"><code>function distribute(uint256 amount) external onlyOperator {
+    require(usdt.transferFrom(msg.sender, address(this), amount), &quot;transfer failed&quot;);
+    uint256 supply = totalSupply();
+    accPerShare += (amount * 1e18) / supply;       // acumulador escalado
+    emit Distributed(amount, supply);
+}
+
+function claim() external nonReentrant {
+    uint256 owed = (balanceOf(msg.sender) * accPerShare / 1e18) - claimed[msg.sender];
+    claimed[msg.sender] += owed;
+    require(usdt.transfer(msg.sender, owed), &quot;claim failed&quot;);
+    emit Claimed(msg.sender, owed);
+}</code></pre>
+<p><strong>Patrón “pull payments”</strong>: el contrato no manda USDT a
+10.000 holders (eso costaría miles en gas). Cada holder llama
+<code>claim()</code> cuando quiere — barato y escalable.</p>
+<h3 id="niveles-de-fan--inversor-gamification-del-holding">Niveles de
+fan / inversor (gamification del holding)</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Tier 1</th>
+<th>Tier 2</th>
+<th>Tier 3</th>
+<th>Tier 4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>VibeCheck</strong></td>
+<td>Bronce (1+ evento)</td>
+<td>Plata (5+)</td>
+<td>Oro (15+)</td>
+<td>Diamante (50+)</td>
+</tr>
+<tr>
+<td><strong>DepFund</strong></td>
+<td>Seed</td>
+<td>Growth (+$500K)</td>
+<td>Gold (+$2M)</td>
+<td>Whale (+$5M)</td>
+</tr>
+<tr>
+<td><strong>RNW</strong></td>
+<td>Explorer</td>
+<td>Builder (+$1K)</td>
+<td>Pioneer (+$10K)</td>
+<td>Founder (+$50K)</td>
+</tr>
+<tr>
+<td><strong>IDEAFY</strong></td>
+<td>Starter (1 proyecto)</td>
+<td>Backer (3+)</td>
+<td>Angel (7+)</td>
+<td>Titan (15+)</td>
+</tr>
+</tbody>
+</table>
+<p>El tier se calcula en el contrato a partir de balance + antigüedad +
+governance activa. Y se materializa como un <strong>SBT (Soulbound
+Token)</strong> — un NFT no transferible que es la “credencial” del
+usuario.</p>
+<pre class="solidity"><code>function tierOf(address user) public view returns (uint8) {
+    uint256 bal = balanceOf(user);
+    uint256 stakedDays = stakingDays[user];
+    if (bal &gt;= 50_000e18 &amp;&amp; stakedDays &gt;= 365) return 4;  // Whale / Diamante / Founder / Titan
+    if (bal &gt;= 10_000e18 &amp;&amp; stakedDays &gt;= 180) return 3;
+    if (bal &gt;= 1_000e18  &amp;&amp; stakedDays &gt;= 90)  return 2;
+    return 1;
+}</code></pre>
+<hr />
+<h2 id="parte-4--análisis-estático-con-slither">Parte 4 — Análisis
+estático con Slither</h2>
+<p>Antes de pasar de testnet a producción, <strong>Slither es
+obligatorio</strong>. Lee tu Solidity sin ejecutarlo y te marca
+vulnerabilidades automáticamente.</p>
+<h3 id="instalación">Instalación</h3>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install slither-analyzer</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">slither</span> <span class="at">--version</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># debe responder: 0.10.x o superior</span></span></code></pre></div>
+<blockquote>
+<p>Necesitás Python 3.8+. Si fallan los imports de <code>solc</code>,
+instalá <code>solc-select</code>:
+<code>pip install solc-select &amp;&amp; solc-select install 0.8.24 &amp;&amp; solc-select use 0.8.24</code>.</p>
+</blockquote>
+<h3 id="correrlo-sobre-tu-paymentgateway">Correrlo sobre tu
+PaymentGateway</h3>
+<p>Desde la raíz del repo de la clase 2:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">slither</span> . <span class="at">--foundry-out-directory</span> out</span></code></pre></div>
+<p>Output típico (ejemplo de un PaymentGateway sin proteger bien):</p>
+<pre><code>Reentrancy in PaymentGateway.pay(uint256,bytes32) (src/PaymentGateway.sol#21-29):
+    External calls:
+    - usdc.transferFrom(msg.sender, treasury, amount)
+    State variables written after the call(s):
+    - emit Paid(msg.sender, amount, action)
+    Severity: HIGH
+
+PaymentGateway.pay() uses unchecked return value:
+    - usdc.transferFrom(msg.sender, treasury, amount)   ← deberías usar SafeERC20
+    Severity: MEDIUM</code></pre>
+<h3 id="las-warnings-que-probablemente-vean-y-cómo-arreglarlas">Las
+warnings que probablemente vean (y cómo arreglarlas)</h3>
+<table>
+<thead>
+<tr>
+<th>Detector</th>
+<th>Qué dice</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reentrancy-eth</code> / <code>reentrancy-no-eth</code></td>
+<td>Estado escrito después de external call</td>
+<td>Aplicar <strong>Checks-Effects-Interactions</strong> (estado antes
+de <code>transferFrom</code>) o <code>nonReentrant</code> modifier</td>
+</tr>
+<tr>
+<td><code>unchecked-transfer</code></td>
+<td>Llamaste <code>transfer</code> o <code>transferFrom</code> sin
+chequear el return</td>
+<td>Usar <code>SafeERC20.safeTransferFrom</code> de OpenZeppelin</td>
+</tr>
+<tr>
+<td><code>tx-origin</code></td>
+<td>Auth con <code>tx.origin</code></td>
+<td>Reemplazar por <code>msg.sender</code>. <code>tx.origin</code> es
+vulnerable a phishing.</td>
+</tr>
+<tr>
+<td><code>solc-version</code></td>
+<td>Versión muy vieja o muy nueva</td>
+<td>Pinear <code>pragma solidity 0.8.24;</code></td>
+</tr>
+<tr>
+<td><code>pragma</code></td>
+<td>Wildcard <code>^</code> permite versiones futuras</td>
+<td>Lo mismo: pinear exacto</td>
+</tr>
+<tr>
+<td><code>naming-convention</code></td>
+<td>Constants no en UPPER_CASE</td>
+<td>Cosmético — opcional</td>
+</tr>
+<tr>
+<td><code>low-level-calls</code></td>
+<td>Usaste <code>.call{value: ...}("")</code></td>
+<td>Si es a propósito (forwardear ETH), agregar comentario
+<code>// slither-disable-next-line low-level-calls</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="documentar-lo-que-no-arreglás">Documentar lo que NO
+arreglás</h3>
+<p>Si una warning queda como acepted-risk (ej: usar
+<code>block.prevrandao</code> para randomness no crítica), agregalo a
+<code>SECURITY.md</code>:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">## Findings aceptados</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Pseudo-randomness en SetBonusNFT.mintRandom**: usamos <span class="in">`keccak256(blockhash, sender)`</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  porque las piezas son cosméticas y el costo de Chainlink VRF no se justifica en testnet.</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  En producción se migra a VRF.</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Burn 1% / tx en MyToken**: warning de slippage en DEX. Mitigación: whitelist de pools.</span></code></pre></div>
+<blockquote>
+<p>🎯 <strong>Lo que el TP final pide</strong>: corrieron Slither, hay 0
+findings de severidad HIGH, los MEDIUM están justificados en
+<code>SECURITY.md</code>.</p>
+</blockquote>
+<hr />
+<h2 id="parte-5--cómo-plugar-el-stack-a-tu-proyecto">Parte 5 — Cómo
+plugar el stack a tu proyecto</h2>
+<p>Esta es la parte donde <strong>cada equipo divergente</strong>. La
+pieza común son los 4 contratos:</p>
+<pre><code>PaymentGateway (clase 2)
+   ↓ recibe USDC
+   ↓ llama _onPaid()
+ERC-20 del proyecto (clase 2)
+   ↓ mintea / quema / distribuye
+ERC-721 del proyecto (hoy)
+   ↓ mintea pieza Set Bonus
+Tier / Governance (hoy)
+   ↓ recalcula tier del usuario</code></pre>
+<p>Lo que cambia es <strong>qué dispara cada cosa</strong>. Tabla:</p>
+<h3 id="mapa-proyecto-por-proyecto">Mapa proyecto por proyecto</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>VibeCheck</strong></th>
+<th><strong>DepFund</strong></th>
+<th><strong>RNW</strong></th>
+<th><strong>IDEAFY</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Disparador del pago</strong></td>
+<td>Compra de entrada para evento</td>
+<td>Inversión en complejo deportivo</td>
+<td>Inversión en parque solar/eólico</td>
+<td>Inversión en proyecto del creador</td>
+</tr>
+<tr>
+<td><strong>Lo que mintea el <code>_onPaid</code></strong></td>
+<td>Ticket NFT (con <code>eventId</code>, fila, asiento) + 10 $VBK</td>
+<td>Shares de $DPF proporcionales</td>
+<td>$RNW + registro de perfil de riesgo (inicial / consolidado)</td>
+<td>Sub-token del proyecto (<code>$IDEA-CERV</code>) + 1 pieza</td>
+</tr>
+<tr>
+<td><strong>Set Bonus drop</strong></td>
+<td>1 pieza del cartel del evento</td>
+<td>1 pieza del plano del complejo</td>
+<td>1 pieza de la grilla solar</td>
+<td>1 pieza del portfolio del creador</td>
+</tr>
+<tr>
+<td><strong>Tokenomics activa</strong></td>
+<td>Burn 2%/tx + cashback 2% en $VBK</td>
+<td>Dividendos USDT mensuales</td>
+<td>Dividendos USDT + staking +2% APY</td>
+<td>Burn 1%/tx en $IDEA + dividendos USDT en sub-tokens</td>
+</tr>
+<tr>
+<td><strong>Governance activa</strong></td>
+<td>Holders votan features de plataforma</td>
+<td>Holders votan ampliaciones (pileta, gym, operador)</td>
+<td>Holders votan qué proyecto se financia próximo</td>
+<td>Holders de $IDEA votan qué proyectos se aprueban</td>
+</tr>
+<tr>
+<td><strong>Tier que calcula el SBT</strong></td>
+<td>Bronce → Diamante por asistencia</td>
+<td>Seed → Whale por monto + governance</td>
+<td>Explorer → Founder por staking</td>
+<td>Starter → Titan por proyectos fondeados</td>
+</tr>
+</tbody>
+</table>
+<h3 id="esqueleto-del-_onpaid-por-proyecto">Esqueleto del
+<code>_onPaid</code> por proyecto</h3>
+<p><strong>VibeCheck</strong> — <code>_onPaid</code> mintea ticket NFT y
+reparte $VBK al fan:</p>
+<pre class="solidity"><code>function _onPaid(address payer, uint256 amount, bytes32 action) internal override {
+    // 1. Mintea ticket NFT
+    uint256 ticketId = ticketNFT.mint(payer, _eventURI(action));
+    // 2. Reparte $VBK como cashback (2%)
+    vbk.mint(payer, (amount * 2) / 100);
+    // 3. Pieza Set Bonus random
+    bytes32 entropy = keccak256(abi.encode(payer, amount, block.prevrandao));
+    pieces.mintRandom(payer, entropy);
+    // 4. Recalcula tier
+    tierRegistry.refresh(payer);
+}</code></pre>
+<p><strong>DepFund</strong> — <code>_onPaid</code> emite shares del
+complejo:</p>
+<pre class="solidity"><code>function _onPaid(address payer, uint256 amount, bytes32 action) internal override {
+    // amount es el USDC invertido. action codifica el complexId.
+    uint256 shares = (amount * 1e18) / pricePerShare;
+    dpf.mint(payer, shares);                       // shares del complejo
+    pieces.mintRandom(payer, _entropy(payer, action));
+    investorRegistry.recordInvestment(payer, action, amount);
+}</code></pre>
+<p><strong>RNW</strong> — <code>_onPaid</code> registra inversor con su
+perfil de riesgo:</p>
+<pre class="solidity"><code>function _onPaid(address payer, uint256 amount, bytes32 action) internal override {
+    // action codifica projectId + perfil (inicial / consolidado)
+    (bytes32 projectId, uint8 riskProfile) = _decode(action);
+    uint256 tokens = (amount * 1e18) / pricePerToken[projectId];
+    rnw.mint(payer, tokens);
+    riskProfiles[payer][projectId] = riskProfile; // Inicial = 0, Consolidado = 1
+    pieces.mintRandom(payer, _entropy(payer, action));
+}</code></pre>
+<p><strong>IDEAFY</strong> — <code>_onPaid</code> rutea al sub-token del
+proyecto:</p>
+<pre class="solidity"><code>function _onPaid(address payer, uint256 amount, bytes32 action) internal override {
+    bytes32 projectId = action;                    // ej: keccak256(&quot;CERV&quot;)
+    SubToken sub = subTokens[projectId];
+    require(address(sub) != address(0), &quot;unknown project&quot;);
+    uint256 amt = (amount * 1e18) / sub.pricePerToken();
+    sub.mint(payer, amt);                          // $IDEA-CERV, $IDEA-PIZZA, etc.
+    pieces.mintRandom(payer, _entropy(payer, action));
+}</code></pre>
+<blockquote>
+<p>💡 <strong>El truco está en <code>bytes32 action</code></strong>. Es
+32 bytes libres que cada equipo usa para codificar <strong>lo que su
+proyecto necesita</strong>: para VibeCheck es <code>eventId</code>, para
+DepFund es <code>complexId</code>, para RNW es
+<code>projectId | riskProfile</code>, para IDEAFY es
+<code>projectId</code>. Mismo <code>PaymentGateway</code>, semántica
+distinta.</p>
+</blockquote>
+<hr />
+<h2
+id="parte-6--decisiones-de-arquitectura-qué-red-usar-para-producción">Parte
+6 — Decisiones de arquitectura: qué red usar para producción</h2>
+<p>Hasta acá deployamos todo en <strong>Sepolia</strong> (testnet de
+Ethereum L1). Para producción, <strong>L1 mainnet sale carísimo</strong>
+— un mint cuesta $5-20 USD en gas. Para sus proyectos van a usar una
+<strong>L2</strong> (rollup que hereda seguridad de Ethereum pero
+ejecuta más barato).</p>
+<h3 id="comparativa-rápida">Comparativa rápida</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Ethereum L1</th>
+<th><strong>Polygon</strong></th>
+<th><strong>Base</strong></th>
+<th><strong>Arbitrum</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Costo / tx</td>
+<td>~$2-20 USD</td>
+<td>~$0.001</td>
+<td>~$0.01</td>
+<td>~$0.05</td>
+</tr>
+<tr>
+<td>Tiempo bloque</td>
+<td>12 s</td>
+<td>2 s</td>
+<td>2 s</td>
+<td>0.25 s</td>
+</tr>
+<tr>
+<td>EVM compat</td>
+<td>Nativo</td>
+<td>100%</td>
+<td>100% (es OP rollup)</td>
+<td>100% (es OP rollup)</td>
+</tr>
+<tr>
+<td>Quién está atrás</td>
+<td>Ethereum Foundation</td>
+<td>Polygon Labs</td>
+<td>Coinbase</td>
+<td>Offchain Labs</td>
+</tr>
+<tr>
+<td>Stablecoins nativas</td>
+<td>USDC, USDT</td>
+<td>USDC, USDT, DAI</td>
+<td>USDC oficial</td>
+<td>USDC, USDT</td>
+</tr>
+<tr>
+<td>Wallet support</td>
+<td>MetaMask out of the box</td>
+<td>MetaMask + 1 click</td>
+<td>MetaMask + 1 click</td>
+<td>MetaMask + 1 click</td>
+</tr>
+<tr>
+<td>Adopción Argentina</td>
+<td>Bombo, Lemon, Belo</td>
+<td>Lemon, Buenbit (transfer)</td>
+<td>Coinbase users</td>
+<td>Mercado DeFi-fi</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cuál-elegir-según-el-proyecto">Cuál elegir según el
+proyecto</h3>
+<table>
+<thead>
+<tr>
+<th>Si tu proyecto es…</th>
+<th>Recomendación</th>
+<th>Por qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>VibeCheck</strong> (muchas tx chicas, fans casuales)</td>
+<td><strong>Polygon</strong></td>
+<td>Costo ínfimo. 5.000 tickets / mes = $5 USD total en gas.</td>
+</tr>
+<tr>
+<td><strong>DepFund</strong> (pocas tx, montos grandes)</td>
+<td><strong>Base</strong></td>
+<td>Coinbase ecosystem, USDC nativa, regulatorio más prolijo.</td>
+</tr>
+<tr>
+<td><strong>RNW</strong> (oracle de IoT, datos kWh)</td>
+<td><strong>Polygon</strong> o <strong>Arbitrum</strong></td>
+<td>Ambos tienen Chainlink stable. Polygon es más barato.</td>
+</tr>
+<tr>
+<td><strong>IDEAFY</strong> (multi-rubro, sub-tokens)</td>
+<td><strong>Base</strong></td>
+<td>Mejor stack de DeFi para liquidity de sub-tokens.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>🎯 <strong>Para el TP</strong>: Sepolia es obligatorio (gratis). Si
+<strong>además</strong> deployan en Polygon/Base/Arbitrum testnet
+(Mumbai, Base Sepolia, Arbitrum Sepolia respectivamente), suma puntos.
+Mainnet <strong>NO</strong> es obligatorio — no quiero que alguien queme
+USD reales por error.</p>
+</blockquote>
+<h3 id="lo-que-cambia-para-mover-sepolia--otra-red">Lo que cambia para
+mover Sepolia → otra red</h3>
+<p><strong>Foundry</strong>: solo cambia <code>--rpc-url</code> y la API
+key del explorer:</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sepolia</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> create ... <span class="at">--rpc-url</span> https://ethereum-sepolia-rpc.publicnode.com <span class="at">--account</span> dev</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Base Sepolia</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> create ... <span class="at">--rpc-url</span> https://sepolia.base.org <span class="at">--account</span> dev</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Polygon Amoy (testnet)</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> create ... <span class="at">--rpc-url</span> https://rpc-amoy.polygon.technology <span class="at">--account</span> dev</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Arbitrum Sepolia</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> create ... <span class="at">--rpc-url</span> https://sepolia-rollup.arbitrum.io/rpc <span class="at">--account</span> dev</span></code></pre></div>
+<p><strong>Frontend (wagmi)</strong>: cambia 1 import:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode ts"><code class="sourceCode typescript"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { sepolia<span class="op">,</span> baseSepolia<span class="op">,</span> polygonAmoy<span class="op">,</span> arbitrumSepolia } <span class="im">from</span> <span class="st">&#39;wagmi/chains&#39;</span><span class="op">;</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> config <span class="op">=</span> <span class="fu">getDefaultConfig</span>({</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  appName<span class="op">:</span> <span class="st">&#39;TuProyecto&#39;</span><span class="op">,</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  projectId<span class="op">:</span> <span class="st">&#39;tu_walletconnect_id&#39;</span><span class="op">,</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  chains<span class="op">:</span> [sepolia<span class="op">,</span> baseSepolia]<span class="op">,</span>   <span class="co">// multi-chain si querés</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  ssr<span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<p><strong>MetaMask</strong>: la primera vez te pide aprobar la red
+nueva. Aceptar.</p>
+<hr />
+<h2 id="parte-7--demo-final-del-módulo-qué-se-llevan">Parte 7 — Demo
+final del módulo (qué se llevan)</h2>
+<p>Después de las 4 clases, cada equipo tiene en producción
+(testnet):</p>
+<ul class="task-list">
+<li><label><input
+type="checkbox" /><strong><code>PaymentGateway</code></strong> que cobra
+USDC + emite evento <code>Paid</code> + protección reentrancy (clase
+2).</label></li>
+<li><label><input type="checkbox" /><strong>ERC-20</strong> propio del
+proyecto (<code>$VBK</code> / <code>$DPF</code> / <code>$RNW</code> /
+<code>$IDEA</code>) con burn / dividendos / staking según
+corresponda.</label></li>
+<li><label><input type="checkbox" /><strong>ERC-721 Set Bonus</strong>
+que mintea piezas random con rareza (hoy).</label></li>
+<li><label><input type="checkbox" /><strong>Frontend Next.js</strong>
+con wagmi + RainbowKit, conectado a su contrato (clase 3).</label></li>
+<li><label><input type="checkbox" /><strong>Análisis Slither</strong>
+con 0 findings HIGH y <code>SECURITY.md</code> que documenta los MEDIUM
+(hoy).</label></li>
+<li><label><input type="checkbox" />Todo deployado en Sepolia (mínimo) o
+además en Base/Polygon/Arbitrum testnet.</label></li>
+<li><label><input type="checkbox" />Verificado en Etherscan /
+Basescan.</label></li>
+</ul>
+<blockquote>
+<p>🎉 Cada equipo tiene <strong>su pasarela de pago Web3 corriendo
+end-to-end</strong>, con su tokenomics, su gamification, y su frontend
+público. El módulo blockchain del SIP cierra acá.</p>
+</blockquote>
+<hr />
+<h2 id="tarea-final-del-tp--entregable">Tarea final del TP —
+entregable</h2>
+<p><strong>Plazo</strong>: el spec completo del TP del SIP define la
+fecha de entrega final del módulo. Acá va lo específico de
+blockchain.</p>
+<h3 id="qué-entregar">Qué entregar</h3>
+<ol type="1">
+<li><p><strong>Repo en GitHub</strong> con:</p>
+<ul>
+<li><code>contracts/</code> con los 4 contratos (PaymentGateway, ERC20,
+ERC721 SetBonus, TierRegistry).</li>
+<li><code>frontend/</code> con Next.js + wagmi conectado.</li>
+<li><code>test/</code> con tests Foundry: coverage ≥ 70%, al menos 2
+fuzz tests, test de Set Bonus.</li>
+<li><code>SECURITY.md</code> con output de Slither + findings aceptados
+justificados.</li>
+<li><code>README.md</code> con address de los contratos en testnet,
+Project ID de WalletConnect (sin secrets), pasos para correr.</li>
+</ul></li>
+<li><p><strong>Demo en vivo</strong> (5 min en clase) que muestre:</p>
+<ul>
+<li>Conectar wallet desde el frontend deployado en Vercel.</li>
+<li>Pagar con USDC de testnet → ver que se mintea el ERC-20 + el
+ticket/share NFT + la pieza Set Bonus.</li>
+<li>Mostrar el evento en Etherscan.</li>
+<li>Mostrar el output de Slither limpio.</li>
+</ul></li>
+<li><p><strong>Defensa</strong> (5 min): por qué eligieron esa red para
+producción, qué riesgos quedan abiertos, qué falta para llevarlo a
+mainnet real.</p></li>
+</ol>
+<h3 id="criterios-de-evaluación-alineados-con-el-sip">Criterios de
+evaluación (alineados con el SIP)</h3>
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>Peso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Contratos compilan + pasan tests</td>
+<td>25%</td>
+</tr>
+<tr>
+<td>Tokenomics coherente con el proyecto + documentada</td>
+<td>20%</td>
+</tr>
+<tr>
+<td>Frontend conecta y ejecuta el flow completo</td>
+<td>20%</td>
+</tr>
+<tr>
+<td>Slither limpio + <code>SECURITY.md</code> honesto</td>
+<td>15%</td>
+</tr>
+<tr>
+<td>Set Bonus funcional + visualizable</td>
+<td>10%</td>
+</tr>
+<tr>
+<td>Demo + defensa</td>
+<td>10%</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="cierre--qué-nos-llevamos-del-módulo">Cierre — qué nos llevamos
+del módulo</h2>
+<p>Cuatro clases. Empezamos con MetaMask y un <code>SimpleStorage</code>
+trivial. Cerramos con <strong>un sistema Web3 productivo</strong>
+plugado a su proyecto del SIP, con tokenomics, gamification y
+auditoría.</p>
+<blockquote>
+<p><strong>El contrato es una pieza más del sistema</strong>, no es
+todo. Su backend Web2 sigue ahí. Su frontend sigue ahí. Su
+observabilidad de TP2 sigue ahí. Lo que reemplazaron fue
+<strong>MercadoPago por un smart contract que ustedes escribieron,
+controlan, y pueden auditar línea por línea</strong>. Eso es lo que
+diferencia su TP final del SIP de un proyecto Web2 más.</p>
+</blockquote>
+<hr />
+<h2 id="si-algo-falla">Si algo falla</h2>
+<table>
+<thead>
+<tr>
+<th>Síntoma</th>
+<th>Probable causa</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>slither: command not found</code></td>
+<td>No está en PATH</td>
+<td><code>pip install --user slither-analyzer</code> y agregar
+<code>~/.local/bin</code> al PATH</td>
+</tr>
+<tr>
+<td><code>slither</code> falla con “Source not found”</td>
+<td>Foundry layout no detectado</td>
+<td><code>slither . --foundry-out-directory out</code> o
+<code>slither src/</code></td>
+</tr>
+<tr>
+<td><code>solc not installed for 0.8.24</code></td>
+<td>Versión no instalada</td>
+<td><code>solc-select install 0.8.24 &amp;&amp; solc-select use 0.8.24</code></td>
+</tr>
+<tr>
+<td><code>_safeMint</code> revierte en fuzz tests</td>
+<td>Foundry envía a addresses que no implementan
+<code>onERC721Received</code></td>
+<td>Usar <code>_mint</code> (sin “safe”) o filtrar <code>to</code> con
+<code>vm.assume(to.code.length == 0)</code></td>
+</tr>
+<tr>
+<td><code>nonReentrant</code> revierte llamadas válidas</td>
+<td>Estás llamando dos funciones <code>nonReentrant</code> en la misma
+tx</td>
+<td>Mover lógica interna a función <code>private</code> (sin guard)</td>
+</tr>
+<tr>
+<td>El Set Bonus siempre da el mismo slot</td>
+<td><code>entropy</code> no incluye <code>block.prevrandao</code> o
+<code>nonce</code></td>
+<td>Agregar <code>block.prevrandao</code> y un nonce que se
+incremente</td>
+</tr>
+<tr>
+<td>Slither marca <code>unchecked-transfer</code> en USDT</td>
+<td>USDT real no devuelve bool</td>
+<td>Usar <code>SafeERC20.safeTransferFrom</code> (OpenZeppelin)</td>
+</tr>
+<tr>
+<td><code>forge create</code> en Polygon Amoy revierte</td>
+<td>Faucet de Amoy escaso</td>
+<td>Probar <a
+href="https://faucet.polygon.technology">https://faucet.polygon.technology</a>
+o pedir en el foro del campus</td>
+</tr>
+<tr>
+<td>Frontend no muestra la pieza NFT</td>
+<td>El RPC no devolvió <code>tokenURI</code> aún (cache)</td>
+<td>Esperar 30 s, o invalidar query con
+<code>queryClient.invalidateQueries</code></td>
+</tr>
+<tr>
+<td>Dividendos <code>claim()</code> devuelve 0</td>
+<td>El distribute fue antes de tu compra</td>
+<td>Es correcto — el <code>accPerShare</code> solo cuenta hacia
+adelante. Ese es el patrón.</td>
+</tr>
+</tbody>
+</table>
+<p>Lo demás, foro del campus.</p>
+
+    <nav class="page-prev-next" aria-label="Navegación entre páginas">
+      <a class="prev-link" href="#" data-slot="prev" hidden>
+        <span class="arrow">←</span>
+        <span class="nav-meta">
+          <span class="nav-label">Anterior</span>
+          <span class="nav-title" data-slot="prev-title"></span>
+        </span>
+      </a>
+      <a class="next-link" href="#" data-slot="next" hidden>
+        <span class="nav-meta">
+          <span class="nav-label">Siguiente</span>
+          <span class="nav-title" data-slot="next-title"></span>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+    </nav>
+
+    <nav class="page-nav-bottom">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+    </nav>
+  </main>
+</div>
+
+<footer class="unlu-footer">
+  <div>
+    UNLu · Departamento de Ciencias Básicas · Seminario de Integración Profesional <strong>2026</strong>
+    · Dr. David Petrocelli
+  </div>
+</footer>
+
+<script>
+// Sidebar show/hide toggle (preference persisted in localStorage)
+(function () {
+  const sidebar = document.getElementById('toc-sidebar');
+  const layout = document.querySelector('.layout');
+  const hideBtn = document.getElementById('sidebar-hide');
+  const showBtn = document.getElementById('sidebar-show');
+  if (!sidebar || !layout || !hideBtn || !showBtn) return;
+
+  const KEY = 'unlu.dcb.sidebar.hidden';
+
+  function apply(hidden) {
+    layout.classList.toggle('sidebar-hidden', hidden);
+    showBtn.classList.toggle('visible', hidden);
+  }
+
+  apply(localStorage.getItem(KEY) === '1');
+
+  hideBtn.addEventListener('click', () => {
+    localStorage.setItem(KEY, '1');
+    apply(true);
+  });
+  showBtn.addEventListener('click', () => {
+    localStorage.removeItem(KEY);
+    apply(false);
+  });
+})();
+
+// Wrap each H2 (and its following content until the next H2) in a <details open>
+// element so users can collapse/expand sections.
+(function () {
+  const main = document.querySelector('main.content');
+  if (!main) return;
+
+  // Collect direct-child H2 headings so we don't touch nested ones (e.g., inside details we'll create)
+  const headings = Array.from(main.children).filter(el => el.tagName === 'H2');
+
+  headings.forEach(h2 => {
+    const details = document.createElement('details');
+    details.open = true;
+    details.className = 'section-collapsible';
+
+    const summary = document.createElement('summary');
+    // Move heading content (incl. anchor) into the summary so anchors keep working
+    summary.innerHTML = h2.innerHTML;
+    if (h2.id) summary.id = h2.id;
+    details.appendChild(summary);
+
+    // Move siblings until next H2 into details
+    const parent = h2.parentNode;
+    let next = h2.nextSibling;
+    parent.replaceChild(details, h2);
+    while (next && !(next.nodeType === 1 && next.tagName === 'H2')) {
+      const node = next;
+      next = next.nextSibling;
+      details.appendChild(node);
+    }
+  });
+
+  // If there's a hash in the URL, ensure the target's <details> is open
+  function openDetailsForHash(hash) {
+    if (!hash) return;
+    const target = document.getElementById(hash.replace(/^#/, ''));
+    if (!target) return;
+    let p = target.closest('details');
+    while (p) { p.open = true; p = p.parentElement && p.parentElement.closest('details'); }
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  openDetailsForHash(window.location.hash);
+  window.addEventListener('hashchange', () => openDetailsForHash(window.location.hash));
+
+  // Wire up "Expand all" / "Collapse all" controls in the inline TOC
+  document.querySelectorAll('.toc-controls [data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const action = btn.getAttribute('data-action');
+      const open = action === 'expand-all';
+      document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
+    });
+  });
+})();
+
+// Populate prev/next navigation based on the current page's banner-num
+(function () {
+  const pill = document.querySelector('.banner-pill');
+  const nav = document.querySelector('.page-prev-next');
+  if (!pill || !nav) return;
+
+  const key = (pill.textContent || '').trim().toUpperCase();
+
+  // Map banner-num → { prev, next }
+  // Each entry: { href, title } (or null if not present)
+  const MAP = {
+    'TP 0': {
+      prev: null,
+      next: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' }
+    },
+    'TP 1 · PARTE 1': {
+      prev: { href: 'practica-0.html', title: 'TP 0 — Prerrequisitos' },
+      next: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' }
+    },
+    'TP 1 · PARTE 2': {
+      prev: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' },
+      next: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' }
+    },
+    'TP 2 · PARTE 1': {
+      prev: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' },
+      next: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' }
+    },
+    'TP 2 · PARTE 2': {
+      prev: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' },
+      next: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' }
+    },
+    'TP 2 · PARTE 3': {
+      prev: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' },
+      next: { href: 'practica-2-parte-4.html', title: 'Práctica II · Parte 4' }
+    },
+    'TP 2 · PARTE 4': {
+      prev: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' },
+      next: null
+    }
+  };
+
+  const entry = MAP[key];
+  if (!entry) return;
+
+  const prevLink = nav.querySelector('[data-slot="prev"]');
+  const nextLink = nav.querySelector('[data-slot="next"]');
+  const prevTitle = nav.querySelector('[data-slot="prev-title"]');
+  const nextTitle = nav.querySelector('[data-slot="next-title"]');
+
+  if (entry.prev && prevLink && prevTitle) {
+    prevLink.setAttribute('href', entry.prev.href);
+    prevTitle.textContent = entry.prev.title;
+    prevLink.hidden = false;
+  }
+  if (entry.next && nextLink && nextTitle) {
+    nextLink.setAttribute('href', entry.next.href);
+    nextTitle.textContent = entry.next.title;
+    nextLink.hidden = false;
+  }
+
+  // If neither slot is shown, hide the whole nav
+  if ((!entry.prev) && (!entry.next)) {
+    nav.style.display = 'none';
+  }
+})();
+
+// Open all external links in a new tab (preserves the current page).
+// Internal anchors (#hash), relative links and same-origin links stay in-tab.
+(function () {
+  const here = window.location.hostname;
+  document.querySelectorAll('a[href]').forEach(a => {
+    const href = a.getAttribute('href');
+    if (!href) return;
+    // Skip anchors and pure relative links
+    if (href.startsWith('#') || href.startsWith('/') || !/^https?:\/\//i.test(href)) return;
+    try {
+      const url = new URL(href);
+      if (url.hostname && url.hostname !== here) {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      }
+    } catch (_) {
+      // Malformed URL — ignore
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <meta name="generator" content="pandoc + UNLu/DCB template">
+  <title>Blockchain · Clase 1 — Fundamentos + setup + tu primer contrato
+— UNLu DCB</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+
+<header class="unlu-header">
+  <a href="index.html" class="brand" title="Volver al menú principal">
+    <img src="assets/unlu_escudo.png" alt="Universidad Nacional de Luján" class="logo unlu">
+    <div class="brand-text">
+      <div class="institution">Universidad Nacional de Luján</div>
+      <div class="department">Departamento de Ciencias Básicas</div>
+    </div>
+    <img src="assets/logo_dcb.png" alt="Departamento de Ciencias Básicas" class="logo dcb">
+  </a>
+  <div class="course-bar">
+    <span class="course">Seminario de Integración Profesional</span>
+    <span class="year">2026</span>
+    <span class="instructor">Dr. David Petrocelli</span>
+  </div>
+</header>
+
+<button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
+
+<div class="layout">
+  <aside class="toc-sidebar" id="toc-sidebar">
+    <div class="toc-header">
+      <div class="toc-title">Contenidos</div>
+      <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
+    </div>
+    <ul>
+    <li><a
+    href="#blockchain--clase-1--fundamentos--setup--tu-primer-contrato"
+    id="toc-blockchain--clase-1--fundamentos--setup--tu-primer-contrato">Blockchain
+    · Clase 1 — Fundamentos + setup + tu primer contrato</a>
+    <ul>
+    <li><a href="#qué-vamos-a-hacer-hoy"
+    id="toc-qué-vamos-a-hacer-hoy">¿Qué vamos a hacer hoy?</a></li>
+    <li><a href="#parte-1--qué-cambia-entre-web2-y-web3"
+    id="toc-parte-1--qué-cambia-entre-web2-y-web3">Parte 1 — ¿Qué cambia
+    entre Web2 y Web3?</a>
+    <ul>
+    <li><a
+    href="#conceptos-que-aparecen-y-vamos-a-explicar-a-medida-que-los-necesiten"
+    id="toc-conceptos-que-aparecen-y-vamos-a-explicar-a-medida-que-los-necesiten">Conceptos
+    que aparecen y vamos a explicar a medida que los necesiten</a></li>
+    </ul></li>
+    <li><a href="#parte-2--setup-metamask--sepolia"
+    id="toc-parte-2--setup-metamask--sepolia">Parte 2 — Setup MetaMask +
+    Sepolia</a>
+    <ul>
+    <li><a href="#21-instalar-metamask"
+    id="toc-21-instalar-metamask">2.1 Instalar MetaMask</a></li>
+    <li><a href="#22-activar-la-red-sepolia"
+    id="toc-22-activar-la-red-sepolia">2.2 Activar la red
+    Sepolia</a></li>
+    <li><a href="#23-pedir-eth-a-un-faucet"
+    id="toc-23-pedir-eth-a-un-faucet">2.3 Pedir ETH a un faucet</a></li>
+    <li><a href="#24-verificar-tu-address-en-etherscan"
+    id="toc-24-verificar-tu-address-en-etherscan">2.4 Verificar tu
+    address en Etherscan</a></li>
+    </ul></li>
+    <li><a href="#parte-3--instalar-foundry"
+    id="toc-parte-3--instalar-foundry">Parte 3 — Instalar Foundry</a>
+    <ul>
+    <li><a href="#31-instalación" id="toc-31-instalación">3.1
+    Instalación</a></li>
+    <li><a href="#32-verificar" id="toc-32-verificar">3.2
+    Verificar</a></li>
+    <li><a href="#33-extensión-solidity-para-vs-code"
+    id="toc-33-extensión-solidity-para-vs-code">3.3 Extensión Solidity
+    para VS Code</a></li>
+    </ul></li>
+    <li><a href="#parte-4--clonar-el-repo-de-la-clase"
+    id="toc-parte-4--clonar-el-repo-de-la-clase">Parte 4 — Clonar el
+    repo de la clase</a></li>
+    <li><a href="#parte-5--tour-del-contrato-simplestorage"
+    id="toc-parte-5--tour-del-contrato-simplestorage">Parte 5 — Tour del
+    contrato <code>SimpleStorage</code></a></li>
+    <li><a href="#parte-6--tests-con-foundry"
+    id="toc-parte-6--tests-con-foundry">Parte 6 — Tests con
+    Foundry</a></li>
+    <li><a href="#parte-7--deploy-a-sepolia"
+    id="toc-parte-7--deploy-a-sepolia">Parte 7 — Deploy a Sepolia</a>
+    <ul>
+    <li><a href="#71-importar-tu-wallet-a-foundry"
+    id="toc-71-importar-tu-wallet-a-foundry">7.1 Importar tu wallet a
+    Foundry</a></li>
+    <li><a href="#72-configurar-variables-de-entorno"
+    id="toc-72-configurar-variables-de-entorno">7.2 Configurar variables
+    de entorno</a></li>
+    <li><a href="#73-deployar" id="toc-73-deployar">7.3
+    Deployar</a></li>
+    </ul></li>
+    <li><a href="#parte-8--interactuar-con-cast"
+    id="toc-parte-8--interactuar-con-cast">Parte 8 — Interactuar con
+    <code>cast</code></a>
+    <ul>
+    <li><a href="#81-leer-estado-cast-call--gratis-instantáneo"
+    id="toc-81-leer-estado-cast-call--gratis-instantáneo">8.1 Leer
+    estado (<code>cast call</code> — gratis, instantáneo)</a></li>
+    <li><a href="#82-modificar-estado-cast-send--firma--gas"
+    id="toc-82-modificar-estado-cast-send--firma--gas">8.2 Modificar
+    estado (<code>cast send</code> — firma + gas)</a></li>
+    <li><a href="#83-releer" id="toc-83-releer">8.3 Releer</a></li>
+    <li><a href="#84-inspeccionar-la-tx--el-evento"
+    id="toc-84-inspeccionar-la-tx--el-evento">8.4 Inspeccionar la tx +
+    el evento</a></li>
+    </ul></li>
+    <li><a href="#parte-9--verificar-en-etherscan"
+    id="toc-parte-9--verificar-en-etherscan">Parte 9 — Verificar en
+    Etherscan</a></li>
+    <li><a href="#cierre--qué-nos-llevamos"
+    id="toc-cierre--qué-nos-llevamos">Cierre — qué nos llevamos</a></li>
+    <li><a href="#tarea-para-clase-2" id="toc-tarea-para-clase-2">Tarea
+    para clase 2</a></li>
+    <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
+    falla</a></li>
+    </ul></li>
+    </ul>
+    <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
+      <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <nav class="page-breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Inicio</a>
+      <span class="sep">›</span>
+      <span class="current">BC · CLASE 1</span>
+    </nav>
+    <nav class="page-nav-top">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+      <span class="banner-pill">BC · CLASE 1</span>
+    </nav>
+
+    <details class="toc-inline" open>
+      <summary>📑 Índice del documento</summary>
+      <ul>
+      <li><a
+      href="#blockchain--clase-1--fundamentos--setup--tu-primer-contrato"
+      id="toc-blockchain--clase-1--fundamentos--setup--tu-primer-contrato">Blockchain
+      · Clase 1 — Fundamentos + setup + tu primer contrato</a>
+      <ul>
+      <li><a href="#qué-vamos-a-hacer-hoy"
+      id="toc-qué-vamos-a-hacer-hoy">¿Qué vamos a hacer hoy?</a></li>
+      <li><a href="#parte-1--qué-cambia-entre-web2-y-web3"
+      id="toc-parte-1--qué-cambia-entre-web2-y-web3">Parte 1 — ¿Qué
+      cambia entre Web2 y Web3?</a>
+      <ul>
+      <li><a
+      href="#conceptos-que-aparecen-y-vamos-a-explicar-a-medida-que-los-necesiten"
+      id="toc-conceptos-que-aparecen-y-vamos-a-explicar-a-medida-que-los-necesiten">Conceptos
+      que aparecen y vamos a explicar a medida que los
+      necesiten</a></li>
+      </ul></li>
+      <li><a href="#parte-2--setup-metamask--sepolia"
+      id="toc-parte-2--setup-metamask--sepolia">Parte 2 — Setup MetaMask
+      + Sepolia</a>
+      <ul>
+      <li><a href="#21-instalar-metamask"
+      id="toc-21-instalar-metamask">2.1 Instalar MetaMask</a></li>
+      <li><a href="#22-activar-la-red-sepolia"
+      id="toc-22-activar-la-red-sepolia">2.2 Activar la red
+      Sepolia</a></li>
+      <li><a href="#23-pedir-eth-a-un-faucet"
+      id="toc-23-pedir-eth-a-un-faucet">2.3 Pedir ETH a un
+      faucet</a></li>
+      <li><a href="#24-verificar-tu-address-en-etherscan"
+      id="toc-24-verificar-tu-address-en-etherscan">2.4 Verificar tu
+      address en Etherscan</a></li>
+      </ul></li>
+      <li><a href="#parte-3--instalar-foundry"
+      id="toc-parte-3--instalar-foundry">Parte 3 — Instalar Foundry</a>
+      <ul>
+      <li><a href="#31-instalación" id="toc-31-instalación">3.1
+      Instalación</a></li>
+      <li><a href="#32-verificar" id="toc-32-verificar">3.2
+      Verificar</a></li>
+      <li><a href="#33-extensión-solidity-para-vs-code"
+      id="toc-33-extensión-solidity-para-vs-code">3.3 Extensión Solidity
+      para VS Code</a></li>
+      </ul></li>
+      <li><a href="#parte-4--clonar-el-repo-de-la-clase"
+      id="toc-parte-4--clonar-el-repo-de-la-clase">Parte 4 — Clonar el
+      repo de la clase</a></li>
+      <li><a href="#parte-5--tour-del-contrato-simplestorage"
+      id="toc-parte-5--tour-del-contrato-simplestorage">Parte 5 — Tour
+      del contrato <code>SimpleStorage</code></a></li>
+      <li><a href="#parte-6--tests-con-foundry"
+      id="toc-parte-6--tests-con-foundry">Parte 6 — Tests con
+      Foundry</a></li>
+      <li><a href="#parte-7--deploy-a-sepolia"
+      id="toc-parte-7--deploy-a-sepolia">Parte 7 — Deploy a Sepolia</a>
+      <ul>
+      <li><a href="#71-importar-tu-wallet-a-foundry"
+      id="toc-71-importar-tu-wallet-a-foundry">7.1 Importar tu wallet a
+      Foundry</a></li>
+      <li><a href="#72-configurar-variables-de-entorno"
+      id="toc-72-configurar-variables-de-entorno">7.2 Configurar
+      variables de entorno</a></li>
+      <li><a href="#73-deployar" id="toc-73-deployar">7.3
+      Deployar</a></li>
+      </ul></li>
+      <li><a href="#parte-8--interactuar-con-cast"
+      id="toc-parte-8--interactuar-con-cast">Parte 8 — Interactuar con
+      <code>cast</code></a>
+      <ul>
+      <li><a href="#81-leer-estado-cast-call--gratis-instantáneo"
+      id="toc-81-leer-estado-cast-call--gratis-instantáneo">8.1 Leer
+      estado (<code>cast call</code> — gratis, instantáneo)</a></li>
+      <li><a href="#82-modificar-estado-cast-send--firma--gas"
+      id="toc-82-modificar-estado-cast-send--firma--gas">8.2 Modificar
+      estado (<code>cast send</code> — firma + gas)</a></li>
+      <li><a href="#83-releer" id="toc-83-releer">8.3 Releer</a></li>
+      <li><a href="#84-inspeccionar-la-tx--el-evento"
+      id="toc-84-inspeccionar-la-tx--el-evento">8.4 Inspeccionar la tx +
+      el evento</a></li>
+      </ul></li>
+      <li><a href="#parte-9--verificar-en-etherscan"
+      id="toc-parte-9--verificar-en-etherscan">Parte 9 — Verificar en
+      Etherscan</a></li>
+      <li><a href="#cierre--qué-nos-llevamos"
+      id="toc-cierre--qué-nos-llevamos">Cierre — qué nos
+      llevamos</a></li>
+      <li><a href="#tarea-para-clase-2"
+      id="toc-tarea-para-clase-2">Tarea para clase 2</a></li>
+      <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
+      falla</a></li>
+      </ul></li>
+      </ul>
+      <div class="toc-controls">
+        <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
+        <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
+      </div>
+    </details>
+
+<h1
+id="blockchain--clase-1--fundamentos--setup--tu-primer-contrato">Blockchain
+· Clase 1 — Fundamentos + setup + tu primer contrato</h1>
+<blockquote>
+<p><strong>Objetivo de la clase</strong>: que al final de las 4 hs
+tengan <strong>un contrato propio deployado en Sepolia</strong> (testnet
+pública de Ethereum), interactúen con él desde la terminal y lo vean en
+Etherscan. Es la base sobre la que en clase 2 vamos a montar la pasarela
+de pago.</p>
+</blockquote>
+<blockquote>
+<p><strong>Pre-requisito</strong>: las TPs anteriores (k3s, Selenium,
+observabilidad) ya las tienen. <strong>No asumimos nada de Solidity ni
+blockchain previo</strong>.</p>
+</blockquote>
+<hr />
+<h2 id="qué-vamos-a-hacer-hoy">¿Qué vamos a hacer hoy?</h2>
+<ol type="1">
+<li><strong>Web2 vs Web3</strong> en 10 minutos (qué cambia, qué no — la
+analogía con MercadoPago).</li>
+<li><strong>Setup MetaMask</strong> + red <strong>Sepolia</strong> + ETH
+de faucet.</li>
+<li><strong>Instalar Foundry</strong> (<code>forge</code>,
+<code>cast</code>, <code>anvil</code>).</li>
+<li><strong>Clonar el repo de la clase</strong> con un contrato
+<code>SimpleStorage</code> listo.</li>
+<li><strong>Caminar el contrato</strong> línea por línea para entender
+Solidity básico.</li>
+<li><strong>Correr los tests</strong> con <code>forge test</code>.</li>
+<li><strong>Deployar a Sepolia</strong> y firmar la transacción con
+MetaMask.</li>
+<li><strong>Interactuar con el contrato</strong> desde la terminal
+(<code>cast call</code>, <code>cast send</code>).</li>
+<li><strong>Verificar en Etherscan</strong> para que cualquiera pueda
+ver el código fuente.</li>
+</ol>
+<p>Al cierre: cada uno tiene un contrato suyo, vivo, en una blockchain
+pública.</p>
+<hr />
+<h2 id="parte-1--qué-cambia-entre-web2-y-web3">Parte 1 — ¿Qué cambia
+entre Web2 y Web3?</h2>
+<p>Ya saben armar sistemas con backend Node/Python + DB + frontend. Web3
+<strong>no reemplaza</strong> eso — augmenta. La única pieza que cambia
+para nuestro caso (pasarela de pago) es:</p>
+<table>
+<thead>
+<tr>
+<th>En Web2 (lo que ya saben)</th>
+<th>En Web3 (lo que vamos a hacer)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Frontend + API + DB</td>
+<td><strong>Igual</strong></td>
+</tr>
+<tr>
+<td>Auth con JWT/sesiones</td>
+<td><strong>Firma criptográfica</strong> de la wallet</td>
+</tr>
+<tr>
+<td>Procesar pago con MercadoPago</td>
+<td><strong>Smart contract</strong> que recibe USDC en Sepolia</td>
+</tr>
+<tr>
+<td>Logs en Loki</td>
+<td>Logs en Loki <strong>+ eventos on-chain</strong> que cualquiera
+puede leer</td>
+</tr>
+<tr>
+<td>Despliegue en k8s</td>
+<td><strong>Igual</strong> (frontend), el contrato vive en Ethereum</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Analogía</strong>: piensen su sistema como una app que hoy
+usaría MercadoPago. Lo que vamos a hacer es <strong>reemplazar el
+“MercadoPago.charge(amount)”</strong> por un
+<code>usdc.transferFrom(buyer, treasury, amount)</code> que ejecuta un
+contrato suyo en Sepolia. El resto del sistema queda igual.</p>
+<h3
+id="conceptos-que-aparecen-y-vamos-a-explicar-a-medida-que-los-necesiten">Conceptos
+que aparecen y vamos a explicar a medida que los necesiten</h3>
+<ul>
+<li><strong>Wallet</strong> (billetera): guarda la <strong>private
+key</strong> del usuario. MetaMask es la más popular.</li>
+<li><strong>Address</strong> (dirección): identificador público de cada
+usuario o contrato. Empieza con <code>0x...</code>.</li>
+<li><strong>Transaction</strong> (tx): operación firmada con la PK que
+cambia el estado de la chain.</li>
+<li><strong>Smart contract</strong>: programa que vive en la blockchain.
+Una vez deployado, su código no cambia.</li>
+<li><strong>Gas</strong>: costo en ETH de cada transacción (en testnet
+es gratis pero usa “ETH falso”).</li>
+<li><strong>Sepolia</strong>: la <strong>testnet</strong> de Ethereum
+donde vamos a trabajar todo el módulo. Misma tecnología que mainnet,
+pero con ETH de juguete.</li>
+<li><strong>USDC</strong>: stablecoin (1 USDC ≈ 1 USD). Lo vamos a usar
+en clase 2 como el “peso” de la pasarela.</li>
+</ul>
+<blockquote>
+<p>Si quieren profundizar antes de la clase 2: lean los
+<strong>diagramas 1, 2 y 3</strong> del <a
+href="blockchain-overview.html">overview</a>. Son 5 minutos.</p>
+</blockquote>
+<hr />
+<h2 id="parte-2--setup-metamask--sepolia">Parte 2 — Setup MetaMask +
+Sepolia</h2>
+<h3 id="21-instalar-metamask">2.1 Instalar MetaMask</h3>
+<ol type="1">
+<li>Bajar la extensión desde <a
+href="https://metamask.io/download/">https://metamask.io/download/</a> —
+soporta Chrome, Brave, Firefox, Edge.</li>
+<li>Crear una <strong>wallet nueva</strong> (botón “Create a new
+wallet”).</li>
+<li>Te muestra una <strong>frase de recuperación de 12
+palabras</strong>: anotala en papel, guardala. <strong>No le saques
+foto, no la mandes por chat, no la subas a git.</strong> Quien tenga esa
+frase tiene tu wallet (y todos tus fondos si llega a haberlos).</li>
+<li>Elegí una contraseña local (es solo para desbloquear la extensión en
+tu compu).</li>
+</ol>
+<h3 id="22-activar-la-red-sepolia">2.2 Activar la red Sepolia</h3>
+<p>MetaMask viene con mainnet por defecto. Tenemos que activar
+Sepolia.</p>
+<ol type="1">
+<li>Abrí MetaMask → click en el selector de redes (arriba a la
+izquierda, dice “Ethereum Mainnet”).</li>
+<li>Click en <strong>“Show test networks”</strong> → activá el
+toggle.</li>
+<li>Seleccioná <strong>Sepolia</strong>. La barra superior debería decir
+“Sepolia” en violeta.</li>
+</ol>
+<blockquote>
+<p><strong>¿Por qué Sepolia y no mainnet?</strong> Mainnet es la red
+real, las txs cuestan ETH real (~$2-5 USD por tx). Sepolia es testnet —
+mismas reglas, tecnología y herramientas, pero el ETH es gratis (lo
+pedís a un faucet). Para todo el módulo y el TP final usamos
+Sepolia.</p>
+</blockquote>
+<h3 id="23-pedir-eth-a-un-faucet">2.3 Pedir ETH a un faucet</h3>
+<p>Necesitamos un poco de ETH de Sepolia para pagar gas. Lo pedimos
+gratis a un faucet:</p>
+<ol type="1">
+<li>Andá a <a
+href="https://www.alchemy.com/faucets/ethereum-sepolia">https://www.alchemy.com/faucets/ethereum-sepolia</a>
+(o <a
+href="https://sepoliafaucet.com">https://sepoliafaucet.com</a>).</li>
+<li>Copiá tu address de MetaMask (click en el nombre de la cuenta arriba
+→ copia automáticamente).</li>
+<li>Pegala en el faucet. Confirmá. Tarda 10-30 segundos.</li>
+<li>Refrescá MetaMask. Tenés que ver <code>~0.5 SepoliaETH</code>.</li>
+</ol>
+<blockquote>
+<p>Si el faucet pide login con email/Google, hacelo. Es para evitar
+bots.</p>
+</blockquote>
+<h3 id="24-verificar-tu-address-en-etherscan">2.4 Verificar tu address
+en Etherscan</h3>
+<p>Etherscan es el explorador público de Ethereum (también funciona para
+Sepolia).</p>
+<pre><code>https://sepolia.etherscan.io/address/&lt;TU_ADDRESS&gt;</code></pre>
+<p>Reemplazá <code>&lt;TU_ADDRESS&gt;</code> por la tuya (algo tipo
+<code>0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1</code>).</p>
+<p>Vas a ver:</p>
+<ul>
+<li>Tu balance: <code>0.5 ETH</code> (más o menos lo que te dio el
+faucet).</li>
+<li>“Transactions”: una sola tx, que es la del faucet mandándote
+ETH.</li>
+</ul>
+<p>🎯 <strong>A partir de acá tenés una wallet funcional en una
+blockchain pública.</strong> Cualquiera con tu address puede ver tu
+balance y txs.</p>
+<hr />
+<h2 id="parte-3--instalar-foundry">Parte 3 — Instalar Foundry</h2>
+<p><strong>Foundry</strong> es el toolkit estándar para desarrollar
+smart contracts. Lo usan Uniswap, OpenSea, Paradigm. Trae 3
+herramientas:</p>
+<table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Para qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>forge</code></td>
+<td>Compilar contratos, correr tests, deployar</td>
+</tr>
+<tr>
+<td><code>cast</code></td>
+<td>Hablar con la blockchain desde la terminal (leer estado, mandar
+txs)</td>
+</tr>
+<tr>
+<td><code>anvil</code></td>
+<td>Blockchain local para desarrollo (no la vamos a usar mucho —
+preferimos Sepolia)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="31-instalación">3.1 Instalación</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-L</span> https://foundry.paradigm.xyz <span class="kw">|</span> <span class="fu">bash</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc      <span class="co"># o ~/.zshrc si usás zsh</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">foundryup</span></span></code></pre></div>
+<p><code>foundryup</code> baja los binarios. Tarda menos de un
+minuto.</p>
+<h3 id="32-verificar">3.2 Verificar</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> <span class="at">--version</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># debe responder: forge Version: 1.x.x ...</span></span></code></pre></div>
+<blockquote>
+<p>⚠️ <strong>Si estás en Windows sin WSL</strong>, esto va a fallar.
+Instalá WSL2 (Ubuntu) y corré todo desde ahí.</p>
+</blockquote>
+<h3 id="33-extensión-solidity-para-vs-code">3.3 Extensión Solidity para
+VS Code</h3>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">code</span> <span class="at">--install-extension</span> juanblanco.solidity</span></code></pre></div>
+<p>Te da highlighting, autocompletado y errores inline.</p>
+<hr />
+<h2 id="parte-4--clonar-el-repo-de-la-clase">Parte 4 — Clonar el repo de
+la clase</h2>
+<p>Armé un repo con todo listo. Lo clonan, compilan, testean.</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/dpetrocelli/sip2026-blockchain-clase1.git</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> sip2026-blockchain-clase1</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> install                <span class="co"># baja deps (forge-std)</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> build                  <span class="co"># compila</span></span></code></pre></div>
+<p>Esperás ver
+<code>Solc 0.8.24 finished... Compiler run successful!</code>.</p>
+<blockquote>
+<p>Si el repo todavía no está publicado, los archivos están en el campus
+virtual; descomprímilos y posicionate en la carpeta antes del
+<code>forge build</code>.</p>
+</blockquote>
+<hr />
+<h2 id="parte-5--tour-del-contrato-simplestorage">Parte 5 — Tour del
+contrato <code>SimpleStorage</code></h2>
+<p>Abrí <code>src/SimpleStorage.sol</code> en VS Code:</p>
+<pre class="solidity"><code>// SPDX-License-Identifier: MIT
+pragma solidity 0.8.24;
+
+contract SimpleStorage {
+    uint256 private _value;
+
+    event ValueChanged(address indexed by, uint256 newValue);
+
+    function set(uint256 value) external {
+        _value = value;
+        emit ValueChanged(msg.sender, value);
+    }
+
+    function get() external view returns (uint256) {
+        return _value;
+    }
+}</code></pre>
+<p><strong>Línea por línea</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Línea</th>
+<th>Qué dice</th>
+<th>Por qué importa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>// SPDX-License-Identifier: MIT</code></td>
+<td>Licencia del contrato</td>
+<td>Solidity exige declararla. MIT está bien para clase.</td>
+</tr>
+<tr>
+<td><code>pragma solidity 0.8.24;</code></td>
+<td>Versión del compilador</td>
+<td>Pinear la versión evita sorpresas.</td>
+</tr>
+<tr>
+<td><code>contract SimpleStorage { }</code></td>
+<td>Define el contrato</td>
+<td>Como <code>class</code> en Java/Python.</td>
+</tr>
+<tr>
+<td><code>uint256 private _value;</code></td>
+<td>Variable de estado</td>
+<td>Vive en el <strong>storage</strong> del contrato (on-chain,
+persistente).</td>
+</tr>
+<tr>
+<td><code>event ValueChanged(...)</code></td>
+<td>Declara un evento</td>
+<td>Los eventos son los “logs” del contrato. Su backend los puede
+consumir desde Loki/OpenTelemetry vía un indexer.</td>
+</tr>
+<tr>
+<td><code>function set(uint256 value) external</code></td>
+<td>Función pública que <strong>modifica estado</strong></td>
+<td><code>external</code> = invocable desde afuera del contrato. Usa
+gas.</td>
+</tr>
+<tr>
+<td><code>emit ValueChanged(msg.sender, value);</code></td>
+<td>Dispara el evento</td>
+<td><code>msg.sender</code> = quien firmó la tx.</td>
+</tr>
+<tr>
+<td><code>function get() external view returns (uint256)</code></td>
+<td>Función pública que <strong>solo lee</strong></td>
+<td><code>view</code> = no modifica state, no cuesta gas (si la llamás
+desde afuera).</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚡ <strong>Este contrato es trivial pero introduce todo</strong>:
+storage, eventos, funciones que escriben (<code>set</code>) vs leen
+(<code>get</code>), <code>msg.sender</code>. Todo lo que vamos a usar en
+clase 2 con el <code>PaymentGateway</code> está acá.</p>
+</blockquote>
+<hr />
+<h2 id="parte-6--tests-con-foundry">Parte 6 — Tests con Foundry</h2>
+<p>Foundry corre los tests <strong>localmente</strong> (sin tocar
+Sepolia). Abrí <code>test/SimpleStorage.t.sol</code>:</p>
+<pre class="solidity"><code>import {Test} from &quot;forge-std/Test.sol&quot;;
+import {SimpleStorage} from &quot;../src/SimpleStorage.sol&quot;;
+
+contract SimpleStorageTest is Test {
+    SimpleStorage internal storage_;
+
+    function setUp() public {
+        storage_ = new SimpleStorage();
+    }
+
+    function test_DefaultValueIsZero() public view {
+        assertEq(storage_.get(), 0);
+    }
+
+    function test_SetUpdatesValue() public {
+        storage_.set(42);
+        assertEq(storage_.get(), 42);
+    }
+
+    function test_EmitsEventOnSet() public {
+        vm.expectEmit(true, false, false, true);
+        emit SimpleStorage.ValueChanged(address(this), 99);
+        storage_.set(99);
+    }
+}</code></pre>
+<p>Corré:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> test <span class="at">-vv</span></span></code></pre></div>
+<p><code>-vv</code> te muestra el detalle de cada test. Tienen que pasar
+los 3.</p>
+<blockquote>
+<p>Esto se va a ver muy familiar: <code>setUp</code> = beforeEach, los
+<code>test_*</code> son tests individuales, <code>assertEq</code> =
+assertion. Foundry incluye <strong>fuzzing</strong> (inputs aleatorios)
+— más adelante.</p>
+</blockquote>
+<hr />
+<h2 id="parte-7--deploy-a-sepolia">Parte 7 — Deploy a Sepolia</h2>
+<p>Hasta acá todo en local. Ahora vamos a <strong>publicar el
+contrato</strong> en Sepolia.</p>
+<h3 id="71-importar-tu-wallet-a-foundry">7.1 Importar tu wallet a
+Foundry</h3>
+<p>Foundry no lee MetaMask directamente. Le tenemos que dar la
+<strong>private key</strong> de la cuenta de MetaMask (en formato
+encriptado en disco). <strong>Hacelo solo con una cuenta de
+testnet</strong> que no tenga fondos reales.</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cast</span> wallet import dev <span class="at">--interactive</span></span></code></pre></div>
+<ul>
+<li>Te pide la private key. La sacás de MetaMask:
+<code>⋮ → Account details → Show private key → poné tu pwd → copiar</code>.</li>
+<li>Pegala (no se ve en pantalla).</li>
+<li>Te pide una pwd local para encriptarla en disco. Elegí una que
+recuerdes — la vas a poner cada vez que firmes.</li>
+</ul>
+<p>⚠️ <strong>Nunca pegues una private key en git, en chats, en
+logs.</strong> El cast wallet la guarda encriptada en
+<code>~/.foundry/keystores/dev</code>, eso sí podés versionarlo NO (está
+fuera del repo).</p>
+<h3 id="72-configurar-variables-de-entorno">7.2 Configurar variables de
+entorno</h3>
+<p>Creá <code>.env</code> en el repo:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="va">SEPOLIA_RPC_URL</span><span class="op">=</span>https://ethereum-sepolia-rpc.publicnode.com</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="va">ETHERSCAN_API_KEY</span><span class="op">=</span>tu_api_key_acá</span></code></pre></div>
+<ul>
+<li>Ese RPC URL es público y gratis. Si querés más performance:
+registrate en <a
+href="https://www.alchemy.com">https://www.alchemy.com</a> (free tier
+alcanza).</li>
+<li>La API key de Etherscan la sacás en <a
+href="https://etherscan.io/myapikey">https://etherscan.io/myapikey</a>
+(registrate, click “+ Add”, copialá).</li>
+</ul>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> .env</span></code></pre></div>
+<h3 id="73-deployar">7.3 Deployar</h3>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> create src/SimpleStorage.sol:SimpleStorage <span class="dt">\</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rpc-url</span> <span class="va">$SEPOLIA_RPC_URL</span> <span class="dt">\</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--account</span> dev <span class="dt">\</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--broadcast</span></span></code></pre></div>
+<ul>
+<li><code>--account dev</code> usa la wallet que importaste antes (te
+pide la pwd local).</li>
+<li><code>--broadcast</code> envía la tx (sin esto, hace dry-run).</li>
+</ul>
+<p>Tarda ~15 segundos (un bloque de Sepolia). Te devuelve algo como:</p>
+<pre><code>Deployer: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1
+Deployed to: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+Transaction hash: 0xabc...</code></pre>
+<p><strong>Guardá la <code>Deployed to</code> address</strong> — es tu
+contrato.</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">ADDR</span><span class="op">=</span>0x5FbDB2315678afecb367f032d93F642f64180aa3   <span class="co"># la que te devolvió a vos</span></span></code></pre></div>
+<hr />
+<h2 id="parte-8--interactuar-con-cast">Parte 8 — Interactuar con
+<code>cast</code></h2>
+<p>Ahora hablás con tu contrato desde la terminal.</p>
+<h3 id="81-leer-estado-cast-call--gratis-instantáneo">8.1 Leer estado
+(<code>cast call</code> — gratis, instantáneo)</h3>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cast</span> call <span class="va">$ADDR</span> <span class="st">&quot;get()(uint256)&quot;</span> <span class="at">--rpc-url</span> <span class="va">$SEPOLIA_RPC_URL</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 0</span></span></code></pre></div>
+<p><code>0</code> porque el contrato está recién deployado y nunca
+llamamos <code>set</code>.</p>
+<h3 id="82-modificar-estado-cast-send--firma--gas">8.2 Modificar estado
+(<code>cast send</code> — firma + gas)</h3>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cast</span> send <span class="va">$ADDR</span> <span class="st">&quot;set(uint256)&quot;</span> 42 <span class="dt">\</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rpc-url</span> <span class="va">$SEPOLIA_RPC_URL</span> <span class="dt">\</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--account</span> dev</span></code></pre></div>
+<p>Tarda 15 segundos. Te devuelve un receipt con
+<code>status: 1 (success)</code>.</p>
+<h3 id="83-releer">8.3 Releer</h3>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cast</span> call <span class="va">$ADDR</span> <span class="st">&quot;get()(uint256)&quot;</span> <span class="at">--rpc-url</span> <span class="va">$SEPOLIA_RPC_URL</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 42</span></span></code></pre></div>
+<p>✅ <strong>Acabás de modificar el estado de una blockchain pública
+desde la terminal.</strong></p>
+<h3 id="84-inspeccionar-la-tx--el-evento">8.4 Inspeccionar la tx + el
+evento</h3>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cast</span> receipt <span class="op">&lt;</span>TX_HASH<span class="op">&gt;</span> --rpc-url <span class="va">$SEPOLIA_RPC_URL</span></span></code></pre></div>
+<p>Vas a ver <code>gasUsed</code>, <code>status: 1</code>, y un
+<code>logs[0]</code> con tu evento
+<code>ValueChanged(address,uint256)</code>. <strong>Eso es lo que su
+backend va a indexar</strong> en clase 3.</p>
+<hr />
+<h2 id="parte-9--verificar-en-etherscan">Parte 9 — Verificar en
+Etherscan</h2>
+<p>Que el bytecode de tu contrato esté en Sepolia no significa que el
+código fuente sea visible. Para que <strong>cualquiera pueda leer y
+verificar</strong> lo que hace el contrato, hay que verificarlo en
+Etherscan.</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> verify-contract <span class="va">$ADDR</span> <span class="dt">\</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  src/SimpleStorage.sol:SimpleStorage <span class="dt">\</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--chain</span> sepolia <span class="dt">\</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--etherscan-api-key</span> <span class="va">$ETHERSCAN_API_KEY</span> <span class="dt">\</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--watch</span></span></code></pre></div>
+<p><code>--watch</code> espera hasta que Etherscan termine de procesar
+(~30 segundos).</p>
+<p>Cuando termina, andá a:</p>
+<pre><code>https://sepolia.etherscan.io/address/$ADDR#code</code></pre>
+<p>Vas a ver:</p>
+<ul>
+<li>📄 <strong>El código fuente Solidity</strong> (sí, el
+<code>.sol</code> que escribiste).</li>
+<li>🔓 <strong>Read Contract</strong>: tab para llamar
+<code>get()</code> desde el browser, sin tocar nada.</li>
+<li>✍️ <strong>Write Contract</strong>: tab para llamar
+<code>set(uint256)</code> con MetaMask conectado.</li>
+</ul>
+<p>Click en “Connect to Web3” → MetaMask conecta → escribís un valor en
+<code>set</code> → click “Write” → MetaMask abre popup → confirmás → tx
+→ bloque → estado actualizado.</p>
+<blockquote>
+<p>Eso es <strong>exactamente lo que cualquier usuario va a
+hacer</strong> con sus contratos cuando los demos del TP final estén
+corriendo. Sin instalar nada, conectan MetaMask y pagan.</p>
+</blockquote>
+<hr />
+<h2 id="cierre--qué-nos-llevamos">Cierre — qué nos llevamos</h2>
+<p>Después de esta clase tienen:</p>
+<ul class="task-list">
+<li><label><input type="checkbox" />MetaMask con wallet propia + Sepolia
+activa + ETH de faucet</label></li>
+<li><label><input type="checkbox" />Foundry instalado
+(<code>forge</code>, <code>cast</code>, <code>anvil</code>)</label></li>
+<li><label><input type="checkbox" />Un contrato
+<code>SimpleStorage</code> deployado en Sepolia, con address
+propia</label></li>
+<li><label><input type="checkbox" />Saben modificarlo y leerlo desde
+<code>cast</code></label></li>
+<li><label><input type="checkbox" />El código fuente verificado y
+público en Etherscan</label></li>
+</ul>
+<p><strong>En clase 2</strong> vamos a:</p>
+<ul>
+<li>Reemplazar <code>SimpleStorage</code> por un
+<code>PaymentGateway</code> que cobra USDC.</li>
+<li>Aprender ERC-20 (el estándar de tokens fungibles).</li>
+<li>Escribir el ataque clásico de <strong>reentrancy</strong> y cómo
+defenderse.</li>
+</ul>
+<hr />
+<h2 id="tarea-para-clase-2">Tarea para clase 2</h2>
+<p>Antes del próximo sábado:</p>
+<ol type="1">
+<li>Tu contrato <code>SimpleStorage</code> deployado y verificado en
+Sepolia (entregable: la URL
+<code>sepolia.etherscan.io/address/...#code</code>).</li>
+<li>Llamaron <code>set(N)</code> al menos una vez con un número
+significativo para vos (lo van a poder ver en la pestaña Events del
+contrato en Etherscan).</li>
+<li>Leyeron el <a href="blockchain-overview.html">overview de
+blockchain</a>, prestando atención a los <strong>5
+diagramas</strong>.</li>
+</ol>
+<p>Lo entregan en el campus.</p>
+<hr />
+<h2 id="si-algo-falla">Si algo falla</h2>
+<table>
+<thead>
+<tr>
+<th>Síntoma</th>
+<th>Probable causa</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>forge: command not found</code></td>
+<td>Foundry no está en el PATH</td>
+<td>Reabrí terminal o <code>source ~/.bashrc</code> después de
+instalar</td>
+</tr>
+<tr>
+<td><code>Error: insufficient funds</code></td>
+<td>No tenés ETH en Sepolia</td>
+<td>Volvé al faucet (paso 2.3)</td>
+</tr>
+<tr>
+<td><code>Error: nonce too high/low</code></td>
+<td>MetaMask y Foundry desfasados</td>
+<td>En MetaMask: Settings → Advanced → Reset Account</td>
+</tr>
+<tr>
+<td><code>Error: failed to verify</code></td>
+<td>API key de Etherscan mal pegada</td>
+<td>Verificá <code>echo $ETHERSCAN_API_KEY</code></td>
+</tr>
+<tr>
+<td>MetaMask no muestra Sepolia</td>
+<td>Test networks ocultas</td>
+<td>Settings → Advanced → Show test networks</td>
+</tr>
+</tbody>
+</table>
+
+    <nav class="page-prev-next" aria-label="Navegación entre páginas">
+      <a class="prev-link" href="#" data-slot="prev" hidden>
+        <span class="arrow">←</span>
+        <span class="nav-meta">
+          <span class="nav-label">Anterior</span>
+          <span class="nav-title" data-slot="prev-title"></span>
+        </span>
+      </a>
+      <a class="next-link" href="#" data-slot="next" hidden>
+        <span class="nav-meta">
+          <span class="nav-label">Siguiente</span>
+          <span class="nav-title" data-slot="next-title"></span>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+    </nav>
+
+    <nav class="page-nav-bottom">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+    </nav>
+  </main>
+</div>
+
+<footer class="unlu-footer">
+  <div>
+    UNLu · Departamento de Ciencias Básicas · Seminario de Integración Profesional <strong>2026</strong>
+    · Dr. David Petrocelli
+  </div>
+</footer>
+
+<script>
+// Sidebar show/hide toggle (preference persisted in localStorage)
+(function () {
+  const sidebar = document.getElementById('toc-sidebar');
+  const layout = document.querySelector('.layout');
+  const hideBtn = document.getElementById('sidebar-hide');
+  const showBtn = document.getElementById('sidebar-show');
+  if (!sidebar || !layout || !hideBtn || !showBtn) return;
+
+  const KEY = 'unlu.dcb.sidebar.hidden';
+
+  function apply(hidden) {
+    layout.classList.toggle('sidebar-hidden', hidden);
+    showBtn.classList.toggle('visible', hidden);
+  }
+
+  apply(localStorage.getItem(KEY) === '1');
+
+  hideBtn.addEventListener('click', () => {
+    localStorage.setItem(KEY, '1');
+    apply(true);
+  });
+  showBtn.addEventListener('click', () => {
+    localStorage.removeItem(KEY);
+    apply(false);
+  });
+})();
+
+// Wrap each H2 (and its following content until the next H2) in a <details open>
+// element so users can collapse/expand sections.
+(function () {
+  const main = document.querySelector('main.content');
+  if (!main) return;
+
+  // Collect direct-child H2 headings so we don't touch nested ones (e.g., inside details we'll create)
+  const headings = Array.from(main.children).filter(el => el.tagName === 'H2');
+
+  headings.forEach(h2 => {
+    const details = document.createElement('details');
+    details.open = true;
+    details.className = 'section-collapsible';
+
+    const summary = document.createElement('summary');
+    // Move heading content (incl. anchor) into the summary so anchors keep working
+    summary.innerHTML = h2.innerHTML;
+    if (h2.id) summary.id = h2.id;
+    details.appendChild(summary);
+
+    // Move siblings until next H2 into details
+    const parent = h2.parentNode;
+    let next = h2.nextSibling;
+    parent.replaceChild(details, h2);
+    while (next && !(next.nodeType === 1 && next.tagName === 'H2')) {
+      const node = next;
+      next = next.nextSibling;
+      details.appendChild(node);
+    }
+  });
+
+  // If there's a hash in the URL, ensure the target's <details> is open
+  function openDetailsForHash(hash) {
+    if (!hash) return;
+    const target = document.getElementById(hash.replace(/^#/, ''));
+    if (!target) return;
+    let p = target.closest('details');
+    while (p) { p.open = true; p = p.parentElement && p.parentElement.closest('details'); }
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  openDetailsForHash(window.location.hash);
+  window.addEventListener('hashchange', () => openDetailsForHash(window.location.hash));
+
+  // Wire up "Expand all" / "Collapse all" controls in the inline TOC
+  document.querySelectorAll('.toc-controls [data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const action = btn.getAttribute('data-action');
+      const open = action === 'expand-all';
+      document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
+    });
+  });
+})();
+
+// Populate prev/next navigation based on the current page's banner-num
+(function () {
+  const pill = document.querySelector('.banner-pill');
+  const nav = document.querySelector('.page-prev-next');
+  if (!pill || !nav) return;
+
+  const key = (pill.textContent || '').trim().toUpperCase();
+
+  // Map banner-num → { prev, next }
+  // Each entry: { href, title } (or null if not present)
+  const MAP = {
+    'TP 0': {
+      prev: null,
+      next: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' }
+    },
+    'TP 1 · PARTE 1': {
+      prev: { href: 'practica-0.html', title: 'TP 0 — Prerrequisitos' },
+      next: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' }
+    },
+    'TP 1 · PARTE 2': {
+      prev: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' },
+      next: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' }
+    },
+    'TP 2 · PARTE 1': {
+      prev: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' },
+      next: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' }
+    },
+    'TP 2 · PARTE 2': {
+      prev: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' },
+      next: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' }
+    },
+    'TP 2 · PARTE 3': {
+      prev: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' },
+      next: { href: 'practica-2-parte-4.html', title: 'Práctica II · Parte 4' }
+    },
+    'TP 2 · PARTE 4': {
+      prev: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' },
+      next: null
+    }
+  };
+
+  const entry = MAP[key];
+  if (!entry) return;
+
+  const prevLink = nav.querySelector('[data-slot="prev"]');
+  const nextLink = nav.querySelector('[data-slot="next"]');
+  const prevTitle = nav.querySelector('[data-slot="prev-title"]');
+  const nextTitle = nav.querySelector('[data-slot="next-title"]');
+
+  if (entry.prev && prevLink && prevTitle) {
+    prevLink.setAttribute('href', entry.prev.href);
+    prevTitle.textContent = entry.prev.title;
+    prevLink.hidden = false;
+  }
+  if (entry.next && nextLink && nextTitle) {
+    nextLink.setAttribute('href', entry.next.href);
+    nextTitle.textContent = entry.next.title;
+    nextLink.hidden = false;
+  }
+
+  // If neither slot is shown, hide the whole nav
+  if ((!entry.prev) && (!entry.next)) {
+    nav.style.display = 'none';
+  }
+})();
+
+// Open all external links in a new tab (preserves the current page).
+// Internal anchors (#hash), relative links and same-origin links stay in-tab.
+(function () {
+  const here = window.location.hostname;
+  document.querySelectorAll('a[href]').forEach(a => {
+    const href = a.getAttribute('href');
+    if (!href) return;
+    // Skip anchors and pure relative links
+    if (href.startsWith('#') || href.startsWith('/') || !/^https?:\/\//i.test(href)) return;
+    try {
+      const url = new URL(href);
+      if (url.hostname && url.hostname !== here) {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      }
+    } catch (_) {
+      // Malformed URL — ignore
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

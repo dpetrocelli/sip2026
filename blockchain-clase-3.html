@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <meta name="generator" content="pandoc + UNLu/DCB template">
+  <title>Blockchain · Clase 3 — Frontend + integración + onramp testnet
+— UNLu DCB</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+
+<header class="unlu-header">
+  <a href="index.html" class="brand" title="Volver al menú principal">
+    <img src="assets/unlu_escudo.png" alt="Universidad Nacional de Luján" class="logo unlu">
+    <div class="brand-text">
+      <div class="institution">Universidad Nacional de Luján</div>
+      <div class="department">Departamento de Ciencias Básicas</div>
+    </div>
+    <img src="assets/logo_dcb.png" alt="Departamento de Ciencias Básicas" class="logo dcb">
+  </a>
+  <div class="course-bar">
+    <span class="course">Seminario de Integración Profesional</span>
+    <span class="year">2026</span>
+    <span class="instructor">Dr. David Petrocelli</span>
+  </div>
+</header>
+
+<button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
+
+<div class="layout">
+  <aside class="toc-sidebar" id="toc-sidebar">
+    <div class="toc-header">
+      <div class="toc-title">Contenidos</div>
+      <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
+    </div>
+    <ul>
+    <li><a
+    href="#blockchain--clase-3--frontend--integración--onramp-testnet"
+    id="toc-blockchain--clase-3--frontend--integración--onramp-testnet">Blockchain
+    · Clase 3 — Frontend + integración + onramp testnet</a>
+    <ul>
+    <li><a href="#qué-vamos-a-hacer-hoy"
+    id="toc-qué-vamos-a-hacer-hoy">¿Qué vamos a hacer hoy?</a></li>
+    <li><a href="#parte-1--refresh-dónde-encaja-el-frontend"
+    id="toc-parte-1--refresh-dónde-encaja-el-frontend">Parte 1 —
+    Refresh: dónde encaja el frontend</a>
+    <ul>
+    <li><a href="#diagrama-4--arquitectura-híbrida"
+    id="toc-diagrama-4--arquitectura-híbrida">Diagrama 4 — Arquitectura
+    híbrida</a></li>
+    <li><a href="#diagrama-5--pasarela-de-pago-dos-caminos"
+    id="toc-diagrama-5--pasarela-de-pago-dos-caminos">Diagrama 5 —
+    Pasarela de pago, dos caminos</a></li>
+    </ul></li>
+    <li><a href="#parte-2--setup-del-proyecto-nextjs"
+    id="toc-parte-2--setup-del-proyecto-nextjs">Parte 2 — Setup del
+    proyecto Next.js</a>
+    <ul>
+    <li><a href="#21-crear-el-proyecto"
+    id="toc-21-crear-el-proyecto">2.1 Crear el proyecto</a></li>
+    <li><a href="#22-instalar-las-deps-de-web3"
+    id="toc-22-instalar-las-deps-de-web3">2.2 Instalar las deps de
+    Web3</a></li>
+    <li><a href="#23-walletconnect-project-id"
+    id="toc-23-walletconnect-project-id">2.3 WalletConnect Project
+    ID</a></li>
+    <li><a href="#24-configurar-wagmi--rainbowkit"
+    id="toc-24-configurar-wagmi--rainbowkit">2.4 Configurar wagmi +
+    RainbowKit</a></li>
+    </ul></li>
+    <li><a href="#parte-3--conectar-wallet"
+    id="toc-parte-3--conectar-wallet">Parte 3 — Conectar wallet</a></li>
+    <li><a href="#parte-4--llamar-pay-desde-el-frontend"
+    id="toc-parte-4--llamar-pay-desde-el-frontend">Parte 4 — Llamar
+    <code>pay()</code> desde el frontend</a>
+    <ul>
+    <li><a href="#41-definir-los-abis" id="toc-41-definir-los-abis">4.1
+    Definir los ABIs</a></li>
+    <li><a href="#42-el-flow-conceptual--approve--pay"
+    id="toc-42-el-flow-conceptual--approve--pay">4.2 El flow conceptual
+    — approve + pay</a></li>
+    <li><a href="#43-componente-payformtsx"
+    id="toc-43-componente-payformtsx">4.3 Componente
+    <code>PayForm.tsx</code></a></li>
+    <li><a href="#44-estados-de-la-transacción--qué-mostrar"
+    id="toc-44-estados-de-la-transacción--qué-mostrar">4.4 Estados de la
+    transacción — qué mostrar</a></li>
+    </ul></li>
+    <li><a href="#parte-5--escuchar-eventos-paid-en-tiempo-real"
+    id="toc-parte-5--escuchar-eventos-paid-en-tiempo-real">Parte 5 —
+    Escuchar eventos <code>Paid</code> en tiempo real</a></li>
+    <li><a href="#parte-6--testnetonrampsol--el-onramp-simulado"
+    id="toc-parte-6--testnetonrampsol--el-onramp-simulado">Parte 6 —
+    <code>TestnetOnramp.sol</code> — el onramp simulado</a>
+    <ul>
+    <li><a href="#61-el-contrato" id="toc-61-el-contrato">6.1 El
+    contrato</a></li>
+    <li><a href="#62-deploy" id="toc-62-deploy">6.2 Deploy</a></li>
+    </ul></li>
+    <li><a href="#parte-7--ui-del-onramp"
+    id="toc-parte-7--ui-del-onramp">Parte 7 — UI del onramp</a></li>
+    <li><a href="#parte-8--deploy-a-vercel"
+    id="toc-parte-8--deploy-a-vercel">Parte 8 — Deploy a Vercel</a>
+    <ul>
+    <li><a href="#81-pushear-a-github" id="toc-81-pushear-a-github">8.1
+    Pushear a GitHub</a></li>
+    <li><a href="#82-importar-en-vercel"
+    id="toc-82-importar-en-vercel">8.2 Importar en Vercel</a></li>
+    </ul></li>
+    <li><a href="#cierre--qué-nos-llevamos"
+    id="toc-cierre--qué-nos-llevamos">Cierre — qué nos llevamos</a></li>
+    <li><a href="#tarea-para-clase-4" id="toc-tarea-para-clase-4">Tarea
+    para clase 4</a></li>
+    <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
+    falla</a></li>
+    </ul></li>
+    </ul>
+    <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
+      <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <nav class="page-breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Inicio</a>
+      <span class="sep">›</span>
+      <span class="current">BC · CLASE 3</span>
+    </nav>
+    <nav class="page-nav-top">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+      <span class="banner-pill">BC · CLASE 3</span>
+    </nav>
+
+    <details class="toc-inline" open>
+      <summary>📑 Índice del documento</summary>
+      <ul>
+      <li><a
+      href="#blockchain--clase-3--frontend--integración--onramp-testnet"
+      id="toc-blockchain--clase-3--frontend--integración--onramp-testnet">Blockchain
+      · Clase 3 — Frontend + integración + onramp testnet</a>
+      <ul>
+      <li><a href="#qué-vamos-a-hacer-hoy"
+      id="toc-qué-vamos-a-hacer-hoy">¿Qué vamos a hacer hoy?</a></li>
+      <li><a href="#parte-1--refresh-dónde-encaja-el-frontend"
+      id="toc-parte-1--refresh-dónde-encaja-el-frontend">Parte 1 —
+      Refresh: dónde encaja el frontend</a>
+      <ul>
+      <li><a href="#diagrama-4--arquitectura-híbrida"
+      id="toc-diagrama-4--arquitectura-híbrida">Diagrama 4 —
+      Arquitectura híbrida</a></li>
+      <li><a href="#diagrama-5--pasarela-de-pago-dos-caminos"
+      id="toc-diagrama-5--pasarela-de-pago-dos-caminos">Diagrama 5 —
+      Pasarela de pago, dos caminos</a></li>
+      </ul></li>
+      <li><a href="#parte-2--setup-del-proyecto-nextjs"
+      id="toc-parte-2--setup-del-proyecto-nextjs">Parte 2 — Setup del
+      proyecto Next.js</a>
+      <ul>
+      <li><a href="#21-crear-el-proyecto"
+      id="toc-21-crear-el-proyecto">2.1 Crear el proyecto</a></li>
+      <li><a href="#22-instalar-las-deps-de-web3"
+      id="toc-22-instalar-las-deps-de-web3">2.2 Instalar las deps de
+      Web3</a></li>
+      <li><a href="#23-walletconnect-project-id"
+      id="toc-23-walletconnect-project-id">2.3 WalletConnect Project
+      ID</a></li>
+      <li><a href="#24-configurar-wagmi--rainbowkit"
+      id="toc-24-configurar-wagmi--rainbowkit">2.4 Configurar wagmi +
+      RainbowKit</a></li>
+      </ul></li>
+      <li><a href="#parte-3--conectar-wallet"
+      id="toc-parte-3--conectar-wallet">Parte 3 — Conectar
+      wallet</a></li>
+      <li><a href="#parte-4--llamar-pay-desde-el-frontend"
+      id="toc-parte-4--llamar-pay-desde-el-frontend">Parte 4 — Llamar
+      <code>pay()</code> desde el frontend</a>
+      <ul>
+      <li><a href="#41-definir-los-abis"
+      id="toc-41-definir-los-abis">4.1 Definir los ABIs</a></li>
+      <li><a href="#42-el-flow-conceptual--approve--pay"
+      id="toc-42-el-flow-conceptual--approve--pay">4.2 El flow
+      conceptual — approve + pay</a></li>
+      <li><a href="#43-componente-payformtsx"
+      id="toc-43-componente-payformtsx">4.3 Componente
+      <code>PayForm.tsx</code></a></li>
+      <li><a href="#44-estados-de-la-transacción--qué-mostrar"
+      id="toc-44-estados-de-la-transacción--qué-mostrar">4.4 Estados de
+      la transacción — qué mostrar</a></li>
+      </ul></li>
+      <li><a href="#parte-5--escuchar-eventos-paid-en-tiempo-real"
+      id="toc-parte-5--escuchar-eventos-paid-en-tiempo-real">Parte 5 —
+      Escuchar eventos <code>Paid</code> en tiempo real</a></li>
+      <li><a href="#parte-6--testnetonrampsol--el-onramp-simulado"
+      id="toc-parte-6--testnetonrampsol--el-onramp-simulado">Parte 6 —
+      <code>TestnetOnramp.sol</code> — el onramp simulado</a>
+      <ul>
+      <li><a href="#61-el-contrato" id="toc-61-el-contrato">6.1 El
+      contrato</a></li>
+      <li><a href="#62-deploy" id="toc-62-deploy">6.2 Deploy</a></li>
+      </ul></li>
+      <li><a href="#parte-7--ui-del-onramp"
+      id="toc-parte-7--ui-del-onramp">Parte 7 — UI del onramp</a></li>
+      <li><a href="#parte-8--deploy-a-vercel"
+      id="toc-parte-8--deploy-a-vercel">Parte 8 — Deploy a Vercel</a>
+      <ul>
+      <li><a href="#81-pushear-a-github"
+      id="toc-81-pushear-a-github">8.1 Pushear a GitHub</a></li>
+      <li><a href="#82-importar-en-vercel"
+      id="toc-82-importar-en-vercel">8.2 Importar en Vercel</a></li>
+      </ul></li>
+      <li><a href="#cierre--qué-nos-llevamos"
+      id="toc-cierre--qué-nos-llevamos">Cierre — qué nos
+      llevamos</a></li>
+      <li><a href="#tarea-para-clase-4"
+      id="toc-tarea-para-clase-4">Tarea para clase 4</a></li>
+      <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
+      falla</a></li>
+      </ul></li>
+      </ul>
+      <div class="toc-controls">
+        <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
+        <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
+      </div>
+    </details>
+
+<h1
+id="blockchain--clase-3--frontend--integración--onramp-testnet">Blockchain
+· Clase 3 — Frontend + integración + onramp testnet</h1>
+<blockquote>
+<p><strong>Objetivo de la clase</strong>: que al final de las 4 hs
+tengan <strong>una dApp completa funcionando</strong> — Next.js + wagmi
++ RainbowKit conectada al <code>PaymentGateway</code> que escribieron en
+clase 2, deployada en Sepolia. Al cierre van a poder hacer <strong>pagos
+reales en USDC testnet desde el browser</strong>, ver los eventos
+<code>Paid</code> en vivo, y tener un <strong>onramp testnet
+propio</strong> (<code>TestnetOnramp.sol</code>) que mintea USDC fake
+cuando el usuario “paga con tarjeta”.</p>
+</blockquote>
+<blockquote>
+<p><strong>Pre-requisito</strong>: clase 2 completa — su
+<code>PaymentGateway.sol</code> deployado en Sepolia, address conocida,
+tests pasando.</p>
+</blockquote>
+<hr />
+<h2 id="qué-vamos-a-hacer-hoy">¿Qué vamos a hacer hoy?</h2>
+<ol type="1">
+<li><strong>Refresh</strong> de los <strong>diagramas 4 y 5</strong> del
+overview — arquitectura híbrida + pasarela de pago.</li>
+<li><strong>Setup</strong> de un proyecto Next.js + wagmi + viem +
+RainbowKit.</li>
+<li><strong>Conectar wallet</strong> (MetaMask) con RainbowKit en una
+sola línea.</li>
+<li><strong>Llamar <code>pay()</code></strong> del PaymentGateway desde
+el frontend — con el flow <code>approve</code> → <code>pay</code>.</li>
+<li><strong>Mostrar tx hash y receipt</strong> en la UI mientras se
+confirma.</li>
+<li><strong>Escuchar eventos <code>Paid</code></strong> en tiempo real
+con <code>useWatchContractEvent</code>.</li>
+<li><strong>Escribir un contrato <code>TestnetOnramp.sol</code></strong>
+que mintea USDC fake a cambio de ETH.</li>
+<li><strong>Botón “comprar 50 USDC con tarjeta”</strong> que simula el
+card flow y llama al onramp.</li>
+<li><strong>Deploy a Vercel</strong> — URL pública para mostrar en la
+demo del TP final.</li>
+</ol>
+<p>Al cierre: cada equipo tiene una dApp en vivo que cualquiera puede
+usar desde el browser.</p>
+<hr />
+<h2 id="parte-1--refresh-dónde-encaja-el-frontend">Parte 1 — Refresh:
+dónde encaja el frontend</h2>
+<p>Antes de teclear, repasemos los <strong>dos diagramas</strong> del
+overview que matter para hoy.</p>
+<h3 id="diagrama-4--arquitectura-híbrida">Diagrama 4 — Arquitectura
+híbrida</h3>
+<pre><code>┌──────────────┐     ┌──────────────┐     ┌─────────────────────┐
+│  Frontend    │ ──▶ │  Backend     │     │  Smart Contract     │
+│  Vercel      │     │  k3s         │     │  Sepolia            │
+│  (Next.js)   │ ──────────────────────▶  │  (PaymentGateway)   │
+└──────────────┘     └──────────────┘     └─────────────────────┘
+       │                                          ▲
+       │   wagmi + viem (RPC)                     │
+       └──────────────────────────────────────────┘</code></pre>
+<p><strong>Lo nuevo</strong>: el frontend habla con el contrato
+directamente vía RPC. El backend Web2 sigue ahí (auth opcional, indexer,
+BD para datos no críticos), pero <strong>no es el broker</strong> del
+pago. La firma sale de la wallet del usuario.</p>
+<h3 id="diagrama-5--pasarela-de-pago-dos-caminos">Diagrama 5 — Pasarela
+de pago, dos caminos</h3>
+<table>
+<thead>
+<tr>
+<th>Camino</th>
+<th>Flujo</th>
+<th>Cuándo aplica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A — Crypto-nativo</strong></td>
+<td>usuario tiene USDC → <code>approve</code> → <code>pay</code></td>
+<td>Demo técnica, usuarios crypto</td>
+</tr>
+<tr>
+<td><strong>B — Fiat onramp</strong></td>
+<td>usuario llega con tarjeta → onramp convierte ARS → USDC en wallet →
+sigue camino A</td>
+<td>Producción real, usuarios sin USDC</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Hoy</strong>: armamos camino A (real, hablando con el
+<code>PaymentGateway</code>) y camino B <strong>simulado</strong> con un
+<code>TestnetOnramp</code> propio. En producción el camino B sería
+Lemon, MoonPay, Buenbit. En testnet <strong>no existen onramps</strong>
+— los simulamos con un contrato que mintea USDC fake.</p>
+</blockquote>
+<hr />
+<h2 id="parte-2--setup-del-proyecto-nextjs">Parte 2 — Setup del proyecto
+Next.js</h2>
+<h3 id="21-crear-el-proyecto">2.1 Crear el proyecto</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> create-next-app@latest paygw-dapp <span class="at">--typescript</span> <span class="at">--tailwind</span> <span class="at">--app</span> <span class="at">--no-src-dir</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> paygw-dapp</span></code></pre></div>
+<p>Aceptá los defaults (eslint sí, alias <code>@/*</code> sí).</p>
+<h3 id="22-instalar-las-deps-de-web3">2.2 Instalar las deps de Web3</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install wagmi viem @tanstack/react-query @rainbow-me/rainbowkit</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Lib</th>
+<th>Para qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>wagmi</code></td>
+<td>React hooks para Ethereum (<code>useAccount</code>,
+<code>useReadContract</code>, <code>useWriteContract</code>)</td>
+</tr>
+<tr>
+<td><code>viem</code></td>
+<td>Cliente de bajo nivel — encoding ABIs, parsing de tipos, formateo de
+unidades</td>
+</tr>
+<tr>
+<td><code>@tanstack/react-query</code></td>
+<td>Cache + refetch de las llamadas a la chain (lo usa wagmi por
+debajo)</td>
+</tr>
+<tr>
+<td><code>@rainbow-me/rainbowkit</code></td>
+<td>UI ya hecha de “Connect Wallet” + modal con todas las wallets</td>
+</tr>
+</tbody>
+</table>
+<h3 id="23-walletconnect-project-id">2.3 WalletConnect Project ID</h3>
+<p>WalletConnect es el protocolo que conecta wallets móviles con la
+dApp. Necesitás un <strong>Project ID</strong> gratis.</p>
+<ol type="1">
+<li>Andá a <a href="https://cloud.reown.com">https://cloud.reown.com</a>
+(antes “WalletConnect Cloud”).</li>
+<li>Login con Google.</li>
+<li><strong>Create Project</strong> → nombre “PayGW SIP” → tipo
+“AppKit”.</li>
+<li>Copiá el <strong>Project ID</strong> (string tipo
+<code>a1b2c3...</code>).</li>
+</ol>
+<p>Pegalo en <code>.env.local</code>:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">NEXT_PUBLIC_WC_PROJECT_ID</span><span class="op">=</span>tu_project_id_acá</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">NEXT_PUBLIC_PAYGW_ADDRESS</span><span class="op">=</span>0xTuPaymentGatewayDeClase2</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="va">NEXT_PUBLIC_USDC_ADDRESS</span><span class="op">=</span>0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238</span></code></pre></div>
+<blockquote>
+<p>La address del USDC es la oficial de Circle en Sepolia. <strong>No la
+cambien</strong>: es la única que el faucet de Circle reconoce.</p>
+</blockquote>
+<h3 id="24-configurar-wagmi--rainbowkit">2.4 Configurar wagmi +
+RainbowKit</h3>
+<p>Creá <code>lib/wagmi.ts</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { getDefaultConfig } <span class="im">from</span> <span class="st">&#39;@rainbow-me/rainbowkit&#39;</span><span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { sepolia } <span class="im">from</span> <span class="st">&#39;wagmi/chains&#39;</span><span class="op">;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> config <span class="op">=</span> <span class="fu">getDefaultConfig</span>({</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  appName<span class="op">:</span> <span class="st">&#39;PayGW SIP&#39;</span><span class="op">,</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  projectId<span class="op">:</span> <span class="bu">process</span><span class="op">.</span><span class="at">env</span><span class="op">.</span><span class="at">NEXT_PUBLIC_WC_PROJECT_ID</span><span class="op">!,</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  chains<span class="op">:</span> [sepolia]<span class="op">,</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  ssr<span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<p>Creá <code>app/providers.tsx</code>:</p>
+<pre class="tsx"><code>&#39;use client&#39;;
+import &#39;@rainbow-me/rainbowkit/styles.css&#39;;
+import { RainbowKitProvider } from &#39;@rainbow-me/rainbowkit&#39;;
+import { WagmiProvider } from &#39;wagmi&#39;;
+import { QueryClient, QueryClientProvider } from &#39;@tanstack/react-query&#39;;
+import { config } from &#39;@/lib/wagmi&#39;;
+
+const queryClient = new QueryClient();
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    &lt;WagmiProvider config={config}&gt;
+      &lt;QueryClientProvider client={queryClient}&gt;
+        &lt;RainbowKitProvider&gt;{children}&lt;/RainbowKitProvider&gt;
+      &lt;/QueryClientProvider&gt;
+    &lt;/WagmiProvider&gt;
+  );
+}</code></pre>
+<p>Y envolvé <code>app/layout.tsx</code>:</p>
+<pre class="tsx"><code>import { Providers } from &#39;./providers&#39;;
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    &lt;html lang=&quot;es&quot;&gt;
+      &lt;body&gt;&lt;Providers&gt;{children}&lt;/Providers&gt;&lt;/body&gt;
+    &lt;/html&gt;
+  );
+}</code></pre>
+<hr />
+<h2 id="parte-3--conectar-wallet">Parte 3 — Conectar wallet</h2>
+<p>Reemplazá el contenido de <code>app/page.tsx</code>:</p>
+<pre class="tsx"><code>&#39;use client&#39;;
+import { ConnectButton } from &#39;@rainbow-me/rainbowkit&#39;;
+import { useAccount } from &#39;wagmi&#39;;
+
+export default function Home() {
+  const { address, isConnected } = useAccount();
+
+  return (
+    &lt;main className=&quot;p-8 max-w-2xl mx-auto&quot;&gt;
+      &lt;h1 className=&quot;text-3xl font-bold mb-6&quot;&gt;PayGW · Pasarela de pago&lt;/h1&gt;
+      &lt;ConnectButton /&gt;
+      {isConnected &amp;&amp; (
+        &lt;p className=&quot;mt-4 text-sm text-gray-600&quot;&gt;Conectado como {address}&lt;/p&gt;
+      )}
+    &lt;/main&gt;
+  );
+}</code></pre>
+<p>Corré:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> run dev</span></code></pre></div>
+<p>Abrí http://localhost:3000 → click en “Connect Wallet” → MetaMask →
+aprobá.</p>
+<p><strong>Importante</strong>: la wallet tiene que estar en
+<strong>Sepolia</strong>. Si no, RainbowKit te muestra un botón rojo
+“Wrong network” que cambia con un click.</p>
+<hr />
+<h2 id="parte-4--llamar-pay-desde-el-frontend">Parte 4 — Llamar
+<code>pay()</code> desde el frontend</h2>
+<p>Acá está el corazón de la clase. Vamos por partes.</p>
+<h3 id="41-definir-los-abis">4.1 Definir los ABIs</h3>
+<p>Creá <code>lib/abis.ts</code>:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode ts"><code class="sourceCode typescript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> PAYGW_ABI <span class="op">=</span> [</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    type<span class="op">:</span> <span class="st">&#39;function&#39;</span><span class="op">,</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="st">&#39;pay&#39;</span><span class="op">,</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    stateMutability<span class="op">:</span> <span class="st">&#39;nonpayable&#39;</span><span class="op">,</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">:</span> [</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;amount&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;uint256&#39;</span> }<span class="op">,</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;action&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;bytes32&#39;</span> }<span class="op">,</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    ]<span class="op">,</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    outputs<span class="op">:</span> []<span class="op">,</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    type<span class="op">:</span> <span class="st">&#39;event&#39;</span><span class="op">,</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="st">&#39;Paid&#39;</span><span class="op">,</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">:</span> [</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;payer&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;address&#39;</span><span class="op">,</span> indexed<span class="op">:</span> <span class="kw">true</span> }<span class="op">,</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;amount&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;uint256&#39;</span><span class="op">,</span> indexed<span class="op">:</span> <span class="kw">false</span> }<span class="op">,</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;action&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;bytes32&#39;</span><span class="op">,</span> indexed<span class="op">:</span> <span class="kw">true</span> }<span class="op">,</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    ]<span class="op">,</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>] <span class="im">as</span> <span class="kw">const</span><span class="op">;</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> ERC20_ABI <span class="op">=</span> [</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    type<span class="op">:</span> <span class="st">&#39;function&#39;</span><span class="op">,</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="st">&#39;approve&#39;</span><span class="op">,</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    stateMutability<span class="op">:</span> <span class="st">&#39;nonpayable&#39;</span><span class="op">,</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">:</span> [</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;spender&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;address&#39;</span> }<span class="op">,</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;amount&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;uint256&#39;</span> }<span class="op">,</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    ]<span class="op">,</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    outputs<span class="op">:</span> [{ type<span class="op">:</span> <span class="st">&#39;bool&#39;</span> }]<span class="op">,</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>    type<span class="op">:</span> <span class="st">&#39;function&#39;</span><span class="op">,</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="st">&#39;allowance&#39;</span><span class="op">,</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    stateMutability<span class="op">:</span> <span class="st">&#39;view&#39;</span><span class="op">,</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">:</span> [</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;owner&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;address&#39;</span> }<span class="op">,</span></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;spender&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;address&#39;</span> }<span class="op">,</span></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>    ]<span class="op">,</span></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>    outputs<span class="op">:</span> [{ type<span class="op">:</span> <span class="st">&#39;uint256&#39;</span> }]<span class="op">,</span></span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>    type<span class="op">:</span> <span class="st">&#39;function&#39;</span><span class="op">,</span></span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="st">&#39;balanceOf&#39;</span><span class="op">,</span></span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    stateMutability<span class="op">:</span> <span class="st">&#39;view&#39;</span><span class="op">,</span></span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">:</span> [{ name<span class="op">:</span> <span class="st">&#39;account&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;address&#39;</span> }]<span class="op">,</span></span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>    outputs<span class="op">:</span> [{ type<span class="op">:</span> <span class="st">&#39;uint256&#39;</span> }]<span class="op">,</span></span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>] <span class="im">as</span> <span class="kw">const</span><span class="op">;</span></span></code></pre></div>
+<h3 id="42-el-flow-conceptual--approve--pay">4.2 El flow conceptual —
+approve + pay</h3>
+<p>ERC-20 usa el patrón <strong>approve + pull</strong>. El
+<code>PaymentGateway</code> no puede tomar USDC directamente del usuario
+— primero el usuario tiene que <strong>autorizar al contrato</strong> a
+tomar X USDC. Después el contrato los “tira” hacia sí mismo con
+<code>transferFrom</code>.</p>
+<pre><code>Usuario          USDC (ERC-20)         PaymentGateway
+   │                 │                       │
+   │── approve(PGW, 10) ──▶                  │
+   │                 │  (allowance = 10)     │
+   │                 │                       │
+   │── pay(10, &quot;X&quot;) ─────────────────────▶   │
+   │                 │ ◀── transferFrom(usr, treasury, 10) ─
+   │                 │                       │── emit Paid</code></pre>
+<p><strong>Dos transacciones, dos firmas en MetaMask</strong>. Lo
+veremos en pantalla.</p>
+<h3 id="43-componente-payformtsx">4.3 Componente
+<code>PayForm.tsx</code></h3>
+<p>Creá <code>app/components/PayForm.tsx</code>:</p>
+<pre class="tsx"><code>&#39;use client&#39;;
+import { useState } from &#39;react&#39;;
+import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from &#39;wagmi&#39;;
+import { parseUnits, keccak256, toHex } from &#39;viem&#39;;
+import { PAYGW_ABI, ERC20_ABI } from &#39;@/lib/abis&#39;;
+
+const PAYGW = process.env.NEXT_PUBLIC_PAYGW_ADDRESS as `0x${string}`;
+const USDC = process.env.NEXT_PUBLIC_USDC_ADDRESS as `0x${string}`;
+
+export function PayForm() {
+  const { address } = useAccount();
+  const [amount, setAmount] = useState(&#39;1&#39;);
+  const [action, setAction] = useState(&#39;VIBE_TICKET&#39;);
+
+  const amountWei = parseUnits(amount || &#39;0&#39;, 6); // USDC tiene 6 decimales
+  const actionBytes = keccak256(toHex(action));
+
+  // Lectura: balance USDC + allowance actual
+  const { data: balance } = useReadContract({
+    address: USDC, abi: ERC20_ABI, functionName: &#39;balanceOf&#39;,
+    args: address ? [address] : undefined,
+  });
+  const { data: allowance } = useReadContract({
+    address: USDC, abi: ERC20_ABI, functionName: &#39;allowance&#39;,
+    args: address ? [address, PAYGW] : undefined,
+  });
+
+  const needsApprove = (allowance ?? 0n) &lt; amountWei;
+
+  // Escritura: approve y pay (separadas)
+  const { writeContract: writeApprove, data: approveHash, isPending: approvePending } = useWriteContract();
+  const { writeContract: writePay, data: payHash, isPending: payPending } = useWriteContract();
+
+  const { isLoading: approveConfirming, isSuccess: approveDone } = useWaitForTransactionReceipt({ hash: approveHash });
+  const { isLoading: payConfirming, isSuccess: payDone } = useWaitForTransactionReceipt({ hash: payHash });
+
+  function handleApprove() {
+    writeApprove({
+      address: USDC, abi: ERC20_ABI, functionName: &#39;approve&#39;,
+      args: [PAYGW, amountWei],
+    });
+  }
+
+  function handlePay() {
+    writePay({
+      address: PAYGW, abi: PAYGW_ABI, functionName: &#39;pay&#39;,
+      args: [amountWei, actionBytes],
+    });
+  }
+
+  return (
+    &lt;div className=&quot;border rounded-lg p-4 mt-6 space-y-3&quot;&gt;
+      &lt;h2 className=&quot;text-xl font-semibold&quot;&gt;Pagar con USDC&lt;/h2&gt;
+      &lt;p className=&quot;text-sm&quot;&gt;Balance: {balance ? Number(balance) / 1e6 : 0} USDC&lt;/p&gt;
+
+      &lt;input
+        className=&quot;border p-2 w-full&quot; type=&quot;number&quot; value={amount}
+        onChange={(e) =&gt; setAmount(e.target.value)} placeholder=&quot;USDC a pagar&quot;
+      /&gt;
+      &lt;input
+        className=&quot;border p-2 w-full&quot; value={action}
+        onChange={(e) =&gt; setAction(e.target.value)} placeholder=&quot;action (ej. VIBE_TICKET)&quot;
+      /&gt;
+
+      {needsApprove ? (
+        &lt;button
+          onClick={handleApprove} disabled={approvePending || approveConfirming}
+          className=&quot;bg-blue-600 text-white px-4 py-2 rounded w-full&quot;
+        &gt;
+          {approvePending ? &#39;Confirmá en wallet…&#39; : approveConfirming ? &#39;Esperando bloque…&#39; : `1) Approve ${amount} USDC`}
+        &lt;/button&gt;
+      ) : (
+        &lt;button
+          onClick={handlePay} disabled={payPending || payConfirming}
+          className=&quot;bg-green-600 text-white px-4 py-2 rounded w-full&quot;
+        &gt;
+          {payPending ? &#39;Confirmá en wallet…&#39; : payConfirming ? &#39;Esperando bloque…&#39; : `2) Pay ${amount} USDC`}
+        &lt;/button&gt;
+      )}
+
+      {approveHash &amp;&amp; (
+        &lt;p className=&quot;text-xs&quot;&gt;approve tx: &lt;a className=&quot;underline&quot; target=&quot;_blank&quot; href={`https://sepolia.etherscan.io/tx/${approveHash}`}&gt;{approveHash.slice(0, 10)}…&lt;/a&gt;&lt;/p&gt;
+      )}
+      {payHash &amp;&amp; (
+        &lt;p className=&quot;text-xs&quot;&gt;pay tx: &lt;a className=&quot;underline&quot; target=&quot;_blank&quot; href={`https://sepolia.etherscan.io/tx/${payHash}`}&gt;{payHash.slice(0, 10)}…&lt;/a&gt;&lt;/p&gt;
+      )}
+      {payDone &amp;&amp; &lt;p className=&quot;text-green-700&quot;&gt;✅ Pago confirmado&lt;/p&gt;}
+    &lt;/div&gt;
+  );
+}</code></pre>
+<p>Importalo en <code>app/page.tsx</code>:</p>
+<pre class="tsx"><code>import { PayForm } from &#39;./components/PayForm&#39;;
+// ...dentro del main:
+{isConnected &amp;&amp; &lt;PayForm /&gt;}</code></pre>
+<h3 id="44-estados-de-la-transacción--qué-mostrar">4.4 Estados de la
+transacción — qué mostrar</h3>
+<table>
+<thead>
+<tr>
+<th>Estado wagmi</th>
+<th>Significado</th>
+<th>UI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>isPending</code></td>
+<td>Esperando que el usuario confirme en MetaMask</td>
+<td>“Confirmá en wallet…”</td>
+</tr>
+<tr>
+<td><code>isLoading</code> (de
+<code>useWaitForTransactionReceipt</code>)</td>
+<td>Ya firmó, esperando minería</td>
+<td>“Esperando bloque…”</td>
+</tr>
+<tr>
+<td><code>isSuccess</code></td>
+<td>Confirmada en bloque</td>
+<td>“✅ Listo” + link a Etherscan</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td>Revert / sin gas / rechazada</td>
+<td>Mensaje rojo</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Truco UX</strong>: nunca dejes al usuario sin feedback. Cada
+click tiene que producir algo en pantalla en menos de 200ms (el
+spinner). Si el usuario no ve nada, vuelve a apretar el botón y manda 2
+txs.</p>
+</blockquote>
+<hr />
+<h2 id="parte-5--escuchar-eventos-paid-en-tiempo-real">Parte 5 —
+Escuchar eventos <code>Paid</code> en tiempo real</h2>
+<p>Cada <code>pay()</code> exitoso emite
+<code>Paid(payer, amount, action)</code>. Vamos a leerlos en vivo.</p>
+<p>Creá <code>app/components/PaymentFeed.tsx</code>:</p>
+<pre class="tsx"><code>&#39;use client&#39;;
+import { useState } from &#39;react&#39;;
+import { useWatchContractEvent } from &#39;wagmi&#39;;
+import { formatUnits } from &#39;viem&#39;;
+import { PAYGW_ABI } from &#39;@/lib/abis&#39;;
+
+const PAYGW = process.env.NEXT_PUBLIC_PAYGW_ADDRESS as `0x${string}`;
+
+type PaidLog = { payer: string; amount: bigint; action: string; tx: string };
+
+export function PaymentFeed() {
+  const [logs, setLogs] = useState&lt;PaidLog[]&gt;([]);
+
+  useWatchContractEvent({
+    address: PAYGW,
+    abi: PAYGW_ABI,
+    eventName: &#39;Paid&#39;,
+    onLogs(events) {
+      const next = events.map((e: any) =&gt; ({
+        payer: e.args.payer,
+        amount: e.args.amount,
+        action: e.args.action,
+        tx: e.transactionHash,
+      }));
+      setLogs((prev) =&gt; [...next, ...prev].slice(0, 20));
+    },
+  });
+
+  return (
+    &lt;div className=&quot;border rounded-lg p-4 mt-6&quot;&gt;
+      &lt;h2 className=&quot;text-xl font-semibold mb-2&quot;&gt;Pagos recientes&lt;/h2&gt;
+      {logs.length === 0 &amp;&amp; &lt;p className=&quot;text-sm text-gray-500&quot;&gt;Esperando eventos…&lt;/p&gt;}
+      &lt;ul className=&quot;space-y-1&quot;&gt;
+        {logs.map((l) =&gt; (
+          &lt;li key={l.tx} className=&quot;text-xs font-mono&quot;&gt;
+            {l.payer.slice(0, 8)}… → {formatUnits(l.amount, 6)} USDC ({l.action.slice(0, 10)}…)
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+<p>Pegalo abajo del <code>PayForm</code>. <strong>Pedile a un compañero
+que pague desde su frontend</strong> — vas a ver el evento aparecer en
+tu UI sin recargar.</p>
+<blockquote>
+<p><strong>Esto es Web3</strong>: no hay un WebSocket de “tu backend te
+avisa”. El RPC node hace polling de los logs por nosotros, wagmi lo
+abstrae. <strong>Cualquier dApp del mundo</strong> que escuche este
+evento lo recibe.</p>
+</blockquote>
+<hr />
+<h2 id="parte-6--testnetonrampsol--el-onramp-simulado">Parte 6 —
+<code>TestnetOnramp.sol</code> — el onramp simulado</h2>
+<p>En testnet no hay forma de comprar USDC con tarjeta (Circle no
+convierte ARS → USDC test). Lo simulamos con un contrato propio:
+<strong>mandás ETH testnet, te devuelve USDC fake</strong>.</p>
+<blockquote>
+<p><strong>Importante</strong>: este onramp <strong>no usa el USDC
+oficial de Circle</strong> (no podemos mintearlo nosotros). Usa un USDC
+mock que controla nuestro contrato. Para la dApp del TP final lo
+conveniente es que el <code>PaymentGateway</code> apunte al <strong>mock
+USDC del onramp</strong>, no al de Circle. Así el ciclo “comprar →
+pagar” cierra sin pedir al usuario que vaya a un faucet externo.</p>
+</blockquote>
+<h3 id="61-el-contrato">6.1 El contrato</h3>
+<p>En tu repo de Foundry de clase 2, creá
+<code>src/TestnetOnramp.sol</code>:</p>
+<pre class="solidity"><code>// SPDX-License-Identifier: MIT
+pragma solidity 0.8.24;
+
+import {ERC20} from &quot;@openzeppelin/contracts/token/ERC20/ERC20.sol&quot;;
+import {Ownable} from &quot;@openzeppelin/contracts/access/Ownable.sol&quot;;
+
+/// @notice USDC fake que vive en Sepolia. 6 decimales como el real.
+contract MockUSDC is ERC20, Ownable {
+    constructor() ERC20(&quot;Mock USDC&quot;, &quot;mUSDC&quot;) Ownable(msg.sender) {}
+
+    function decimals() public pure override returns (uint8) { return 6; }
+
+    function mint(address to, uint256 amount) external onlyOwner {
+        _mint(to, amount);
+    }
+}
+
+/// @notice Simula un onramp tipo MoonPay: recibe ETH, mintea USDC fake.
+///         Tasa fija: 1 ETH testnet = 1000 mUSDC (irreal a propósito,
+///         hace que con poca ETH del faucet se compre suficiente para demos).
+contract TestnetOnramp is Ownable {
+    MockUSDC public immutable usdc;
+    uint256 public constant RATE = 1000; // 1 ETH = 1000 mUSDC
+
+    event Onramped(address indexed buyer, uint256 ethIn, uint256 usdcOut);
+
+    constructor(MockUSDC _usdc) Ownable(msg.sender) {
+        usdc = _usdc;
+    }
+
+    /// @notice Llamada por el front cuando el usuario &quot;paga con tarjeta&quot;.
+    ///         En realidad recibe ETH testnet y mintea USDC al sender.
+    function buyWithCard() external payable {
+        require(msg.value &gt; 0, &quot;no eth&quot;);
+        // msg.value en wei (18 dec). USDC tiene 6 dec.
+        // out = (ethIn * RATE * 1e6) / 1e18 = ethIn * RATE / 1e12
+        uint256 usdcOut = (msg.value * RATE) / 1e12;
+        usdc.mint(msg.sender, usdcOut);
+        emit Onramped(msg.sender, msg.value, usdcOut);
+    }
+
+    /// @notice El owner retira el ETH acumulado (en testnet no importa, pero queda como pattern).
+    function withdraw() external onlyOwner {
+        payable(owner()).transfer(address(this).balance);
+    }
+}</code></pre>
+<h3 id="62-deploy">6.2 Deploy</h3>
+<p>Creá <code>script/DeployOnramp.s.sol</code>:</p>
+<pre class="solidity"><code>// SPDX-License-Identifier: MIT
+pragma solidity 0.8.24;
+
+import {Script} from &quot;forge-std/Script.sol&quot;;
+import {MockUSDC, TestnetOnramp} from &quot;../src/TestnetOnramp.sol&quot;;
+
+contract DeployOnramp is Script {
+    function run() external {
+        vm.startBroadcast();
+        MockUSDC usdc = new MockUSDC();
+        TestnetOnramp onramp = new TestnetOnramp(usdc);
+        usdc.transferOwnership(address(onramp)); // el onramp es quien mintea
+        vm.stopBroadcast();
+    }
+}</code></pre>
+<p>Deployá:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> script script/DeployOnramp.s.sol <span class="dt">\</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rpc-url</span> <span class="va">$SEPOLIA_RPC_URL</span> <span class="dt">\</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--account</span> dev <span class="dt">\</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--broadcast</span> <span class="dt">\</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--verify</span> <span class="at">--etherscan-api-key</span> <span class="va">$ETHERSCAN_API_KEY</span></span></code></pre></div>
+<p>Anotá las dos addresses (<code>MockUSDC</code> y
+<code>TestnetOnramp</code>).</p>
+<blockquote>
+<p><strong>Re-deploy del PaymentGateway</strong>: para cerrar el ciclo,
+redeployen el <code>PaymentGateway</code> apuntando a
+<code>MockUSDC</code> en vez del USDC de Circle. Actualicen
+<code>NEXT_PUBLIC_USDC_ADDRESS</code> y
+<code>NEXT_PUBLIC_PAYGW_ADDRESS</code> en <code>.env.local</code>.</p>
+</blockquote>
+<hr />
+<h2 id="parte-7--ui-del-onramp">Parte 7 — UI del onramp</h2>
+<p>Creá <code>app/components/CardOnramp.tsx</code>:</p>
+<pre class="tsx"><code>&#39;use client&#39;;
+import { useState } from &#39;react&#39;;
+import { useWriteContract, useWaitForTransactionReceipt } from &#39;wagmi&#39;;
+import { parseEther } from &#39;viem&#39;;
+
+const ONRAMP = process.env.NEXT_PUBLIC_ONRAMP_ADDRESS as `0x${string}`;
+
+const ONRAMP_ABI = [
+  {
+    type: &#39;function&#39;,
+    name: &#39;buyWithCard&#39;,
+    stateMutability: &#39;payable&#39;,
+    inputs: [],
+    outputs: [],
+  },
+] as const;
+
+export function CardOnramp() {
+  const [step, setStep] = useState&lt;&#39;idle&#39; | &#39;card&#39; | &#39;tx&#39; | &#39;done&#39;&gt;(&#39;idle&#39;);
+  const { writeContract, data: hash, isPending } = useWriteContract();
+  const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
+
+  async function buy50USDC() {
+    setStep(&#39;card&#39;);
+    // Simulación de &quot;card flow&quot; — en producción acá llamarías a Stripe/MercadoPago
+    await new Promise((r) =&gt; setTimeout(r, 1500));
+    setStep(&#39;tx&#39;);
+    writeContract({
+      address: ONRAMP,
+      abi: ONRAMP_ABI,
+      functionName: &#39;buyWithCard&#39;,
+      value: parseEther(&#39;0.05&#39;), // 0.05 ETH * 1000 = 50 mUSDC
+    });
+  }
+
+  if (isSuccess &amp;&amp; step !== &#39;done&#39;) setStep(&#39;done&#39;);
+
+  return (
+    &lt;div className=&quot;border rounded-lg p-4 mt-6 bg-yellow-50&quot;&gt;
+      &lt;h2 className=&quot;text-xl font-semibold&quot;&gt;Sin USDC? Comprá con tarjeta&lt;/h2&gt;
+      &lt;p className=&quot;text-sm text-gray-600 mb-2&quot;&gt;
+        (Simulado — en producción esto sería MoonPay/Lemon)
+      &lt;/p&gt;
+      &lt;button
+        onClick={buy50USDC}
+        disabled={step !== &#39;idle&#39; &amp;&amp; step !== &#39;done&#39;}
+        className=&quot;bg-purple-600 text-white px-4 py-2 rounded w-full&quot;
+      &gt;
+        {step === &#39;idle&#39; &amp;&amp; &#39;💳 Comprar 50 mUSDC con tarjeta&#39;}
+        {step === &#39;card&#39; &amp;&amp; &#39;Procesando tarjeta…&#39;}
+        {step === &#39;tx&#39; &amp;&amp; (isPending ? &#39;Confirmá en wallet…&#39; : &#39;Esperando bloque…&#39;)}
+        {step === &#39;done&#39; &amp;&amp; &#39;✅ 50 mUSDC en tu wallet&#39;}
+      &lt;/button&gt;
+      {hash &amp;&amp; (
+        &lt;p className=&quot;text-xs mt-2&quot;&gt;
+          tx: &lt;a className=&quot;underline&quot; target=&quot;_blank&quot; href={`https://sepolia.etherscan.io/tx/${hash}`}&gt;{hash.slice(0, 10)}…&lt;/a&gt;
+        &lt;/p&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</code></pre>
+<p>Agregá <code>NEXT_PUBLIC_ONRAMP_ADDRESS=0x...</code> a
+<code>.env.local</code> y montá el componente arriba del
+<code>PayForm</code>.</p>
+<p><strong>El flow completo desde la dApp</strong>:</p>
+<ol type="1">
+<li>Usuario conecta wallet (sin USDC, sin nada).</li>
+<li>Click <strong>“Comprar 50 mUSDC con tarjeta”</strong> → 1.5s de
+spinner falso → tx al onramp → wallet recibe 50 mUSDC.</li>
+<li>Click <strong>“Approve 1 mUSDC”</strong> → firma 1.</li>
+<li>Click <strong>“Pay 1 mUSDC”</strong> → firma 2 → emite
+<code>Paid</code>.</li>
+<li>Aparece en el feed de eventos.</li>
+</ol>
+<p>Eso es <strong>end-to-end onboarding sin USDC previo</strong>. El TP
+final tiene que contar exactamente esta historia en su demo.</p>
+<hr />
+<h2 id="parte-8--deploy-a-vercel">Parte 8 — Deploy a Vercel</h2>
+<p>Vercel deploya Next.js gratis con <code>git push</code>. Es la URL
+pública que va a evaluar el docente.</p>
+<h3 id="81-pushear-a-github">8.1 Pushear a GitHub</h3>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init <span class="kw">&amp;&amp;</span> <span class="fu">git</span> add . <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">&quot;feat: paygw dapp&quot;</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo create paygw-dapp <span class="at">--public</span> <span class="at">--source</span><span class="op">=</span>. <span class="at">--push</span></span></code></pre></div>
+<h3 id="82-importar-en-vercel">8.2 Importar en Vercel</h3>
+<ol type="1">
+<li><a href="https://vercel.com/new">https://vercel.com/new</a> →
+“Import Git Repository” → seleccioná <code>paygw-dapp</code>.</li>
+<li><strong>Environment Variables</strong> — pegá las 4 vars:
+<ul>
+<li><code>NEXT_PUBLIC_WC_PROJECT_ID</code></li>
+<li><code>NEXT_PUBLIC_PAYGW_ADDRESS</code></li>
+<li><code>NEXT_PUBLIC_USDC_ADDRESS</code></li>
+<li><code>NEXT_PUBLIC_ONRAMP_ADDRESS</code></li>
+</ul></li>
+<li>Click <strong>Deploy</strong>. Tarda ~1 minuto.</li>
+</ol>
+<p>Vercel te da una URL <code>https://paygw-dapp-xxx.vercel.app</code>.
+<strong>Esa URL la abrís desde el celular con MetaMask Mobile</strong> y
+funciona — eso es lo que demostrás en la presentación.</p>
+<blockquote>
+<p><strong>Tip</strong>: cada <code>git push</code> redeploya. Empujen
+branches y los van a tener en URLs preview separadas.</p>
+</blockquote>
+<hr />
+<h2 id="cierre--qué-nos-llevamos">Cierre — qué nos llevamos</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />dApp Next.js + wagmi + RainbowKit
+funcionando en local</label></li>
+<li><label><input type="checkbox" />Botón Connect Wallet con MetaMask en
+Sepolia</label></li>
+<li><label><input type="checkbox" />Form de pago con flow
+<code>approve</code> + <code>pay</code> y feedback de tx</label></li>
+<li><label><input type="checkbox" />Feed en vivo de eventos
+<code>Paid</code></label></li>
+<li><label><input type="checkbox" /><code>TestnetOnramp.sol</code> +
+<code>MockUSDC</code> deployados y verificados</label></li>
+<li><label><input type="checkbox" />Botón “comprar con tarjeta”
+simulado, integrado al onramp</label></li>
+<li><label><input type="checkbox" />dApp deployada a Vercel con URL
+pública</label></li>
+</ul>
+<p><strong>En clase 4</strong> vamos a:</p>
+<ul>
+<li>Agregar <strong>NFT de bonus</strong> (ERC-721) que el
+<code>PaymentGateway</code> mintea a clientes recurrentes.</li>
+<li>Correr <strong>Slither</strong> para análisis estático de seguridad
+sobre los contratos.</li>
+<li>Cerrar el TP final mostrando cómo cada equipo
+(VibeCheck/DepFund/RNW/IDEAFY) plugga su lógica en
+<code>_onPaid</code>.</li>
+</ul>
+<hr />
+<h2 id="tarea-para-clase-4">Tarea para clase 4</h2>
+<p>Antes del próximo sábado, en su repo:</p>
+<ol type="1">
+<li><strong>dApp deployada en Vercel</strong> (URL pública), con:
+<ul>
+<li>Connect wallet funcionando.</li>
+<li>Form de pago con approve + pay completos.</li>
+<li>Feed de eventos <code>Paid</code> en vivo.</li>
+</ul></li>
+<li><strong><code>TestnetOnramp</code> + <code>MockUSDC</code>
+deployados y verificados</strong> en Sepolia (links a Etherscan).</li>
+<li><strong><code>PaymentGateway</code> redeployado</strong> apuntando
+al <code>MockUSDC</code> (para que el ciclo cierre solo).</li>
+<li><strong>Video de 90 segundos</strong> mostrando: connect → comprar
+50 mUSDC con tarjeta → approve → pay → ver evento. Súbanlo al
+campus.</li>
+</ol>
+<p>Lo que <strong>no</strong> hace falta esta semana: estilos lindos,
+mobile responsive, multi-cuenta. Eso lo pulen en la semana de clase
+4.</p>
+<hr />
+<h2 id="si-algo-falla">Si algo falla</h2>
+<table>
+<thead>
+<tr>
+<th>Síntoma</th>
+<th>Probable causa</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WalletConnect Project ID is not valid</code></td>
+<td>Variable mal pegada en <code>.env.local</code></td>
+<td>Verificá con <code>echo $NEXT_PUBLIC_WC_PROJECT_ID</code>, reiniciá
+<code>npm run dev</code></td>
+</tr>
+<tr>
+<td>RainbowKit no abre el modal</td>
+<td>Falta <code>import '@rainbow-me/rainbowkit/styles.css'</code></td>
+<td>Agregalo en <code>providers.tsx</code></td>
+</tr>
+<tr>
+<td>MetaMask dice “Wrong network”</td>
+<td>Wallet en mainnet o Goerli</td>
+<td>Click en el botón rojo de RainbowKit → “Switch network”</td>
+</tr>
+<tr>
+<td><code>pay</code> revierte con <code>transfer failed</code></td>
+<td>No hiciste <code>approve</code> antes, o approve por menos</td>
+<td>El UI tiene que mostrar “Approve” antes que “Pay”</td>
+</tr>
+<tr>
+<td><code>pay</code> revierte con <code>amount=0</code></td>
+<td><code>parseUnits</code> recibió string vacío</td>
+<td>Validá <code>amount &gt; 0</code> antes del click</td>
+</tr>
+<tr>
+<td>El feed de eventos no muestra nada</td>
+<td>RPC público con rate limit</td>
+<td>Cambiá a un RPC de Alchemy (free tier alcanza)</td>
+</tr>
+<tr>
+<td>Vercel build falla con “process is not defined”</td>
+<td>Variable sin prefijo <code>NEXT_PUBLIC_</code></td>
+<td>Todas las vars que usa el browser <strong>tienen</strong> que
+arrancar con <code>NEXT_PUBLIC_</code></td>
+</tr>
+<tr>
+<td><code>parseUnits</code> da número raro</td>
+<td>USDC tiene 6 decimales, no 18</td>
+<td>Usá <code>parseUnits(x, 6)</code>, no
+<code>parseEther(x)</code></td>
+</tr>
+<tr>
+<td><code>useWatchContractEvent</code> no dispara</td>
+<td>Address de contrato mal</td>
+<td>Verificá <code>NEXT_PUBLIC_PAYGW_ADDRESS</code> y reiniciá</td>
+</tr>
+<tr>
+<td>Onramp revierte con <code>OwnableUnauthorizedAccount</code></td>
+<td>Olvidaste <code>transferOwnership</code> del MockUSDC al onramp</td>
+<td>Re-deploy con el script que sí lo hace</td>
+</tr>
+</tbody>
+</table>
+
+    <nav class="page-prev-next" aria-label="Navegación entre páginas">
+      <a class="prev-link" href="#" data-slot="prev" hidden>
+        <span class="arrow">←</span>
+        <span class="nav-meta">
+          <span class="nav-label">Anterior</span>
+          <span class="nav-title" data-slot="prev-title"></span>
+        </span>
+      </a>
+      <a class="next-link" href="#" data-slot="next" hidden>
+        <span class="nav-meta">
+          <span class="nav-label">Siguiente</span>
+          <span class="nav-title" data-slot="next-title"></span>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+    </nav>
+
+    <nav class="page-nav-bottom">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+    </nav>
+  </main>
+</div>
+
+<footer class="unlu-footer">
+  <div>
+    UNLu · Departamento de Ciencias Básicas · Seminario de Integración Profesional <strong>2026</strong>
+    · Dr. David Petrocelli
+  </div>
+</footer>
+
+<script>
+// Sidebar show/hide toggle (preference persisted in localStorage)
+(function () {
+  const sidebar = document.getElementById('toc-sidebar');
+  const layout = document.querySelector('.layout');
+  const hideBtn = document.getElementById('sidebar-hide');
+  const showBtn = document.getElementById('sidebar-show');
+  if (!sidebar || !layout || !hideBtn || !showBtn) return;
+
+  const KEY = 'unlu.dcb.sidebar.hidden';
+
+  function apply(hidden) {
+    layout.classList.toggle('sidebar-hidden', hidden);
+    showBtn.classList.toggle('visible', hidden);
+  }
+
+  apply(localStorage.getItem(KEY) === '1');
+
+  hideBtn.addEventListener('click', () => {
+    localStorage.setItem(KEY, '1');
+    apply(true);
+  });
+  showBtn.addEventListener('click', () => {
+    localStorage.removeItem(KEY);
+    apply(false);
+  });
+})();
+
+// Wrap each H2 (and its following content until the next H2) in a <details open>
+// element so users can collapse/expand sections.
+(function () {
+  const main = document.querySelector('main.content');
+  if (!main) return;
+
+  // Collect direct-child H2 headings so we don't touch nested ones (e.g., inside details we'll create)
+  const headings = Array.from(main.children).filter(el => el.tagName === 'H2');
+
+  headings.forEach(h2 => {
+    const details = document.createElement('details');
+    details.open = true;
+    details.className = 'section-collapsible';
+
+    const summary = document.createElement('summary');
+    // Move heading content (incl. anchor) into the summary so anchors keep working
+    summary.innerHTML = h2.innerHTML;
+    if (h2.id) summary.id = h2.id;
+    details.appendChild(summary);
+
+    // Move siblings until next H2 into details
+    const parent = h2.parentNode;
+    let next = h2.nextSibling;
+    parent.replaceChild(details, h2);
+    while (next && !(next.nodeType === 1 && next.tagName === 'H2')) {
+      const node = next;
+      next = next.nextSibling;
+      details.appendChild(node);
+    }
+  });
+
+  // If there's a hash in the URL, ensure the target's <details> is open
+  function openDetailsForHash(hash) {
+    if (!hash) return;
+    const target = document.getElementById(hash.replace(/^#/, ''));
+    if (!target) return;
+    let p = target.closest('details');
+    while (p) { p.open = true; p = p.parentElement && p.parentElement.closest('details'); }
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  openDetailsForHash(window.location.hash);
+  window.addEventListener('hashchange', () => openDetailsForHash(window.location.hash));
+
+  // Wire up "Expand all" / "Collapse all" controls in the inline TOC
+  document.querySelectorAll('.toc-controls [data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const action = btn.getAttribute('data-action');
+      const open = action === 'expand-all';
+      document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
+    });
+  });
+})();
+
+// Populate prev/next navigation based on the current page's banner-num
+(function () {
+  const pill = document.querySelector('.banner-pill');
+  const nav = document.querySelector('.page-prev-next');
+  if (!pill || !nav) return;
+
+  const key = (pill.textContent || '').trim().toUpperCase();
+
+  // Map banner-num → { prev, next }
+  // Each entry: { href, title } (or null if not present)
+  const MAP = {
+    'TP 0': {
+      prev: null,
+      next: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' }
+    },
+    'TP 1 · PARTE 1': {
+      prev: { href: 'practica-0.html', title: 'TP 0 — Prerrequisitos' },
+      next: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' }
+    },
+    'TP 1 · PARTE 2': {
+      prev: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' },
+      next: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' }
+    },
+    'TP 2 · PARTE 1': {
+      prev: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' },
+      next: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' }
+    },
+    'TP 2 · PARTE 2': {
+      prev: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' },
+      next: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' }
+    },
+    'TP 2 · PARTE 3': {
+      prev: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' },
+      next: { href: 'practica-2-parte-4.html', title: 'Práctica II · Parte 4' }
+    },
+    'TP 2 · PARTE 4': {
+      prev: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' },
+      next: null
+    }
+  };
+
+  const entry = MAP[key];
+  if (!entry) return;
+
+  const prevLink = nav.querySelector('[data-slot="prev"]');
+  const nextLink = nav.querySelector('[data-slot="next"]');
+  const prevTitle = nav.querySelector('[data-slot="prev-title"]');
+  const nextTitle = nav.querySelector('[data-slot="next-title"]');
+
+  if (entry.prev && prevLink && prevTitle) {
+    prevLink.setAttribute('href', entry.prev.href);
+    prevTitle.textContent = entry.prev.title;
+    prevLink.hidden = false;
+  }
+  if (entry.next && nextLink && nextTitle) {
+    nextLink.setAttribute('href', entry.next.href);
+    nextTitle.textContent = entry.next.title;
+    nextLink.hidden = false;
+  }
+
+  // If neither slot is shown, hide the whole nav
+  if ((!entry.prev) && (!entry.next)) {
+    nav.style.display = 'none';
+  }
+})();
+
+// Open all external links in a new tab (preserves the current page).
+// Internal anchors (#hash), relative links and same-origin links stay in-tab.
+(function () {
+  const here = window.location.hostname;
+  document.querySelectorAll('a[href]').forEach(a => {
+    const href = a.getAttribute('href');
+    if (!href) return;
+    // Skip anchors and pure relative links
+    if (href.startsWith('#') || href.startsWith('/') || !/^https?:\/\//i.test(href)) return;
+    try {
+      const url = new URL(href);
+      if (url.hostname && url.hostname !== here) {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      }
+    } catch (_) {
+      // Malformed URL — ignore
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
