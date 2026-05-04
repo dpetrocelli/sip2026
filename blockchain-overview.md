@@ -44,7 +44,17 @@
 
 ## Diagramas hero
 
-Estos 5 diagramas cubren todo el modelo mental. Recurrir a ellos durante el desarrollo de su sistema.
+Estos 6 diagramas cubren todo el modelo mental. Recurrir a ellos durante el desarrollo de su sistema.
+
+### 0 · Las 3 capas — mapa global del sistema
+
+El mapa mental de más alto nivel: **edge / cliente** (browser + wallet del usuario, frontend en Vercel) · **web2 infra en k3s** (backend, indexer, Postgres, IPFS, Loki/Grafana — todo lo que NO es blockchain) · **on-chain en Sepolia** (contrato + USDC + state inmutable). Todo lo que ya saben de TP0 (k3s) y TP2 (observabilidad) paga acá, en la capa del medio.
+
+![Las 3 capas](assets/diagramas/06-tres-capas.png)
+
+> **Regla práctica**: si lo pueden romper sin pedirle permiso a nadie → es suyo (k3s o Vercel). Si necesitan firma + gas → es on-chain.
+
+---
 
 ### 1 · El ciclo de un smart contract
 
