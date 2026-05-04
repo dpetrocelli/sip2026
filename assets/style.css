@@ -989,6 +989,44 @@ details.section-collapsible > p:first-of-type {
   flex-shrink: 0;
   user-select: none;
 }
+.flow-arrow-strong {
+  font-size: 28px;
+  color: #15803d;
+}
+
+/* Ejercitación 3 — Blockchain (módulo nuevo, naranja para diferenciarla) */
+.flow-step-blockchain {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+  border-color: #f59e0b !important;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.25);
+}
+.flow-step-blockchain .step-num,
+.flow-step-blockchain .step-name { color: #fff !important; }
+.flow-step-blockchain .step-status { color: #fde68a !important; }
+.flow-step-blockchain:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.40);
+  border-color: #fbbf24 !important;
+}
+
+/* TPC — el destino final (verde, más grande visualmente) */
+.flow-step-tpc {
+  background: linear-gradient(135deg, #15803d 0%, #166534 100%) !important;
+  border-color: #22c55e !important;
+  flex-basis: 220px !important;
+  box-shadow: 0 2px 10px rgba(21, 128, 61, 0.30);
+  position: relative;
+}
+.flow-step-tpc .step-num,
+.flow-step-tpc .step-name { color: #fff !important; }
+.flow-step-tpc .step-num { font-size: 14px; }
+.flow-step-tpc .step-name { font-size: 14px; font-weight: 600; }
+.flow-step-tpc .step-status { color: #bbf7d0 !important; }
+.flow-step-tpc:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(21, 128, 61, 0.40);
+  border-color: #4ade80 !important;
+}
 @media (max-width: 720px) {
   .flow-diagram { flex-direction: column; align-items: stretch; }
   .flow-step { max-width: none; }
