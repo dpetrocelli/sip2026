@@ -8,8 +8,9 @@
 Promtail/Alloy + Grafana — UNLu DCB</title>
   <link rel="stylesheet" href="assets/style.css">
   <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -538,7 +539,7 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="
 <code>latest</code> en ninguna release). Para la entrega 2026:</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Componente</th>
 <th>Chart</th>
 <th>Versión chart</th>
@@ -547,7 +548,7 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Loki (single-binary)</td>
 <td><code>grafana/loki</code></td>
 <td><code>6.16.x</code></td>
@@ -555,7 +556,7 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="
 <td><a
 href="https://grafana.github.io/helm-charts">https://grafana.github.io/helm-charts</a></td>
 </tr>
-<tr class="even">
+<tr>
 <td>Promtail</td>
 <td><code>grafana/promtail</code></td>
 <td><code>6.16.x</code></td>
@@ -563,7 +564,7 @@ href="https://grafana.github.io/helm-charts">https://grafana.github.io/helm-char
 <td><a
 href="https://grafana.github.io/helm-charts">https://grafana.github.io/helm-charts</a></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Alloy (alternativa a Promtail)</td>
 <td><code>grafana/alloy</code></td>
 <td><code>0.9.x</code></td>
@@ -571,7 +572,7 @@ href="https://grafana.github.io/helm-charts">https://grafana.github.io/helm-char
 <td><a
 href="https://grafana.github.io/helm-charts">https://grafana.github.io/helm-charts</a></td>
 </tr>
-<tr class="even">
+<tr>
 <td>Grafana</td>
 <td><code>grafana/grafana</code></td>
 <td><code>8.5.x</code></td>
@@ -638,7 +639,7 @@ Cualquier values.yaml que pida más de lo siguiente se considera mal
 calibrado:</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Componente</th>
 <th>Requests</th>
 <th>Limits</th>
@@ -646,25 +647,25 @@ calibrado:</p>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Loki (single-binary)</td>
 <td>256 Mi RAM, 100m CPU</td>
 <td>512 Mi RAM, 500m CPU</td>
 <td>5 Gi PVC <code>local-path</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>Promtail (DaemonSet)</td>
 <td>64 Mi RAM, 50m CPU</td>
 <td>128 Mi RAM, 200m CPU</td>
 <td>— (lee del host)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Alloy (DaemonSet)</td>
 <td>128 Mi RAM, 100m CPU</td>
 <td>256 Mi RAM, 300m CPU</td>
 <td>—</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Grafana</td>
 <td>128 Mi RAM, 100m CPU</td>
 <td>256 Mi RAM, 300m CPU</td>
@@ -1086,21 +1087,21 @@ como campo. Para que Loki lo extraiga, <strong>tiene que estar en
 <h4 id="equivalentes-en-otros-stacks">Equivalentes en otros stacks</h4>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Stack</th>
 <th>Librería</th>
 <th>Output esperado</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Node.js</td>
 <td><code>pino</code></td>
 <td><code>pino</code> ya emite JSON nativo. No requiere migración —
 verificar que <code>transport</code> no esté seteado a
 <code>pino-pretty</code> en producción.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Java</td>
 <td>SLF4J + Logback + <code>logstash-logback-encoder</code></td>
 <td>Reemplazar <code>&lt;encoder&gt;</code> por
@@ -1502,44 +1503,44 @@ final.</li>
 <h3 id="tabla-de-puntaje-100-">Tabla de puntaje (100 %)</h3>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Criterio</th>
 <th>Peso</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><strong>Hit #1</strong> — stack Loki + Promtail + Grafana corriendo
 + datasource validado</td>
 <td>20 %</td>
 </tr>
-<tr class="even">
+<tr>
 <td><strong>Hit #2</strong> — Promtail/Alloy refinado a namespace
 <code>ml-scraper</code> con labels k8s útiles</td>
 <td>15 %</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><strong>Hit #3</strong> — scraper migrado a JSON line-delimited +
 campos extraíbles via <code>| json</code></td>
 <td>20 %</td>
 </tr>
-<tr class="even">
+<tr>
 <td><strong>Hit #4</strong> — <code>logql-cookbook.md</code> con las 5
 queries documentadas (pregunta + query + por qué)</td>
 <td>15 %</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><strong>Hit #5</strong> — dashboard
 <code>scraper-overview.json</code> provisionado as-code y mostrando
 datos reales</td>
 <td>20 %</td>
 </tr>
-<tr class="even">
+<tr>
 <td><strong>ADR <code>0007-stack-de-logging.md</code></strong>
 justificando la elección con alternativas descartadas</td>
 <td>10 %</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><strong>Bonus Hit #6</strong> — alerta a Discord funcionando +
 screenshot de la notificación</td>
 <td>+5 %</td>
@@ -1554,7 +1555,7 @@ comparativa de stacks de logging centralizado</h3>
 <code>0007</code>.</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Stack</th>
 <th>Componentes</th>
 <th>Storage</th>
@@ -1565,7 +1566,7 @@ comparativa de stacks de logging centralizado</h3>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><strong>Loki + Promtail + Grafana</strong></td>
 <td>3 charts</td>
 <td>Filesystem / S3 / GCS</td>
@@ -1574,7 +1575,7 @@ comparativa de stacks de logging centralizado</h3>
 <td>Index pobre vs Elasticsearch — full-text grep es lento</td>
 <td>OSS, $0</td>
 </tr>
-<tr class="even">
+<tr>
 <td><strong>Loki + Alloy + Grafana</strong></td>
 <td>3 charts</td>
 <td>Idem</td>
@@ -1584,7 +1585,7 @@ comparativa de stacks de logging centralizado</h3>
 <td>Menos documentación que Promtail, learning curve</td>
 <td>OSS, $0</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><strong>Vector + Loki + Grafana</strong></td>
 <td>3 procesos</td>
 <td>Idem</td>
@@ -1594,7 +1595,7 @@ expresiva</td>
 <td>Más componentes que mantener</td>
 <td>OSS, $0</td>
 </tr>
-<tr class="even">
+<tr>
 <td><strong>OpenTelemetry Collector + Loki</strong></td>
 <td>OTel Coll + Loki + Grafana</td>
 <td>Idem</td>
@@ -1604,7 +1605,7 @@ scraper</td>
 <td>Más config, OTel logs aún en evolución 2026</td>
 <td>OSS, $0</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><strong>EFK = Elasticsearch + Fluentd + Kibana</strong></td>
 <td>3+ pods pesados</td>
 <td>Elasticsearch (RAM-hungry)</td>
@@ -1614,7 +1615,7 @@ scraper</td>
 local</td>
 <td>OSS, <strong>se aborda en la Parte 2</strong></td>
 </tr>
-<tr class="even">
+<tr>
 <td><strong>Datadog Logs</strong></td>
 <td>SaaS</td>
 <td>Datadog cloud</td>
@@ -1623,7 +1624,7 @@ local</td>
 <td>Vendor lock-in, <strong>paid</strong> ($0.10/GB ingested)</td>
 <td>$$$ — descartar</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><strong>New Relic Logs</strong></td>
 <td>SaaS</td>
 <td>New Relic cloud</td>
@@ -1632,7 +1633,7 @@ local</td>
 <td>Vendor lock-in</td>
 <td>Gratis hasta 100 GB, después paid</td>
 </tr>
-<tr class="even">
+<tr>
 <td><strong>Splunk Cloud</strong></td>
 <td>SaaS o on-prem</td>
 <td>Splunk indexer</td>
@@ -2027,7 +2028,28 @@ href="https://research.google/pubs/pub36356/">https://research.google/pubs/pub36
     },
     'TP 2 · PARTE 4': {
       prev: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' },
-      next: null
+      next: { href: 'blockchain-overview.html', title: 'Blockchain · Overview' }
+    },
+    // ----- Blockchain module -----
+    'BLOCKCHAIN': {
+      prev: { href: 'practica-2-parte-4.html',  title: 'Práctica II · Parte 4' },
+      next: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' }
+    },
+    'BC · CLASE 1': {
+      prev: { href: 'blockchain-overview.html', title: 'Blockchain · Overview' },
+      next: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' }
+    },
+    'BC · CLASE 2': {
+      prev: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' },
+      next: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' }
+    },
+    'BC · CLASE 3': {
+      prev: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' },
+      next: { href: 'blockchain-clase-4.html',  title: 'Clase 4 — NFTs + Slither' }
+    },
+    'BC · CLASE 4': {
+      prev: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' },
+      next: { href: 'index.html',               title: 'Menú principal' }
     }
   };
 

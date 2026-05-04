@@ -44,17 +44,7 @@
 
 ## Diagramas hero
 
-Estos 5 diagramas cubren todo el modelo mental. Recurrir a ellos durante el desarrollo de su sistema.
-
-### 0 · Las 3 capas — mapa global del sistema
-
-El mapa mental de más alto nivel: **edge / cliente** (browser + wallet del usuario, frontend en Vercel) · **web2 infra en k3s** (backend, indexer, Postgres, IPFS, Loki/Grafana — todo lo que NO es blockchain) · **on-chain en Sepolia** (contrato + USDC + state inmutable). Todo lo que ya saben de TP0 (k3s) y TP2 (observabilidad) paga acá, en la capa del medio.
-
-![Las 3 capas](assets/diagramas/06-tres-capas.png)
-
-> **Regla práctica**: si lo pueden romper sin pedirle permiso a nadie → es suyo (k3s o Vercel). Si necesitan firma + gas → es on-chain.
-
----
+Estos 5 diagramas cubren todo el modelo mental. El orden va de zoom-out → zoom-in → tactical.
 
 ### 1 · El ciclo de un smart contract
 
@@ -64,25 +54,17 @@ Del archivo `.sol` que escribís, al contrato deployado, al usuario final que lo
 
 ---
 
-### 2 · Read vs Write — la distinción crítica
+### 2 · Las 3 capas — mapa global del sistema
 
-`cast call` (lectura, gratis, instantánea) vs `cast send` (escritura, firma + gas, espera bloque). **Misma sintaxis en Solidity, comportamiento radicalmente distinto**.
+El mapa mental de más alto nivel: **edge / cliente** (browser + wallet del usuario, frontend en Vercel) · **web2 infra en k3s** (backend, indexer, Postgres, IPFS, Loki/Grafana — todo lo que NO es blockchain) · **on-chain en Sepolia** (contrato + USDC + state inmutable). Todo lo que ya saben de TP0 (k3s) y TP2 (observabilidad) paga acá, en la capa del medio.
 
-> Regla mnemotécnica: si la función dice `view` o `pure` → `cast call`. Cualquier otra cosa → `cast send`.
+![Las 3 capas](assets/diagramas/02-tres-capas.png)
 
-![Read vs Write](assets/diagramas/02-read-vs-write.png)
-
----
-
-### 3 · Qué vive dónde — público vs privado
-
-Mapa de qué se puede compartir y qué nunca. Lo rojo (private key, frase BIP-39, `.env`) **nunca** sale de su máquina. Lo verde (address, txs, bytecode, storage) es público por diseño — **toda la blockchain es leíble por cualquiera**.
-
-![Qué vive dónde](assets/diagramas/03-que-vive-donde.png)
+> **Regla práctica**: si lo pueden romper sin pedirle permiso a nadie → es suyo (k3s o Vercel). Si necesitan firma + gas → es on-chain.
 
 ---
 
-### 4 · Pasarela de pago — el corazón del TP
+### 3 · Pasarela de pago — el corazón del TP
 
 **Dos caminos**:
 - **A — Crypto-nativo**: el usuario ya tiene USDC. Conecta wallet → approve → pay. Su contrato cobra y emite evento.
@@ -90,7 +72,25 @@ Mapa de qué se puede compartir y qué nunca. Lo rojo (private key, frase BIP-39
 
 > **Insight clave**: el contrato siempre cobra en crypto (USDC). El onramp es solo UX para usuarios sin wallet con fondos. **La lógica del contrato no cambia entre los dos caminos.**
 
-![Pasarela de pago](assets/diagramas/05-pasarela-de-pago.png)
+![Pasarela de pago](assets/diagramas/03-pasarela-de-pago.png)
+
+---
+
+### 4 · Read vs Write — la distinción crítica
+
+`cast call` (lectura, gratis, instantánea) vs `cast send` (escritura, firma + gas, espera bloque). **Misma sintaxis en Solidity, comportamiento radicalmente distinto**.
+
+> Regla mnemotécnica: si la función dice `view` o `pure` → `cast call`. Cualquier otra cosa → `cast send`.
+
+![Read vs Write](assets/diagramas/04-read-vs-write.png)
+
+---
+
+### 5 · Qué vive dónde — público vs privado
+
+Mapa de qué se puede compartir y qué nunca. Lo rojo (private key, frase BIP-39, `.env`) **nunca** sale de su máquina. Lo verde (address, txs, bytecode, storage) es público por diseño — **toda la blockchain es leíble por cualquiera**.
+
+![Qué vive dónde](assets/diagramas/05-que-vive-donde.png)
 
 ---
 
@@ -153,8 +153,10 @@ contract PaymentGateway is ReentrancyGuard {
 
 ## Material relacionado
 
-- [Programa del Seminario](#) — el doc que define el TP
+- [Clase 1 — Fundamentos + setup + tu primer contrato](blockchain-clase-1.html)
+- [Clase 2 — ERC-20 + PaymentGateway + Reentrancy](blockchain-clase-2.html)
+- [Clase 3 — Frontend + integración + onramp testnet](blockchain-clase-3.html)
+- [Clase 4 — NFTs gamificados + tokenomics + Slither](blockchain-clase-4.html)
 - [TP 0 — Kubernetes](practica-0.html)
 - [TP 1 — Selenium MercadoLibre](practica-1-parte-1.html)
 - [TP 2 — Observabilidad](practica-2-parte-1.html)
-- **Próximamente**: las 4 clases de blockchain (links cuando estén publicadas).

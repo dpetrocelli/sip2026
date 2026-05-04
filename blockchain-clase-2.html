@@ -183,6 +183,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     id="toc-85-confirmar-saldo-del-treasury">8.5 Confirmar saldo del
     treasury</a></li>
     </ul></li>
+    <li><a href="#parte-9--tu-propio-erc-20-token-del-proyecto"
+    id="toc-parte-9--tu-propio-erc-20-token-del-proyecto">Parte 9 — Tu
+    propio ERC-20 (token del proyecto)</a></li>
     <li><a href="#cierre--qué-nos-llevamos"
     id="toc-cierre--qué-nos-llevamos">Cierre — qué nos llevamos</a></li>
     <li><a href="#tarea-para-clase-3" id="toc-tarea-para-clase-3">Tarea
@@ -293,6 +296,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       id="toc-85-confirmar-saldo-del-treasury">8.5 Confirmar saldo del
       treasury</a></li>
       </ul></li>
+      <li><a href="#parte-9--tu-propio-erc-20-token-del-proyecto"
+      id="toc-parte-9--tu-propio-erc-20-token-del-proyecto">Parte 9 — Tu
+      propio ERC-20 (token del proyecto)</a></li>
       <li><a href="#cierre--qué-nos-llevamos"
       id="toc-cierre--qué-nos-llevamos">Cierre — qué nos
       llevamos</a></li>
@@ -324,6 +330,13 @@ testeado.</p>
 <p><strong>Pre-requisito</strong>: la clase 1 cerrada. Tienen MetaMask +
 Sepolia + Foundry instalado, y un <code>SimpleStorage</code> deployado y
 verificado.</p>
+</blockquote>
+<blockquote>
+<p><strong>Repo</strong>: hoy seguimos en el mismo proyecto Foundry de
+clase 1 (<a
+href="https://github.com/dpetrocelli/sip2026-blockchain-clase1">sip2026-blockchain-clase1</a>).
+Le agregamos <code>PaymentGateway.sol</code> y
+<code>ProjectToken.sol</code> al directorio <code>src/</code>.</p>
 </blockquote>
 <hr />
 <h2 id="qué-vamos-a-hacer-hoy">¿Qué vamos a hacer hoy?</h2>
@@ -379,9 +392,8 @@ consume</td>
 </tr>
 <tr>
 <td>Comisión de MP (~5%)</td>
-<td>Gas (~<span
-class="math inline">0.5<em>e</em><em>n</em><em>S</em><em>e</em><em>p</em><em>o</em><em>l</em><em>i</em><em>a</em>, </span>0.01
-en Polygon mainnet)</td>
+<td>Gas (gratis en Sepolia con ETH del faucet, ~$0.01 en Polygon
+mainnet)</td>
 </tr>
 </tbody>
 </table>
@@ -873,6 +885,54 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href=
 operación, hecha desde un frontend con MetaMask, es lo que vamos a armar
 en clase 3.</p>
 <hr />
+<h2 id="parte-9--tu-propio-erc-20-token-del-proyecto">Parte 9 — Tu
+propio ERC-20 (token del proyecto)</h2>
+<p>Hasta acá usaron el USDC oficial de Circle como medio de pago. Pero
+su proyecto puede emitir <strong>su propio token ERC-20</strong> para
+representar la “moneda interna”: <code>$VBK</code> para VibeCheck,
+<code>$DPF</code> para DepFund, <code>$RNW</code> para Renovable,
+<code>$IDEA</code> para IDEAFY. Esto les sirve para gamificación,
+dividendos, o lo que sea que necesite tokenomics propia.</p>
+<p>OpenZeppelin lo resuelve en 15 líneas. Creá
+<code>src/ProjectToken.sol</code>:</p>
+<pre class="solidity"><code>// SPDX-License-Identifier: MIT
+pragma solidity 0.8.24;
+
+import {ERC20} from &quot;@openzeppelin/contracts/token/ERC20/ERC20.sol&quot;;
+import {Ownable} from &quot;@openzeppelin/contracts/access/Ownable.sol&quot;;
+
+/// @title ProjectToken
+/// @notice ERC-20 del equipo. Personalizar nombre/símbolo según proyecto.
+contract ProjectToken is ERC20, Ownable {
+    constructor(string memory name_, string memory symbol_, address owner_)
+        ERC20(name_, symbol_)
+        Ownable(owner_)
+    {}
+
+    /// @notice Emitir tokens. Solo el owner.
+    function mint(address to, uint256 amount) external onlyOwner {
+        _mint(to, amount);
+    }
+}</code></pre>
+<p>Deploy del token (cada equipo cambia los strings):</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> create src/ProjectToken.sol:ProjectToken <span class="dt">\</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rpc-url</span> <span class="va">$SEPOLIA_RPC</span> <span class="dt">\</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--private-key</span> <span class="va">$PRIVATE_KEY</span> <span class="dt">\</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--constructor-args</span> <span class="st">&quot;VibeCheck Token&quot;</span> <span class="st">&quot;VBK&quot;</span> <span class="va">$YOUR_ADDRESS</span> <span class="dt">\</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--broadcast</span></span></code></pre></div>
+<p>Te devuelve la address del token. Guardala como
+<code>$VBK_ADDR</code> (o <code>$DPF_ADDR</code>, etc.). <strong>La van
+a necesitar en clase 4</strong> para enchufar tokenomics (burn 1%,
+dividendos USDC, staking, governance) sobre este token.</p>
+<blockquote>
+<p><strong>Cómo encaja con <code>PaymentGateway</code></strong>: en
+clase 4 vamos a sobrescribir el hook <code>_onPaid()</code> del gateway
+para que cada <code>pay()</code> haga <code>mint()</code> del token del
+proyecto al payer. Ahí cierra el loop: paga USDC al treasury → el
+contrato emite tokens del proyecto al usuario.</p>
+</blockquote>
+<hr />
 <h2 id="cierre--qué-nos-llevamos">Cierre — qué nos llevamos</h2>
 <p>Después de esta clase tienen:</p>
 <ul class="task-list">
@@ -887,6 +947,9 @@ Etherscan (cualquiera puede leer el source)</label></li>
 <code>cast</code>: approve → pay → ver evento</label></li>
 <li><label><input type="checkbox" />Saben qué es reentrancy y cómo lo
 cierra OZ con <code>nonReentrant</code></label></li>
+<li><label><input type="checkbox" />Su propio ERC-20 (<code>$VBK</code>
+/ <code>$DPF</code> / <code>$RNW</code> / <code>$IDEA</code>) deployado,
+listo para clase 4</label></li>
 </ul>
 <p><strong>En clase 3</strong> vamos a:</p>
 <ul>
@@ -1110,7 +1173,28 @@ acumulado.</li>
     },
     'TP 2 · PARTE 4': {
       prev: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' },
-      next: null
+      next: { href: 'blockchain-overview.html', title: 'Blockchain · Overview' }
+    },
+    // ----- Blockchain module -----
+    'BLOCKCHAIN': {
+      prev: { href: 'practica-2-parte-4.html',  title: 'Práctica II · Parte 4' },
+      next: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' }
+    },
+    'BC · CLASE 1': {
+      prev: { href: 'blockchain-overview.html', title: 'Blockchain · Overview' },
+      next: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' }
+    },
+    'BC · CLASE 2': {
+      prev: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' },
+      next: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' }
+    },
+    'BC · CLASE 3': {
+      prev: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' },
+      next: { href: 'blockchain-clase-4.html',  title: 'Clase 4 — NFTs + Slither' }
+    },
+    'BC · CLASE 4': {
+      prev: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' },
+      next: { href: 'index.html',               title: 'Menú principal' }
     }
   };
 

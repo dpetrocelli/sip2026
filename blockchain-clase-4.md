@@ -4,6 +4,8 @@
 
 > **Pre-requisitos**: clases 1, 2 y 3 hechas. Tienen `PaymentGateway` deployado en Sepolia, su token ERC-20 (`$VBK` / `$DPF` / `$RNW` / `$IDEA`), y un frontend con MetaMask conectado. **Si algo de eso no está, paren y completen primero** — sin esa base la clase de hoy no tiene dónde apoyarse.
 
+> **Repo**: hoy seguimos en el mismo proyecto Foundry de clase 1-2 ([sip2026-blockchain-clase1](https://github.com/dpetrocelli/sip2026-blockchain-clase1)). Agregamos `BadgeNFT.sol` y los contratos de tokenomics al directorio `src/`.
+
 ---
 
 ## ¿Qué vamos a hacer hoy?
@@ -330,7 +332,7 @@ Si una warning queda como acepted-risk (ej: usar `block.prevrandao` para randomn
 - **Pseudo-randomness en SetBonusNFT.mintRandom**: usamos `keccak256(blockhash, sender)` 
   porque las piezas son cosméticas y el costo de Chainlink VRF no se justifica en testnet.
   En producción se migra a VRF.
-- **Burn 1% / tx en MyToken**: warning de slippage en DEX. Mitigación: whitelist de pools.
+- **Burn 1% / tx en el token del proyecto**: warning de slippage en DEX. Mitigación: whitelist de pools.
 ```
 
 > 🎯 **Lo que el TP final pide**: corrieron Slither, hay 0 findings de severidad HIGH, los MEDIUM están justificados en `SECURITY.md`.
