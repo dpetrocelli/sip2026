@@ -173,22 +173,22 @@
 </mxCell>
 
 <mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9ca3af;strokeWidth=1;arcSize=8;" vertex="1" parent="1">
-<mxGeometry x="40" y="900" width="1440" height="64" as="geometry" />
+<mxGeometry x="40" y="900" width="1440" height="80" as="geometry" />
 </mxCell>
 <mxCell id="legend-title" value="Mapa mental — qué cae en cada capa" style="text;html=1;strokeColor=none;fillColor=none;fontSize=12;fontColor=#111827;fontStyle=1;align=left;verticalAlign=top;" vertex="1" parent="1">
-<mxGeometry x="60" y="908" width="500" height="18" as="geometry" />
+<mxGeometry x="60" y="908" width="500" height="16" as="geometry" />
 </mxCell>
 <mxCell id="legend-1" value="🟧  EDGE — frontend en Vercel + wallet del usuario. NO es infra suya." style="text;html=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#374151;align=left;verticalAlign=top;" vertex="1" parent="1">
-<mxGeometry x="60" y="930" width="500" height="16" as="geometry" />
+<mxGeometry x="60" y="930" width="460" height="16" as="geometry" />
 </mxCell>
-<mxCell id="legend-2" value="🟦  k3s — backend, indexer, Postgres, IPFS, Loki/Grafana. Acá pagan TP0 + TP2." style="text;html=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#374151;align=left;verticalAlign=top;" vertex="1" parent="1">
-<mxGeometry x="60" y="946" width="500" height="16" as="geometry" />
+<mxCell id="legend-2" value="🟦  k3s — backend, indexer, Postgres, IPFS, Loki/Grafana." style="text;html=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#374151;align=left;verticalAlign=top;" vertex="1" parent="1">
+<mxGeometry x="540" y="930" width="460" height="16" as="geometry" />
 </mxCell>
-<mxCell id="legend-3" value="🟩  ON-CHAIN — el contrato y el state crítico. Inmutable, público, fuera de su control operativo." style="text;html=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#374151;align=left;verticalAlign=top;" vertex="1" parent="1">
-<mxGeometry x="600" y="930" width="700" height="16" as="geometry" />
+<mxCell id="legend-3" value="🟩  ON-CHAIN — el contrato y el state crítico. Inmutable, público." style="text;html=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#374151;align=left;verticalAlign=top;" vertex="1" parent="1">
+<mxGeometry x="1020" y="930" width="450" height="16" as="geometry" />
 </mxCell>
-<mxCell id="legend-4" value="Regla práctica: si lo pueden romper sin pedirle permiso a nadie → es suyo (k3s o Vercel). Si necesitan firma + gas → es on-chain." style="text;html=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#374151;align=left;verticalAlign=top;fontStyle=2;" vertex="1" parent="1">
-<mxGeometry x="600" y="946" width="850" height="16" as="geometry" />
+<mxCell id="legend-4" value="Regla práctica: si lo pueden romper sin pedirle permiso a nadie → es suyo (k3s o Vercel). Si necesitan firma + gas → es on-chain." style="text;html=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#6b7280;align=left;verticalAlign=top;fontStyle=2;" vertex="1" parent="1">
+<mxGeometry x="60" y="954" width="1400" height="16" as="geometry" />
 </mxCell>
 
 </root>
