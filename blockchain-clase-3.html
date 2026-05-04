@@ -175,10 +175,8 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     </ul></li>
     <li><a href="#cierre--qué-nos-llevamos"
     id="toc-cierre--qué-nos-llevamos">Cierre — qué nos llevamos</a></li>
-    <li><a href="#tarea-para-clase-4" id="toc-tarea-para-clase-4">Tarea
-    para clase 4</a></li>
-    <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
-    falla</a></li>
+    <li><a href="#tarea-para-próxima-clase"
+    id="toc-tarea-para-próxima-clase">Tarea para próxima clase</a></li>
     </ul></li>
     </ul>
     <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
@@ -277,10 +275,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       <li><a href="#cierre--qué-nos-llevamos"
       id="toc-cierre--qué-nos-llevamos">Cierre — qué nos
       llevamos</a></li>
-      <li><a href="#tarea-para-clase-4"
-      id="toc-tarea-para-clase-4">Tarea para clase 4</a></li>
-      <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
-      falla</a></li>
+      <li><a href="#tarea-para-próxima-clase"
+      id="toc-tarea-para-próxima-clase">Tarea para próxima
+      clase</a></li>
       </ul></li>
       </ul>
       <div class="toc-controls">
@@ -312,6 +309,24 @@ tests pasando.</p>
 <strong>separado</strong> del Foundry de clase 1-2. Es un Next.js +
 wagmi independiente que se conecta al contrato deployado vía RPC. No hay
 carpeta <code>src/</code> compartida.</p>
+</blockquote>
+<blockquote>
+<p>🎯 <strong>Lo que te vas a llevar al final de hoy</strong>:</p>
+<ul class="task-list">
+<li><label><input type="checkbox" />Una dApp Next.js + wagmi +
+RainbowKit corriendo en <code>localhost:3000</code></label></li>
+<li><label><input type="checkbox" />MetaMask conectada al frontend con
+un solo click</label></li>
+<li><label><input type="checkbox" />Flow <code>approve</code> →
+<code>pay</code> funcionando desde el browser, sin tocar
+<code>cast</code></label></li>
+<li><label><input type="checkbox" />Eventos <code>Paid</code>
+mostrándose en vivo via <code>useWatchContractEvent</code></label></li>
+<li><label><input type="checkbox" /><code>TestnetOnramp.sol</code>
+deployado y un botón “comprar USDC con tarjeta” simulado</label></li>
+<li><label><input type="checkbox" />La dApp deployada en Vercel con URL
+pública para mostrar en la demo</label></li>
+</ul>
 </blockquote>
 <hr />
 <h2 id="qué-vamos-a-hacer-hoy">¿Qué vamos a hacer hoy?</h2>
@@ -1012,92 +1027,9 @@ sobre los contratos.</li>
 <code>_onPaid</code>.</li>
 </ul>
 <hr />
-<h2 id="tarea-para-clase-4">Tarea para clase 4</h2>
-<p>Antes del próximo sábado, en su repo:</p>
-<ol type="1">
-<li><strong>dApp deployada en Vercel</strong> (URL pública), con:
-<ul>
-<li>Connect wallet funcionando.</li>
-<li>Form de pago con approve + pay completos.</li>
-<li>Feed de eventos <code>Paid</code> en vivo.</li>
-</ul></li>
-<li><strong><code>TestnetOnramp</code> + <code>MockUSDC</code>
-deployados y verificados</strong> en Sepolia (links a Etherscan).</li>
-<li><strong><code>PaymentGateway</code> redeployado</strong> apuntando
-al <code>MockUSDC</code> (para que el ciclo cierre solo).</li>
-<li><strong>Video de 90 segundos</strong> mostrando: connect → comprar
-50 mUSDC con tarjeta → approve → pay → ver evento. Súbanlo al
-campus.</li>
-</ol>
-<p>Lo que <strong>no</strong> hace falta esta semana: estilos lindos,
-mobile responsive, multi-cuenta. Eso lo pulen en la semana de clase
-4.</p>
-<hr />
-<h2 id="si-algo-falla">Si algo falla</h2>
-<table>
-<thead>
-<tr>
-<th>Síntoma</th>
-<th>Probable causa</th>
-<th>Fix</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>WalletConnect Project ID is not valid</code></td>
-<td>Variable mal pegada en <code>.env.local</code></td>
-<td>Verificá con <code>echo $NEXT_PUBLIC_WC_PROJECT_ID</code>, reiniciá
-<code>npm run dev</code></td>
-</tr>
-<tr>
-<td>RainbowKit no abre el modal</td>
-<td>Falta <code>import '@rainbow-me/rainbowkit/styles.css'</code></td>
-<td>Agregalo en <code>providers.tsx</code></td>
-</tr>
-<tr>
-<td>MetaMask dice “Wrong network”</td>
-<td>Wallet en mainnet o Goerli</td>
-<td>Click en el botón rojo de RainbowKit → “Switch network”</td>
-</tr>
-<tr>
-<td><code>pay</code> revierte con <code>transfer failed</code></td>
-<td>No hiciste <code>approve</code> antes, o approve por menos</td>
-<td>El UI tiene que mostrar “Approve” antes que “Pay”</td>
-</tr>
-<tr>
-<td><code>pay</code> revierte con <code>amount=0</code></td>
-<td><code>parseUnits</code> recibió string vacío</td>
-<td>Validá <code>amount &gt; 0</code> antes del click</td>
-</tr>
-<tr>
-<td>El feed de eventos no muestra nada</td>
-<td>RPC público con rate limit</td>
-<td>Cambiá a un RPC de Alchemy (free tier alcanza)</td>
-</tr>
-<tr>
-<td>Vercel build falla con “process is not defined”</td>
-<td>Variable sin prefijo <code>NEXT_PUBLIC_</code></td>
-<td>Todas las vars que usa el browser <strong>tienen</strong> que
-arrancar con <code>NEXT_PUBLIC_</code></td>
-</tr>
-<tr>
-<td><code>parseUnits</code> da número raro</td>
-<td>USDC tiene 6 decimales, no 18</td>
-<td>Usá <code>parseUnits(x, 6)</code>, no
-<code>parseEther(x)</code></td>
-</tr>
-<tr>
-<td><code>useWatchContractEvent</code> no dispara</td>
-<td>Address de contrato mal</td>
-<td>Verificá <code>NEXT_PUBLIC_PAYGW_ADDRESS</code> y reiniciá</td>
-</tr>
-<tr>
-<td>Onramp revierte con <code>OwnableUnauthorizedAccount</code></td>
-<td>Olvidaste <code>transferOwnership</code> del MockUSDC al onramp</td>
-<td>Re-deploy con el script que sí lo hace</td>
-</tr>
-</tbody>
-</table>
+<h2 id="tarea-para-próxima-clase">Tarea para próxima clase</h2>
+<p>La tarea va en una página aparte: <a
+href="blockchain-clase-3-tarea.html">Tarea de clase 3</a>.</p>
 
     <nav class="page-prev-next" aria-label="Navegación entre páginas">
       <a class="prev-link" href="#" data-slot="prev" hidden>
@@ -1256,20 +1188,40 @@ arrancar con <code>NEXT_PUBLIC_</code></td>
       next: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' }
     },
     'BC · CLASE 1': {
-      prev: { href: 'blockchain-overview.html', title: 'Blockchain · Overview' },
+      prev: { href: 'blockchain-overview.html',      title: 'Blockchain · Overview' },
+      next: { href: 'blockchain-clase-1-tarea.html', title: 'Tarea de clase 1' }
+    },
+    'BC · TAREA 1': {
+      prev: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' },
       next: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' }
     },
     'BC · CLASE 2': {
-      prev: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' },
+      prev: { href: 'blockchain-clase-1.html',       title: 'Clase 1 — Fundamentos + setup' },
+      next: { href: 'blockchain-clase-2-tarea.html', title: 'Tarea de clase 2' }
+    },
+    'BC · TAREA 2': {
+      prev: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' },
       next: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' }
     },
     'BC · CLASE 3': {
-      prev: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' },
+      prev: { href: 'blockchain-clase-2.html',       title: 'Clase 2 — ERC-20 + PaymentGateway' },
+      next: { href: 'blockchain-clase-3-tarea.html', title: 'Tarea de clase 3' }
+    },
+    'BC · TAREA 3': {
+      prev: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' },
       next: { href: 'blockchain-clase-4.html',  title: 'Clase 4 — NFTs + Slither' }
     },
     'BC · CLASE 4': {
-      prev: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' },
-      next: { href: 'index.html',               title: 'Menú principal' }
+      prev: { href: 'blockchain-clase-3.html',       title: 'Clase 3 — Frontend + onramp' },
+      next: { href: 'blockchain-clase-4-tarea.html', title: 'Tarea de clase 4 — Entregable final' }
+    },
+    'BC · TAREA 4': {
+      prev: { href: 'blockchain-clase-4.html',  title: 'Clase 4 — NFTs + Slither' },
+      next: { href: 'que-pasa-si.html',         title: 'Qué pasa si... — escenarios reales' }
+    },
+    'QUE-PASA-SI': {
+      prev: { href: 'blockchain-clase-4.html', title: 'Clase 4 — NFTs + Slither' },
+      next: { href: 'index.html',              title: 'Menú principal' }
     }
   };
 

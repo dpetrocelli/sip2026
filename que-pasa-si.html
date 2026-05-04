@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <meta name="generator" content="pandoc + UNLu/DCB template">
+  <title>Qué pasa si… — escenarios reales que vas a encontrar — UNLu
+DCB</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+
+<header class="unlu-header">
+  <a href="index.html" class="brand" title="Volver al menú principal">
+    <img src="assets/unlu_escudo.png" alt="Universidad Nacional de Luján" class="logo unlu">
+    <div class="brand-text">
+      <div class="institution">Universidad Nacional de Luján</div>
+      <div class="department">Departamento de Ciencias Básicas</div>
+    </div>
+    <img src="assets/logo_dcb.png" alt="Departamento de Ciencias Básicas" class="logo dcb">
+  </a>
+  <div class="course-bar">
+    <span class="course">Seminario de Integración Profesional</span>
+    <span class="year">2026</span>
+    <span class="instructor">Dr. David Petrocelli</span>
+  </div>
+</header>
+
+<button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
+
+<div class="layout">
+  <aside class="toc-sidebar" id="toc-sidebar">
+    <div class="toc-header">
+      <div class="toc-title">Contenidos</div>
+      <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
+    </div>
+    <ul>
+    <li><a href="#qué-pasa-si--escenarios-reales-que-vas-a-encontrar"
+    id="toc-qué-pasa-si--escenarios-reales-que-vas-a-encontrar">Qué pasa
+    si… — escenarios reales que vas a encontrar</a>
+    <ul>
+    <li><a href="#bloque-1--setup-y-primeros-pasos"
+    id="toc-bloque-1--setup-y-primeros-pasos">Bloque 1 · Setup y
+    primeros pasos</a>
+    <ul>
+    <li><a href="#qué-pasa-si-el-faucet-de-sepolia-no-me-da-eth"
+    id="toc-qué-pasa-si-el-faucet-de-sepolia-no-me-da-eth">¿Qué pasa si…
+    el faucet de Sepolia no me da ETH?</a></li>
+    <li><a href="#qué-pasa-si-forge-install-falla-por-timeout"
+    id="toc-qué-pasa-si-forge-install-falla-por-timeout">¿Qué pasa si…
+    <code>forge install</code> falla por timeout?</a></li>
+    <li><a
+    href="#qué-pasa-si-importo-la-pk-de-mi-cuenta-personal-de-metamask-en-foundry"
+    id="toc-qué-pasa-si-importo-la-pk-de-mi-cuenta-personal-de-metamask-en-foundry">¿Qué
+    pasa si… importo la PK de mi cuenta personal de MetaMask en
+    Foundry?</a></li>
+    <li><a
+    href="#qué-pasa-si-pierdo-la-frase-bip-39-de-mi-wallet-de-dev"
+    id="toc-qué-pasa-si-pierdo-la-frase-bip-39-de-mi-wallet-de-dev">¿Qué
+    pasa si… pierdo la frase BIP-39 de mi wallet de dev?</a></li>
+    </ul></li>
+    <li><a href="#bloque-2--mientras-desarrollás-clase-2---3"
+    id="toc-bloque-2--mientras-desarrollás-clase-2---3">Bloque 2 ·
+    Mientras desarrollás (clase 2 - 3)</a>
+    <ul>
+    <li><a href="#qué-pasa-si-me-olvido-del-approve-antes-del-pay"
+    id="toc-qué-pasa-si-me-olvido-del-approve-antes-del-pay">¿Qué pasa
+    si… me olvido del <code>approve</code> antes del
+    <code>pay()</code>?</a></li>
+    <li><a href="#qué-pasa-si-forge-create-se-cuelga-30s"
+    id="toc-qué-pasa-si-forge-create-se-cuelga-30s">¿Qué pasa si…
+    <code>forge create</code> se cuelga 30s?</a></li>
+    <li><a href="#qué-pasa-si-metamask-no-muestra-mis-usdc-del-contrato"
+    id="toc-qué-pasa-si-metamask-no-muestra-mis-usdc-del-contrato">¿Qué
+    pasa si… MetaMask no muestra mis USDC del contrato?</a></li>
+    <li><a href="#qué-pasa-si-mi-rpc-público-devuelve-429--timeout"
+    id="toc-qué-pasa-si-mi-rpc-público-devuelve-429--timeout">¿Qué pasa
+    si… mi RPC público devuelve 429 / timeout?</a></li>
+    <li><a
+    href="#qué-pasa-si-viem-en-el-frontend-dice-connectornotfounderror"
+    id="toc-qué-pasa-si-viem-en-el-frontend-dice-connectornotfounderror">¿Qué
+    pasa si… viem en el frontend dice
+    <code>ConnectorNotFoundError</code>?</a></li>
+    <li><a href="#qué-pasa-si-wagmi-me-dice-user-rejected-request"
+    id="toc-qué-pasa-si-wagmi-me-dice-user-rejected-request">¿Qué pasa
+    si… wagmi me dice “user rejected request”?</a></li>
+    </ul></li>
+    <li><a
+    href="#bloque-3--producción-real-lo-que-pasa-si-fuera-mainnet"
+    id="toc-bloque-3--producción-real-lo-que-pasa-si-fuera-mainnet">Bloque
+    3 · Producción real (lo que pasa si fuera mainnet)</a>
+    <ul>
+    <li><a
+    href="#qué-pasa-si-alguien-hace-front-running-de-mi-tx--mev-zap"
+    id="toc-qué-pasa-si-alguien-hace-front-running-de-mi-tx--mev-zap">¿Qué
+    pasa si… alguien hace front-running de mi tx? — MEV ⚡</a></li>
+    <li><a
+    href="#qué-pasa-si-el-precio-se-mueve-entre-que-firmo-y-se-confirma--slippage"
+    id="toc-qué-pasa-si-el-precio-se-mueve-entre-que-firmo-y-se-confirma--slippage">¿Qué
+    pasa si… el precio se mueve entre que firmo y se confirma? —
+    Slippage</a></li>
+    <li><a
+    href="#qué-pasa-si-la-red-se-congestiona-y-mi-tx-queda-pending--gas-escalation"
+    id="toc-qué-pasa-si-la-red-se-congestiona-y-mi-tx-queda-pending--gas-escalation">¿Qué
+    pasa si… la red se congestiona y mi tx queda pending? — Gas
+    escalation</a></li>
+    <li><a
+    href="#qué-pasa-si-blocktimestamp-se-manipula--timeoracle-attacks"
+    id="toc-qué-pasa-si-blocktimestamp-se-manipula--timeoracle-attacks">¿Qué
+    pasa si… <code>block.timestamp</code> se manipula? — Time/oracle
+    attacks</a></li>
+    <li><a
+    href="#qué-pasa-si-pierdo-el-archivo-del-ipfs-hash-que-apunta-el-nft--pinning-pushpin"
+    id="toc-qué-pasa-si-pierdo-el-archivo-del-ipfs-hash-que-apunta-el-nft--pinning-pushpin">¿Qué
+    pasa si… pierdo el archivo del IPFS hash que apunta el NFT? —
+    Pinning 📌</a></li>
+    <li><a
+    href="#qué-pasa-si-el-contrato-es-hackeado-después-del-deploy"
+    id="toc-qué-pasa-si-el-contrato-es-hackeado-después-del-deploy">¿Qué
+    pasa si… el contrato es hackeado después del deploy?</a></li>
+    <li><a href="#qué-pasa-si-un-usuario-pide-refund"
+    id="toc-qué-pasa-si-un-usuario-pide-refund">¿Qué pasa si… un usuario
+    pide refund?</a></li>
+    <li><a
+    href="#qué-pasa-si-el-contrato-muere-por-un-bug-y-los-fondos-quedan-trabados"
+    id="toc-qué-pasa-si-el-contrato-muere-por-un-bug-y-los-fondos-quedan-trabados">¿Qué
+    pasa si… el contrato muere por un bug y los fondos quedan
+    trabados?</a></li>
+    </ul></li>
+    <li><a
+    href="#bloque-4--caso-real-consolidado--un-día-en-producción-de-depfund"
+    id="toc-bloque-4--caso-real-consolidado--un-día-en-producción-de-depfund">Bloque
+    4 · Caso real consolidado · Un día en producción de DepFund</a></li>
+    <li><a href="#volver" id="toc-volver">Volver</a></li>
+    </ul></li>
+    </ul>
+    <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
+      <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <nav class="page-breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Inicio</a>
+      <span class="sep">›</span>
+      <span class="current">QUE-PASA-SI</span>
+    </nav>
+    <nav class="page-nav-top">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+      <span class="banner-pill">QUE-PASA-SI</span>
+    </nav>
+
+    <details class="toc-inline" open>
+      <summary>📑 Índice del documento</summary>
+      <ul>
+      <li><a href="#qué-pasa-si--escenarios-reales-que-vas-a-encontrar"
+      id="toc-qué-pasa-si--escenarios-reales-que-vas-a-encontrar">Qué
+      pasa si… — escenarios reales que vas a encontrar</a>
+      <ul>
+      <li><a href="#bloque-1--setup-y-primeros-pasos"
+      id="toc-bloque-1--setup-y-primeros-pasos">Bloque 1 · Setup y
+      primeros pasos</a>
+      <ul>
+      <li><a href="#qué-pasa-si-el-faucet-de-sepolia-no-me-da-eth"
+      id="toc-qué-pasa-si-el-faucet-de-sepolia-no-me-da-eth">¿Qué pasa
+      si… el faucet de Sepolia no me da ETH?</a></li>
+      <li><a href="#qué-pasa-si-forge-install-falla-por-timeout"
+      id="toc-qué-pasa-si-forge-install-falla-por-timeout">¿Qué pasa si…
+      <code>forge install</code> falla por timeout?</a></li>
+      <li><a
+      href="#qué-pasa-si-importo-la-pk-de-mi-cuenta-personal-de-metamask-en-foundry"
+      id="toc-qué-pasa-si-importo-la-pk-de-mi-cuenta-personal-de-metamask-en-foundry">¿Qué
+      pasa si… importo la PK de mi cuenta personal de MetaMask en
+      Foundry?</a></li>
+      <li><a
+      href="#qué-pasa-si-pierdo-la-frase-bip-39-de-mi-wallet-de-dev"
+      id="toc-qué-pasa-si-pierdo-la-frase-bip-39-de-mi-wallet-de-dev">¿Qué
+      pasa si… pierdo la frase BIP-39 de mi wallet de dev?</a></li>
+      </ul></li>
+      <li><a href="#bloque-2--mientras-desarrollás-clase-2---3"
+      id="toc-bloque-2--mientras-desarrollás-clase-2---3">Bloque 2 ·
+      Mientras desarrollás (clase 2 - 3)</a>
+      <ul>
+      <li><a href="#qué-pasa-si-me-olvido-del-approve-antes-del-pay"
+      id="toc-qué-pasa-si-me-olvido-del-approve-antes-del-pay">¿Qué pasa
+      si… me olvido del <code>approve</code> antes del
+      <code>pay()</code>?</a></li>
+      <li><a href="#qué-pasa-si-forge-create-se-cuelga-30s"
+      id="toc-qué-pasa-si-forge-create-se-cuelga-30s">¿Qué pasa si…
+      <code>forge create</code> se cuelga 30s?</a></li>
+      <li><a
+      href="#qué-pasa-si-metamask-no-muestra-mis-usdc-del-contrato"
+      id="toc-qué-pasa-si-metamask-no-muestra-mis-usdc-del-contrato">¿Qué
+      pasa si… MetaMask no muestra mis USDC del contrato?</a></li>
+      <li><a href="#qué-pasa-si-mi-rpc-público-devuelve-429--timeout"
+      id="toc-qué-pasa-si-mi-rpc-público-devuelve-429--timeout">¿Qué
+      pasa si… mi RPC público devuelve 429 / timeout?</a></li>
+      <li><a
+      href="#qué-pasa-si-viem-en-el-frontend-dice-connectornotfounderror"
+      id="toc-qué-pasa-si-viem-en-el-frontend-dice-connectornotfounderror">¿Qué
+      pasa si… viem en el frontend dice
+      <code>ConnectorNotFoundError</code>?</a></li>
+      <li><a href="#qué-pasa-si-wagmi-me-dice-user-rejected-request"
+      id="toc-qué-pasa-si-wagmi-me-dice-user-rejected-request">¿Qué pasa
+      si… wagmi me dice “user rejected request”?</a></li>
+      </ul></li>
+      <li><a
+      href="#bloque-3--producción-real-lo-que-pasa-si-fuera-mainnet"
+      id="toc-bloque-3--producción-real-lo-que-pasa-si-fuera-mainnet">Bloque
+      3 · Producción real (lo que pasa si fuera mainnet)</a>
+      <ul>
+      <li><a
+      href="#qué-pasa-si-alguien-hace-front-running-de-mi-tx--mev-zap"
+      id="toc-qué-pasa-si-alguien-hace-front-running-de-mi-tx--mev-zap">¿Qué
+      pasa si… alguien hace front-running de mi tx? — MEV ⚡</a></li>
+      <li><a
+      href="#qué-pasa-si-el-precio-se-mueve-entre-que-firmo-y-se-confirma--slippage"
+      id="toc-qué-pasa-si-el-precio-se-mueve-entre-que-firmo-y-se-confirma--slippage">¿Qué
+      pasa si… el precio se mueve entre que firmo y se confirma? —
+      Slippage</a></li>
+      <li><a
+      href="#qué-pasa-si-la-red-se-congestiona-y-mi-tx-queda-pending--gas-escalation"
+      id="toc-qué-pasa-si-la-red-se-congestiona-y-mi-tx-queda-pending--gas-escalation">¿Qué
+      pasa si… la red se congestiona y mi tx queda pending? — Gas
+      escalation</a></li>
+      <li><a
+      href="#qué-pasa-si-blocktimestamp-se-manipula--timeoracle-attacks"
+      id="toc-qué-pasa-si-blocktimestamp-se-manipula--timeoracle-attacks">¿Qué
+      pasa si… <code>block.timestamp</code> se manipula? — Time/oracle
+      attacks</a></li>
+      <li><a
+      href="#qué-pasa-si-pierdo-el-archivo-del-ipfs-hash-que-apunta-el-nft--pinning-pushpin"
+      id="toc-qué-pasa-si-pierdo-el-archivo-del-ipfs-hash-que-apunta-el-nft--pinning-pushpin">¿Qué
+      pasa si… pierdo el archivo del IPFS hash que apunta el NFT? —
+      Pinning 📌</a></li>
+      <li><a
+      href="#qué-pasa-si-el-contrato-es-hackeado-después-del-deploy"
+      id="toc-qué-pasa-si-el-contrato-es-hackeado-después-del-deploy">¿Qué
+      pasa si… el contrato es hackeado después del deploy?</a></li>
+      <li><a href="#qué-pasa-si-un-usuario-pide-refund"
+      id="toc-qué-pasa-si-un-usuario-pide-refund">¿Qué pasa si… un
+      usuario pide refund?</a></li>
+      <li><a
+      href="#qué-pasa-si-el-contrato-muere-por-un-bug-y-los-fondos-quedan-trabados"
+      id="toc-qué-pasa-si-el-contrato-muere-por-un-bug-y-los-fondos-quedan-trabados">¿Qué
+      pasa si… el contrato muere por un bug y los fondos quedan
+      trabados?</a></li>
+      </ul></li>
+      <li><a
+      href="#bloque-4--caso-real-consolidado--un-día-en-producción-de-depfund"
+      id="toc-bloque-4--caso-real-consolidado--un-día-en-producción-de-depfund">Bloque
+      4 · Caso real consolidado · Un día en producción de
+      DepFund</a></li>
+      <li><a href="#volver" id="toc-volver">Volver</a></li>
+      </ul></li>
+      </ul>
+      <div class="toc-controls">
+        <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
+        <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
+      </div>
+    </details>
+
+<h1 id="qué-pasa-si--escenarios-reales-que-vas-a-encontrar">Qué pasa si…
+— escenarios reales que vas a encontrar</h1>
+<blockquote>
+<p>Esta página es una <strong>referencia de realidad</strong>: cosas que
+vas a vivir mientras desarrollás (y cosas que vivirías si esto fuera
+mainnet). Ordenado por momento del flujo: setup → desarrollo →
+producción → casos límite → caso real consolidado.</p>
+</blockquote>
+<blockquote>
+<p>No es lectura lineal. Hacé <code>ctrl-F</code> cuando algo te
+explote.</p>
+</blockquote>
+<hr />
+<h2 id="bloque-1--setup-y-primeros-pasos">Bloque 1 · Setup y primeros
+pasos</h2>
+<h3 id="qué-pasa-si-el-faucet-de-sepolia-no-me-da-eth">¿Qué pasa si… el
+faucet de Sepolia no me da ETH?</h3>
+<p>Los faucets racionan: te dan 0.5 ETH cada 24 hs y a veces
+directamente niegan IPs sospechosas, redes universitarias o VPNs. Probá
+en orden: <a
+href="https://cloud.google.com/application/web3/faucet/ethereum/sepolia">Google
+Cloud Web3 Faucet</a> (el más generoso, pide login Google), <a
+href="https://www.alchemy.com/faucets/ethereum-sepolia">Alchemy Sepolia
+Faucet</a> (pide cuenta gratis), <a
+href="https://www.infura.io/faucet/sepolia">Infura</a> y <a
+href="https://sepolia-faucet.pk910.de/">PoW Faucet</a> (te hace minar
+localmente — funciona cuando todo lo demás falla). Si nada anda, el
+camino más rápido es pedirle a un compañero del equipo que te transfiera
+0.05 ETH desde su wallet — no necesitás más para deployar todo el
+TP.</p>
+<h3 id="qué-pasa-si-forge-install-falla-por-timeout">¿Qué pasa si…
+<code>forge install</code> falla por timeout?</h3>
+<p>Foundry clona dependencias desde GitHub con submódulos. Si estás
+detrás de VPN, en una red universitaria con proxy, o el CDN te llega
+lento, te tira <code>error: failed to clone</code> después de 30-60s.
+Plan B:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/OpenZeppelin/openzeppelin-contracts.git <span class="dt">\</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  lib/openzeppelin-contracts <span class="at">--depth</span> 1</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> install <span class="at">--no-git</span> OpenZeppelin/openzeppelin-contracts</span></code></pre></div>
+<p>Si seguís igual, configurá git para usar HTTPS en lugar de SSH
+(<code>git config --global url."https://github.com/".insteadOf git@github.com:</code>)
+y reintentá.</p>
+<h3
+id="qué-pasa-si-importo-la-pk-de-mi-cuenta-personal-de-metamask-en-foundry">¿Qué
+pasa si… importo la PK de mi cuenta personal de MetaMask en
+Foundry?</h3>
+<p><strong>No lo hagas.</strong> Esa PK probablemente esté asociada a tu
+cuenta de mainnet, NFTs reales, ENS, o histórico que no querés exponer.
+Si por error pegás esa PK en <code>cast wallet import</code> y después
+subís el <code>.env</code> a git con un RPC URL, cualquiera con acceso
+al repo puede ver el address y empezar a investigarte.
+<strong>Regla</strong>: creá una <strong>cuenta nueva en
+MetaMask</strong> (“+ Add account”) exclusiva para dev, fondeala con
+faucet, y solo esa la importás a Foundry. Si te equivocaste y ya pegaste
+la PK personal, asumí que está comprometida y movete a una wallet nueva
+ya.</p>
+<h3 id="qué-pasa-si-pierdo-la-frase-bip-39-de-mi-wallet-de-dev">¿Qué
+pasa si… pierdo la frase BIP-39 de mi wallet de dev?</h3>
+<p>No hay recovery. Esas 12 palabras son la <strong>única</strong> forma
+de regenerar las private keys. Si las perdiste y todavía tenés MetaMask
+desbloqueado en una computadora, exportá cada PK ya
+(<code>⋮ → Account details → Show private key</code>) antes de que se
+cierre la sesión. Si ya no tenés acceso, los fondos y los contratos
+quedan bajo una wallet a la que no podés volver — la solución pragmática
+para el TP es <strong>crear una wallet nueva, redeployar los contratos y
+actualizar las addresses en el frontend</strong>. En testnet no perdiste
+plata real; en mainnet sería fatal.</p>
+<hr />
+<h2 id="bloque-2--mientras-desarrollás-clase-2---3">Bloque 2 · Mientras
+desarrollás (clase 2 - 3)</h2>
+<h3 id="qué-pasa-si-me-olvido-del-approve-antes-del-pay">¿Qué pasa si…
+me olvido del <code>approve</code> antes del <code>pay()</code>?</h3>
+<p>Esto pasa al <strong>80%</strong> de los equipos en clase 2 y 3.
+Llamás <code>gateway.pay(50_000_000, ...)</code> directo y la tx
+revierte con <code>ERC20InsufficientAllowance</code> (en OZ moderno) o
+un <code>TransferFrom failed</code> genérico (en versiones viejas). El
+<code>PaymentGateway</code> no puede mover tus USDC sin permiso previo.
+Patrón correcto, siempre dos transacciones:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cast</span> send <span class="va">$USDC</span> <span class="st">&quot;approve(address,uint256)&quot;</span> <span class="va">$GATEWAY</span> 50000000 <span class="at">--account</span> dev</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">cast</span> send <span class="va">$GATEWAY</span> <span class="st">&quot;pay(uint256,bytes32)&quot;</span> 50000000 <span class="va">$ACTION</span> <span class="at">--account</span> dev</span></code></pre></div>
+<p>En el frontend, fijate que <code>PayForm</code> chequea
+<code>allowance &lt; amountWei</code> antes de mostrar el botón “Pay” —
+esa lógica existe justamente para no dejarte llamar <code>pay</code> sin
+allowance suficiente.</p>
+<h3 id="qué-pasa-si-forge-create-se-cuelga-30s">¿Qué pasa si…
+<code>forge create</code> se cuelga 30s?</h3>
+<p>Es normal. Sepolia mina un bloque cada ~12 segundos y a veces toca
+esperar 2 bloques + propagación del RPC. Si pasaron 60s y nada, abrí
+otra terminal y chequeá si la tx ya está en mempool o minada:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cast</span> tx <span class="op">&lt;</span>tx_hash<span class="op">&gt;</span> --rpc-url <span class="va">$SEPOLIA_RPC_URL</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># o, si todavía no tenés el hash, mirá el nonce de tu address:</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cast</span> nonce <span class="va">$(</span><span class="ex">cast</span> wallet address <span class="at">--account</span> dev<span class="va">)</span> <span class="at">--rpc-url</span> <span class="va">$SEPOLIA_RPC_URL</span></span></code></pre></div>
+<p>Si el nonce subió, la tx salió, solo está esperando confirmación. Si
+no, probablemente el RPC no la propagó — cambiá de RPC y reintentá con
+el mismo nonce.</p>
+<h3 id="qué-pasa-si-metamask-no-muestra-mis-usdc-del-contrato">¿Qué pasa
+si… MetaMask no muestra mis USDC del contrato?</h3>
+<p>MetaMask no detecta tokens automáticamente — solo muestra ETH y los
+tokens que <strong>importaste manualmente</strong>. Andá a la pestaña
+“Tokens” → “Import tokens” → “Custom token” → pegá la address
+(<code>0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238</code> para USDC
+oficial Sepolia, o tu MockUSDC si usaste el del onramp de clase 3).
+MetaMask completa nombre, símbolo y decimales solo. Si te dice “Token
+not found”, probablemente estás en la red equivocada (chequeá que arriba
+diga “Sepolia”).</p>
+<h3 id="qué-pasa-si-mi-rpc-público-devuelve-429--timeout">¿Qué pasa si…
+mi RPC público devuelve 429 / timeout?</h3>
+<p><code>https://ethereum-sepolia-rpc.publicnode.com</code> es público y
+gratis pero tiene rate-limit agresivo. Cuando 30 alumnos en la misma
+clase pegan al mismo endpoint, cae. Fallbacks que funcionan:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">SEPOLIA_RPC_URL</span><span class="op">=</span>https://sepolia.gateway.tenderly.co</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># o</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="va">SEPOLIA_RPC_URL</span><span class="op">=</span>https://ethereum-sepolia.publicnode.com</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># o (mejor performance, gratis con cuenta):</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="va">SEPOLIA_RPC_URL</span><span class="op">=</span>https://eth-sepolia.g.alchemy.com/v2/<span class="op">&lt;</span>API_KEY<span class="op">&gt;</span></span></code></pre></div>
+<p>Para producción de verdad, registrate en <a
+href="https://www.alchemy.com">Alchemy</a> o <a
+href="https://www.infura.io">Infura</a> — el free tier (300M compute
+units / mes) alcanza para todo el TP y la demo.</p>
+<h3
+id="qué-pasa-si-viem-en-el-frontend-dice-connectornotfounderror">¿Qué
+pasa si… viem en el frontend dice
+<code>ConnectorNotFoundError</code>?</h3>
+<p>Tres causas, en orden de frecuencia:</p>
+<ol type="1">
+<li><strong>Falta el <code>WagmiProvider</code></strong> envolviendo a
+tu componente. Mirá <code>app/providers.tsx</code> — tiene que estar en
+el <code>layout.tsx</code>.</li>
+<li><strong><code>projectId</code> de WalletConnect vacío o mal
+copiado</strong> desde <a
+href="https://cloud.reown.com">cloud.reown.com</a>. Verificá
+<code>process.env.NEXT_PUBLIC_WC_PROJECT_ID</code> en runtime con un
+<code>console.log</code>.</li>
+<li><strong>No hay wallet en el browser</strong>. Si abrís
+<code>localhost:3000</code> en Brave/Chrome sin extensión MetaMask
+instalada, no hay nada a lo que conectarse — RainbowKit te muestra el
+modal pero al clickear “MetaMask” tira el error.</li>
+</ol>
+<p>Checklist: <code>chains: [sepolia]</code> declarado,
+<code>ssr: true</code> para Next.js App Router, <code>projectId</code>
+no vacío, MetaMask instalada y desbloqueada.</p>
+<h3 id="qué-pasa-si-wagmi-me-dice-user-rejected-request">¿Qué pasa si…
+wagmi me dice “user rejected request”?</h3>
+<p>El usuario clickeó “Reject” en el popup de MetaMask. Es un caso
+normal, no un bug — manejá el error en la UI y mostrá algo como
+“Cancelaste la firma. Volvé a intentar cuando quieras”:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> { writeContract<span class="op">,</span> error } <span class="op">=</span> <span class="fu">useWriteContract</span>()<span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (error<span class="op">?.</span><span class="at">message</span><span class="op">.</span><span class="fu">includes</span>(<span class="st">&#39;User rejected&#39;</span>)) {</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="op">&lt;</span>p className<span class="op">=</span><span class="st">&quot;text-yellow-700&quot;</span><span class="op">&gt;</span>Firma cancelada<span class="op">.</span> <span class="at">Reintentá</span><span class="op">.&lt;/</span>p<span class="op">&gt;;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>No relances la tx automáticamente — eso abre un loop infinito de
+popups y los usuarios odian eso.</p>
+<hr />
+<h2 id="bloque-3--producción-real-lo-que-pasa-si-fuera-mainnet">Bloque 3
+· Producción real (lo que pasa si fuera mainnet)</h2>
+<h3 id="qué-pasa-si-alguien-hace-front-running-de-mi-tx--mev-zap">¿Qué
+pasa si… alguien hace front-running de mi tx? — MEV ⚡</h3>
+<p><strong>MEV</strong> (Maximal Extractable Value) es el negocio de
+bots searchers que escuchan el mempool público de Ethereum, detectan
+transacciones rentables (típicamente swaps grandes en Uniswap), y mandan
+la suya con <strong>gas más alto</strong> para entrar antes en el
+bloque. El validador prioriza por gas → el bot gana, vos perdés.</p>
+<p>Para una pasarela de pago como
+<code>PaymentGateway.pay(amount, action)</code> el impacto es
+<strong>bajo</strong>: nadie gana plata adelantándose a que pagues USDC
+al treasury. Donde el MEV duele de verdad es en <strong>AMMs</strong>
+(Uniswap, Curve), liquidaciones de Aave/Compound, y mints de NFTs hot.
+Mitigaciones reales:</p>
+<ul>
+<li><strong>Flashbots Protect RPC</strong> (<a
+href="https://rpc.flashbots.net">rpc.flashbots.net</a>) — manda tu tx
+por mempool privado.</li>
+<li><strong>MEV Blocker</strong> (<a
+href="https://rpc.mevblocker.io">rpc.mevblocker.io</a>) — alternativa
+gratuita que además te paga rebates.</li>
+<li><strong>Slippage tolerances</strong> ajustados (ver siguiente
+entrada).</li>
+</ul>
+<h3
+id="qué-pasa-si-el-precio-se-mueve-entre-que-firmo-y-se-confirma--slippage">¿Qué
+pasa si… el precio se mueve entre que firmo y se confirma? —
+Slippage</h3>
+<p>Entre que firmás <code>swap(100 USDC → DPF)</code> y el bloque te
+confirma pasaron 12 segundos, en los que el precio del par puede haberse
+movido. Si el contrato no chequea, recibís menos tokens de los
+esperados.</p>
+<p>Para <code>PaymentGateway</code> con USDC esto es
+<strong>irrelevante</strong> — USDC es estable y
+<code>pay(50_000_000, action)</code> te cobra exactamente 50 USDC, no
+hay margen. Pero si tu <code>_onPaid</code> calcula shares con un
+<code>pricePerShare</code> dinámico (DepFund:
+<code>shares = amount / pricePerShare</code>), el patrón estándar es
+exigir un <code>minOutputAmount</code> del cliente:</p>
+<pre class="solidity"><code>function pay(uint256 amount, bytes32 action, uint256 minShares) external nonReentrant {
+    usdc.safeTransferFrom(msg.sender, treasury, amount);
+    uint256 shares = (amount * 1e18) / pricePerShare;
+    require(shares &gt;= minShares, &quot;slippage&quot;);
+    dpf.mint(msg.sender, shares);
+}</code></pre>
+<p>Uniswap, 1inch y Cowswap usan esta forma exacta — el frontend calcula
+<code>minShares = expectedShares * 0.99</code> (1% slippage) y lo manda
+como parámetro.</p>
+<h3
+id="qué-pasa-si-la-red-se-congestiona-y-mi-tx-queda-pending--gas-escalation">¿Qué
+pasa si… la red se congestiona y mi tx queda pending? — Gas
+escalation</h3>
+<p>Cuando hay un mint de NFT viral, un airdrop de un token nuevo, o una
+liquidación masiva, el gas price se va al techo y tu tx con
+<code>priority_fee=1 gwei</code> queda en mempool una hora. Dos
+opciones:</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Bumpear la misma tx (mismo nonce, más gas):</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">cast</span> send <span class="va">$GATEWAY</span> <span class="st">&quot;pay(uint256,bytes32)&quot;</span> 50000000 <span class="va">$ACTION</span> <span class="dt">\</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--nonce</span> 42 <span class="dt">\</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--priority-gas-price</span> 5gwei <span class="dt">\</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--gas-price</span> 50gwei <span class="dt">\</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--account</span> dev</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Cancelarla mandando una tx vacía a vos mismo con el mismo nonce + gas mayor:</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="ex">cast</span> send <span class="va">$(</span><span class="ex">cast</span> wallet address <span class="at">--account</span> dev<span class="va">)</span> <span class="dt">\</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--value</span> 0 <span class="at">--nonce</span> 42 <span class="dt">\</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--priority-gas-price</span> 5gwei <span class="at">--account</span> dev</span></code></pre></div>
+<p>En MetaMask UI hay un botón “Speed up” / “Cancel” que hace lo
+mismo.</p>
+<h3 id="qué-pasa-si-blocktimestamp-se-manipula--timeoracle-attacks">¿Qué
+pasa si… <code>block.timestamp</code> se manipula? — Time/oracle
+attacks</h3>
+<p>Los validadores tienen ~12 segundos de margen para ajustar
+<code>block.timestamp</code> (post-Merge el rango es estricto, pre-Merge
+era ±15s). Esto <strong>no es aleatorio confiable</strong> ni una fuente
+de entropía decente — para <code>SetBonusNFT.mintRandom</code> lo
+aceptamos solo porque las piezas son cosméticas (lo declaramos en
+<code>SECURITY.md</code>). Reglas de oro:</p>
+<ul>
+<li><strong>Nunca</strong> uses <code>block.timestamp</code> para
+randomness con dinero real → usá <a
+href="https://docs.chain.link/vrf">Chainlink VRF</a>.</li>
+<li><strong>Nunca</strong> uses <code>block.timestamp</code> para
+ventanas cortas (segundos / minutos) — un validador hostil te manipula
+el orden.</li>
+<li><strong>Sí podés</strong> usarlo para ventanas largas (días/semanas)
+— un drift de 15s sobre 30 días es ruido.</li>
+</ul>
+<p>Para los dividendos mensuales de DepFund,
+<code>require(block.timestamp &gt;= lastDistribution + 30 days)</code>
+está bien.</p>
+<h3
+id="qué-pasa-si-pierdo-el-archivo-del-ipfs-hash-que-apunta-el-nft--pinning-pushpin">¿Qué
+pasa si… pierdo el archivo del IPFS hash que apunta el NFT? — Pinning
+📌</h3>
+<p>IPFS <strong>no garantiza disponibilidad por sí solo</strong>. Un CID
+(<code>ipfs://Qm...</code>) apunta a un blob, pero si ningún nodo lo
+“pinea” (lo guarda activamente), eventualmente es garbage-collected. Tu
+NFT sigue existiendo on-chain pero <code>tokenURI(id)</code> apunta a un
+404 — OpenSea muestra “Image not available” y tu coleccionable queda en
+limbo.</p>
+<p>Mitigación obligatoria para producción:</p>
+<ul>
+<li><strong><a href="https://www.pinata.cloud">Pinata</a></strong> — 1
+GB gratis, muy usado por proyectos NFT.</li>
+<li><strong><a href="https://web3.storage">web3.storage</a></strong> —
+Filecoin-backed, gratis hasta cierto volumen.</li>
+<li><strong><a href="https://nft.storage">NFT.Storage</a></strong> —
+específicamente para metadata + assets de NFTs.</li>
+<li><strong>Tu propio nodo IPFS</strong> corriendo en k3s con
+<code>ipfs daemon</code> y <code>ipfs pin add &lt;CID&gt;</code>.</li>
+</ul>
+<p>Patrón seguro: subís a Pinata + tu propio nodo. Dos copias activas.
+Nunca confíes en un solo pinner.</p>
+<h3 id="qué-pasa-si-el-contrato-es-hackeado-después-del-deploy">¿Qué
+pasa si… el contrato es hackeado después del deploy?</h3>
+<p>La inmutabilidad corta para los dos lados: nadie puede censurarte,
+pero si tenés un bug, tampoco podés parchear. Mitigaciones que aplican
+capas:</p>
+<ul>
+<li><strong>Función <code>pause()</code></strong> con
+<code>onlyOwner</code> (heredá de OZ <code>Pausable</code>) — no detiene
+el bug pero detiene los pagos hasta que respondas.</li>
+<li><strong>Upgradability con proxies</strong> (UUPS o Transparent de
+OZ) — el storage queda fijo, pero la lógica se reemplaza. Cuesta
+complejidad: el bug puede estar en el proxy mismo.</li>
+<li><strong>Multisig admin con <a href="https://safe.global">Gnosis
+Safe</a></strong> — la owner key no es una sola persona, son N firmas de
+M. En DepFund el rector + tesorero + auditor firman juntos cualquier
+upgrade.</li>
+<li><strong>Bug bounty</strong> público en <a
+href="https://immunefi.com">Immunefi</a> — pagar $50K a quien encuentre
+un bug es mucho más barato que perder $5M.</li>
+</ul>
+<p>Post-incident: forensic on-chain con <a
+href="https://tenderly.co">Tenderly</a> para reconstruir cómo entró el
+atacante, contactar exchanges centralizados (Binance, Coinbase) para
+freezear si los fondos pasaron por ahí, comunicar a holders por canal
+oficial (Discord/Twitter) — silencio es lo peor.</p>
+<h3 id="qué-pasa-si-un-usuario-pide-refund">¿Qué pasa si… un usuario
+pide refund?</h3>
+<p>La blockchain es irreversible. Una vez que
+<code>Paid(user, 100, action)</code> está minado, <strong>no hay forma
+de “deshacer” la tx</strong>. El refund se hace <strong>off-chain por tu
+lógica</strong>: el usuario abre un ticket en tu backend Web2, validás
+el caso, y desde tu wallet de owner mandás manualmente:</p>
+<pre class="solidity"><code>function refund(address to, uint256 amount, bytes32 originalAction) external onlyOwner {
+    usdc.safeTransfer(to, amount);
+    emit Refunded(to, amount, originalAction);
+}</code></pre>
+<p>Implicaciones que tenés que documentar antes de la demo:</p>
+<ul>
+<li><strong>Legales</strong>: tu plataforma asume el riesgo del refund —
+el contrato no te obliga a nada, vos sí estás obligado por el TOS que
+firmaste con el usuario.</li>
+<li><strong>UX</strong>: explicale al usuario que el refund “tarda hasta
+24 hs” mientras vos lo procesás. No es instantáneo como una tarjeta de
+crédito.</li>
+<li><strong>Contabilidad</strong>: el evento <code>Refunded</code>
+aparece on-chain — alguien puede verlo y construir métricas. Sé
+prolijo.</li>
+</ul>
+<h3
+id="qué-pasa-si-el-contrato-muere-por-un-bug-y-los-fondos-quedan-trabados">¿Qué
+pasa si… el contrato muere por un bug y los fondos quedan trabados?</h3>
+<p>Caso real: <strong>Parity multisig 2017</strong> — un usuario llamó
+accidentalmente la función <code>kill()</code> del contrato library
+compartido y dejó <strong>$300M en ETH congelados para siempre</strong>
+(~513.000 ETH). No había forma de recuperarlos sin un hard fork de
+Ethereum (que no se hizo). El contrato sigue ahí, mirando los fondos sin
+tocarlos, en 2026.</p>
+<p>Patrón defensivo: siempre tené una <strong>función de salida de
+emergencia</strong> restringida y con timelock:</p>
+<pre class="solidity"><code>function emergencyWithdraw(address token, uint256 amount) external onlyOwner {
+    require(emergencyTimelock != 0 &amp;&amp; block.timestamp &gt;= emergencyTimelock, &quot;wait&quot;);
+    IERC20(token).transfer(owner(), amount);
+    emit EmergencyWithdraw(token, amount);
+}
+
+function startEmergency() external onlyOwner {
+    emergencyTimelock = block.timestamp + 7 days; // los users pueden salir antes
+    emit EmergencyStarted(emergencyTimelock);
+}</code></pre>
+<p>El timelock de 7 días le da a los usuarios la chance de retirar sus
+fondos antes de que el owner los toque — alinea incentivos. Para tu TP
+no es obligatorio, pero declaralo en <code>SECURITY.md</code> como
+decisión consciente.</p>
+<hr />
+<h2
+id="bloque-4--caso-real-consolidado--un-día-en-producción-de-depfund">Bloque
+4 · Caso real consolidado · Un día en producción de DepFund</h2>
+<p>Imaginate que el TP final ya está en producción. La cátedra cerró el
+cuatrimestre, el equipo de DepFund decidió no abandonar el proyecto y
+siguen iterando. Es martes 14:32 y un nuevo inversor abre
+<code>depfund.dev</code> en su celular.</p>
+<p><strong>Paso 1.</strong> El usuario llega a <code>depfund.dev</code>,
+una URL de Vercel que sirve el bundle estático de Next.js desde el edge
+global de Cloudflare. La página carga en 800 ms en Buenos Aires; los
+assets vienen del CDN de Vercel y el framework hidrata. Click en
+“Connect Wallet” → RainbowKit abre el modal → MetaMask Mobile detecta el
+<code>wc:</code> deeplink → el usuario aprueba la conexión a
+Sepolia.</p>
+<p><strong>Paso 2.</strong> Apenas conecta, el frontend dispara cuatro
+<code>useReadContract</code> en paralelo contra el RPC de Alchemy:
+<code>gateway.usdc()</code>, <code>gateway.treasury()</code>,
+<code>dpf.balanceOf(user)</code>, y un getter custom
+<code>activeRound()</code> que devuelve la ronda de financiación
+abierta. Las cuatro llamadas son <code>view</code> puras, no firman
+nada, no cuestan gas, vuelven en ~200 ms desde el nodo de Alchemy en
+us-east. La UI se hidrata mostrando “Ronda 3 abierta · $1.2M / $2M
+financiados · 47 días restantes”.</p>
+<p><strong>Paso 3.</strong> El usuario teclea <code>100</code> en el
+campo USDC. El frontend hace el cálculo on-the-fly: con
+<code>pricePerShare = 0.5 USDC</code>, recibirá 200 $DPF. Como todavía
+no tiene allowance al gateway, el botón muestra “1) Approve 100 USDC”.
+Internamente <code>useReadContract({ functionName: 'allowance' })</code>
+devuelve <code>0n</code>, así que el flow de dos pasos se activa.</p>
+<p><strong>Paso 4.</strong> Click en Approve → wagmi llama
+<code>usdc.approve(PaymentGateway, 100_000_000)</code> → MetaMask abre
+el popup de firma → el usuario revisa “Spending limit: 100 USDC” →
+confirma. La tx sale del mobile a través del provider Infura/Alchemy
+embebido y entra al mempool público de Sepolia. El frontend muestra
+“Esperando bloque…” con el spinner de
+<code>useWaitForTransactionReceipt</code>.</p>
+<p><strong>Paso 5.</strong> Doce segundos después, un validador de
+Sepolia mina el bloque número 4.832.157 que incluye el approve. El
+receipt vuelve por el RPC, <code>isSuccess</code> se vuelve
+<code>true</code>, la UI ahora muestra el botón verde “2) Pay 100 USDC”.
+El allowance on-chain pasó de 0 a 100.000.000 (USDC tiene 6
+decimales).</p>
+<p><strong>Paso 6.</strong> Click en Pay → wagmi llama
+<code>gateway.pay(100_000_000, keccak256("round-3"))</code> → segundo
+popup de MetaMask con gas estimado de 0.0002 ETH → confirma. La tx entra
+al mempool. Esta vez es más pesada que el approve porque ejecuta
+<code>transferFrom</code> + emit + <code>_onPaid</code> con mint de $DPF
++ mint de pieza Set Bonus.</p>
+<p><strong>Paso 7.</strong> Doce segundos más tarde, bloque 4.832.158
+incluye la tx. Dentro del EVM, en orden:
+<code>usdc.safeTransferFrom(user, treasury, 100_000_000)</code> mueve
+los USDC del usuario al treasury (un Gnosis Safe 3-of-5 que controlan
+rector + tesorero + auditor + dos del equipo); <code>nonReentrant</code>
+libera el guard; <code>emit Paid(user, 100_000_000, "round-3")</code>
+escribe el log indexable; <code>_onPaid</code> se dispara como hook.</p>
+<p><strong>Paso 8.</strong> Adentro de <code>_onPaid</code>, el contrato
+calcula <code>shares = 100e6 * 1e18 / pricePerShare</code> y llama
+<code>dpf.mint(user, 200e18)</code> — el usuario ahora tiene 200 $DPF.
+Después computa
+<code>entropy = keccak256(user, amount, block.prevrandao, action)</code>
+y llama <code>pieces.mintRandom(user, entropy)</code> — sale una pieza
+Rare del slot 7 (el “vestuario norte” del complejo). El usuario está a
+una pieza de completar el “Ala deportiva” y ganarse un +1% de dividendos
+permanente. El contrato cierra emitiendo
+<code>PieceMinted(user, tokenId=4521, slot=7, rarity=Rare)</code>.</p>
+<p><strong>Paso 9.</strong> En paralelo, en el cluster k3s del equipo (3
+nodos en Hetzner, $20/mes), un pod indexador escucha eventos. Está
+corriendo Node.js + viem con
+<code>client.watchEvent({ address: PAYGW, event: PaidAbi, onLogs })</code>.
+La línea <code>Paid(user, 100_000_000, "round-3")</code> llega al
+callback ~200 ms después del bloque. El indexer hace
+<code>INSERT INTO payments(payer, amount, action, tx_hash, block_number, ts) VALUES (...)</code>
+en Postgres. Otra rama del callback también captura
+<code>PieceMinted</code> y popula la tabla <code>nft_pieces</code>.</p>
+<p><strong>Paso 10.</strong> Una API REST en Node consume cambios de la
+tabla via Postgres <code>LISTEN/NOTIFY</code>. Detecta el INSERT y
+dispara un webhook al canal <code>#sales-realtime</code> de Slack del
+equipo: “Nuevo inversor en ronda-3: 100 USDC → 200 $DPF · pieza Rare
+slot 7”. El community manager lo ve, postea un GIF, sigue con su día. La
+API también dispara un email transaccional via SES al usuario:
+“Bienvenido a DepFund · tus 200 $DPF están en tu wallet”.</p>
+<p><strong>Paso 11.</strong> Mientras todo esto pasa, el indexer está
+logueando todo a stdout. Promtail (sidecar en k3s) levanta esos logs y
+los manda a Loki. Una dashboard de Grafana grafica TPS por minuto,
+distribución de monto por pago, y un panel especial que correlaciona
+<code>block.number</code> del evento con el <code>traceId</code> del
+request HTTP que lo originó (lo que aprendieron en TP2). Si más adelante
+alguien reporta “no me llegó la confirmación”, el equipo busca en Loki
+por <code>payer:0x...</code> y reconstruye toda la cadena: tx → indexer
+→ API → email.</p>
+<p><strong>Paso 12.</strong> Pasan 30 días. El parque deportivo del
+complejo factura $50.000 USDC en alquileres y eventos. El rector entra a
+<code>depfund.dev/admin</code>, conecta su wallet del Gnosis Safe, y
+firma la tx multisig
+<code>gateway.distributeDividends(50_000_000_000)</code>. Los otros dos
+firmantes confirman desde sus celulares. Cuando se junta el quorum
+3-of-5, la tx se ejecuta: el contrato suma $50.000 al
+<code>accPerShare</code> global. El usuario del paso 1 ya no necesita
+firmar nada — cuando quiera, abre la app y clickea “Claim” → recibe
+<code>200 / totalSupply * 50_000 USDC</code> en su wallet, pull-payment
+style. El loop cerró.</p>
+<blockquote>
+<p>Cada pieza de este flujo es una capa concreta del stack del módulo:
+edge (Vercel + Cloudflare), web2 en k3s (indexer + Postgres + API + Loki
++ Grafana), on-chain en Sepolia (PaymentGateway + DPF + SetBonusNFT +
+Gnosis Safe). Lo que aprendieron en TP0, TP1 y TP2 sigue ahí; el módulo
+blockchain agregó la capa de pago y propiedad sin reemplazar nada de lo
+demás.</p>
+</blockquote>
+<hr />
+<h2 id="volver">Volver</h2>
+<blockquote>
+<p>Volver al <a href="index.html">material del Seminario</a></p>
+</blockquote>
+
+    <nav class="page-prev-next" aria-label="Navegación entre páginas">
+      <a class="prev-link" href="#" data-slot="prev" hidden>
+        <span class="arrow">←</span>
+        <span class="nav-meta">
+          <span class="nav-label">Anterior</span>
+          <span class="nav-title" data-slot="prev-title"></span>
+        </span>
+      </a>
+      <a class="next-link" href="#" data-slot="next" hidden>
+        <span class="nav-meta">
+          <span class="nav-label">Siguiente</span>
+          <span class="nav-title" data-slot="next-title"></span>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+    </nav>
+
+    <nav class="page-nav-bottom">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+    </nav>
+  </main>
+</div>
+
+<footer class="unlu-footer">
+  <div>
+    UNLu · Departamento de Ciencias Básicas · Seminario de Integración Profesional <strong>2026</strong>
+    · Dr. David Petrocelli
+  </div>
+</footer>
+
+<script>
+// Sidebar show/hide toggle (preference persisted in localStorage)
+(function () {
+  const sidebar = document.getElementById('toc-sidebar');
+  const layout = document.querySelector('.layout');
+  const hideBtn = document.getElementById('sidebar-hide');
+  const showBtn = document.getElementById('sidebar-show');
+  if (!sidebar || !layout || !hideBtn || !showBtn) return;
+
+  const KEY = 'unlu.dcb.sidebar.hidden';
+
+  function apply(hidden) {
+    layout.classList.toggle('sidebar-hidden', hidden);
+    showBtn.classList.toggle('visible', hidden);
+  }
+
+  apply(localStorage.getItem(KEY) === '1');
+
+  hideBtn.addEventListener('click', () => {
+    localStorage.setItem(KEY, '1');
+    apply(true);
+  });
+  showBtn.addEventListener('click', () => {
+    localStorage.removeItem(KEY);
+    apply(false);
+  });
+})();
+
+// Wrap each H2 (and its following content until the next H2) in a <details open>
+// element so users can collapse/expand sections.
+(function () {
+  const main = document.querySelector('main.content');
+  if (!main) return;
+
+  // Collect direct-child H2 headings so we don't touch nested ones (e.g., inside details we'll create)
+  const headings = Array.from(main.children).filter(el => el.tagName === 'H2');
+
+  headings.forEach(h2 => {
+    const details = document.createElement('details');
+    details.open = true;
+    details.className = 'section-collapsible';
+
+    const summary = document.createElement('summary');
+    // Move heading content (incl. anchor) into the summary so anchors keep working
+    summary.innerHTML = h2.innerHTML;
+    if (h2.id) summary.id = h2.id;
+    details.appendChild(summary);
+
+    // Move siblings until next H2 into details
+    const parent = h2.parentNode;
+    let next = h2.nextSibling;
+    parent.replaceChild(details, h2);
+    while (next && !(next.nodeType === 1 && next.tagName === 'H2')) {
+      const node = next;
+      next = next.nextSibling;
+      details.appendChild(node);
+    }
+  });
+
+  // If there's a hash in the URL, ensure the target's <details> is open
+  function openDetailsForHash(hash) {
+    if (!hash) return;
+    const target = document.getElementById(hash.replace(/^#/, ''));
+    if (!target) return;
+    let p = target.closest('details');
+    while (p) { p.open = true; p = p.parentElement && p.parentElement.closest('details'); }
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  openDetailsForHash(window.location.hash);
+  window.addEventListener('hashchange', () => openDetailsForHash(window.location.hash));
+
+  // Wire up "Expand all" / "Collapse all" controls in the inline TOC
+  document.querySelectorAll('.toc-controls [data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const action = btn.getAttribute('data-action');
+      const open = action === 'expand-all';
+      document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
+    });
+  });
+})();
+
+// Populate prev/next navigation based on the current page's banner-num
+(function () {
+  const pill = document.querySelector('.banner-pill');
+  const nav = document.querySelector('.page-prev-next');
+  if (!pill || !nav) return;
+
+  const key = (pill.textContent || '').trim().toUpperCase();
+
+  // Map banner-num → { prev, next }
+  // Each entry: { href, title } (or null if not present)
+  const MAP = {
+    'TP 0': {
+      prev: null,
+      next: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' }
+    },
+    'TP 1 · PARTE 1': {
+      prev: { href: 'practica-0.html', title: 'TP 0 — Prerrequisitos' },
+      next: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' }
+    },
+    'TP 1 · PARTE 2': {
+      prev: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' },
+      next: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' }
+    },
+    'TP 2 · PARTE 1': {
+      prev: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' },
+      next: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' }
+    },
+    'TP 2 · PARTE 2': {
+      prev: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' },
+      next: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' }
+    },
+    'TP 2 · PARTE 3': {
+      prev: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' },
+      next: { href: 'practica-2-parte-4.html', title: 'Práctica II · Parte 4' }
+    },
+    'TP 2 · PARTE 4': {
+      prev: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' },
+      next: { href: 'blockchain-overview.html', title: 'Blockchain · Overview' }
+    },
+    // ----- Blockchain module -----
+    'BLOCKCHAIN': {
+      prev: { href: 'practica-2-parte-4.html',  title: 'Práctica II · Parte 4' },
+      next: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' }
+    },
+    'BC · CLASE 1': {
+      prev: { href: 'blockchain-overview.html',      title: 'Blockchain · Overview' },
+      next: { href: 'blockchain-clase-1-tarea.html', title: 'Tarea de clase 1' }
+    },
+    'BC · TAREA 1': {
+      prev: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' },
+      next: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' }
+    },
+    'BC · CLASE 2': {
+      prev: { href: 'blockchain-clase-1.html',       title: 'Clase 1 — Fundamentos + setup' },
+      next: { href: 'blockchain-clase-2-tarea.html', title: 'Tarea de clase 2' }
+    },
+    'BC · TAREA 2': {
+      prev: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' },
+      next: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' }
+    },
+    'BC · CLASE 3': {
+      prev: { href: 'blockchain-clase-2.html',       title: 'Clase 2 — ERC-20 + PaymentGateway' },
+      next: { href: 'blockchain-clase-3-tarea.html', title: 'Tarea de clase 3' }
+    },
+    'BC · TAREA 3': {
+      prev: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' },
+      next: { href: 'blockchain-clase-4.html',  title: 'Clase 4 — NFTs + Slither' }
+    },
+    'BC · CLASE 4': {
+      prev: { href: 'blockchain-clase-3.html',       title: 'Clase 3 — Frontend + onramp' },
+      next: { href: 'blockchain-clase-4-tarea.html', title: 'Tarea de clase 4 — Entregable final' }
+    },
+    'BC · TAREA 4': {
+      prev: { href: 'blockchain-clase-4.html',  title: 'Clase 4 — NFTs + Slither' },
+      next: { href: 'que-pasa-si.html',         title: 'Qué pasa si... — escenarios reales' }
+    },
+    'QUE-PASA-SI': {
+      prev: { href: 'blockchain-clase-4.html', title: 'Clase 4 — NFTs + Slither' },
+      next: { href: 'index.html',              title: 'Menú principal' }
+    }
+  };
+
+  const entry = MAP[key];
+  if (!entry) return;
+
+  const prevLink = nav.querySelector('[data-slot="prev"]');
+  const nextLink = nav.querySelector('[data-slot="next"]');
+  const prevTitle = nav.querySelector('[data-slot="prev-title"]');
+  const nextTitle = nav.querySelector('[data-slot="next-title"]');
+
+  if (entry.prev && prevLink && prevTitle) {
+    prevLink.setAttribute('href', entry.prev.href);
+    prevTitle.textContent = entry.prev.title;
+    prevLink.hidden = false;
+  }
+  if (entry.next && nextLink && nextTitle) {
+    nextLink.setAttribute('href', entry.next.href);
+    nextTitle.textContent = entry.next.title;
+    nextLink.hidden = false;
+  }
+
+  // If neither slot is shown, hide the whole nav
+  if ((!entry.prev) && (!entry.next)) {
+    nav.style.display = 'none';
+  }
+})();
+
+// Open all external links in a new tab (preserves the current page).
+// Internal anchors (#hash), relative links and same-origin links stay in-tab.
+(function () {
+  const here = window.location.hostname;
+  document.querySelectorAll('a[href]').forEach(a => {
+    const href = a.getAttribute('href');
+    if (!href) return;
+    // Skip anchors and pure relative links
+    if (href.startsWith('#') || href.startsWith('/') || !/^https?:\/\//i.test(href)) return;
+    try {
+      const url = new URL(href);
+      if (url.hostname && url.hostname !== here) {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      }
+    } catch (_) {
+      // Malformed URL — ignore
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

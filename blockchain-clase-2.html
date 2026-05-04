@@ -188,10 +188,8 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     propio ERC-20 (token del proyecto)</a></li>
     <li><a href="#cierre--qué-nos-llevamos"
     id="toc-cierre--qué-nos-llevamos">Cierre — qué nos llevamos</a></li>
-    <li><a href="#tarea-para-clase-3" id="toc-tarea-para-clase-3">Tarea
-    para clase 3</a></li>
-    <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
-    falla</a></li>
+    <li><a href="#tarea-para-próxima-clase"
+    id="toc-tarea-para-próxima-clase">Tarea para próxima clase</a></li>
     </ul></li>
     </ul>
     <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
@@ -302,10 +300,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       <li><a href="#cierre--qué-nos-llevamos"
       id="toc-cierre--qué-nos-llevamos">Cierre — qué nos
       llevamos</a></li>
-      <li><a href="#tarea-para-clase-3"
-      id="toc-tarea-para-clase-3">Tarea para clase 3</a></li>
-      <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
-      falla</a></li>
+      <li><a href="#tarea-para-próxima-clase"
+      id="toc-tarea-para-próxima-clase">Tarea para próxima
+      clase</a></li>
       </ul></li>
       </ul>
       <div class="toc-controls">
@@ -337,6 +334,25 @@ clase 1 (<a
 href="https://github.com/dpetrocelli/sip2026-blockchain-clase1">sip2026-blockchain-clase1</a>).
 Le agregamos <code>PaymentGateway.sol</code> y
 <code>ProjectToken.sol</code> al directorio <code>src/</code>.</p>
+</blockquote>
+<blockquote>
+<p>🎯 <strong>Lo que te vas a llevar al final de hoy</strong>:</p>
+<ul class="task-list">
+<li><label><input type="checkbox" />Entendés ERC-20 (especialmente
+<code>approve</code> + <code>transferFrom</code>)</label></li>
+<li><label><input type="checkbox" /><code>PaymentGateway.sol</code>
+escrito, testeado y deployado en Sepolia</label></li>
+<li><label><input type="checkbox" />El contrato verificado en Etherscan
+(cualquiera puede leer el source)</label></li>
+<li><label><input type="checkbox" />Probaste el flow completo desde
+<code>cast</code>: approve → pay → ver evento
+<code>Paid</code></label></li>
+<li><label><input type="checkbox" />Sabés qué es reentrancy y cómo lo
+cierra OpenZeppelin con <code>nonReentrant</code></label></li>
+<li><label><input type="checkbox" />Tu propio ERC-20 (<code>$VBK</code>
+/ <code>$DPF</code> / <code>$RNW</code> / <code>$IDEA</code>) deployado,
+listo para clase 4</label></li>
+</ul>
 </blockquote>
 <hr />
 <h2 id="qué-vamos-a-hacer-hoy">¿Qué vamos a hacer hoy?</h2>
@@ -961,68 +977,9 @@ USDC fake cuando “pagás con tarjeta”.</li>
 <li>Deploy de la dApp a Vercel.</li>
 </ul>
 <hr />
-<h2 id="tarea-para-clase-3">Tarea para clase 3</h2>
-<p>Antes del próximo sábado:</p>
-<ol type="1">
-<li><code>PaymentGateway</code> deployado en Sepolia + verificado en
-Etherscan (entregable: la URL
-<code>sepolia.etherscan.io/address/...#code</code>).</li>
-<li>Hicieron al menos <strong>2 pagos</strong> desde <code>cast</code>
-con <code>action</code> distintas (entregable: las 2 URLs de tx de
-Etherscan).</li>
-<li>Tu address de <code>treasury</code> muestra el saldo USDC
-acumulado.</li>
-<li>(Bonus) Escriban un test que intente reentrancy y pase.</li>
-</ol>
-<hr />
-<h2 id="si-algo-falla">Si algo falla</h2>
-<table>
-<thead>
-<tr>
-<th>Síntoma</th>
-<th>Causa probable</th>
-<th>Fix</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>Error: ERC20: insufficient allowance</code></td>
-<td>No aprobaste o aprobaste menos que el <code>pay</code></td>
-<td>Re-aprobá con la cantidad correcta (paso 8.1)</td>
-</tr>
-<tr>
-<td><code>Error: ERC20: transfer amount exceeds balance</code></td>
-<td>No tenés USDC en tu wallet</td>
-<td>Pedí USDC al faucet de Circle</td>
-</tr>
-<tr>
-<td><code>Error: gateway.pay reverted</code> sin razón clara</td>
-<td>El allowance está en 0 (o expiró)</td>
-<td>Aprobá de nuevo</td>
-</tr>
-<tr>
-<td><code>forge install</code> falla</td>
-<td>Sin red, o submodules confundidos</td>
-<td><code>forge install --no-git</code> o
-<code>git submodule update --init --recursive</code></td>
-</tr>
-<tr>
-<td>El test fuzz falla en algún input</td>
-<td>Posible bug</td>
-<td>Subir el rango con <code>vm.assume</code> o revisar lógica</td>
-</tr>
-<tr>
-<td><code>verify-contract</code> dice “Already Verified”</td>
-<td>Está OK, ya lo tenías verificado</td>
-<td>Ignorar — lo abrís y está bien</td>
-</tr>
-<tr>
-<td>Etherscan no muestra el evento</td>
-<td>A veces tarda 30-60s</td>
-<td>Refrescar después de un minuto</td>
-</tr>
-</tbody>
-</table>
+<h2 id="tarea-para-próxima-clase">Tarea para próxima clase</h2>
+<p>La tarea va en una página aparte: <a
+href="blockchain-clase-2-tarea.html">Tarea de clase 2</a>.</p>
 
     <nav class="page-prev-next" aria-label="Navegación entre páginas">
       <a class="prev-link" href="#" data-slot="prev" hidden>
@@ -1181,20 +1138,40 @@ acumulado.</li>
       next: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' }
     },
     'BC · CLASE 1': {
-      prev: { href: 'blockchain-overview.html', title: 'Blockchain · Overview' },
+      prev: { href: 'blockchain-overview.html',      title: 'Blockchain · Overview' },
+      next: { href: 'blockchain-clase-1-tarea.html', title: 'Tarea de clase 1' }
+    },
+    'BC · TAREA 1': {
+      prev: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' },
       next: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' }
     },
     'BC · CLASE 2': {
-      prev: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' },
+      prev: { href: 'blockchain-clase-1.html',       title: 'Clase 1 — Fundamentos + setup' },
+      next: { href: 'blockchain-clase-2-tarea.html', title: 'Tarea de clase 2' }
+    },
+    'BC · TAREA 2': {
+      prev: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' },
       next: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' }
     },
     'BC · CLASE 3': {
-      prev: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' },
+      prev: { href: 'blockchain-clase-2.html',       title: 'Clase 2 — ERC-20 + PaymentGateway' },
+      next: { href: 'blockchain-clase-3-tarea.html', title: 'Tarea de clase 3' }
+    },
+    'BC · TAREA 3': {
+      prev: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' },
       next: { href: 'blockchain-clase-4.html',  title: 'Clase 4 — NFTs + Slither' }
     },
     'BC · CLASE 4': {
-      prev: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' },
-      next: { href: 'index.html',               title: 'Menú principal' }
+      prev: { href: 'blockchain-clase-3.html',       title: 'Clase 3 — Frontend + onramp' },
+      next: { href: 'blockchain-clase-4-tarea.html', title: 'Tarea de clase 4 — Entregable final' }
+    },
+    'BC · TAREA 4': {
+      prev: { href: 'blockchain-clase-4.html',  title: 'Clase 4 — NFTs + Slither' },
+      next: { href: 'que-pasa-si.html',         title: 'Qué pasa si... — escenarios reales' }
+    },
+    'QUE-PASA-SI': {
+      prev: { href: 'blockchain-clase-4.html', title: 'Clase 4 — NFTs + Slither' },
+      next: { href: 'index.html',              title: 'Menú principal' }
     }
   };
 

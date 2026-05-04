@@ -6,6 +6,14 @@
 
 > **Repo**: hoy seguimos en el mismo proyecto Foundry de clase 1-2 ([sip2026-blockchain-clase1](https://github.com/dpetrocelli/sip2026-blockchain-clase1)). Agregamos `BadgeNFT.sol` y los contratos de tokenomics al directorio `src/`.
 
+> 🎯 **Lo que te vas a llevar al final de hoy** (cierre del módulo):
+> - [ ] `BadgeNFT.sol` (ERC-721 con Set Bonus pattern) deployado en Sepolia
+> - [ ] Tokenomics elegida y argumentada para tu proyecto (burn / dividendos / staking)
+> - [ ] El stack completo funcionando: `PaymentGateway` + ERC-20 + ERC-721 + frontend
+> - [ ] Análisis de Slither corrido con `SECURITY.md` documentando hallazgos
+> - [ ] Tu proyecto (VibeCheck / DepFund / RNW / IDEAFY) con su lógica enchufada al hook `_onPaid`
+> - [ ] Roadmap claro para el TP final — sabés qué falta y dónde van a buscar
+
 ---
 
 ## ¿Qué vamos a hacer hoy?
@@ -506,40 +514,6 @@ Después de las 4 clases, cada equipo tiene en producción (testnet):
 
 ---
 
-## Tarea final del TP — entregable
-
-**Plazo**: el spec completo del TP del SIP define la fecha de entrega final del módulo. Acá va lo específico de blockchain.
-
-### Qué entregar
-
-1. **Repo en GitHub** con:
-   - `contracts/` con los 4 contratos (PaymentGateway, ERC20, ERC721 SetBonus, TierRegistry).
-   - `frontend/` con Next.js + wagmi conectado.
-   - `test/` con tests Foundry: coverage ≥ 70%, al menos 2 fuzz tests, test de Set Bonus.
-   - `SECURITY.md` con output de Slither + findings aceptados justificados.
-   - `README.md` con address de los contratos en testnet, Project ID de WalletConnect (sin secrets), pasos para correr.
-
-2. **Demo en vivo** (5 min en clase) que muestre:
-   - Conectar wallet desde el frontend deployado en Vercel.
-   - Pagar con USDC de testnet → ver que se mintea el ERC-20 + el ticket/share NFT + la pieza Set Bonus.
-   - Mostrar el evento en Etherscan.
-   - Mostrar el output de Slither limpio.
-
-3. **Defensa** (5 min): por qué eligieron esa red para producción, qué riesgos quedan abiertos, qué falta para llevarlo a mainnet real.
-
-### Criterios de evaluación (alineados con el SIP)
-
-| Criterio | Peso |
-|---|---|
-| Contratos compilan + pasan tests | 25% |
-| Tokenomics coherente con el proyecto + documentada | 20% |
-| Frontend conecta y ejecuta el flow completo | 20% |
-| Slither limpio + `SECURITY.md` honesto | 15% |
-| Set Bonus funcional + visualizable | 10% |
-| Demo + defensa | 10% |
-
----
-
 ## Cierre — qué nos llevamos del módulo
 
 Cuatro clases. Empezamos con MetaMask y un `SimpleStorage` trivial. Cerramos con **un sistema Web3 productivo** plugado a su proyecto del SIP, con tokenomics, gamification y auditoría.
@@ -548,19 +522,6 @@ Cuatro clases. Empezamos con MetaMask y un `SimpleStorage` trivial. Cerramos con
 
 ---
 
-## Si algo falla
+## Tarea para próxima clase
 
-| Síntoma | Probable causa | Fix |
-|---|---|---|
-| `slither: command not found` | No está en PATH | `pip install --user slither-analyzer` y agregar `~/.local/bin` al PATH |
-| `slither` falla con "Source not found" | Foundry layout no detectado | `slither . --foundry-out-directory out` o `slither src/` |
-| `solc not installed for 0.8.24` | Versión no instalada | `solc-select install 0.8.24 && solc-select use 0.8.24` |
-| `_safeMint` revierte en fuzz tests | Foundry envía a addresses que no implementan `onERC721Received` | Usar `_mint` (sin "safe") o filtrar `to` con `vm.assume(to.code.length == 0)` |
-| `nonReentrant` revierte llamadas válidas | Estás llamando dos funciones `nonReentrant` en la misma tx | Mover lógica interna a función `private` (sin guard) |
-| El Set Bonus siempre da el mismo slot | `entropy` no incluye `block.prevrandao` o `nonce` | Agregar `block.prevrandao` y un nonce que se incremente |
-| Slither marca `unchecked-transfer` en USDT | USDT real no devuelve bool | Usar `SafeERC20.safeTransferFrom` (OpenZeppelin) |
-| `forge create` en Polygon Amoy revierte | Faucet de Amoy escaso | Probar https://faucet.polygon.technology o pedir en el foro del campus |
-| Frontend no muestra la pieza NFT | El RPC no devolvió `tokenURI` aún (cache) | Esperar 30 s, o invalidar query con `queryClient.invalidateQueries` |
-| Dividendos `claim()` devuelve 0 | El distribute fue antes de tu compra | Es correcto — el `accPerShare` solo cuenta hacia adelante. Ese es el patrón. |
-
-Lo demás, foro del campus.
+La tarea va en una página aparte: [Tarea de clase 4](blockchain-clase-4-tarea.html).

@@ -183,10 +183,8 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     Etherscan</a></li>
     <li><a href="#cierre--qué-nos-llevamos"
     id="toc-cierre--qué-nos-llevamos">Cierre — qué nos llevamos</a></li>
-    <li><a href="#tarea-para-clase-2" id="toc-tarea-para-clase-2">Tarea
-    para clase 2</a></li>
-    <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
-    falla</a></li>
+    <li><a href="#tarea-para-próxima-clase"
+    id="toc-tarea-para-próxima-clase">Tarea para próxima clase</a></li>
     </ul></li>
     </ul>
     <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
@@ -294,10 +292,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       <li><a href="#cierre--qué-nos-llevamos"
       id="toc-cierre--qué-nos-llevamos">Cierre — qué nos
       llevamos</a></li>
-      <li><a href="#tarea-para-clase-2"
-      id="toc-tarea-para-clase-2">Tarea para clase 2</a></li>
-      <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
-      falla</a></li>
+      <li><a href="#tarea-para-próxima-clase"
+      id="toc-tarea-para-próxima-clase">Tarea para próxima
+      clase</a></li>
       </ul></li>
       </ul>
       <div class="toc-controls">
@@ -320,6 +317,23 @@ de pago.</p>
 <p><strong>Pre-requisito</strong>: las TPs anteriores (k3s, Selenium,
 observabilidad) ya las tienen. <strong>No asumimos nada de Solidity ni
 blockchain previo</strong>.</p>
+</blockquote>
+<blockquote>
+<p>🎯 <strong>Lo que te vas a llevar al final de hoy</strong>:</p>
+<ul class="task-list">
+<li><label><input type="checkbox" />MetaMask con wallet de dev + Sepolia
+activa + ETH de faucet</label></li>
+<li><label><input type="checkbox" />Foundry instalado
+(<code>forge</code>, <code>cast</code>, <code>anvil</code>) y
+verificado</label></li>
+<li><label><input type="checkbox" />Un contrato
+<code>SimpleStorage</code> deployado en Sepolia con address
+propia</label></li>
+<li><label><input type="checkbox" />Sabés interactuar con él desde
+<code>cast</code> (lectura + escritura)</label></li>
+<li><label><input type="checkbox" />El código fuente verificado y
+público en Etherscan</label></li>
+</ul>
 </blockquote>
 <hr />
 <h2 id="qué-vamos-a-hacer-hoy">¿Qué vamos a hacer hoy?</h2>
@@ -819,59 +833,9 @@ público en Etherscan</label></li>
 defenderse.</li>
 </ul>
 <hr />
-<h2 id="tarea-para-clase-2">Tarea para clase 2</h2>
-<p>Antes del próximo sábado:</p>
-<ol type="1">
-<li>Tu contrato <code>SimpleStorage</code> deployado y verificado en
-Sepolia (entregable: la URL
-<code>sepolia.etherscan.io/address/...#code</code>).</li>
-<li>Llamaron <code>set(N)</code> al menos una vez con un número
-significativo para vos (lo van a poder ver en la pestaña Events del
-contrato en Etherscan).</li>
-<li>Leyeron el <a href="blockchain-overview.html">overview de
-blockchain</a>, prestando atención a los <strong>5
-diagramas</strong>.</li>
-</ol>
-<p>Lo entregan en el campus.</p>
-<hr />
-<h2 id="si-algo-falla">Si algo falla</h2>
-<table>
-<thead>
-<tr>
-<th>Síntoma</th>
-<th>Probable causa</th>
-<th>Fix</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>forge: command not found</code></td>
-<td>Foundry no está en el PATH</td>
-<td>Reabrí terminal o <code>source ~/.bashrc</code> después de
-instalar</td>
-</tr>
-<tr>
-<td><code>Error: insufficient funds</code></td>
-<td>No tenés ETH en Sepolia</td>
-<td>Volvé al faucet (paso 2.3)</td>
-</tr>
-<tr>
-<td><code>Error: nonce too high/low</code></td>
-<td>MetaMask y Foundry desfasados</td>
-<td>En MetaMask: Settings → Advanced → Reset Account</td>
-</tr>
-<tr>
-<td><code>Error: failed to verify</code></td>
-<td>API key de Etherscan mal pegada</td>
-<td>Verificá <code>echo $ETHERSCAN_API_KEY</code></td>
-</tr>
-<tr>
-<td>MetaMask no muestra Sepolia</td>
-<td>Test networks ocultas</td>
-<td>Settings → Advanced → Show test networks</td>
-</tr>
-</tbody>
-</table>
+<h2 id="tarea-para-próxima-clase">Tarea para próxima clase</h2>
+<p>La tarea va en una página aparte: <a
+href="blockchain-clase-1-tarea.html">Tarea de clase 1</a>.</p>
 
     <nav class="page-prev-next" aria-label="Navegación entre páginas">
       <a class="prev-link" href="#" data-slot="prev" hidden>
@@ -1030,20 +994,40 @@ instalar</td>
       next: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' }
     },
     'BC · CLASE 1': {
-      prev: { href: 'blockchain-overview.html', title: 'Blockchain · Overview' },
+      prev: { href: 'blockchain-overview.html',      title: 'Blockchain · Overview' },
+      next: { href: 'blockchain-clase-1-tarea.html', title: 'Tarea de clase 1' }
+    },
+    'BC · TAREA 1': {
+      prev: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' },
       next: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' }
     },
     'BC · CLASE 2': {
-      prev: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' },
+      prev: { href: 'blockchain-clase-1.html',       title: 'Clase 1 — Fundamentos + setup' },
+      next: { href: 'blockchain-clase-2-tarea.html', title: 'Tarea de clase 2' }
+    },
+    'BC · TAREA 2': {
+      prev: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' },
       next: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' }
     },
     'BC · CLASE 3': {
-      prev: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' },
+      prev: { href: 'blockchain-clase-2.html',       title: 'Clase 2 — ERC-20 + PaymentGateway' },
+      next: { href: 'blockchain-clase-3-tarea.html', title: 'Tarea de clase 3' }
+    },
+    'BC · TAREA 3': {
+      prev: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' },
       next: { href: 'blockchain-clase-4.html',  title: 'Clase 4 — NFTs + Slither' }
     },
     'BC · CLASE 4': {
-      prev: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' },
-      next: { href: 'index.html',               title: 'Menú principal' }
+      prev: { href: 'blockchain-clase-3.html',       title: 'Clase 3 — Frontend + onramp' },
+      next: { href: 'blockchain-clase-4-tarea.html', title: 'Tarea de clase 4 — Entregable final' }
+    },
+    'BC · TAREA 4': {
+      prev: { href: 'blockchain-clase-4.html',  title: 'Clase 4 — NFTs + Slither' },
+      next: { href: 'que-pasa-si.html',         title: 'Qué pasa si... — escenarios reales' }
+    },
+    'QUE-PASA-SI': {
+      prev: { href: 'blockchain-clase-4.html', title: 'Clase 4 — NFTs + Slither' },
+      next: { href: 'index.html',              title: 'Menú principal' }
     }
   };
 

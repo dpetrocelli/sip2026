@@ -1,32 +1,12 @@
-$if(lang)$<!DOCTYPE html>
-<html lang="$lang$">$else$<!DOCTYPE html>
-<html lang="es">$endif$
+<!DOCTYPE html>
+<html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
   <meta name="generator" content="pandoc + UNLu/DCB template">
-$for(author-meta)$
-  <meta name="author" content="$author-meta$">
-$endfor$
-$if(date-meta)$
-  <meta name="dcterms.date" content="$date-meta$">
-$endif$
-$if(keywords)$
-  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$">
-$endif$
-  <title>$if(title-prefix)$$title-prefix$ — $endif$$pagetitle$</title>
+  <title>Blockchain · Tarea de clase 2 — PaymentGateway en Sepolia —
+UNLu DCB</title>
   <link rel="stylesheet" href="assets/style.css">
-$for(css)$
-  <link rel="stylesheet" href="$css$">
-$endfor$
-$if(highlighting-css)$
-  <style type="text/css">
-$highlighting-css$
-  </style>
-$endif$
-$for(header-includes)$
-  $header-includes$
-$endfor$
 </head>
 <body>
 
@@ -49,48 +29,200 @@ $endfor$
 <button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
 
 <div class="layout">
-$if(toc)$
   <aside class="toc-sidebar" id="toc-sidebar">
     <div class="toc-header">
       <div class="toc-title">Contenidos</div>
       <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
     </div>
-    $table-of-contents$
+    <ul>
+    <li><a
+    href="#blockchain--tarea-de-clase-2--paymentgateway-en-sepolia"
+    id="toc-blockchain--tarea-de-clase-2--paymentgateway-en-sepolia">Blockchain
+    · Tarea de clase 2 — PaymentGateway en Sepolia</a>
+    <ul>
+    <li><a href="#qué-hay-que-entregar"
+    id="toc-qué-hay-que-entregar">Qué hay que entregar</a></li>
+    <li><a href="#cómo-probar-que-está-bien"
+    id="toc-cómo-probar-que-está-bien">Cómo probar que está
+    bien</a></li>
+    <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
+    falla</a></li>
+    <li><a href="#volver" id="toc-volver">Volver</a></li>
+    </ul></li>
+    </ul>
     <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
       <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
     </div>
   </aside>
-$endif$
 
   <main class="content">
-$if(banner-num)$
     <nav class="page-breadcrumb" aria-label="Breadcrumb">
       <a href="index.html">Inicio</a>
       <span class="sep">›</span>
-      <span class="current">$banner-num$</span>
+      <span class="current">BC · TAREA 2</span>
     </nav>
-$endif$
     <nav class="page-nav-top">
       <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
-$if(title)$
-$if(banner-num)$
-      <span class="banner-pill">$banner-num$</span>
-$endif$
-$endif$
+      <span class="banner-pill">BC · TAREA 2</span>
     </nav>
 
-$if(toc)$
     <details class="toc-inline" open>
       <summary>📑 Índice del documento</summary>
-      $table-of-contents$
+      <ul>
+      <li><a
+      href="#blockchain--tarea-de-clase-2--paymentgateway-en-sepolia"
+      id="toc-blockchain--tarea-de-clase-2--paymentgateway-en-sepolia">Blockchain
+      · Tarea de clase 2 — PaymentGateway en Sepolia</a>
+      <ul>
+      <li><a href="#qué-hay-que-entregar"
+      id="toc-qué-hay-que-entregar">Qué hay que entregar</a></li>
+      <li><a href="#cómo-probar-que-está-bien"
+      id="toc-cómo-probar-que-está-bien">Cómo probar que está
+      bien</a></li>
+      <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
+      falla</a></li>
+      <li><a href="#volver" id="toc-volver">Volver</a></li>
+      </ul></li>
+      </ul>
       <div class="toc-controls">
         <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
         <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
       </div>
     </details>
-$endif$
 
-$body$
+<h1
+id="blockchain--tarea-de-clase-2--paymentgateway-en-sepolia">Blockchain
+· Tarea de clase 2 — PaymentGateway en Sepolia</h1>
+<blockquote>
+<p><strong>Plazo</strong>: antes de clase 3 (sábado 23/05).</p>
+</blockquote>
+<blockquote>
+<p><strong>Pre-requisito</strong>: la <a
+href="blockchain-clase-2.html">clase 2 completa</a> —
+<code>PaymentGateway.sol</code>, <code>ProjectToken.sol</code>,
+OpenZeppelin instalado, tests pasando.</p>
+</blockquote>
+<hr />
+<h2 id="qué-hay-que-entregar">Qué hay que entregar</h2>
+<p>Antes del próximo sábado, en el campus:</p>
+<ol type="1">
+<li><strong><code>PaymentGateway</code> deployado en Sepolia +
+verificado en Etherscan</strong>.
+<ul>
+<li>Entregable: la URL
+<code>https://sepolia.etherscan.io/address/&lt;GATEWAY&gt;#code</code>.</li>
+</ul></li>
+<li><strong>Hicieron al menos 2 pagos desde <code>cast</code></strong>
+con <code>action</code> distintas (por ejemplo
+<code>"primera-prueba"</code> y <code>"segunda-prueba"</code>).
+<ul>
+<li>Entregable: las <strong>2 URLs de tx</strong> en Etherscan
+(<code>https://sepolia.etherscan.io/tx/&lt;TX_HASH&gt;</code>).</li>
+</ul></li>
+<li><strong>Tu address de <code>treasury</code> muestra el saldo USDC
+acumulado</strong> después de los pagos (verificable con
+<code>cast call ... balanceOf</code>).</li>
+<li><strong>(Bonus)</strong> Escriban un test que <strong>intente
+reentrancy</strong> contra <code>PaymentGateway</code> y comprueben que
+falla. Pista: hagan que <code>_onPaid</code> haga algo arbitrario en una
+subclass de prueba que reentre <code>pay()</code>.</li>
+</ol>
+<hr />
+<h2 id="cómo-probar-que-está-bien">Cómo probar que está bien</h2>
+<p>Checklist de aceptación:</p>
+<ul class="task-list">
+<li><label><input
+type="checkbox" /><code>forge install OpenZeppelin/openzeppelin-contracts --no-commit</code>
+corrió OK y <code>lib/openzeppelin-contracts</code> existe.</label></li>
+<li><label><input type="checkbox" /><code>remappings.txt</code> incluye
+<code>@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/</code>.</label></li>
+<li><label><input type="checkbox" /><code>forge build</code> compila sin
+warnings (o solo cosméticas).</label></li>
+<li><label><input type="checkbox" /><code>forge test -vv</code> muestra
+los <strong>5 tests en verde</strong> (incluido el fuzz
+<code>testFuzz_PayAnyValidAmount</code>).</label></li>
+<li><label><input type="checkbox" />El deploy con el script
+<code>DeployPaymentGateway.s.sol</code> te devolvió la address y la
+guardaste como <code>$GATEWAY</code>.</label></li>
+<li><label><input type="checkbox" /><code>forge verify-contract</code>
+terminó con <code>Pass — Verified</code>. Etherscan muestra el source
+completo.</label></li>
+<li><label><input type="checkbox" />Tenés USDC de testnet en tu wallet
+(faucet de Circle: <a
+href="https://faucet.circle.com">https://faucet.circle.com</a>).</label></li>
+<li><label><input type="checkbox" /><code>cast send</code> de
+<code>approve(...)</code> se confirmó (status: 1).</label></li>
+<li><label><input type="checkbox" /><code>cast send</code> de
+<code>pay(uint256,bytes32)</code> se confirmó (status: 1) y el receipt
+incluye el evento <code>Paid</code>.</label></li>
+<li><label><input type="checkbox" />La pestaña <strong>“Events”</strong>
+del PaymentGateway en Etherscan lista los
+<code>Paid(payer, amount, action)</code> con tu address.</label></li>
+<li><label><input
+type="checkbox" /><code>cast call $USDC_SEPOLIA "balanceOf(address)(uint256)" $TREASURY</code>
+devuelve la suma de los pagos.</label></li>
+<li><label><input type="checkbox" />Tu <code>ProjectToken</code>
+(<code>$VBK</code> / <code>$DPF</code> / <code>$RNW</code> /
+<code>$IDEA</code>) <strong>también está deployado</strong> — la van a
+necesitar en clase 4.</label></li>
+</ul>
+<hr />
+<h2 id="si-algo-falla">Si algo falla</h2>
+<table>
+<thead>
+<tr>
+<th>Síntoma</th>
+<th>Causa probable</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Error: ERC20: insufficient allowance</code></td>
+<td>No aprobaste o aprobaste menos que el <code>pay</code></td>
+<td>Re-aprobá con la cantidad correcta (paso 8.1 de la clase)</td>
+</tr>
+<tr>
+<td><code>Error: ERC20: transfer amount exceeds balance</code></td>
+<td>No tenés USDC en tu wallet</td>
+<td>Pedí USDC al faucet de Circle</td>
+</tr>
+<tr>
+<td><code>Error: gateway.pay reverted</code> sin razón clara</td>
+<td>El allowance está en 0 (o expiró)</td>
+<td>Aprobá de nuevo</td>
+</tr>
+<tr>
+<td><code>forge install</code> falla</td>
+<td>Sin red, o submodules confundidos</td>
+<td><code>forge install --no-git</code> o
+<code>git submodule update --init --recursive</code></td>
+</tr>
+<tr>
+<td>El test fuzz falla en algún input</td>
+<td>Posible bug</td>
+<td>Subir el rango con <code>vm.assume</code> o revisar lógica</td>
+</tr>
+<tr>
+<td><code>verify-contract</code> dice “Already Verified”</td>
+<td>Está OK, ya lo tenías verificado</td>
+<td>Ignorar — lo abrís y está bien</td>
+</tr>
+<tr>
+<td>Etherscan no muestra el evento</td>
+<td>A veces tarda 30-60s</td>
+<td>Refrescar después de un minuto</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="volver">Volver</h2>
+<ul>
+<li><a href="blockchain-clase-2.html">← Material de la clase 2</a></li>
+<li><a href="index.html">← Volver al índice</a></li>
+<li><a href="blockchain-clase-3.html">→ Clase 3 — Frontend +
+onramp</a></li>
+</ul>
 
     <nav class="page-prev-next" aria-label="Navegación entre páginas">
       <a class="prev-link" href="#" data-slot="prev" hidden>

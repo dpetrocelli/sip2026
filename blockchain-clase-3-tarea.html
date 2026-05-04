@@ -1,32 +1,12 @@
-$if(lang)$<!DOCTYPE html>
-<html lang="$lang$">$else$<!DOCTYPE html>
-<html lang="es">$endif$
+<!DOCTYPE html>
+<html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
   <meta name="generator" content="pandoc + UNLu/DCB template">
-$for(author-meta)$
-  <meta name="author" content="$author-meta$">
-$endfor$
-$if(date-meta)$
-  <meta name="dcterms.date" content="$date-meta$">
-$endif$
-$if(keywords)$
-  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$">
-$endif$
-  <title>$if(title-prefix)$$title-prefix$ — $endif$$pagetitle$</title>
+  <title>Blockchain · Tarea de clase 3 — dApp en Vercel + onramp testnet
+— UNLu DCB</title>
   <link rel="stylesheet" href="assets/style.css">
-$for(css)$
-  <link rel="stylesheet" href="$css$">
-$endfor$
-$if(highlighting-css)$
-  <style type="text/css">
-$highlighting-css$
-  </style>
-$endif$
-$for(header-includes)$
-  $header-includes$
-$endfor$
 </head>
 <body>
 
@@ -49,48 +29,226 @@ $endfor$
 <button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
 
 <div class="layout">
-$if(toc)$
   <aside class="toc-sidebar" id="toc-sidebar">
     <div class="toc-header">
       <div class="toc-title">Contenidos</div>
       <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
     </div>
-    $table-of-contents$
+    <ul>
+    <li><a
+    href="#blockchain--tarea-de-clase-3--dapp-en-vercel--onramp-testnet"
+    id="toc-blockchain--tarea-de-clase-3--dapp-en-vercel--onramp-testnet">Blockchain
+    · Tarea de clase 3 — dApp en Vercel + onramp testnet</a>
+    <ul>
+    <li><a href="#qué-hay-que-entregar"
+    id="toc-qué-hay-que-entregar">Qué hay que entregar</a></li>
+    <li><a href="#cómo-probar-que-está-bien"
+    id="toc-cómo-probar-que-está-bien">Cómo probar que está
+    bien</a></li>
+    <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
+    falla</a></li>
+    <li><a href="#volver" id="toc-volver">Volver</a></li>
+    </ul></li>
+    </ul>
     <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
       <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
     </div>
   </aside>
-$endif$
 
   <main class="content">
-$if(banner-num)$
     <nav class="page-breadcrumb" aria-label="Breadcrumb">
       <a href="index.html">Inicio</a>
       <span class="sep">›</span>
-      <span class="current">$banner-num$</span>
+      <span class="current">BC · TAREA 3</span>
     </nav>
-$endif$
     <nav class="page-nav-top">
       <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
-$if(title)$
-$if(banner-num)$
-      <span class="banner-pill">$banner-num$</span>
-$endif$
-$endif$
+      <span class="banner-pill">BC · TAREA 3</span>
     </nav>
 
-$if(toc)$
     <details class="toc-inline" open>
       <summary>📑 Índice del documento</summary>
-      $table-of-contents$
+      <ul>
+      <li><a
+      href="#blockchain--tarea-de-clase-3--dapp-en-vercel--onramp-testnet"
+      id="toc-blockchain--tarea-de-clase-3--dapp-en-vercel--onramp-testnet">Blockchain
+      · Tarea de clase 3 — dApp en Vercel + onramp testnet</a>
+      <ul>
+      <li><a href="#qué-hay-que-entregar"
+      id="toc-qué-hay-que-entregar">Qué hay que entregar</a></li>
+      <li><a href="#cómo-probar-que-está-bien"
+      id="toc-cómo-probar-que-está-bien">Cómo probar que está
+      bien</a></li>
+      <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
+      falla</a></li>
+      <li><a href="#volver" id="toc-volver">Volver</a></li>
+      </ul></li>
+      </ul>
       <div class="toc-controls">
         <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
         <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
       </div>
     </details>
-$endif$
 
-$body$
+<h1
+id="blockchain--tarea-de-clase-3--dapp-en-vercel--onramp-testnet">Blockchain
+· Tarea de clase 3 — dApp en Vercel + onramp testnet</h1>
+<blockquote>
+<p><strong>Plazo</strong>: antes de clase 4 (sábado 30/05).</p>
+</blockquote>
+<blockquote>
+<p><strong>Pre-requisito</strong>: la <a
+href="blockchain-clase-3.html">clase 3 completa</a> — proyecto Next.js +
+wagmi + RainbowKit, <code>TestnetOnramp.sol</code> y
+<code>MockUSDC.sol</code> listos.</p>
+</blockquote>
+<hr />
+<h2 id="qué-hay-que-entregar">Qué hay que entregar</h2>
+<p>Antes del próximo sábado, en el campus, en su repo:</p>
+<ol type="1">
+<li><strong>dApp deployada en Vercel</strong> (URL pública), con:
+<ul>
+<li>Connect wallet funcionando.</li>
+<li>Form de pago con <strong><code>approve</code> + <code>pay</code>
+completos</strong>.</li>
+<li>Feed de eventos <code>Paid</code> en vivo
+(<code>useWatchContractEvent</code>).</li>
+</ul></li>
+<li><strong><code>TestnetOnramp</code> + <code>MockUSDC</code>
+deployados y verificados en Sepolia</strong> (links a Etherscan de
+ambos).</li>
+<li><strong><code>PaymentGateway</code> redeployado</strong> apuntando
+al <code>MockUSDC</code> (no al de Circle), para que el ciclo cierre
+solo dentro de la dApp.</li>
+<li><strong>Video de 90 segundos</strong> mostrando: connect → comprar
+50 mUSDC con tarjeta → approve → pay → ver evento. Súbanlo al
+campus.</li>
+</ol>
+<p>Lo que <strong>no</strong> hace falta esta semana: estilos lindos,
+mobile responsive, multi-cuenta. Eso lo pulen en la semana de clase
+4.</p>
+<hr />
+<h2 id="cómo-probar-que-está-bien">Cómo probar que está bien</h2>
+<p>Checklist de aceptación:</p>
+<ul class="task-list">
+<li><label><input type="checkbox" /><code>npm run dev</code> levanta sin
+errores en <code>http://localhost:3000</code>.</label></li>
+<li><label><input type="checkbox" />El botón <strong>Connect
+Wallet</strong> abre el modal de RainbowKit y conecta
+MetaMask.</label></li>
+<li><label><input type="checkbox" />Si la wallet no está en Sepolia,
+RainbowKit muestra el botón rojo “Wrong network” y el switch
+funciona.</label></li>
+<li><label><input type="checkbox" /><code>.env.local</code> tiene las 4
+variables con prefijo <code>NEXT_PUBLIC_</code>:
+<code>WC_PROJECT_ID</code>, <code>PAYGW_ADDRESS</code>,
+<code>USDC_ADDRESS</code>, <code>ONRAMP_ADDRESS</code>.</label></li>
+<li><label><input type="checkbox" />El componente <code>PayForm</code>
+muestra balance USDC del usuario.</label></li>
+<li><label><input type="checkbox" />El flujo de pago alterna
+correctamente entre <strong>“1) Approve”</strong> y <strong>“2)
+Pay”</strong> según el <code>allowance</code>.</label></li>
+<li><label><input type="checkbox" />Cada tx muestra link a Etherscan
+(<code>https://sepolia.etherscan.io/tx/...</code>).</label></li>
+<li><label><input type="checkbox" /><code>PaymentFeed</code> actualiza
+en vivo cuando otro alumno paga desde su frontend (sin
+recargar).</label></li>
+<li><label><input type="checkbox" />El botón <strong>“Comprar 50 mUSDC
+con tarjeta”</strong> del <code>CardOnramp</code>:</label>
+<ul>
+<li>Muestra un spinner falso 1.5s (simulación de card flow).</li>
+<li>Llama <code>buyWithCard()</code> con
+<code>value: parseEther('0.05')</code>.</li>
+<li>Termina en “✅ 50 mUSDC en tu wallet”.</li>
+</ul></li>
+<li><label><input type="checkbox" /><code>MockUSDC</code> y
+<code>TestnetOnramp</code> están <strong>verificados</strong> en
+Etherscan.</label></li>
+<li><label><input type="checkbox" />El <code>MockUSDC.owner()</code> es
+la address del <code>TestnetOnramp</code> (transfer de ownership
+hecho).</label></li>
+<li><label><input type="checkbox" /><code>PaymentGateway.usdc()</code>
+devuelve la address del <code>MockUSDC</code> (no la del USDC de
+Circle).</label></li>
+<li><label><input type="checkbox" />La dApp en Vercel responde en su URL
+pública y todas las env vars están seteadas en Vercel.</label></li>
+<li><label><input type="checkbox" />El video de 90s está subido al
+campus.</label></li>
+</ul>
+<hr />
+<h2 id="si-algo-falla">Si algo falla</h2>
+<table>
+<thead>
+<tr>
+<th>Síntoma</th>
+<th>Probable causa</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WalletConnect Project ID is not valid</code></td>
+<td>Variable mal pegada en <code>.env.local</code></td>
+<td>Verificá con <code>echo $NEXT_PUBLIC_WC_PROJECT_ID</code>, reiniciá
+<code>npm run dev</code></td>
+</tr>
+<tr>
+<td>RainbowKit no abre el modal</td>
+<td>Falta <code>import '@rainbow-me/rainbowkit/styles.css'</code></td>
+<td>Agregalo en <code>providers.tsx</code></td>
+</tr>
+<tr>
+<td>MetaMask dice “Wrong network”</td>
+<td>Wallet en mainnet o Goerli</td>
+<td>Click en el botón rojo de RainbowKit → “Switch network”</td>
+</tr>
+<tr>
+<td><code>pay</code> revierte con <code>transfer failed</code></td>
+<td>No hiciste <code>approve</code> antes, o approve por menos</td>
+<td>El UI tiene que mostrar “Approve” antes que “Pay”</td>
+</tr>
+<tr>
+<td><code>pay</code> revierte con <code>amount=0</code></td>
+<td><code>parseUnits</code> recibió string vacío</td>
+<td>Validá <code>amount &gt; 0</code> antes del click</td>
+</tr>
+<tr>
+<td>El feed de eventos no muestra nada</td>
+<td>RPC público con rate limit</td>
+<td>Cambiá a un RPC de Alchemy (free tier alcanza)</td>
+</tr>
+<tr>
+<td>Vercel build falla con “process is not defined”</td>
+<td>Variable sin prefijo <code>NEXT_PUBLIC_</code></td>
+<td>Todas las vars que usa el browser <strong>tienen</strong> que
+arrancar con <code>NEXT_PUBLIC_</code></td>
+</tr>
+<tr>
+<td><code>parseUnits</code> da número raro</td>
+<td>USDC tiene 6 decimales, no 18</td>
+<td>Usá <code>parseUnits(x, 6)</code>, no
+<code>parseEther(x)</code></td>
+</tr>
+<tr>
+<td><code>useWatchContractEvent</code> no dispara</td>
+<td>Address de contrato mal</td>
+<td>Verificá <code>NEXT_PUBLIC_PAYGW_ADDRESS</code> y reiniciá</td>
+</tr>
+<tr>
+<td>Onramp revierte con <code>OwnableUnauthorizedAccount</code></td>
+<td>Olvidaste <code>transferOwnership</code> del MockUSDC al onramp</td>
+<td>Re-deploy con el script que sí lo hace</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="volver">Volver</h2>
+<ul>
+<li><a href="blockchain-clase-3.html">← Material de la clase 3</a></li>
+<li><a href="index.html">← Volver al índice</a></li>
+<li><a href="blockchain-clase-4.html">→ Clase 4 — NFTs +
+Slither</a></li>
+</ul>
 
     <nav class="page-prev-next" aria-label="Navegación entre páginas">
       <a class="prev-link" href="#" data-slot="prev" hidden>

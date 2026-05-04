@@ -4,6 +4,13 @@
 
 > **Pre-requisito**: las TPs anteriores (k3s, Selenium, observabilidad) ya las tienen. **No asumimos nada de Solidity ni blockchain previo**.
 
+> 🎯 **Lo que te vas a llevar al final de hoy**:
+> - [ ] MetaMask con wallet de dev + Sepolia activa + ETH de faucet
+> - [ ] Foundry instalado (`forge`, `cast`, `anvil`) y verificado
+> - [ ] Un contrato `SimpleStorage` deployado en Sepolia con address propia
+> - [ ] Sabés interactuar con él desde `cast` (lectura + escritura)
+> - [ ] El código fuente verificado y público en Etherscan
+
 ---
 
 ## ¿Qué vamos a hacer hoy?
@@ -391,24 +398,6 @@ Después de esta clase tienen:
 
 ---
 
-## Tarea para clase 2
+## Tarea para próxima clase
 
-Antes del próximo sábado:
-
-1. Tu contrato `SimpleStorage` deployado y verificado en Sepolia (entregable: la URL `sepolia.etherscan.io/address/...#code`).
-2. Llamaron `set(N)` al menos una vez con un número significativo para vos (lo van a poder ver en la pestaña Events del contrato en Etherscan).
-3. Leyeron el [overview de blockchain](blockchain-overview.html), prestando atención a los **5 diagramas**.
-
-Lo entregan en el campus.
-
----
-
-## Si algo falla
-
-| Síntoma | Probable causa | Fix |
-|---|---|---|
-| `forge: command not found` | Foundry no está en el PATH | Reabrí terminal o `source ~/.bashrc` después de instalar |
-| `Error: insufficient funds` | No tenés ETH en Sepolia | Volvé al faucet (paso 2.3) |
-| `Error: nonce too high/low` | MetaMask y Foundry desfasados | En MetaMask: Settings → Advanced → Reset Account |
-| `Error: failed to verify` | API key de Etherscan mal pegada | Verificá `echo $ETHERSCAN_API_KEY` |
-| MetaMask no muestra Sepolia | Test networks ocultas | Settings → Advanced → Show test networks |
+La tarea va en una página aparte: [Tarea de clase 1](blockchain-clase-1-tarea.html).
