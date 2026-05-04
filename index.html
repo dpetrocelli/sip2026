@@ -27,45 +27,49 @@
 <div class="layout" style="grid-template-columns: 1fr;">
   <main class="content" style="max-width: 1100px; margin: 0 auto; padding: 48px 56px 80px;">
 
-    <h1 style="border-bottom: none; padding-bottom: 0; margin-bottom: 6px;">Trabajos Prácticos</h1>
-    <p style="color: var(--gray); margin: 0 0 24px; font-size: 15px;">
-      Material de cursada — Seminario de Integración Profesional · 2026 · Cátedra Petrocelli.
+    <h1 style="border-bottom: none; padding-bottom: 0; margin-bottom: 6px;">Material de cursada</h1>
+    <p style="color: var(--gray); margin: 0 0 8px; font-size: 15px;">
+      Seminario de Integración Profesional · 2026 · Cátedra Petrocelli.
+    </p>
+    <p style="color: var(--dark-gray); margin: 0 0 24px; font-size: 14px; max-width: 900px; line-height: 1.5;">
+      <strong>Cinco ejercitaciones</strong> — Kubernetes, automatización + CI/CD, observabilidad y blockchain — que <strong>convergen en el TPC</strong>: un sistema integrador deployado en producción con pasarela de pago real sobre Sepolia (testnet de Ethereum). El TPC vale el <strong>70% de la evaluación técnica</strong> del Seminario.
     </p>
 
-    <figure style="margin: 0 0 36px; padding: 0;">
-      <img src="assets/diagramas/00-roadmap-seminario.png" alt="Roadmap del Seminario: TP0 → TP1 → TP2 → Blockchain → TP final" style="width: 100%; max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(15, 31, 61, 0.08);">
-      <figcaption style="margin-top: 8px; font-size: 12px; color: var(--gray); font-style: italic;">El arco completo del Seminario — los 3 TPs base alimentan el módulo blockchain (4 clases · sábados de mayo) que termina en el TP final integrado.</figcaption>
-    </figure>
-
-    <div class="flow-diagram" aria-label="Flujo cronológico de prácticas">
+    <div class="flow-diagram" aria-label="Ejercitaciones del Seminario que convergen en el TPC">
       <a href="practica-0.html" class="flow-step open" data-status="abierto">
-        <div class="step-num">TP 0</div>
-        <div class="step-name">Prerrequisitos Kubernetes</div>
+        <div class="step-num">Ejercitación 0</div>
+        <div class="step-name">Kubernetes — k3s + kubectl</div>
         <div class="step-status">🔓 Prerrequisito</div>
       </a>
       <span class="flow-arrow" aria-hidden="true">→</span>
       <a href="practica-1-parte-1.html" class="flow-step closed" data-status="cerrado">
-        <div class="step-num">TP 1 · Parte 1</div>
-        <div class="step-name">Selenium MercadoLibre</div>
-        <div class="step-status">✅ Entrega cerrada 25/04</div>
+        <div class="step-num">Ejercitación 1A</div>
+        <div class="step-name">Selenium · scraping MercadoLibre</div>
+        <div class="step-status">✅ Cerrada 25/04</div>
       </a>
       <span class="flow-arrow" aria-hidden="true">→</span>
       <a href="practica-1-parte-2.html" class="flow-step open" data-status="abierto">
-        <div class="step-num">TP 1 · Parte 2</div>
-        <div class="step-name">Tests + Docker + Kubernetes</div>
+        <div class="step-num">Ejercitación 1B</div>
+        <div class="step-name">Tests + Docker + Kubernetes + CI/CD</div>
         <div class="step-status">🔓 Entrega 02/05</div>
       </a>
       <span class="flow-arrow" aria-hidden="true">→</span>
       <a href="practica-2-parte-1.html" class="flow-step open" data-status="abierto">
-        <div class="step-num">TP 2 (4 partes)</div>
-        <div class="step-name">Observabilidad: logs en Kubernetes</div>
+        <div class="step-num">Ejercitación 2</div>
+        <div class="step-name">Observabilidad — Loki + EFK + OTel</div>
         <div class="step-status">🔓 Entrega 05/05 + 09/05</div>
       </a>
       <span class="flow-arrow" aria-hidden="true">→</span>
-      <a href="blockchain-overview.html" class="flow-step open" data-status="abierto">
-        <div class="step-num">BLOCKCHAIN</div>
-        <div class="step-name">Pasarela de pago en Sepolia</div>
-        <div class="step-status">🔓 4 clases · arranca sábado 09/05</div>
+      <a href="blockchain-overview.html" class="flow-step open flow-step-blockchain" data-status="abierto">
+        <div class="step-num">Ejercitación 3 · NUEVA</div>
+        <div class="step-name">Blockchain — pasarela de pago en Sepolia</div>
+        <div class="step-status">🔓 4 sábados desde 09/05</div>
+      </a>
+      <span class="flow-arrow flow-arrow-strong" aria-hidden="true">⇒</span>
+      <a href="#tpc" class="flow-step flow-step-tpc" data-status="tpc">
+        <div class="step-num">TPC · entrega final</div>
+        <div class="step-name">Sistema integrador deployado</div>
+        <div class="step-status">🏆 70% de la nota técnica</div>
       </a>
     </div>
 
