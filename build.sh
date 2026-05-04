@@ -90,11 +90,23 @@ render "blockchain-clase-1.md" \
   "Blockchain · Clase 1 — Fundamentos + setup + tu primer contrato" \
   "BC · CLASE 1"
 
+# --- Blockchain · Tarea de clase 1 — SimpleStorage en Sepolia ---
+render "blockchain-clase-1-tarea.md" \
+  "blockchain-clase-1-tarea.html" \
+  "Blockchain · Tarea de clase 1 — SimpleStorage en Sepolia" \
+  "BC · TAREA 1"
+
 # --- Blockchain · Clase 2 — ERC-20 + PaymentGateway + Reentrancy ---
 render "blockchain-clase-2.md" \
   "blockchain-clase-2.html" \
   "Blockchain · Clase 2 — ERC-20 + PaymentGateway + Reentrancy" \
   "BC · CLASE 2"
+
+# --- Blockchain · Tarea de clase 2 — PaymentGateway en Sepolia ---
+render "blockchain-clase-2-tarea.md" \
+  "blockchain-clase-2-tarea.html" \
+  "Blockchain · Tarea de clase 2 — PaymentGateway en Sepolia" \
+  "BC · TAREA 2"
 
 # --- Blockchain · Clase 3 — Frontend + integración + onramp testnet ---
 render "blockchain-clase-3.md" \
@@ -102,11 +114,29 @@ render "blockchain-clase-3.md" \
   "Blockchain · Clase 3 — Frontend + integración + onramp testnet" \
   "BC · CLASE 3"
 
+# --- Blockchain · Tarea de clase 3 — dApp en Vercel + onramp ---
+render "blockchain-clase-3-tarea.md" \
+  "blockchain-clase-3-tarea.html" \
+  "Blockchain · Tarea de clase 3 — dApp en Vercel + onramp testnet" \
+  "BC · TAREA 3"
+
 # --- Blockchain · Clase 4 — NFTs gamificados + tokenomics + Slither ---
 render "blockchain-clase-4.md" \
   "blockchain-clase-4.html" \
   "Blockchain · Clase 4 — NFTs gamificados + tokenomics + Slither" \
   "BC · CLASE 4"
+
+# --- Blockchain · Tarea de clase 4 — Entregable final del módulo ---
+render "blockchain-clase-4-tarea.md" \
+  "blockchain-clase-4-tarea.html" \
+  "Blockchain · Tarea de clase 4 — Entregable final del módulo" \
+  "BC · TAREA 4"
+
+# --- Qué pasa si... (transversal — referencia de realidad) ---
+render "que-pasa-si.md" \
+  "que-pasa-si.html" \
+  "Qué pasa si… — escenarios reales que vas a encontrar" \
+  "QUE-PASA-SI"
 
 echo ""
 echo "Done. Open with:"

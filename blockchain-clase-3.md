@@ -6,6 +6,14 @@
 
 > **Repo**: hoy creamos un proyecto **separado** del Foundry de clase 1-2. Es un Next.js + wagmi independiente que se conecta al contrato deployado vía RPC. No hay carpeta `src/` compartida.
 
+> 🎯 **Lo que te vas a llevar al final de hoy**:
+> - [ ] Una dApp Next.js + wagmi + RainbowKit corriendo en `localhost:3000`
+> - [ ] MetaMask conectada al frontend con un solo click
+> - [ ] Flow `approve` → `pay` funcionando desde el browser, sin tocar `cast`
+> - [ ] Eventos `Paid` mostrándose en vivo via `useWatchContractEvent`
+> - [ ] `TestnetOnramp.sol` deployado y un botón "comprar USDC con tarjeta" simulado
+> - [ ] La dApp deployada en Vercel con URL pública para mostrar en la demo
+
 ---
 
 ## ¿Qué vamos a hacer hoy?
@@ -654,33 +662,6 @@ Vercel te da una URL `https://paygw-dapp-xxx.vercel.app`. **Esa URL la abrís de
 
 ---
 
-## Tarea para clase 4
+## Tarea para próxima clase
 
-Antes del próximo sábado, en su repo:
-
-1. **dApp deployada en Vercel** (URL pública), con:
-   - Connect wallet funcionando.
-   - Form de pago con approve + pay completos.
-   - Feed de eventos `Paid` en vivo.
-2. **`TestnetOnramp` + `MockUSDC` deployados y verificados** en Sepolia (links a Etherscan).
-3. **`PaymentGateway` redeployado** apuntando al `MockUSDC` (para que el ciclo cierre solo).
-4. **Video de 90 segundos** mostrando: connect → comprar 50 mUSDC con tarjeta → approve → pay → ver evento. Súbanlo al campus.
-
-Lo que **no** hace falta esta semana: estilos lindos, mobile responsive, multi-cuenta. Eso lo pulen en la semana de clase 4.
-
----
-
-## Si algo falla
-
-| Síntoma | Probable causa | Fix |
-|---|---|---|
-| `WalletConnect Project ID is not valid` | Variable mal pegada en `.env.local` | Verificá con `echo $NEXT_PUBLIC_WC_PROJECT_ID`, reiniciá `npm run dev` |
-| RainbowKit no abre el modal | Falta `import '@rainbow-me/rainbowkit/styles.css'` | Agregalo en `providers.tsx` |
-| MetaMask dice "Wrong network" | Wallet en mainnet o Goerli | Click en el botón rojo de RainbowKit → "Switch network" |
-| `pay` revierte con `transfer failed` | No hiciste `approve` antes, o approve por menos | El UI tiene que mostrar "Approve" antes que "Pay" |
-| `pay` revierte con `amount=0` | `parseUnits` recibió string vacío | Validá `amount > 0` antes del click |
-| El feed de eventos no muestra nada | RPC público con rate limit | Cambiá a un RPC de Alchemy (free tier alcanza) |
-| Vercel build falla con "process is not defined" | Variable sin prefijo `NEXT_PUBLIC_` | Todas las vars que usa el browser **tienen** que arrancar con `NEXT_PUBLIC_` |
-| `parseUnits` da número raro | USDC tiene 6 decimales, no 18 | Usá `parseUnits(x, 6)`, no `parseEther(x)` |
-| `useWatchContractEvent` no dispara | Address de contrato mal | Verificá `NEXT_PUBLIC_PAYGW_ADDRESS` y reiniciá |
-| Onramp revierte con `OwnableUnauthorizedAccount` | Olvidaste `transferOwnership` del MockUSDC al onramp | Re-deploy con el script que sí lo hace |
+La tarea va en una página aparte: [Tarea de clase 3](blockchain-clase-3-tarea.html).

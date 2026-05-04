@@ -6,6 +6,14 @@
 
 > **Repo**: hoy seguimos en el mismo proyecto Foundry de clase 1 ([sip2026-blockchain-clase1](https://github.com/dpetrocelli/sip2026-blockchain-clase1)). Le agregamos `PaymentGateway.sol` y `ProjectToken.sol` al directorio `src/`.
 
+> 🎯 **Lo que te vas a llevar al final de hoy**:
+> - [ ] Entendés ERC-20 (especialmente `approve` + `transferFrom`)
+> - [ ] `PaymentGateway.sol` escrito, testeado y deployado en Sepolia
+> - [ ] El contrato verificado en Etherscan (cualquiera puede leer el source)
+> - [ ] Probaste el flow completo desde `cast`: approve → pay → ver evento `Paid`
+> - [ ] Sabés qué es reentrancy y cómo lo cierra OpenZeppelin con `nonReentrant`
+> - [ ] Tu propio ERC-20 (`$VBK` / `$DPF` / `$RNW` / `$IDEA`) deployado, listo para clase 4
+
 ---
 
 ## ¿Qué vamos a hacer hoy?
@@ -538,25 +546,6 @@ Después de esta clase tienen:
 
 ---
 
-## Tarea para clase 3
+## Tarea para próxima clase
 
-Antes del próximo sábado:
-
-1. `PaymentGateway` deployado en Sepolia + verificado en Etherscan (entregable: la URL `sepolia.etherscan.io/address/...#code`).
-2. Hicieron al menos **2 pagos** desde `cast` con `action` distintas (entregable: las 2 URLs de tx de Etherscan).
-3. Tu address de `treasury` muestra el saldo USDC acumulado.
-4. (Bonus) Escriban un test que intente reentrancy y pase.
-
----
-
-## Si algo falla
-
-| Síntoma | Causa probable | Fix |
-|---|---|---|
-| `Error: ERC20: insufficient allowance` | No aprobaste o aprobaste menos que el `pay` | Re-aprobá con la cantidad correcta (paso 8.1) |
-| `Error: ERC20: transfer amount exceeds balance` | No tenés USDC en tu wallet | Pedí USDC al faucet de Circle |
-| `Error: gateway.pay reverted` sin razón clara | El allowance está en 0 (o expiró) | Aprobá de nuevo |
-| `forge install` falla | Sin red, o submodules confundidos | `forge install --no-git` o `git submodule update --init --recursive` |
-| El test fuzz falla en algún input | Posible bug | Subir el rango con `vm.assume` o revisar lógica |
-| `verify-contract` dice "Already Verified" | Está OK, ya lo tenías verificado | Ignorar — lo abrís y está bien |
-| Etherscan no muestra el evento | A veces tarda 30-60s | Refrescar después de un minuto |
+La tarea va en una página aparte: [Tarea de clase 2](blockchain-clase-2-tarea.html).

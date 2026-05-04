@@ -1,32 +1,12 @@
-$if(lang)$<!DOCTYPE html>
-<html lang="$lang$">$else$<!DOCTYPE html>
-<html lang="es">$endif$
+<!DOCTYPE html>
+<html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
   <meta name="generator" content="pandoc + UNLu/DCB template">
-$for(author-meta)$
-  <meta name="author" content="$author-meta$">
-$endfor$
-$if(date-meta)$
-  <meta name="dcterms.date" content="$date-meta$">
-$endif$
-$if(keywords)$
-  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$">
-$endif$
-  <title>$if(title-prefix)$$title-prefix$ — $endif$$pagetitle$</title>
+  <title>Blockchain · Tarea de clase 1 — SimpleStorage en Sepolia — UNLu
+DCB</title>
   <link rel="stylesheet" href="assets/style.css">
-$for(css)$
-  <link rel="stylesheet" href="$css$">
-$endfor$
-$if(highlighting-css)$
-  <style type="text/css">
-$highlighting-css$
-  </style>
-$endif$
-$for(header-includes)$
-  $header-includes$
-$endfor$
 </head>
 <body>
 
@@ -49,48 +29,174 @@ $endfor$
 <button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
 
 <div class="layout">
-$if(toc)$
   <aside class="toc-sidebar" id="toc-sidebar">
     <div class="toc-header">
       <div class="toc-title">Contenidos</div>
       <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
     </div>
-    $table-of-contents$
+    <ul>
+    <li><a
+    href="#blockchain--tarea-de-clase-1--simplestorage-en-sepolia"
+    id="toc-blockchain--tarea-de-clase-1--simplestorage-en-sepolia">Blockchain
+    · Tarea de clase 1 — SimpleStorage en Sepolia</a>
+    <ul>
+    <li><a href="#qué-hay-que-entregar"
+    id="toc-qué-hay-que-entregar">Qué hay que entregar</a></li>
+    <li><a href="#cómo-probar-que-está-bien"
+    id="toc-cómo-probar-que-está-bien">Cómo probar que está
+    bien</a></li>
+    <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
+    falla</a></li>
+    <li><a href="#volver" id="toc-volver">Volver</a></li>
+    </ul></li>
+    </ul>
     <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
       <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
     </div>
   </aside>
-$endif$
 
   <main class="content">
-$if(banner-num)$
     <nav class="page-breadcrumb" aria-label="Breadcrumb">
       <a href="index.html">Inicio</a>
       <span class="sep">›</span>
-      <span class="current">$banner-num$</span>
+      <span class="current">BC · TAREA 1</span>
     </nav>
-$endif$
     <nav class="page-nav-top">
       <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
-$if(title)$
-$if(banner-num)$
-      <span class="banner-pill">$banner-num$</span>
-$endif$
-$endif$
+      <span class="banner-pill">BC · TAREA 1</span>
     </nav>
 
-$if(toc)$
     <details class="toc-inline" open>
       <summary>📑 Índice del documento</summary>
-      $table-of-contents$
+      <ul>
+      <li><a
+      href="#blockchain--tarea-de-clase-1--simplestorage-en-sepolia"
+      id="toc-blockchain--tarea-de-clase-1--simplestorage-en-sepolia">Blockchain
+      · Tarea de clase 1 — SimpleStorage en Sepolia</a>
+      <ul>
+      <li><a href="#qué-hay-que-entregar"
+      id="toc-qué-hay-que-entregar">Qué hay que entregar</a></li>
+      <li><a href="#cómo-probar-que-está-bien"
+      id="toc-cómo-probar-que-está-bien">Cómo probar que está
+      bien</a></li>
+      <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
+      falla</a></li>
+      <li><a href="#volver" id="toc-volver">Volver</a></li>
+      </ul></li>
+      </ul>
       <div class="toc-controls">
         <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
         <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
       </div>
     </details>
-$endif$
 
-$body$
+<h1
+id="blockchain--tarea-de-clase-1--simplestorage-en-sepolia">Blockchain ·
+Tarea de clase 1 — SimpleStorage en Sepolia</h1>
+<blockquote>
+<p><strong>Plazo</strong>: antes de clase 2 (sábado 16/05).</p>
+</blockquote>
+<blockquote>
+<p><strong>Pre-requisito</strong>: la <a
+href="blockchain-clase-1.html">clase 1 completa</a> — MetaMask + Sepolia
++ Foundry + el repo de la clase clonado.</p>
+</blockquote>
+<hr />
+<h2 id="qué-hay-que-entregar">Qué hay que entregar</h2>
+<p>Antes del próximo sábado, en el campus:</p>
+<ol type="1">
+<li>Tu contrato <code>SimpleStorage</code> <strong>deployado y
+verificado en Sepolia</strong>.
+<ul>
+<li>Entregable: la URL
+<code>https://sepolia.etherscan.io/address/&lt;TU_ADDR&gt;#code</code>
+donde se vea el source.</li>
+</ul></li>
+<li><strong>Llamaste <code>set(N)</code> al menos una vez</strong> con
+un número significativo para vos. Lo van a poder ver en la pestaña
+<strong>Events</strong> del contrato en Etherscan.</li>
+<li>Leyeron el <a href="blockchain-overview.html">overview de
+blockchain</a>, prestando atención especialmente a los <strong>5
+diagramas</strong>.</li>
+</ol>
+<hr />
+<h2 id="cómo-probar-que-está-bien">Cómo probar que está bien</h2>
+<p>Checklist de aceptación — si todos los items dan ✅, está listo para
+entregar:</p>
+<ul class="task-list">
+<li><label><input type="checkbox" />MetaMask tiene la red
+<strong>Sepolia</strong> activa y al menos <code>~0.1 ETH</code> de
+faucet.</label></li>
+<li><label><input type="checkbox" /><code>forge --version</code>
+responde sin error en tu terminal.</label></li>
+<li><label><input type="checkbox" />El repo de la clase compila:
+<code>forge build</code> termina con
+<code>Compiler run successful!</code>.</label></li>
+<li><label><input type="checkbox" />Los tests pasan:
+<code>forge test -vv</code> muestra 3 tests en verde.</label></li>
+<li><label><input type="checkbox" />Importaste tu wallet a Foundry con
+<code>cast wallet import dev --interactive</code> (queda en
+<code>~/.foundry/keystores/dev</code>).</label></li>
+<li><label><input type="checkbox" />El deploy con
+<code>forge create ... --account dev --broadcast</code> te devolvió un
+<code>Deployed to: 0x...</code>.</label></li>
+<li><label><input
+type="checkbox" /><code>cast call $ADDR "get()(uint256)"</code> te
+devuelve el valor que seteaste.</label></li>
+<li><label><input type="checkbox" />Etherscan muestra el <strong>source
+verificado</strong> (pestaña “Contract” con el código <code>.sol</code>,
+no solo bytecode).</label></li>
+<li><label><input type="checkbox" />La pestaña <strong>“Events”</strong>
+lista al menos un <code>ValueChanged(address,uint256)</code> con tu
+address y tu número.</label></li>
+</ul>
+<hr />
+<h2 id="si-algo-falla">Si algo falla</h2>
+<table>
+<thead>
+<tr>
+<th>Síntoma</th>
+<th>Probable causa</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>forge: command not found</code></td>
+<td>Foundry no está en el PATH</td>
+<td>Reabrí terminal o <code>source ~/.bashrc</code> después de
+instalar</td>
+</tr>
+<tr>
+<td><code>Error: insufficient funds</code></td>
+<td>No tenés ETH en Sepolia</td>
+<td>Volvé al faucet (paso 2.3 de la clase)</td>
+</tr>
+<tr>
+<td><code>Error: nonce too high/low</code></td>
+<td>MetaMask y Foundry desfasados</td>
+<td>En MetaMask: Settings → Advanced → Reset Account</td>
+</tr>
+<tr>
+<td><code>Error: failed to verify</code></td>
+<td>API key de Etherscan mal pegada</td>
+<td>Verificá <code>echo $ETHERSCAN_API_KEY</code></td>
+</tr>
+<tr>
+<td>MetaMask no muestra Sepolia</td>
+<td>Test networks ocultas</td>
+<td>Settings → Advanced → Show test networks</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="volver">Volver</h2>
+<ul>
+<li><a href="blockchain-clase-1.html">← Material de la clase 1</a></li>
+<li><a href="index.html">← Volver al índice</a></li>
+<li><a href="blockchain-clase-2.html">→ Clase 2 — ERC-20 +
+PaymentGateway</a></li>
+</ul>
 
     <nav class="page-prev-next" aria-label="Navegación entre páginas">
       <a class="prev-link" href="#" data-slot="prev" hidden>

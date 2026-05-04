@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <meta name="generator" content="pandoc + UNLu/DCB template">
+  <title>Blockchain · Tarea de clase 4 — Entregable final del módulo —
+UNLu DCB</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="unlu-header">
+  <a href="index.html" class="brand" title="Volver al menú principal">
+    <img src="assets/unlu_escudo.png" alt="Universidad Nacional de Luján" class="logo unlu">
+    <div class="brand-text">
+      <div class="institution">Universidad Nacional de Luján</div>
+      <div class="department">Departamento de Ciencias Básicas</div>
+    </div>
+    <img src="assets/logo_dcb.png" alt="Departamento de Ciencias Básicas" class="logo dcb">
+  </a>
+  <div class="course-bar">
+    <span class="course">Seminario de Integración Profesional</span>
+    <span class="year">2026</span>
+    <span class="instructor">Dr. David Petrocelli</span>
+  </div>
+</header>
+
+<button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
+
+<div class="layout">
+  <aside class="toc-sidebar" id="toc-sidebar">
+    <div class="toc-header">
+      <div class="toc-title">Contenidos</div>
+      <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
+    </div>
+    <ul>
+    <li><a
+    href="#blockchain--tarea-de-clase-4--entregable-final-del-módulo"
+    id="toc-blockchain--tarea-de-clase-4--entregable-final-del-módulo">Blockchain
+    · Tarea de clase 4 — Entregable final del módulo</a>
+    <ul>
+    <li><a href="#qué-hay-que-entregar"
+    id="toc-qué-hay-que-entregar">Qué hay que entregar</a>
+    <ul>
+    <li><a href="#1-repo-en-github" id="toc-1-repo-en-github">1. Repo en
+    GitHub</a></li>
+    <li><a href="#2-demo-en-vivo-5-min-en-clase"
+    id="toc-2-demo-en-vivo-5-min-en-clase">2. Demo en vivo (5 min en
+    clase)</a></li>
+    <li><a href="#3-defensa-5-min" id="toc-3-defensa-5-min">3. Defensa
+    (5 min)</a></li>
+    </ul></li>
+    <li><a href="#cómo-probar-que-está-bien"
+    id="toc-cómo-probar-que-está-bien">Cómo probar que está bien</a>
+    <ul>
+    <li><a href="#contratos" id="toc-contratos">Contratos</a></li>
+    <li><a href="#slither" id="toc-slither">Slither</a></li>
+    <li><a href="#deploy" id="toc-deploy">Deploy</a></li>
+    <li><a href="#frontend" id="toc-frontend">Frontend</a></li>
+    <li><a href="#tokenomics--gamification"
+    id="toc-tokenomics--gamification">Tokenomics + gamification</a></li>
+    <li><a href="#defensa" id="toc-defensa">Defensa</a></li>
+    </ul></li>
+    <li><a href="#criterios-de-evaluación-alineados-con-el-sip"
+    id="toc-criterios-de-evaluación-alineados-con-el-sip">Criterios de
+    evaluación (alineados con el SIP)</a></li>
+    <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
+    falla</a></li>
+    <li><a href="#volver" id="toc-volver">Volver</a></li>
+    </ul></li>
+    </ul>
+    <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
+      <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <nav class="page-breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Inicio</a>
+      <span class="sep">›</span>
+      <span class="current">BC · TAREA 4</span>
+    </nav>
+    <nav class="page-nav-top">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+      <span class="banner-pill">BC · TAREA 4</span>
+    </nav>
+
+    <details class="toc-inline" open>
+      <summary>📑 Índice del documento</summary>
+      <ul>
+      <li><a
+      href="#blockchain--tarea-de-clase-4--entregable-final-del-módulo"
+      id="toc-blockchain--tarea-de-clase-4--entregable-final-del-módulo">Blockchain
+      · Tarea de clase 4 — Entregable final del módulo</a>
+      <ul>
+      <li><a href="#qué-hay-que-entregar"
+      id="toc-qué-hay-que-entregar">Qué hay que entregar</a>
+      <ul>
+      <li><a href="#1-repo-en-github" id="toc-1-repo-en-github">1. Repo
+      en GitHub</a></li>
+      <li><a href="#2-demo-en-vivo-5-min-en-clase"
+      id="toc-2-demo-en-vivo-5-min-en-clase">2. Demo en vivo (5 min en
+      clase)</a></li>
+      <li><a href="#3-defensa-5-min" id="toc-3-defensa-5-min">3. Defensa
+      (5 min)</a></li>
+      </ul></li>
+      <li><a href="#cómo-probar-que-está-bien"
+      id="toc-cómo-probar-que-está-bien">Cómo probar que está bien</a>
+      <ul>
+      <li><a href="#contratos" id="toc-contratos">Contratos</a></li>
+      <li><a href="#slither" id="toc-slither">Slither</a></li>
+      <li><a href="#deploy" id="toc-deploy">Deploy</a></li>
+      <li><a href="#frontend" id="toc-frontend">Frontend</a></li>
+      <li><a href="#tokenomics--gamification"
+      id="toc-tokenomics--gamification">Tokenomics +
+      gamification</a></li>
+      <li><a href="#defensa" id="toc-defensa">Defensa</a></li>
+      </ul></li>
+      <li><a href="#criterios-de-evaluación-alineados-con-el-sip"
+      id="toc-criterios-de-evaluación-alineados-con-el-sip">Criterios de
+      evaluación (alineados con el SIP)</a></li>
+      <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
+      falla</a></li>
+      <li><a href="#volver" id="toc-volver">Volver</a></li>
+      </ul></li>
+      </ul>
+      <div class="toc-controls">
+        <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
+        <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
+      </div>
+    </details>
+
+<h1
+id="blockchain--tarea-de-clase-4--entregable-final-del-módulo">Blockchain
+· Tarea de clase 4 — Entregable final del módulo</h1>
+<blockquote>
+<p><strong>Plazo</strong>: antes del cierre del SIP 2026 (la fecha
+exacta del TP final la define el cronograma del seminario).</p>
+</blockquote>
+<blockquote>
+<p><strong>Pre-requisito</strong>: las <a
+href="blockchain-clase-1.html">clases 1</a>, <a
+href="blockchain-clase-2.html">2</a>, <a
+href="blockchain-clase-3.html">3</a> y <a
+href="blockchain-clase-4.html">4</a> completas. Tienen el stack:
+<code>PaymentGateway</code> + ERC-20 propio + ERC-721 Set Bonus +
+frontend en Vercel.</p>
+</blockquote>
+<hr />
+<h2 id="qué-hay-que-entregar">Qué hay que entregar</h2>
+<h3 id="1-repo-en-github">1. Repo en GitHub</h3>
+<p>Estructura mínima:</p>
+<pre><code>.
+├── contracts/        # los 4 contratos
+│   ├── PaymentGateway.sol
+│   ├── ProjectToken.sol      # tu ERC-20 ($VBK / $DPF / $RNW / $IDEA)
+│   ├── SetBonusNFT.sol       # ERC-721 con piezas + rareza
+│   └── TierRegistry.sol      # SBT con tier del usuario
+├── frontend/         # Next.js + wagmi conectado al stack
+├── test/             # tests Foundry
+│   ├── PaymentGateway.t.sol
+│   ├── SetBonusNFT.t.sol
+│   └── …
+├── SECURITY.md       # output de Slither + findings aceptados
+└── README.md         # addresses en testnet, pasos para correr</code></pre>
+<p>Requisitos de los tests:</p>
+<ul>
+<li>Coverage ≥ <strong>70%</strong>.</li>
+<li>Al menos <strong>2 fuzz tests</strong>.</li>
+<li>Test de Set Bonus (que se mintea, que la rareza se calcula, que
+<code>uniqueSlotsOf</code> cuenta bien).</li>
+</ul>
+<h3 id="2-demo-en-vivo-5-min-en-clase">2. Demo en vivo (5 min en
+clase)</h3>
+<p>Tienen que mostrar:</p>
+<ul>
+<li>Conectar wallet desde el frontend deployado en
+<strong>Vercel</strong>.</li>
+<li><strong>Pagar con USDC de testnet</strong> → ver que se mintea el
+ERC-20 + el ticket/share NFT + la pieza Set Bonus.</li>
+<li>Mostrar el evento <code>Paid</code> (y los eventos del NFT) en
+<strong>Etherscan</strong>.</li>
+<li>Mostrar el output de <strong>Slither</strong> limpio (0 findings
+HIGH).</li>
+</ul>
+<h3 id="3-defensa-5-min">3. Defensa (5 min)</h3>
+<ul>
+<li>Por qué eligieron <strong>esa red</strong> para producción (Polygon
+/ Base / Arbitrum / quedarse en Sepolia).</li>
+<li>Qué <strong>riesgos</strong> quedan abiertos (randomness pseudo,
+slippage de DEX por burn, dependencia de oráculos…).</li>
+<li>Qué falta para llevarlo a <strong>mainnet real</strong>.</li>
+</ul>
+<hr />
+<h2 id="cómo-probar-que-está-bien">Cómo probar que está bien</h2>
+<p>Checklist de aceptación — usenlo como checklist antes de subir el
+TP:</p>
+<h3 id="contratos">Contratos</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" /><code>forge build</code> compila sin
+errores ni warnings (o solo cosméticas justificadas).</label></li>
+<li><label><input type="checkbox" /><code>forge test -vv</code> pasa
+todos los tests.</label></li>
+<li><label><input type="checkbox" /><code>forge coverage</code> reporta
+≥ 70% line coverage.</label></li>
+<li><label><input type="checkbox" />Hay al menos 2 fuzz tests
+(<code>testFuzz_*</code>).</label></li>
+<li><label><input type="checkbox" />El test del Set Bonus verifica: mint
+con entropy, rareza dentro de los rangos esperados,
+<code>uniqueSlotsOf</code> correcto.</label></li>
+<li><label><input type="checkbox" /><strong><code>_safeMint</code> no se
+usa en fuzz tests</strong> — usan <code>_mint</code> o filtran
+<code>to</code> con
+<code>vm.assume(to.code.length == 0)</code>.</label></li>
+</ul>
+<h3 id="slither">Slither</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" /><code>slither --version</code>
+responde sin error.</label></li>
+<li><label><input
+type="checkbox" /><code>slither . --foundry-out-directory out</code>
+corre limpio.</label></li>
+<li><label><input type="checkbox" /><strong>0 findings de severidad
+HIGH</strong>.</label></li>
+<li><label><input type="checkbox" />Findings MEDIUM están
+<strong>documentados en <code>SECURITY.md</code></strong> con
+justificación (acepted-risk).</label></li>
+<li><label><input type="checkbox" /><code>SECURITY.md</code> incluye
+explícitamente la limitación de <strong>pseudo-randomness</strong> del
+Set Bonus si la usan.</label></li>
+</ul>
+<h3 id="deploy">Deploy</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" /><code>PaymentGateway</code>,
+<code>ProjectToken</code>, <code>SetBonusNFT</code> y
+<code>TierRegistry</code> deployados en <strong>Sepolia</strong> y
+verificados en Etherscan.</label></li>
+<li><label><input type="checkbox" />El <code>_onPaid</code> del
+<code>PaymentGateway</code> realmente plugea con <strong>el stack del
+proyecto</strong> (mint NFT, mint pieza, refresh tier).</label></li>
+<li><label><input type="checkbox" /><code>README.md</code> lista las
+<strong>addresses</strong> de los 4 contratos.</label></li>
+<li><label><input type="checkbox" />(Bonus) Mismo stack deployado además
+en una L2 testnet (Base Sepolia / Polygon Amoy / Arbitrum
+Sepolia).</label></li>
+</ul>
+<h3 id="frontend">Frontend</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />La dApp en Vercel <strong>conecta
+wallet, paga, mintea NFT, muestra el evento</strong>.</label></li>
+<li><label><input type="checkbox" />La pieza Set Bonus se ve en la UI
+(al menos <code>tokenId</code> + <code>slot</code> +
+<code>rarity</code>).</label></li>
+<li><label><input type="checkbox" />El tier del usuario aparece en
+alguna parte de la UI.</label></li>
+<li><label><input type="checkbox" /><code>README.md</code> documenta las
+env vars <code>NEXT_PUBLIC_*</code> necesarias (sin
+secrets).</label></li>
+</ul>
+<h3 id="tokenomics--gamification">Tokenomics + gamification</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />Tokenomics activa coherente con el
+proyecto (burn / dividendos / staking / governance, según
+corresponda).</label></li>
+<li><label><input type="checkbox" />Set Bonus drop con las 4 rarezas
+(Common 60%, Rare 25%, Epic 12%, Legendary 3%).</label></li>
+<li><label><input type="checkbox" />El <code>_onPaid</code> del proyecto
+codifica <code>bytes32 action</code> con la semántica que necesita
+(<code>eventId</code>, <code>complexId</code>,
+<code>projectId|riskProfile</code>, etc.).</label></li>
+</ul>
+<h3 id="defensa">Defensa</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />Tienen claro <strong>por
+qué</strong> la red elegida para producción.</label></li>
+<li><label><input type="checkbox" />Pueden listar al menos <strong>3
+riesgos abiertos</strong>.</label></li>
+<li><label><input type="checkbox" />Saben qué falta para mainnet
+(auditoría externa, seguros, KYC/AML del onramp, etc.).</label></li>
+</ul>
+<hr />
+<h2 id="criterios-de-evaluación-alineados-con-el-sip">Criterios de
+evaluación (alineados con el SIP)</h2>
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>Peso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Contratos compilan + pasan tests</td>
+<td>25%</td>
+</tr>
+<tr>
+<td>Tokenomics coherente con el proyecto + documentada</td>
+<td>20%</td>
+</tr>
+<tr>
+<td>Frontend conecta y ejecuta el flow completo</td>
+<td>20%</td>
+</tr>
+<tr>
+<td>Slither limpio + <code>SECURITY.md</code> honesto</td>
+<td>15%</td>
+</tr>
+<tr>
+<td>Set Bonus funcional + visualizable</td>
+<td>10%</td>
+</tr>
+<tr>
+<td>Demo + defensa</td>
+<td>10%</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="si-algo-falla">Si algo falla</h2>
+<table>
+<thead>
+<tr>
+<th>Síntoma</th>
+<th>Probable causa</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>slither: command not found</code></td>
+<td>No está en PATH</td>
+<td><code>pip install --user slither-analyzer</code> y agregar
+<code>~/.local/bin</code> al PATH</td>
+</tr>
+<tr>
+<td><code>slither</code> falla con “Source not found”</td>
+<td>Foundry layout no detectado</td>
+<td><code>slither . --foundry-out-directory out</code> o
+<code>slither src/</code></td>
+</tr>
+<tr>
+<td><code>solc not installed for 0.8.24</code></td>
+<td>Versión no instalada</td>
+<td><code>solc-select install 0.8.24 &amp;&amp; solc-select use 0.8.24</code></td>
+</tr>
+<tr>
+<td><code>_safeMint</code> revierte en fuzz tests</td>
+<td>Foundry envía a addresses que no implementan
+<code>onERC721Received</code></td>
+<td>Usar <code>_mint</code> (sin “safe”) o filtrar <code>to</code> con
+<code>vm.assume(to.code.length == 0)</code></td>
+</tr>
+<tr>
+<td><code>nonReentrant</code> revierte llamadas válidas</td>
+<td>Estás llamando dos funciones <code>nonReentrant</code> en la misma
+tx</td>
+<td>Mover lógica interna a función <code>private</code> (sin guard)</td>
+</tr>
+<tr>
+<td>El Set Bonus siempre da el mismo slot</td>
+<td><code>entropy</code> no incluye <code>block.prevrandao</code> o
+<code>nonce</code></td>
+<td>Agregar <code>block.prevrandao</code> y un nonce que se
+incremente</td>
+</tr>
+<tr>
+<td>Slither marca <code>unchecked-transfer</code> en USDT</td>
+<td>USDT real no devuelve bool</td>
+<td>Usar <code>SafeERC20.safeTransferFrom</code> (OpenZeppelin)</td>
+</tr>
+<tr>
+<td><code>forge create</code> en Polygon Amoy revierte</td>
+<td>Faucet de Amoy escaso</td>
+<td>Probar <a
+href="https://faucet.polygon.technology">https://faucet.polygon.technology</a>
+o pedir en el foro del campus</td>
+</tr>
+<tr>
+<td>Frontend no muestra la pieza NFT</td>
+<td>El RPC no devolvió <code>tokenURI</code> aún (cache)</td>
+<td>Esperar 30 s, o invalidar query con
+<code>queryClient.invalidateQueries</code></td>
+</tr>
+<tr>
+<td>Dividendos <code>claim()</code> devuelve 0</td>
+<td>El distribute fue antes de tu compra</td>
+<td>Es correcto — el <code>accPerShare</code> solo cuenta hacia
+adelante. Ese es el patrón.</td>
+</tr>
+</tbody>
+</table>
+<p>Lo demás, foro del campus.</p>
+<hr />
+<h2 id="volver">Volver</h2>
+<ul>
+<li><a href="blockchain-clase-4.html">← Material de la clase 4</a></li>
+<li><a href="index.html">← Volver al índice</a></li>
+<li><a href="practica-2-parte-4.html">→ Trabajo final del SIP</a></li>
+</ul>
+
+    <nav class="page-prev-next" aria-label="Navegación entre páginas">
+      <a class="prev-link" href="#" data-slot="prev" hidden>
+        <span class="arrow">←</span>
+        <span class="nav-meta">
+          <span class="nav-label">Anterior</span>
+          <span class="nav-title" data-slot="prev-title"></span>
+        </span>
+      </a>
+      <a class="next-link" href="#" data-slot="next" hidden>
+        <span class="nav-meta">
+          <span class="nav-label">Siguiente</span>
+          <span class="nav-title" data-slot="next-title"></span>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+    </nav>
+
+    <nav class="page-nav-bottom">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+    </nav>
+  </main>
+</div>
+
+<footer class="unlu-footer">
+  <div>
+    UNLu · Departamento de Ciencias Básicas · Seminario de Integración Profesional <strong>2026</strong>
+    · Dr. David Petrocelli
+  </div>
+</footer>
+
+<script>
+// Sidebar show/hide toggle (preference persisted in localStorage)
+(function () {
+  const sidebar = document.getElementById('toc-sidebar');
+  const layout = document.querySelector('.layout');
+  const hideBtn = document.getElementById('sidebar-hide');
+  const showBtn = document.getElementById('sidebar-show');
+  if (!sidebar || !layout || !hideBtn || !showBtn) return;
+
+  const KEY = 'unlu.dcb.sidebar.hidden';
+
+  function apply(hidden) {
+    layout.classList.toggle('sidebar-hidden', hidden);
+    showBtn.classList.toggle('visible', hidden);
+  }
+
+  apply(localStorage.getItem(KEY) === '1');
+
+  hideBtn.addEventListener('click', () => {
+    localStorage.setItem(KEY, '1');
+    apply(true);
+  });
+  showBtn.addEventListener('click', () => {
+    localStorage.removeItem(KEY);
+    apply(false);
+  });
+})();
+
+// Wrap each H2 (and its following content until the next H2) in a <details open>
+// element so users can collapse/expand sections.
+(function () {
+  const main = document.querySelector('main.content');
+  if (!main) return;
+
+  // Collect direct-child H2 headings so we don't touch nested ones (e.g., inside details we'll create)
+  const headings = Array.from(main.children).filter(el => el.tagName === 'H2');
+
+  headings.forEach(h2 => {
+    const details = document.createElement('details');
+    details.open = true;
+    details.className = 'section-collapsible';
+
+    const summary = document.createElement('summary');
+    // Move heading content (incl. anchor) into the summary so anchors keep working
+    summary.innerHTML = h2.innerHTML;
+    if (h2.id) summary.id = h2.id;
+    details.appendChild(summary);
+
+    // Move siblings until next H2 into details
+    const parent = h2.parentNode;
+    let next = h2.nextSibling;
+    parent.replaceChild(details, h2);
+    while (next && !(next.nodeType === 1 && next.tagName === 'H2')) {
+      const node = next;
+      next = next.nextSibling;
+      details.appendChild(node);
+    }
+  });
+
+  // If there's a hash in the URL, ensure the target's <details> is open
+  function openDetailsForHash(hash) {
+    if (!hash) return;
+    const target = document.getElementById(hash.replace(/^#/, ''));
+    if (!target) return;
+    let p = target.closest('details');
+    while (p) { p.open = true; p = p.parentElement && p.parentElement.closest('details'); }
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  openDetailsForHash(window.location.hash);
+  window.addEventListener('hashchange', () => openDetailsForHash(window.location.hash));
+
+  // Wire up "Expand all" / "Collapse all" controls in the inline TOC
+  document.querySelectorAll('.toc-controls [data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const action = btn.getAttribute('data-action');
+      const open = action === 'expand-all';
+      document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
+    });
+  });
+})();
+
+// Populate prev/next navigation based on the current page's banner-num
+(function () {
+  const pill = document.querySelector('.banner-pill');
+  const nav = document.querySelector('.page-prev-next');
+  if (!pill || !nav) return;
+
+  const key = (pill.textContent || '').trim().toUpperCase();
+
+  // Map banner-num → { prev, next }
+  // Each entry: { href, title } (or null if not present)
+  const MAP = {
+    'TP 0': {
+      prev: null,
+      next: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' }
+    },
+    'TP 1 · PARTE 1': {
+      prev: { href: 'practica-0.html', title: 'TP 0 — Prerrequisitos' },
+      next: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' }
+    },
+    'TP 1 · PARTE 2': {
+      prev: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' },
+      next: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' }
+    },
+    'TP 2 · PARTE 1': {
+      prev: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' },
+      next: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' }
+    },
+    'TP 2 · PARTE 2': {
+      prev: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' },
+      next: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' }
+    },
+    'TP 2 · PARTE 3': {
+      prev: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' },
+      next: { href: 'practica-2-parte-4.html', title: 'Práctica II · Parte 4' }
+    },
+    'TP 2 · PARTE 4': {
+      prev: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' },
+      next: { href: 'blockchain-overview.html', title: 'Blockchain · Overview' }
+    },
+    // ----- Blockchain module -----
+    'BLOCKCHAIN': {
+      prev: { href: 'practica-2-parte-4.html',  title: 'Práctica II · Parte 4' },
+      next: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' }
+    },
+    'BC · CLASE 1': {
+      prev: { href: 'blockchain-overview.html',      title: 'Blockchain · Overview' },
+      next: { href: 'blockchain-clase-1-tarea.html', title: 'Tarea de clase 1' }
+    },
+    'BC · TAREA 1': {
+      prev: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' },
+      next: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' }
+    },
+    'BC · CLASE 2': {
+      prev: { href: 'blockchain-clase-1.html',       title: 'Clase 1 — Fundamentos + setup' },
+      next: { href: 'blockchain-clase-2-tarea.html', title: 'Tarea de clase 2' }
+    },
+    'BC · TAREA 2': {
+      prev: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' },
+      next: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' }
+    },
+    'BC · CLASE 3': {
+      prev: { href: 'blockchain-clase-2.html',       title: 'Clase 2 — ERC-20 + PaymentGateway' },
+      next: { href: 'blockchain-clase-3-tarea.html', title: 'Tarea de clase 3' }
+    },
+    'BC · TAREA 3': {
+      prev: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' },
+      next: { href: 'blockchain-clase-4.html',  title: 'Clase 4 — NFTs + Slither' }
+    },
+    'BC · CLASE 4': {
+      prev: { href: 'blockchain-clase-3.html',       title: 'Clase 3 — Frontend + onramp' },
+      next: { href: 'blockchain-clase-4-tarea.html', title: 'Tarea de clase 4 — Entregable final' }
+    },
+    'BC · TAREA 4': {
+      prev: { href: 'blockchain-clase-4.html',  title: 'Clase 4 — NFTs + Slither' },
+      next: { href: 'que-pasa-si.html',         title: 'Qué pasa si... — escenarios reales' }
+    },
+    'QUE-PASA-SI': {
+      prev: { href: 'blockchain-clase-4.html', title: 'Clase 4 — NFTs + Slither' },
+      next: { href: 'index.html',              title: 'Menú principal' }
+    }
+  };
+
+  const entry = MAP[key];
+  if (!entry) return;
+
+  const prevLink = nav.querySelector('[data-slot="prev"]');
+  const nextLink = nav.querySelector('[data-slot="next"]');
+  const prevTitle = nav.querySelector('[data-slot="prev-title"]');
+  const nextTitle = nav.querySelector('[data-slot="next-title"]');
+
+  if (entry.prev && prevLink && prevTitle) {
+    prevLink.setAttribute('href', entry.prev.href);
+    prevTitle.textContent = entry.prev.title;
+    prevLink.hidden = false;
+  }
+  if (entry.next && nextLink && nextTitle) {
+    nextLink.setAttribute('href', entry.next.href);
+    nextTitle.textContent = entry.next.title;
+    nextLink.hidden = false;
+  }
+
+  // If neither slot is shown, hide the whole nav
+  if ((!entry.prev) && (!entry.next)) {
+    nav.style.display = 'none';
+  }
+})();
+
+// Open all external links in a new tab (preserves the current page).
+// Internal anchors (#hash), relative links and same-origin links stay in-tab.
+(function () {
+  const here = window.location.hostname;
+  document.querySelectorAll('a[href]').forEach(a => {
+    const href = a.getAttribute('href');
+    if (!href) return;
+    // Skip anchors and pure relative links
+    if (href.startsWith('#') || href.startsWith('/') || !/^https?:\/\//i.test(href)) return;
+    try {
+      const url = new URL(href);
+      if (url.hostname && url.hostname !== here) {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      }
+    } catch (_) {
+      // Malformed URL — ignore
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

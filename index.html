@@ -28,9 +28,14 @@
   <main class="content" style="max-width: 1100px; margin: 0 auto; padding: 48px 56px 80px;">
 
     <h1 style="border-bottom: none; padding-bottom: 0; margin-bottom: 6px;">Trabajos Prácticos</h1>
-    <p style="color: var(--gray); margin: 0 0 32px; font-size: 15px;">
+    <p style="color: var(--gray); margin: 0 0 24px; font-size: 15px;">
       Material de cursada — Seminario de Integración Profesional · 2026 · Cátedra Petrocelli.
     </p>
+
+    <figure style="margin: 0 0 36px; padding: 0;">
+      <img src="assets/diagramas/00-roadmap-seminario.png" alt="Roadmap del Seminario: TP0 → TP1 → TP2 → Blockchain → TP final" style="width: 100%; max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(15, 31, 61, 0.08);">
+      <figcaption style="margin-top: 8px; font-size: 12px; color: var(--gray); font-style: italic;">El arco completo del Seminario — los 3 TPs base alimentan el módulo blockchain (4 clases · sábados de mayo) que termina en el TP final integrado.</figcaption>
+    </figure>
 
     <div class="flow-diagram" aria-label="Flujo cronológico de prácticas">
       <a href="practica-0.html" class="flow-step open" data-status="abierto">
@@ -260,6 +265,21 @@
         <div class="tp-meta">
           <span>Sábado 4</span>
           <span>→ Ver clase</span>
+        </div>
+      </a>
+
+      <a href="que-pasa-si.html" class="tp-card open" style="border-left-color: var(--accent); margin-top: 16px;">
+        <span class="tp-num" style="background: var(--accent);">❓ QUÉ PASA SI...</span>
+        <h3>Qué pasa si... — escenarios reales que vas a encontrar</h3>
+        <p class="tp-desc">
+          Referencia de realidad. Errores comunes que vas a vivir mientras desarrollás
+          (faucet caído, olvidaste el <code>approve</code>, RPC con 429), gotchas de producción
+          (MEV, slippage, gas escalation, IPFS pinning), y un caso real consolidado de un día
+          en producción de DepFund. Hacé <code>ctrl-F</code> cuando algo te explote.
+        </p>
+        <div class="tp-meta">
+          <span>Transversal · ctrl-F friendly</span>
+          <span>→ Ver página</span>
         </div>
       </a>
     </div>
