@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <meta name="generator" content="pandoc + UNLu/DCB template">
+  <title>Blockchain &amp; Pasarela de Pago — Overview — UNLu DCB</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="unlu-header">
+  <a href="index.html" class="brand" title="Volver al menú principal">
+    <img src="assets/unlu_escudo.png" alt="Universidad Nacional de Luján" class="logo unlu">
+    <div class="brand-text">
+      <div class="institution">Universidad Nacional de Luján</div>
+      <div class="department">Departamento de Ciencias Básicas</div>
+    </div>
+    <img src="assets/logo_dcb.png" alt="Departamento de Ciencias Básicas" class="logo dcb">
+  </a>
+  <div class="course-bar">
+    <span class="course">Seminario de Integración Profesional</span>
+    <span class="year">2026</span>
+    <span class="instructor">Dr. David Petrocelli</span>
+  </div>
+</header>
+
+<button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
+
+<div class="layout">
+  <aside class="toc-sidebar" id="toc-sidebar">
+    <div class="toc-header">
+      <div class="toc-title">Contenidos</div>
+      <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
+    </div>
+    <ul>
+    <li><a href="#blockchain--pasarela-de-pago--overview"
+    id="toc-blockchain--pasarela-de-pago--overview">Blockchain &amp;
+    Pasarela de Pago — Overview</a>
+    <ul>
+    <li><a href="#cómo-se-conecta-con-lo-que-ya-saben"
+    id="toc-cómo-se-conecta-con-lo-que-ya-saben">Cómo se conecta con lo
+    que ya saben</a></li>
+    <li><a href="#roadmap-4-clases--4-hs"
+    id="toc-roadmap-4-clases--4-hs">Roadmap (4 clases × ~4 hs)</a></li>
+    <li><a href="#diagramas-hero" id="toc-diagramas-hero">Diagramas
+    hero</a>
+    <ul>
+    <li><a href="#1--el-ciclo-de-un-smart-contract"
+    id="toc-1--el-ciclo-de-un-smart-contract">1 · El ciclo de un smart
+    contract</a></li>
+    <li><a href="#2--read-vs-write--la-distinción-crítica"
+    id="toc-2--read-vs-write--la-distinción-crítica">2 · Read vs Write —
+    la distinción crítica</a></li>
+    <li><a href="#3--qué-vive-dónde--público-vs-privado"
+    id="toc-3--qué-vive-dónde--público-vs-privado">3 · Qué vive dónde —
+    público vs privado</a></li>
+    <li><a href="#4--arquitectura-real-del-sistema"
+    id="toc-4--arquitectura-real-del-sistema">4 · Arquitectura real del
+    sistema</a></li>
+    <li><a href="#5--pasarela-de-pago--el-corazón-del-tp"
+    id="toc-5--pasarela-de-pago--el-corazón-del-tp">5 · Pasarela de pago
+    — el corazón del TP</a></li>
+    </ul></li>
+    <li><a href="#el-contrato-base-que-se-llevan"
+    id="toc-el-contrato-base-que-se-llevan">El contrato base que se
+    llevan</a></li>
+    <li><a href="#stack-obligatorio-para-el-tp-final"
+    id="toc-stack-obligatorio-para-el-tp-final">Stack obligatorio para
+    el TP final</a></li>
+    <li><a href="#material-relacionado"
+    id="toc-material-relacionado">Material relacionado</a></li>
+    </ul></li>
+    </ul>
+    <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
+      <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <nav class="page-breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Inicio</a>
+      <span class="sep">›</span>
+      <span class="current">BLOCKCHAIN</span>
+    </nav>
+    <nav class="page-nav-top">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+      <span class="banner-pill">BLOCKCHAIN</span>
+    </nav>
+
+    <details class="toc-inline" open>
+      <summary>📑 Índice del documento</summary>
+      <ul>
+      <li><a href="#blockchain--pasarela-de-pago--overview"
+      id="toc-blockchain--pasarela-de-pago--overview">Blockchain &amp;
+      Pasarela de Pago — Overview</a>
+      <ul>
+      <li><a href="#cómo-se-conecta-con-lo-que-ya-saben"
+      id="toc-cómo-se-conecta-con-lo-que-ya-saben">Cómo se conecta con
+      lo que ya saben</a></li>
+      <li><a href="#roadmap-4-clases--4-hs"
+      id="toc-roadmap-4-clases--4-hs">Roadmap (4 clases × ~4
+      hs)</a></li>
+      <li><a href="#diagramas-hero" id="toc-diagramas-hero">Diagramas
+      hero</a>
+      <ul>
+      <li><a href="#1--el-ciclo-de-un-smart-contract"
+      id="toc-1--el-ciclo-de-un-smart-contract">1 · El ciclo de un smart
+      contract</a></li>
+      <li><a href="#2--read-vs-write--la-distinción-crítica"
+      id="toc-2--read-vs-write--la-distinción-crítica">2 · Read vs Write
+      — la distinción crítica</a></li>
+      <li><a href="#3--qué-vive-dónde--público-vs-privado"
+      id="toc-3--qué-vive-dónde--público-vs-privado">3 · Qué vive dónde
+      — público vs privado</a></li>
+      <li><a href="#4--arquitectura-real-del-sistema"
+      id="toc-4--arquitectura-real-del-sistema">4 · Arquitectura real
+      del sistema</a></li>
+      <li><a href="#5--pasarela-de-pago--el-corazón-del-tp"
+      id="toc-5--pasarela-de-pago--el-corazón-del-tp">5 · Pasarela de
+      pago — el corazón del TP</a></li>
+      </ul></li>
+      <li><a href="#el-contrato-base-que-se-llevan"
+      id="toc-el-contrato-base-que-se-llevan">El contrato base que se
+      llevan</a></li>
+      <li><a href="#stack-obligatorio-para-el-tp-final"
+      id="toc-stack-obligatorio-para-el-tp-final">Stack obligatorio para
+      el TP final</a></li>
+      <li><a href="#material-relacionado"
+      id="toc-material-relacionado">Material relacionado</a></li>
+      </ul></li>
+      </ul>
+      <div class="toc-controls">
+        <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
+        <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
+      </div>
+    </details>
+
+<h1 id="blockchain--pasarela-de-pago--overview">Blockchain &amp;
+Pasarela de Pago — Overview</h1>
+<blockquote>
+<p><strong>Por qué este módulo</strong>: el TP final del Seminario
+obliga a que su sistema incorpore una <strong>pasarela de pago basada en
+blockchain</strong>. Estas 4 clases son el camino corto y técnico para
+que puedan <strong>integrar pagos reales en Sepolia</strong> (testnet de
+Ethereum) en su proyecto, sin importar si eligieron VibeCheck, DepFund,
+RNW o IDEAFY.</p>
+</blockquote>
+<blockquote>
+<p><strong>Analogía rápida</strong>: lo que vamos a hacer es
+<strong>igual a integrar MercadoPago</strong> en una app — solo que el
+rail de pago es la blockchain de Ethereum (testnet Sepolia), y el
+“saldo” del usuario son tokens USDC en su wallet, no pesos en MP.</p>
+</blockquote>
+<hr />
+<h2 id="cómo-se-conecta-con-lo-que-ya-saben">Cómo se conecta con lo que
+ya saben</h2>
+<table>
+<thead>
+<tr>
+<th>Lo que YA saben (TP0–TP2)</th>
+<th>Cómo lo usan en su sistema con blockchain</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>k3s + Docker</strong> (TP0)</td>
+<td>Despliegan su <strong>frontend + API web2</strong> ahí. El contrato
+vive en Ethereum, no en su cluster.</td>
+</tr>
+<tr>
+<td><strong>Selenium scraping</strong> (TP1)</td>
+<td>Pueden ser la fuente de datos de su sistema (ej: VibeCheck
+scrapeando Bombo para listar eventos).</td>
+</tr>
+<tr>
+<td><strong>CI/CD + tests</strong> (TP1 P2)</td>
+<td>Los <strong>tests del contrato Solidity</strong> se corren en CI
+también. Foundry produce reportes que se enchufan en su pipeline.</td>
+</tr>
+<tr>
+<td><strong>Loki + OpenTelemetry</strong> (TP2)</td>
+<td>Loguean <strong>eventos on-chain</strong> y los correlacionan con
+logs de su backend. Cada <code>event Paid(...)</code> se mapea a un
+span.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Web3 NO reemplaza Web2</strong> — augmenta. Su backend
+Node/Python sigue ahí, su frontend sigue ahí, su observabilidad sigue
+ahí. Lo que se reemplaza es solo:</p>
+<ul>
+<li><strong>MercadoPago</strong> → contrato
+<code>PaymentGateway.sol</code> en Sepolia.</li>
+<li><strong>Auth con email+password</strong> → firma criptográfica de
+wallet (SIWE).</li>
+<li><strong>Base de datos para estado crítico</strong> (ownership de
+tokens, balances) → storage on-chain del contrato.</li>
+</ul>
+<hr />
+<h2 id="roadmap-4-clases--4-hs">Roadmap (4 clases × ~4 hs)</h2>
+<table>
+<thead>
+<tr>
+<th>Clase</th>
+<th>Tema</th>
+<th>Lo que se llevan armado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1</strong> — Fundamentos + setup</td>
+<td>MetaMask + Sepolia + Foundry + un primer contrato
+<code>SimpleStorage</code> deployado</td>
+<td>Un contrato propio en Sepolia, verificable en Etherscan</td>
+</tr>
+<tr>
+<td><strong>2</strong> — ERC-20 + PaymentGateway</td>
+<td>Tokens fungibles (su moneda interna) + contrato
+<code>PaymentGateway</code> que cobra USDC + protección contra
+reentrancy</td>
+<td>El contrato base que extienden para su proyecto</td>
+</tr>
+<tr>
+<td><strong>3</strong> — Frontend + integración</td>
+<td>Next.js + wagmi + RainbowKit hablando con su PaymentGateway + onramp
+testnet</td>
+<td>Una dApp deployada en Vercel con MetaMask conectado</td>
+</tr>
+<tr>
+<td><strong>4</strong> — NFTs gamificación + Slither</td>
+<td>Set Bonus NFT (ERC-721) + análisis estático con Slither + cómo
+plugar el patrón a VibeCheck/DepFund/RNW/IDEAFY</td>
+<td>El stack completo + auditoría</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="diagramas-hero">Diagramas hero</h2>
+<p>Estos 5 diagramas cubren todo el modelo mental. Recurrir a ellos
+durante el desarrollo de su sistema.</p>
+<h3 id="1--el-ciclo-de-un-smart-contract">1 · El ciclo de un smart
+contract</h3>
+<p>Del archivo <code>.sol</code> que escribís, al contrato deployado, al
+usuario final que lo usa desde el browser. Tres swim-lanes: <strong>tu
+máquina</strong> (donde escribís el código), <strong>blockchain</strong>
+(donde vive el contrato), <strong>Etherscan</strong> (la UI pública del
+contrato).</p>
+<p><img src="assets/diagramas/01-ciclo-completo.png"
+alt="Ciclo completo" /></p>
+<p>📐 <a href="assets/diagramas/01-ciclo-completo.drawio">Editar en
+draw.io</a></p>
+<hr />
+<h3 id="2--read-vs-write--la-distinción-crítica">2 · Read vs Write — la
+distinción crítica</h3>
+<p><code>cast call</code> (lectura, gratis, instantánea) vs
+<code>cast send</code> (escritura, firma + gas, espera bloque).
+<strong>Misma sintaxis en Solidity, comportamiento radicalmente
+distinto</strong>.</p>
+<blockquote>
+<p>Regla mnemotécnica: si la función dice <code>view</code> o
+<code>pure</code> → <code>cast call</code>. Cualquier otra cosa →
+<code>cast send</code>.</p>
+</blockquote>
+<p><img src="assets/diagramas/02-read-vs-write.png"
+alt="Read vs Write" /></p>
+<p>📐 <a href="assets/diagramas/02-read-vs-write.drawio">Editar en
+draw.io</a></p>
+<hr />
+<h3 id="3--qué-vive-dónde--público-vs-privado">3 · Qué vive dónde —
+público vs privado</h3>
+<p>Mapa de qué se puede compartir y qué nunca. Lo rojo (private key,
+frase BIP-39, <code>.env</code>) <strong>nunca</strong> sale de su
+máquina. Lo verde (address, txs, bytecode, storage) es público por
+diseño — <strong>toda la blockchain es leíble por
+cualquiera</strong>.</p>
+<p><img src="assets/diagramas/03-que-vive-donde.png"
+alt="Qué vive dónde" /></p>
+<p>📐 <a href="assets/diagramas/03-que-vive-donde.drawio">Editar en
+draw.io</a></p>
+<hr />
+<h3 id="4--arquitectura-real-del-sistema">4 · Arquitectura real del
+sistema</h3>
+<p><strong>Su sistema completo</strong>: Frontend (Vercel) + Backend
+Web2 (k3s) + Smart Contract (Sepolia) + IPFS para archivos pesados +
+Indexer (The Graph) + Observabilidad (Loki/Tenderly/Sentry).</p>
+<blockquote>
+<p><strong>El contrato es UNA pieza</strong> del sistema, no es todo.
+Vendría siendo el “servicio de pagos” en una app tradicional. El resto
+(UI, API, BD, monitoreo) sigue siendo lo de siempre.</p>
+</blockquote>
+<p><img src="assets/diagramas/04-sistema-real.png"
+alt="Arquitectura híbrida" /></p>
+<p>📐 <a href="assets/diagramas/04-sistema-real.drawio">Editar en
+draw.io</a></p>
+<hr />
+<h3 id="5--pasarela-de-pago--el-corazón-del-tp">5 · Pasarela de pago —
+el corazón del TP</h3>
+<p><strong>Dos caminos</strong>:</p>
+<ul>
+<li><strong>A — Crypto-nativo</strong>: el usuario ya tiene USDC.
+Conecta wallet → approve → pay. Su contrato cobra y emite evento.</li>
+<li><strong>B — Fiat onramp</strong>: el usuario llega con
+tarjeta/MercadoPago/transferencia. Un provider (Lemon, Buenbit, MoonPay)
+convierte ARS → USDC y deposita en su wallet. Después sigue por camino
+A.</li>
+</ul>
+<blockquote>
+<p><strong>Insight clave</strong>: el contrato siempre cobra en crypto
+(USDC). El onramp es solo UX para usuarios sin wallet con fondos.
+<strong>La lógica del contrato no cambia entre los dos
+caminos.</strong></p>
+</blockquote>
+<p><img src="assets/diagramas/05-pasarela-de-pago.png"
+alt="Pasarela de pago" /></p>
+<p>📐 <a href="assets/diagramas/05-pasarela-de-pago.drawio">Editar en
+draw.io</a></p>
+<hr />
+<h2 id="el-contrato-base-que-se-llevan">El contrato base que se
+llevan</h2>
+<p>Después de la <strong>clase 2</strong> todos tienen este patrón en la
+mano:</p>
+<pre class="solidity"><code>// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.24;
+
+import {IERC20} from &quot;@openzeppelin/contracts/token/ERC20/IERC20.sol&quot;;
+import {ReentrancyGuard} from &quot;@openzeppelin/contracts/utils/ReentrancyGuard.sol&quot;;
+
+contract PaymentGateway is ReentrancyGuard {
+    IERC20 public immutable usdc;
+    address public immutable treasury;
+
+    event Paid(address indexed payer, uint256 amount, bytes32 indexed action);
+
+    constructor(IERC20 _usdc, address _treasury) {
+        usdc = _usdc;
+        treasury = _treasury;
+    }
+
+    function pay(uint256 amount, bytes32 action) external nonReentrant {
+        require(amount &gt; 0, &quot;amount=0&quot;);
+        require(usdc.transferFrom(msg.sender, treasury, amount), &quot;transfer failed&quot;);
+        emit Paid(msg.sender, amount, action);
+        _onPaid(msg.sender, amount, action);
+    }
+
+    /// @dev Cada proyecto sobrescribe esto con su lógica:
+    ///   - VibeCheck: mintea ticket NFT
+    ///   - DepFund: emite shares de $DPF
+    ///   - RNW: registra como inversor
+    ///   - IDEAFY: rutea al sub-token del proyecto
+    function _onPaid(address payer, uint256 amount, bytes32 action) internal virtual {}
+}</code></pre>
+<p><strong>La pasarela es la misma</strong>. Lo que cambia es qué pasa
+adentro de <code>_onPaid</code>. Cada equipo escribe su propia
+subclass.</p>
+<hr />
+<h2 id="stack-obligatorio-para-el-tp-final">Stack obligatorio para el TP
+final</h2>
+<table>
+<thead>
+<tr>
+<th>Pieza</th>
+<th>Tecnología</th>
+<th>Mainnet/testnet</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Smart contract</strong></td>
+<td>Solidity 0.8.24 + OpenZeppelin + Foundry</td>
+<td>Sepolia testnet</td>
+</tr>
+<tr>
+<td><strong>Stablecoin</strong></td>
+<td>USDC oficial de Circle en Sepolia (<a
+href="https://sepolia.etherscan.io/address/0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238"><code>0x1c7D…7238</code></a>)</td>
+<td>Sepolia</td>
+</tr>
+<tr>
+<td><strong>Frontend</strong></td>
+<td>Next.js + wagmi + viem + RainbowKit</td>
+<td>Vercel (URL pública real)</td>
+</tr>
+<tr>
+<td><strong>Wallet</strong></td>
+<td>MetaMask (recomendado) o WalletConnect</td>
+<td>Sepolia</td>
+</tr>
+<tr>
+<td><strong>Onramp testnet</strong></td>
+<td>TestnetOnramp custom (clase 3)</td>
+<td>Sepolia</td>
+</tr>
+<tr>
+<td><strong>Indexer (opcional)</strong></td>
+<td>The Graph subgraph</td>
+<td>Hosted Service</td>
+</tr>
+<tr>
+<td><strong>Observabilidad</strong></td>
+<td>Loki/Tenderly/Sentry (lo que ya tienen de TP2)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Backend Web2</strong></td>
+<td>Node/Python en k3s (lo que ya tienen)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="material-relacionado">Material relacionado</h2>
+<ul>
+<li><a href="#">Programa del Seminario</a> — el doc que define el
+TP</li>
+<li><a href="practica-0.html">TP 0 — Kubernetes</a></li>
+<li><a href="practica-1-parte-1.html">TP 1 — Selenium
+MercadoLibre</a></li>
+<li><a href="practica-2-parte-1.html">TP 2 — Observabilidad</a></li>
+<li><strong>Próximamente</strong>: las 4 clases de blockchain (links
+cuando estén publicadas).</li>
+</ul>
+
+    <nav class="page-prev-next" aria-label="Navegación entre páginas">
+      <a class="prev-link" href="#" data-slot="prev" hidden>
+        <span class="arrow">←</span>
+        <span class="nav-meta">
+          <span class="nav-label">Anterior</span>
+          <span class="nav-title" data-slot="prev-title"></span>
+        </span>
+      </a>
+      <a class="next-link" href="#" data-slot="next" hidden>
+        <span class="nav-meta">
+          <span class="nav-label">Siguiente</span>
+          <span class="nav-title" data-slot="next-title"></span>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+    </nav>
+
+    <nav class="page-nav-bottom">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+    </nav>
+  </main>
+</div>
+
+<footer class="unlu-footer">
+  <div>
+    UNLu · Departamento de Ciencias Básicas · Seminario de Integración Profesional <strong>2026</strong>
+    · Dr. David Petrocelli
+  </div>
+</footer>
+
+<script>
+// Sidebar show/hide toggle (preference persisted in localStorage)
+(function () {
+  const sidebar = document.getElementById('toc-sidebar');
+  const layout = document.querySelector('.layout');
+  const hideBtn = document.getElementById('sidebar-hide');
+  const showBtn = document.getElementById('sidebar-show');
+  if (!sidebar || !layout || !hideBtn || !showBtn) return;
+
+  const KEY = 'unlu.dcb.sidebar.hidden';
+
+  function apply(hidden) {
+    layout.classList.toggle('sidebar-hidden', hidden);
+    showBtn.classList.toggle('visible', hidden);
+  }
+
+  apply(localStorage.getItem(KEY) === '1');
+
+  hideBtn.addEventListener('click', () => {
+    localStorage.setItem(KEY, '1');
+    apply(true);
+  });
+  showBtn.addEventListener('click', () => {
+    localStorage.removeItem(KEY);
+    apply(false);
+  });
+})();
+
+// Wrap each H2 (and its following content until the next H2) in a <details open>
+// element so users can collapse/expand sections.
+(function () {
+  const main = document.querySelector('main.content');
+  if (!main) return;
+
+  // Collect direct-child H2 headings so we don't touch nested ones (e.g., inside details we'll create)
+  const headings = Array.from(main.children).filter(el => el.tagName === 'H2');
+
+  headings.forEach(h2 => {
+    const details = document.createElement('details');
+    details.open = true;
+    details.className = 'section-collapsible';
+
+    const summary = document.createElement('summary');
+    // Move heading content (incl. anchor) into the summary so anchors keep working
+    summary.innerHTML = h2.innerHTML;
+    if (h2.id) summary.id = h2.id;
+    details.appendChild(summary);
+
+    // Move siblings until next H2 into details
+    const parent = h2.parentNode;
+    let next = h2.nextSibling;
+    parent.replaceChild(details, h2);
+    while (next && !(next.nodeType === 1 && next.tagName === 'H2')) {
+      const node = next;
+      next = next.nextSibling;
+      details.appendChild(node);
+    }
+  });
+
+  // If there's a hash in the URL, ensure the target's <details> is open
+  function openDetailsForHash(hash) {
+    if (!hash) return;
+    const target = document.getElementById(hash.replace(/^#/, ''));
+    if (!target) return;
+    let p = target.closest('details');
+    while (p) { p.open = true; p = p.parentElement && p.parentElement.closest('details'); }
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  openDetailsForHash(window.location.hash);
+  window.addEventListener('hashchange', () => openDetailsForHash(window.location.hash));
+
+  // Wire up "Expand all" / "Collapse all" controls in the inline TOC
+  document.querySelectorAll('.toc-controls [data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const action = btn.getAttribute('data-action');
+      const open = action === 'expand-all';
+      document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
+    });
+  });
+})();
+
+// Populate prev/next navigation based on the current page's banner-num
+(function () {
+  const pill = document.querySelector('.banner-pill');
+  const nav = document.querySelector('.page-prev-next');
+  if (!pill || !nav) return;
+
+  const key = (pill.textContent || '').trim().toUpperCase();
+
+  // Map banner-num → { prev, next }
+  // Each entry: { href, title } (or null if not present)
+  const MAP = {
+    'TP 0': {
+      prev: null,
+      next: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' }
+    },
+    'TP 1 · PARTE 1': {
+      prev: { href: 'practica-0.html', title: 'TP 0 — Prerrequisitos' },
+      next: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' }
+    },
+    'TP 1 · PARTE 2': {
+      prev: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' },
+      next: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' }
+    },
+    'TP 2 · PARTE 1': {
+      prev: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' },
+      next: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' }
+    },
+    'TP 2 · PARTE 2': {
+      prev: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' },
+      next: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' }
+    },
+    'TP 2 · PARTE 3': {
+      prev: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' },
+      next: { href: 'practica-2-parte-4.html', title: 'Práctica II · Parte 4' }
+    },
+    'TP 2 · PARTE 4': {
+      prev: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' },
+      next: null
+    }
+  };
+
+  const entry = MAP[key];
+  if (!entry) return;
+
+  const prevLink = nav.querySelector('[data-slot="prev"]');
+  const nextLink = nav.querySelector('[data-slot="next"]');
+  const prevTitle = nav.querySelector('[data-slot="prev-title"]');
+  const nextTitle = nav.querySelector('[data-slot="next-title"]');
+
+  if (entry.prev && prevLink && prevTitle) {
+    prevLink.setAttribute('href', entry.prev.href);
+    prevTitle.textContent = entry.prev.title;
+    prevLink.hidden = false;
+  }
+  if (entry.next && nextLink && nextTitle) {
+    nextLink.setAttribute('href', entry.next.href);
+    nextTitle.textContent = entry.next.title;
+    nextLink.hidden = false;
+  }
+
+  // If neither slot is shown, hide the whole nav
+  if ((!entry.prev) && (!entry.next)) {
+    nav.style.display = 'none';
+  }
+})();
+
+// Open all external links in a new tab (preserves the current page).
+// Internal anchors (#hash), relative links and same-origin links stay in-tab.
+(function () {
+  const here = window.location.hostname;
+  document.querySelectorAll('a[href]').forEach(a => {
+    const href = a.getAttribute('href');
+    if (!href) return;
+    // Skip anchors and pure relative links
+    if (href.startsWith('#') || href.startsWith('/') || !/^https?:\/\//i.test(href)) return;
+    try {
+      const url = new URL(href);
+      if (url.hostname && url.hostname !== here) {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      }
+    } catch (_) {
+      // Malformed URL — ignore
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

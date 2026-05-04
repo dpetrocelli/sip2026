@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <meta name="generator" content="pandoc + UNLu/DCB template">
+  <title>Blockchain · Clase 2 — ERC-20 + PaymentGateway + Reentrancy —
+UNLu DCB</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+
+<header class="unlu-header">
+  <a href="index.html" class="brand" title="Volver al menú principal">
+    <img src="assets/unlu_escudo.png" alt="Universidad Nacional de Luján" class="logo unlu">
+    <div class="brand-text">
+      <div class="institution">Universidad Nacional de Luján</div>
+      <div class="department">Departamento de Ciencias Básicas</div>
+    </div>
+    <img src="assets/logo_dcb.png" alt="Departamento de Ciencias Básicas" class="logo dcb">
+  </a>
+  <div class="course-bar">
+    <span class="course">Seminario de Integración Profesional</span>
+    <span class="year">2026</span>
+    <span class="instructor">Dr. David Petrocelli</span>
+  </div>
+</header>
+
+<button type="button" id="sidebar-show" class="sidebar-toggle-btn sidebar-show" aria-label="Mostrar índice lateral" title="Mostrar índice lateral">☰</button>
+
+<div class="layout">
+  <aside class="toc-sidebar" id="toc-sidebar">
+    <div class="toc-header">
+      <div class="toc-title">Contenidos</div>
+      <button type="button" id="sidebar-hide" class="sidebar-toggle-btn sidebar-hide" aria-label="Ocultar índice lateral" title="Ocultar índice lateral">×</button>
+    </div>
+    <ul>
+    <li><a
+    href="#blockchain--clase-2--erc-20--paymentgateway--reentrancy"
+    id="toc-blockchain--clase-2--erc-20--paymentgateway--reentrancy">Blockchain
+    · Clase 2 — ERC-20 + PaymentGateway + Reentrancy</a>
+    <ul>
+    <li><a href="#qué-vamos-a-hacer-hoy"
+    id="toc-qué-vamos-a-hacer-hoy">¿Qué vamos a hacer hoy?</a></li>
+    <li><a href="#parte-1--refresher-rápido"
+    id="toc-parte-1--refresher-rápido">Parte 1 — Refresher
+    rápido</a></li>
+    <li><a href="#parte-2--erc-20-el-estándar-de-tokens"
+    id="toc-parte-2--erc-20-el-estándar-de-tokens">Parte 2 — ERC-20: el
+    estándar de tokens</a>
+    <ul>
+    <li><a href="#las-6-funciones-de-erc-20"
+    id="toc-las-6-funciones-de-erc-20">Las 6 funciones de
+    ERC-20</a></li>
+    <li><a href="#el-patrón-approve--transferfrom"
+    id="toc-el-patrón-approve--transferfrom">El patrón “approve +
+    transferFrom”</a></li>
+    </ul></li>
+    <li><a href="#parte-3--openzeppelin-no-reinventes-la-rueda"
+    id="toc-parte-3--openzeppelin-no-reinventes-la-rueda">Parte 3 —
+    OpenZeppelin: no reinventes la rueda</a></li>
+    <li><a href="#parte-4--el-contrato-paymentgateway"
+    id="toc-parte-4--el-contrato-paymentgateway">Parte 4 — El contrato
+    <code>PaymentGateway</code></a>
+    <ul>
+    <li><a href="#por-qué-cada-decisión"
+    id="toc-por-qué-cada-decisión">Por qué cada decisión</a></li>
+    </ul></li>
+    <li><a href="#parte-5--tests-con-foundry"
+    id="toc-parte-5--tests-con-foundry">Parte 5 — Tests con
+    Foundry</a></li>
+    <li><a href="#parte-6--reentrancy-el-ataque-que-rompió-the-dao"
+    id="toc-parte-6--reentrancy-el-ataque-que-rompió-the-dao">Parte 6 —
+    Reentrancy: el ataque que rompió The DAO</a>
+    <ul>
+    <li><a href="#el-ataque-conceptualmente"
+    id="toc-el-ataque-conceptualmente">El ataque,
+    conceptualmente</a></li>
+    <li><a href="#cómo-se-ve-un-atacante"
+    id="toc-cómo-se-ve-un-atacante">Cómo se ve un atacante</a></li>
+    <li><a href="#cómo-se-cierra" id="toc-cómo-se-cierra">Cómo se
+    cierra</a></li>
+    <li><a href="#en-nuestro-paymentgateway"
+    id="toc-en-nuestro-paymentgateway">En nuestro
+    <code>PaymentGateway</code></a></li>
+    </ul></li>
+    <li><a href="#parte-7--deploy-del-paymentgateway-a-sepolia"
+    id="toc-parte-7--deploy-del-paymentgateway-a-sepolia">Parte 7 —
+    Deploy del PaymentGateway a Sepolia</a>
+    <ul>
+    <li><a href="#71-direcciones-de-usdc-en-sepolia"
+    id="toc-71-direcciones-de-usdc-en-sepolia">7.1 Direcciones de USDC
+    en Sepolia</a></li>
+    <li><a href="#72-variables-de-entorno"
+    id="toc-72-variables-de-entorno">7.2 Variables de entorno</a></li>
+    <li><a href="#73-script-de-deploy" id="toc-73-script-de-deploy">7.3
+    Script de deploy</a></li>
+    <li><a href="#74-verificar-en-etherscan"
+    id="toc-74-verificar-en-etherscan">7.4 Verificar en
+    Etherscan</a></li>
+    </ul></li>
+    <li><a href="#parte-8--probar-el-flow-completo"
+    id="toc-parte-8--probar-el-flow-completo">Parte 8 — Probar el flow
+    completo</a>
+    <ul>
+    <li><a href="#81-aprobar-usdc-al-paymentgateway"
+    id="toc-81-aprobar-usdc-al-paymentgateway">8.1 Aprobar USDC al
+    PaymentGateway</a></li>
+    <li><a href="#82-verificar-el-allowance"
+    id="toc-82-verificar-el-allowance">8.2 Verificar el
+    allowance</a></li>
+    <li><a href="#83-llamar-pay" id="toc-83-llamar-pay">8.3 Llamar
+    <code>pay()</code></a></li>
+    <li><a href="#84-verificar-en-etherscan"
+    id="toc-84-verificar-en-etherscan">8.4 Verificar en
+    Etherscan</a></li>
+    <li><a href="#85-confirmar-saldo-del-treasury"
+    id="toc-85-confirmar-saldo-del-treasury">8.5 Confirmar saldo del
+    treasury</a></li>
+    </ul></li>
+    <li><a href="#cierre--qué-nos-llevamos"
+    id="toc-cierre--qué-nos-llevamos">Cierre — qué nos llevamos</a></li>
+    <li><a href="#tarea-para-clase-3" id="toc-tarea-para-clase-3">Tarea
+    para clase 3</a></li>
+    <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
+    falla</a></li>
+    </ul></li>
+    </ul>
+    <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--light-gray);font-size:12px;">
+      <a href="index.html" style="color:var(--gray);">← Volver al índice</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <nav class="page-breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Inicio</a>
+      <span class="sep">›</span>
+      <span class="current">BC · CLASE 2</span>
+    </nav>
+    <nav class="page-nav-top">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+      <span class="banner-pill">BC · CLASE 2</span>
+    </nav>
+
+    <details class="toc-inline" open>
+      <summary>📑 Índice del documento</summary>
+      <ul>
+      <li><a
+      href="#blockchain--clase-2--erc-20--paymentgateway--reentrancy"
+      id="toc-blockchain--clase-2--erc-20--paymentgateway--reentrancy">Blockchain
+      · Clase 2 — ERC-20 + PaymentGateway + Reentrancy</a>
+      <ul>
+      <li><a href="#qué-vamos-a-hacer-hoy"
+      id="toc-qué-vamos-a-hacer-hoy">¿Qué vamos a hacer hoy?</a></li>
+      <li><a href="#parte-1--refresher-rápido"
+      id="toc-parte-1--refresher-rápido">Parte 1 — Refresher
+      rápido</a></li>
+      <li><a href="#parte-2--erc-20-el-estándar-de-tokens"
+      id="toc-parte-2--erc-20-el-estándar-de-tokens">Parte 2 — ERC-20:
+      el estándar de tokens</a>
+      <ul>
+      <li><a href="#las-6-funciones-de-erc-20"
+      id="toc-las-6-funciones-de-erc-20">Las 6 funciones de
+      ERC-20</a></li>
+      <li><a href="#el-patrón-approve--transferfrom"
+      id="toc-el-patrón-approve--transferfrom">El patrón “approve +
+      transferFrom”</a></li>
+      </ul></li>
+      <li><a href="#parte-3--openzeppelin-no-reinventes-la-rueda"
+      id="toc-parte-3--openzeppelin-no-reinventes-la-rueda">Parte 3 —
+      OpenZeppelin: no reinventes la rueda</a></li>
+      <li><a href="#parte-4--el-contrato-paymentgateway"
+      id="toc-parte-4--el-contrato-paymentgateway">Parte 4 — El contrato
+      <code>PaymentGateway</code></a>
+      <ul>
+      <li><a href="#por-qué-cada-decisión"
+      id="toc-por-qué-cada-decisión">Por qué cada decisión</a></li>
+      </ul></li>
+      <li><a href="#parte-5--tests-con-foundry"
+      id="toc-parte-5--tests-con-foundry">Parte 5 — Tests con
+      Foundry</a></li>
+      <li><a href="#parte-6--reentrancy-el-ataque-que-rompió-the-dao"
+      id="toc-parte-6--reentrancy-el-ataque-que-rompió-the-dao">Parte 6
+      — Reentrancy: el ataque que rompió The DAO</a>
+      <ul>
+      <li><a href="#el-ataque-conceptualmente"
+      id="toc-el-ataque-conceptualmente">El ataque,
+      conceptualmente</a></li>
+      <li><a href="#cómo-se-ve-un-atacante"
+      id="toc-cómo-se-ve-un-atacante">Cómo se ve un atacante</a></li>
+      <li><a href="#cómo-se-cierra" id="toc-cómo-se-cierra">Cómo se
+      cierra</a></li>
+      <li><a href="#en-nuestro-paymentgateway"
+      id="toc-en-nuestro-paymentgateway">En nuestro
+      <code>PaymentGateway</code></a></li>
+      </ul></li>
+      <li><a href="#parte-7--deploy-del-paymentgateway-a-sepolia"
+      id="toc-parte-7--deploy-del-paymentgateway-a-sepolia">Parte 7 —
+      Deploy del PaymentGateway a Sepolia</a>
+      <ul>
+      <li><a href="#71-direcciones-de-usdc-en-sepolia"
+      id="toc-71-direcciones-de-usdc-en-sepolia">7.1 Direcciones de USDC
+      en Sepolia</a></li>
+      <li><a href="#72-variables-de-entorno"
+      id="toc-72-variables-de-entorno">7.2 Variables de entorno</a></li>
+      <li><a href="#73-script-de-deploy"
+      id="toc-73-script-de-deploy">7.3 Script de deploy</a></li>
+      <li><a href="#74-verificar-en-etherscan"
+      id="toc-74-verificar-en-etherscan">7.4 Verificar en
+      Etherscan</a></li>
+      </ul></li>
+      <li><a href="#parte-8--probar-el-flow-completo"
+      id="toc-parte-8--probar-el-flow-completo">Parte 8 — Probar el flow
+      completo</a>
+      <ul>
+      <li><a href="#81-aprobar-usdc-al-paymentgateway"
+      id="toc-81-aprobar-usdc-al-paymentgateway">8.1 Aprobar USDC al
+      PaymentGateway</a></li>
+      <li><a href="#82-verificar-el-allowance"
+      id="toc-82-verificar-el-allowance">8.2 Verificar el
+      allowance</a></li>
+      <li><a href="#83-llamar-pay" id="toc-83-llamar-pay">8.3 Llamar
+      <code>pay()</code></a></li>
+      <li><a href="#84-verificar-en-etherscan"
+      id="toc-84-verificar-en-etherscan">8.4 Verificar en
+      Etherscan</a></li>
+      <li><a href="#85-confirmar-saldo-del-treasury"
+      id="toc-85-confirmar-saldo-del-treasury">8.5 Confirmar saldo del
+      treasury</a></li>
+      </ul></li>
+      <li><a href="#cierre--qué-nos-llevamos"
+      id="toc-cierre--qué-nos-llevamos">Cierre — qué nos
+      llevamos</a></li>
+      <li><a href="#tarea-para-clase-3"
+      id="toc-tarea-para-clase-3">Tarea para clase 3</a></li>
+      <li><a href="#si-algo-falla" id="toc-si-algo-falla">Si algo
+      falla</a></li>
+      </ul></li>
+      </ul>
+      <div class="toc-controls">
+        <button type="button" class="toc-btn" data-action="expand-all">Expandir todo</button>
+        <button type="button" class="toc-btn" data-action="collapse-all">Colapsar todo</button>
+      </div>
+    </details>
+
+<h1
+id="blockchain--clase-2--erc-20--paymentgateway--reentrancy">Blockchain
+· Clase 2 — ERC-20 + PaymentGateway + Reentrancy</h1>
+<blockquote>
+<p><strong>Objetivo de la clase</strong>: dejar el
+<code>SimpleStorage</code> atrás y escribir el contrato que su sistema
+<strong>realmente</strong> va a usar — un <code>PaymentGateway</code>
+que cobra USDC en Sepolia, emite eventos <code>Paid</code> que su
+backend va a consumir, y está protegido contra el ataque clásico de
+<strong>reentrancy</strong>. Al final tienen el contrato deployado y
+testeado.</p>
+</blockquote>
+<blockquote>
+<p><strong>Pre-requisito</strong>: la clase 1 cerrada. Tienen MetaMask +
+Sepolia + Foundry instalado, y un <code>SimpleStorage</code> deployado y
+verificado.</p>
+</blockquote>
+<hr />
+<h2 id="qué-vamos-a-hacer-hoy">¿Qué vamos a hacer hoy?</h2>
+<ol type="1">
+<li><strong>Refresher</strong> del modelo mental: el contrato como
+“MercadoPago en blockchain” (5 min).</li>
+<li><strong>¿Qué es ERC-20?</strong> El estándar de tokens fungibles —
+la moneda del sistema.</li>
+<li><strong>OpenZeppelin</strong> — la librería de contratos
+battle-tested que vamos a usar.</li>
+<li><strong>El contrato <code>PaymentGateway</code></strong> paso a
+paso.</li>
+<li><strong>Tests con Foundry</strong> — happy path + edge cases +
+protección contra reentrancy.</li>
+<li><strong>El ataque de reentrancy</strong> — cómo se rompía el
+contrato sin protección, y cómo se cierra.</li>
+<li><strong>Deploy del PaymentGateway a Sepolia</strong>.</li>
+<li><strong>Probar el flow completo</strong>: aprobar USDC → llamar
+<code>pay()</code> → ver el evento <code>Paid</code> en Etherscan.</li>
+</ol>
+<p>Al cerrar: cada equipo tiene un PaymentGateway suyo deployado.
+<strong>Ese es el contrato base</strong> que en clase 4 van a extender
+con la lógica específica de su proyecto
+(VibeCheck/DepFund/RNW/IDEAFY).</p>
+<hr />
+<h2 id="parte-1--refresher-rápido">Parte 1 — Refresher rápido</h2>
+<p>Dijimos que vamos a integrar pagos en blockchain como integraríamos
+MercadoPago. Recordemos:</p>
+<table>
+<thead>
+<tr>
+<th>MercadoPago</th>
+<th>PaymentGateway en Sepolia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MercadoPago.charge(buyer, amount)</code> (HTTP API)</td>
+<td><code>gateway.pay(amount, action)</code> (tx firmada)</td>
+</tr>
+<tr>
+<td>Webhook que avisa “el pago se procesó”</td>
+<td>Evento <code>Paid(payer, amount, action)</code> que su indexer
+consume</td>
+</tr>
+<tr>
+<td>Saldo del comprador en pesos</td>
+<td>Saldo del comprador en USDC (un ERC-20)</td>
+</tr>
+<tr>
+<td>MercadoPago como custodio de los pesos</td>
+<td>El contrato <code>treasury</code> recibe los USDC directamente</td>
+</tr>
+<tr>
+<td>Comisión de MP (~5%)</td>
+<td>Gas (~<span
+class="math inline">0.5<em>e</em><em>n</em><em>S</em><em>e</em><em>p</em><em>o</em><em>l</em><em>i</em><em>a</em>, </span>0.01
+en Polygon mainnet)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>🎯 <strong>Clave</strong>: si entendieron MercadoPago como
+integración HTTP-API, esto es <strong>el mismo modelo mental</strong>
+pero cambiando los rieles. Lo que cambia: cómo se firman las txs y cómo
+se mueven los activos.</p>
+</blockquote>
+<hr />
+<h2 id="parte-2--erc-20-el-estándar-de-tokens">Parte 2 — ERC-20: el
+estándar de tokens</h2>
+<p><strong>ERC-20</strong> es la “interface” de Solidity que todos los
+tokens fungibles cumplen (USDC, USDT, DAI, su propio token si crean
+uno). Estandarizar la interface significa que cualquier contrato puede
+recibir cualquier ERC-20 sin escribir código a medida.</p>
+<h3 id="las-6-funciones-de-erc-20">Las 6 funciones de ERC-20</h3>
+<table>
+<thead>
+<tr>
+<th>Función</th>
+<th>Qué hace</th>
+<th>Quién la llama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>totalSupply()</code></td>
+<td>Total de tokens emitidos</td>
+<td>Cualquiera (read)</td>
+</tr>
+<tr>
+<td><code>balanceOf(address)</code></td>
+<td>Saldo de un usuario</td>
+<td>Cualquiera (read)</td>
+</tr>
+<tr>
+<td><code>transfer(to, amount)</code></td>
+<td>Mover tokens del caller a <code>to</code></td>
+<td>El dueño de los tokens</td>
+</tr>
+<tr>
+<td><code>approve(spender, amount)</code></td>
+<td>“Autorizo a <code>spender</code> a gastar hasta <code>amount</code>
+tokens en mi nombre”</td>
+<td>El dueño de los tokens</td>
+</tr>
+<tr>
+<td><code>allowance(owner, spender)</code></td>
+<td>Cuánto le queda autorizado a <code>spender</code></td>
+<td>Cualquiera (read)</td>
+</tr>
+<tr>
+<td><code>transferFrom(from, to, amount)</code></td>
+<td>Si <code>from</code> me autorizó, mover <code>amount</code> de
+<code>from</code> a <code>to</code></td>
+<td>Un contrato (típicamente)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="el-patrón-approve--transferfrom">El patrón “approve +
+transferFrom”</h3>
+<p>Es <strong>el corazón</strong> de cómo cobra un contrato:</p>
+<ol type="1">
+<li><strong>El usuario llama
+<code>usdc.approve(gateway, 50)</code></strong> → “le doy permiso al
+PaymentGateway de gastar hasta 50 USDC míos”.</li>
+<li><strong>El usuario llama <code>gateway.pay(50, ...)</code></strong>
+→ el PaymentGateway internamente llama
+<code>usdc.transferFrom(user, treasury, 50)</code> y los USDC se
+mueven.</li>
+</ol>
+<p>Son <strong>dos transacciones</strong>. ¿Por qué? Seguridad: el
+usuario decide explícitamente cuánto autoriza antes de que el contrato
+pueda mover sus fondos. Si el contrato es malicioso, sólo puede robar lo
+aprobado, no todo el saldo.</p>
+<blockquote>
+<p><strong>Comparación con MercadoPago</strong>: en MP, le das tu
+tarjeta una vez y MP puede cobrar lo que quiera (subscripciones, etc.).
+Acá, cada cobro requiere un <code>approve</code> previo del usuario. Más
+fricción, más seguridad.</p>
+</blockquote>
+<hr />
+<h2 id="parte-3--openzeppelin-no-reinventes-la-rueda">Parte 3 —
+OpenZeppelin: no reinventes la rueda</h2>
+<p><strong>OpenZeppelin</strong> es la librería estándar de contratos en
+Solidity. Su código está auditado, testeado y battle-tested en miles de
+protocolos. <strong>Nunca escribimos un ERC-20 desde cero</strong> —
+usamos el de OZ.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> install OpenZeppelin/openzeppelin-contracts <span class="at">--no-commit</span></span></code></pre></div>
+<p>Esto agrega <code>lib/openzeppelin-contracts</code> con todos los
+standards listos: ERC-20, ERC-721, ERC-1155, AccessControl, Ownable,
+ReentrancyGuard, etc.</p>
+<p>En <code>remappings.txt</code>:</p>
+<pre><code>@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/</code></pre>
+<hr />
+<h2 id="parte-4--el-contrato-paymentgateway">Parte 4 — El contrato
+<code>PaymentGateway</code></h2>
+<p>Abrí <code>src/PaymentGateway.sol</code> (lo creamos ahora):</p>
+<pre class="solidity"><code>// SPDX-License-Identifier: MIT
+pragma solidity 0.8.24;
+
+import {IERC20} from &quot;@openzeppelin/contracts/token/ERC20/IERC20.sol&quot;;
+import {SafeERC20} from &quot;@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol&quot;;
+import {ReentrancyGuard} from &quot;@openzeppelin/contracts/utils/ReentrancyGuard.sol&quot;;
+
+/**
+ * @title PaymentGateway
+ * @notice Recibe pagos en USDC y emite eventos para el backend.
+ * @dev Cada proyecto extiende esto sobrescribiendo `_onPaid`.
+ */
+contract PaymentGateway is ReentrancyGuard {
+    using SafeERC20 for IERC20;
+
+    IERC20 public immutable usdc;
+    address public immutable treasury;
+
+    event Paid(address indexed payer, uint256 amount, bytes32 indexed action);
+
+    error AmountZero();
+    error TreasuryZero();
+
+    constructor(IERC20 _usdc, address _treasury) {
+        if (_treasury == address(0)) revert TreasuryZero();
+        usdc = _usdc;
+        treasury = _treasury;
+    }
+
+    /**
+     * @notice Recibe un pago de `amount` USDC del caller. Requiere approve previo.
+     * @param amount Cantidad en USDC (con sus 6 decimales: 50 USDC = 50_000_000).
+     * @param action Identificador opaco de qué se está pagando (&quot;ticket-123&quot;, &quot;subscription&quot;, etc.).
+     */
+    function pay(uint256 amount, bytes32 action) external nonReentrant {
+        if (amount == 0) revert AmountZero();
+
+        // 1. Mover los USDC del usuario al treasury.
+        usdc.safeTransferFrom(msg.sender, treasury, amount);
+
+        // 2. Emitir evento (para que el backend lo consuma).
+        emit Paid(msg.sender, amount, action);
+
+        // 3. Hook para que las subclases ejecuten lógica extra (mint NFT, registrar shares, etc.).
+        _onPaid(msg.sender, amount, action);
+    }
+
+    /// @dev Override en subclases. Por defecto no hace nada.
+    function _onPaid(address payer, uint256 amount, bytes32 action) internal virtual {}
+}</code></pre>
+<h3 id="por-qué-cada-decisión">Por qué cada decisión</h3>
+<table>
+<thead>
+<tr>
+<th>Línea</th>
+<th>Por qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pragma solidity 0.8.24</code></td>
+<td>Versión moderna con checked arithmetic por default (no overflow
+silencioso)</td>
+</tr>
+<tr>
+<td><code>import IERC20</code></td>
+<td>Interface estándar para hablar con USDC</td>
+</tr>
+<tr>
+<td><code>SafeERC20</code></td>
+<td>Wrapper que revierte si el token no respeta el standard (algunos
+ERC-20 viejos como USDT no devuelven <code>bool</code> en transfer)</td>
+</tr>
+<tr>
+<td><code>ReentrancyGuard</code></td>
+<td>Mixin de OZ que evita el ataque de reentrancy (próximamente)</td>
+</tr>
+<tr>
+<td><code>immutable</code></td>
+<td>El valor se setea en el constructor y nunca cambia → más barato en
+gas (no usa storage)</td>
+</tr>
+<tr>
+<td><code>error AmountZero()</code></td>
+<td>Custom errors son <strong>más baratos en gas</strong> que
+<code>require(...)</code> con string</td>
+</tr>
+<tr>
+<td><code>nonReentrant</code></td>
+<td>El modifier de OZ — bloquea llamadas re-entrantes a
+<code>pay</code></td>
+</tr>
+<tr>
+<td><code>_onPaid</code> virtual</td>
+<td>Hook que las subclases sobrescriben — patrón template method</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="parte-5--tests-con-foundry">Parte 5 — Tests con Foundry</h2>
+<p>Abrí <code>test/PaymentGateway.t.sol</code>. Vamos a usar un
+<strong>mock de USDC</strong> (no podemos usar el USDC real de Sepolia
+en tests locales).</p>
+<pre class="solidity"><code>// SPDX-License-Identifier: MIT
+pragma solidity 0.8.24;
+
+import {Test, console} from &quot;forge-std/Test.sol&quot;;
+import {ERC20} from &quot;@openzeppelin/contracts/token/ERC20/ERC20.sol&quot;;
+import {PaymentGateway} from &quot;../src/PaymentGateway.sol&quot;;
+
+/// @dev Token ERC-20 fake con 6 decimales (igual que USDC) para tests.
+contract MockUSDC is ERC20 {
+    constructor() ERC20(&quot;Mock USDC&quot;, &quot;mUSDC&quot;) {
+        _mint(msg.sender, 1_000_000 * 10 ** 6); // 1M USDC
+    }
+
+    function decimals() public pure override returns (uint8) {
+        return 6;
+    }
+}
+
+contract PaymentGatewayTest is Test {
+    PaymentGateway internal gateway;
+    MockUSDC internal usdc;
+
+    address internal alice = makeAddr(&quot;alice&quot;);
+    address internal treasury = makeAddr(&quot;treasury&quot;);
+
+    function setUp() public {
+        usdc = new MockUSDC();
+        gateway = new PaymentGateway(usdc, treasury);
+
+        // Damos 1000 USDC a alice para que pueda pagar.
+        usdc.transfer(alice, 1000 * 10 ** 6);
+    }
+
+    function test_PayMovesUsdcToTreasury() public {
+        uint256 amount = 50 * 10 ** 6;
+
+        vm.startPrank(alice);
+        usdc.approve(address(gateway), amount);
+        gateway.pay(amount, bytes32(&quot;test-action&quot;));
+        vm.stopPrank();
+
+        assertEq(usdc.balanceOf(treasury), amount);
+        assertEq(usdc.balanceOf(alice), (1000 * 10 ** 6) - amount);
+    }
+
+    function test_PayEmitsEvent() public {
+        uint256 amount = 100 * 10 ** 6;
+
+        vm.startPrank(alice);
+        usdc.approve(address(gateway), amount);
+
+        vm.expectEmit(true, true, false, true);
+        emit PaymentGateway.Paid(alice, amount, bytes32(&quot;ticket-1&quot;));
+        gateway.pay(amount, bytes32(&quot;ticket-1&quot;));
+
+        vm.stopPrank();
+    }
+
+    function test_PayRevertsOnZeroAmount() public {
+        vm.startPrank(alice);
+        usdc.approve(address(gateway), 0);
+
+        vm.expectRevert(PaymentGateway.AmountZero.selector);
+        gateway.pay(0, bytes32(&quot;nada&quot;));
+    }
+
+    function test_PayRevertsWithoutApprove() public {
+        uint256 amount = 50 * 10 ** 6;
+
+        vm.startPrank(alice);
+        // Sin approve previo → debería fallar
+        vm.expectRevert();
+        gateway.pay(amount, bytes32(&quot;test&quot;));
+    }
+
+    function testFuzz_PayAnyValidAmount(uint96 amount) public {
+        vm.assume(amount &gt; 0 &amp;&amp; amount &lt;= 1000 * 10 ** 6);
+
+        vm.startPrank(alice);
+        usdc.approve(address(gateway), amount);
+        gateway.pay(amount, bytes32(&quot;fuzz&quot;));
+
+        assertEq(usdc.balanceOf(treasury), amount);
+    }
+}</code></pre>
+<p>Corré:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> test <span class="at">-vv</span></span></code></pre></div>
+<p>Esperás 5 tests en verde, incluyendo el fuzz test que prueba con
+cientos de inputs aleatorios.</p>
+<hr />
+<h2 id="parte-6--reentrancy-el-ataque-que-rompió-the-dao">Parte 6 —
+Reentrancy: el ataque que rompió The DAO</h2>
+<p><strong>Reentrancy</strong> es <strong>EL</strong> bug más famoso de
+Ethereum. En 2016 alguien drenó $60M de The DAO con esta técnica. Hoy es
+trivial defenderse, pero hay que entenderlo.</p>
+<h3 id="el-ataque-conceptualmente">El ataque, conceptualmente</h3>
+<p>Imaginá un contrato vulnerable así:</p>
+<pre class="solidity"><code>// MAL — no hagas esto
+contract VulnerableBank {
+    mapping(address =&gt; uint256) public balance;
+
+    function deposit() external payable {
+        balance[msg.sender] += msg.value;
+    }
+
+    function withdraw() external {
+        uint256 bal = balance[msg.sender];
+        require(bal &gt; 0);
+
+        // 1. Mandamos el ETH al usuario
+        (bool ok,) = msg.sender.call{value: bal}(&quot;&quot;);
+        require(ok);
+
+        // 2. Después actualizamos el saldo a 0
+        balance[msg.sender] = 0;
+    }
+}</code></pre>
+<p>El bug: en el paso 1, <strong>transferimos antes de actualizar el
+saldo</strong>. Si <code>msg.sender</code> es un contrato malicioso, su
+<code>receive()</code> puede volver a llamar <code>withdraw()</code>
+antes de que el <code>balance[msg.sender] = 0</code> se ejecute.
+Resultado: drena el contrato 1 ETH a la vez.</p>
+<h3 id="cómo-se-ve-un-atacante">Cómo se ve un atacante</h3>
+<pre class="solidity"><code>contract Attacker {
+    VulnerableBank public bank;
+
+    constructor(VulnerableBank _bank) payable {
+        bank = _bank;
+        bank.deposit{value: 1 ether}();
+    }
+
+    function attack() external {
+        bank.withdraw();
+    }
+
+    receive() external payable {
+        if (address(bank).balance &gt;= 1 ether) {
+            bank.withdraw();   // ← re-entry: vuelvo a llamar withdraw
+        }
+    }
+}</code></pre>
+<h3 id="cómo-se-cierra">Cómo se cierra</h3>
+<p><strong>3 maneras</strong>, en orden de preferencia:</p>
+<ol type="1">
+<li><strong>Patrón Checks-Effects-Interactions</strong>: actualizá el
+state ANTES de transferir. Pone el <code>balance[...] = 0</code> ANTES
+del <code>call{value: ...}</code>.</li>
+<li><strong><code>ReentrancyGuard</code> de OpenZeppelin</strong> (lo
+que usamos en <code>PaymentGateway</code>): un mutex que impide entradas
+concurrentes.</li>
+<li><strong><code>safeTransferFrom</code> con tokens estándar</strong>:
+ERC-20 transferFrom no permite re-entry naturalmente porque devuelve
+antes de llamar al callback (y los tokens decentes no tienen
+callbacks).</li>
+</ol>
+<h3 id="en-nuestro-paymentgateway">En nuestro
+<code>PaymentGateway</code></h3>
+<p>Aplicamos las 3 defensas de una:</p>
+<ul>
+<li>✅ Usamos <code>nonReentrant</code> (mutex de OZ).</li>
+<li>✅ Movemos los USDC <strong>antes</strong> de emitir evento o
+ejecutar <code>_onPaid</code>. Si <code>_onPaid</code> quiere hacer
+cosas peligrosas (como mintar NFTs y enviarlos a <code>payer</code>), el
+guard lo cubre.</li>
+<li>✅ Usamos <code>safeTransferFrom</code> que revierte si el token
+devuelve <code>false</code> (algunos ERC-20 viejos lo hacen sin
+revertir).</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Tarea para casa</strong>: armar un test que intente hacer
+reentrancy contra <code>PaymentGateway</code> y comprobar que falla.
+Pista: hagan que <code>_onPaid</code> haga algo arbitrario en una
+subclass de prueba.</p>
+</blockquote>
+<hr />
+<h2 id="parte-7--deploy-del-paymentgateway-a-sepolia">Parte 7 — Deploy
+del PaymentGateway a Sepolia</h2>
+<h3 id="71-direcciones-de-usdc-en-sepolia">7.1 Direcciones de USDC en
+Sepolia</h3>
+<p>USDC oficial de Circle en Sepolia:</p>
+<pre><code>0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238</code></pre>
+<p>Para conseguir USDC de testnet hay 2 opciones:</p>
+<ul>
+<li><strong>Faucet de Circle</strong>: <a
+href="https://faucet.circle.com">https://faucet.circle.com</a> (login
+Google) → seleccionar Sepolia → te tira 10 USDC.</li>
+<li><strong>Mintear desde testnet bridges</strong> (ej: Aave, Compound
+v3 deployments en Sepolia tienen sus propios faucets).</li>
+</ul>
+<h3 id="72-variables-de-entorno">7.2 Variables de entorno</h3>
+<p>Tu <code>.env</code>:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="va">SEPOLIA_RPC_URL</span><span class="op">=</span>https://ethereum-sepolia-rpc.publicnode.com</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="va">ETHERSCAN_API_KEY</span><span class="op">=</span>tu_api_key</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="va">USDC_SEPOLIA</span><span class="op">=</span>0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="va">TREASURY</span><span class="op">=</span>0xtu_address_de_metamask</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> .env</span></code></pre></div>
+<h3 id="73-script-de-deploy">7.3 Script de deploy</h3>
+<p>Creá <code>script/DeployPaymentGateway.s.sol</code>:</p>
+<pre class="solidity"><code>// SPDX-License-Identifier: MIT
+pragma solidity 0.8.24;
+
+import {Script, console} from &quot;forge-std/Script.sol&quot;;
+import {PaymentGateway} from &quot;../src/PaymentGateway.sol&quot;;
+import {IERC20} from &quot;@openzeppelin/contracts/token/ERC20/IERC20.sol&quot;;
+
+contract DeployPaymentGateway is Script {
+    function run() external returns (PaymentGateway gateway) {
+        IERC20 usdc = IERC20(vm.envAddress(&quot;USDC_SEPOLIA&quot;));
+        address treasury = vm.envAddress(&quot;TREASURY&quot;);
+
+        vm.startBroadcast();
+        gateway = new PaymentGateway(usdc, treasury);
+        vm.stopBroadcast();
+
+        console.log(&quot;PaymentGateway deployed at:&quot;, address(gateway));
+    }
+}</code></pre>
+<p>Deployar:</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> script script/DeployPaymentGateway.s.sol <span class="dt">\</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rpc-url</span> <span class="va">$SEPOLIA_RPC_URL</span> <span class="dt">\</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--account</span> dev <span class="dt">\</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--broadcast</span></span></code></pre></div>
+<p>Te devuelve la address del PaymentGateway.
+<strong>Guardala</strong>:</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">GATEWAY</span><span class="op">=</span>0xtu_payment_gateway</span></code></pre></div>
+<h3 id="74-verificar-en-etherscan">7.4 Verificar en Etherscan</h3>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> verify-contract <span class="va">$GATEWAY</span> <span class="dt">\</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  src/PaymentGateway.sol:PaymentGateway <span class="dt">\</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--chain</span> sepolia <span class="dt">\</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--constructor-args</span> <span class="va">$(</span><span class="ex">cast</span> abi-encode <span class="st">&quot;constructor(address,address)&quot;</span> <span class="va">$USDC_SEPOLIA</span> <span class="va">$TREASURY)</span> <span class="dt">\</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--etherscan-api-key</span> <span class="va">$ETHERSCAN_API_KEY</span> <span class="dt">\</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--watch</span></span></code></pre></div>
+<p>Andá a
+<code>https://sepolia.etherscan.io/address/$GATEWAY#code</code> — vas a
+ver el source verificado y todas las funciones públicas.</p>
+<hr />
+<h2 id="parte-8--probar-el-flow-completo">Parte 8 — Probar el flow
+completo</h2>
+<p>Ahora hacemos el flujo end-to-end desde la terminal.</p>
+<h3 id="81-aprobar-usdc-al-paymentgateway">8.1 Aprobar USDC al
+PaymentGateway</h3>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 50 USDC con 6 decimales = 50_000_000</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">cast</span> send <span class="va">$USDC_SEPOLIA</span> <span class="st">&quot;approve(address,uint256)&quot;</span> <span class="va">$GATEWAY</span> 50000000 <span class="dt">\</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rpc-url</span> <span class="va">$SEPOLIA_RPC_URL</span> <span class="dt">\</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--account</span> dev</span></code></pre></div>
+<p>Pone allowance del PaymentGateway en 50 USDC contra tu wallet.</p>
+<h3 id="82-verificar-el-allowance">8.2 Verificar el allowance</h3>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cast</span> call <span class="va">$USDC_SEPOLIA</span> <span class="st">&quot;allowance(address,address)(uint256)&quot;</span> <span class="dt">\</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="va">$(</span><span class="ex">cast</span> wallet address <span class="at">--account</span> dev<span class="va">)</span> <span class="va">$GATEWAY</span> <span class="dt">\</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rpc-url</span> <span class="va">$SEPOLIA_RPC_URL</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 50000000</span></span></code></pre></div>
+<h3 id="83-llamar-pay">8.3 Llamar <code>pay()</code></h3>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cast</span> send <span class="va">$GATEWAY</span> <span class="st">&quot;pay(uint256,bytes32)&quot;</span> 50000000 0x<span class="va">$(</span><span class="bu">echo</span> <span class="at">-n</span> <span class="st">&quot;primera-prueba&quot;</span> <span class="kw">|</span> <span class="ex">xxd</span> <span class="at">-p</span><span class="va">)</span> <span class="dt">\</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rpc-url</span> <span class="va">$SEPOLIA_RPC_URL</span> <span class="dt">\</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--account</span> dev</span></code></pre></div>
+<p>Tarda ~15 segundos. El receipt incluye el evento
+<code>Paid(payer=tu_address, amount=50000000, action=primera-prueba)</code>.</p>
+<h3 id="84-verificar-en-etherscan">8.4 Verificar en Etherscan</h3>
+<p>Abrí <code>https://sepolia.etherscan.io/address/$GATEWAY</code> → tab
+<strong>“Events”</strong>:</p>
+<ul>
+<li>Vas a ver <code>Paid(...)</code> con tu address y los
+parámetros.</li>
+<li>En la pestaña <strong>“Read Contract”</strong> podés ver
+<code>usdc()</code> y <code>treasury()</code> configurados
+correctamente.</li>
+<li>En <strong>“Internal Txns”</strong> vas a ver el
+<code>transferFrom</code> que el PaymentGateway hizo internamente.</li>
+</ul>
+<h3 id="85-confirmar-saldo-del-treasury">8.5 Confirmar saldo del
+treasury</h3>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cast</span> call <span class="va">$USDC_SEPOLIA</span> <span class="st">&quot;balanceOf(address)(uint256)&quot;</span> <span class="va">$TREASURY</span> <span class="dt">\</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rpc-url</span> <span class="va">$SEPOLIA_RPC_URL</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 50000000  (= 50 USDC)</span></span></code></pre></div>
+<p>✅ <strong>Cobraste tu primer pago en blockchain.</strong> Esa misma
+operación, hecha desde un frontend con MetaMask, es lo que vamos a armar
+en clase 3.</p>
+<hr />
+<h2 id="cierre--qué-nos-llevamos">Cierre — qué nos llevamos</h2>
+<p>Después de esta clase tienen:</p>
+<ul class="task-list">
+<li><label><input type="checkbox" />Entienden ERC-20 (especialmente
+<code>approve</code> + <code>transferFrom</code>)</label></li>
+<li><label><input type="checkbox" />Tienen
+<code>PaymentGateway.sol</code> escrito, testeado y deployado en
+Sepolia</label></li>
+<li><label><input type="checkbox" />El contrato está verificado en
+Etherscan (cualquiera puede leer el source)</label></li>
+<li><label><input type="checkbox" />Probaron el flow completo desde
+<code>cast</code>: approve → pay → ver evento</label></li>
+<li><label><input type="checkbox" />Saben qué es reentrancy y cómo lo
+cierra OZ con <code>nonReentrant</code></label></li>
+</ul>
+<p><strong>En clase 3</strong> vamos a:</p>
+<ul>
+<li>Reemplazar <code>cast</code> por una dApp Next.js + wagmi +
+RainbowKit.</li>
+<li>Usuarios reales conectando MetaMask y pagando desde el browser.</li>
+<li>Onramp testnet propio (<code>TestnetOnramp.sol</code>) que mintea
+USDC fake cuando “pagás con tarjeta”.</li>
+<li>Deploy de la dApp a Vercel.</li>
+</ul>
+<hr />
+<h2 id="tarea-para-clase-3">Tarea para clase 3</h2>
+<p>Antes del próximo sábado:</p>
+<ol type="1">
+<li><code>PaymentGateway</code> deployado en Sepolia + verificado en
+Etherscan (entregable: la URL
+<code>sepolia.etherscan.io/address/...#code</code>).</li>
+<li>Hicieron al menos <strong>2 pagos</strong> desde <code>cast</code>
+con <code>action</code> distintas (entregable: las 2 URLs de tx de
+Etherscan).</li>
+<li>Tu address de <code>treasury</code> muestra el saldo USDC
+acumulado.</li>
+<li>(Bonus) Escriban un test que intente reentrancy y pase.</li>
+</ol>
+<hr />
+<h2 id="si-algo-falla">Si algo falla</h2>
+<table>
+<thead>
+<tr>
+<th>Síntoma</th>
+<th>Causa probable</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Error: ERC20: insufficient allowance</code></td>
+<td>No aprobaste o aprobaste menos que el <code>pay</code></td>
+<td>Re-aprobá con la cantidad correcta (paso 8.1)</td>
+</tr>
+<tr>
+<td><code>Error: ERC20: transfer amount exceeds balance</code></td>
+<td>No tenés USDC en tu wallet</td>
+<td>Pedí USDC al faucet de Circle</td>
+</tr>
+<tr>
+<td><code>Error: gateway.pay reverted</code> sin razón clara</td>
+<td>El allowance está en 0 (o expiró)</td>
+<td>Aprobá de nuevo</td>
+</tr>
+<tr>
+<td><code>forge install</code> falla</td>
+<td>Sin red, o submodules confundidos</td>
+<td><code>forge install --no-git</code> o
+<code>git submodule update --init --recursive</code></td>
+</tr>
+<tr>
+<td>El test fuzz falla en algún input</td>
+<td>Posible bug</td>
+<td>Subir el rango con <code>vm.assume</code> o revisar lógica</td>
+</tr>
+<tr>
+<td><code>verify-contract</code> dice “Already Verified”</td>
+<td>Está OK, ya lo tenías verificado</td>
+<td>Ignorar — lo abrís y está bien</td>
+</tr>
+<tr>
+<td>Etherscan no muestra el evento</td>
+<td>A veces tarda 30-60s</td>
+<td>Refrescar después de un minuto</td>
+</tr>
+</tbody>
+</table>
+
+    <nav class="page-prev-next" aria-label="Navegación entre páginas">
+      <a class="prev-link" href="#" data-slot="prev" hidden>
+        <span class="arrow">←</span>
+        <span class="nav-meta">
+          <span class="nav-label">Anterior</span>
+          <span class="nav-title" data-slot="prev-title"></span>
+        </span>
+      </a>
+      <a class="next-link" href="#" data-slot="next" hidden>
+        <span class="nav-meta">
+          <span class="nav-label">Siguiente</span>
+          <span class="nav-title" data-slot="next-title"></span>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+    </nav>
+
+    <nav class="page-nav-bottom">
+      <a href="index.html" class="back-to-menu">← Volver al menú principal</a>
+    </nav>
+  </main>
+</div>
+
+<footer class="unlu-footer">
+  <div>
+    UNLu · Departamento de Ciencias Básicas · Seminario de Integración Profesional <strong>2026</strong>
+    · Dr. David Petrocelli
+  </div>
+</footer>
+
+<script>
+// Sidebar show/hide toggle (preference persisted in localStorage)
+(function () {
+  const sidebar = document.getElementById('toc-sidebar');
+  const layout = document.querySelector('.layout');
+  const hideBtn = document.getElementById('sidebar-hide');
+  const showBtn = document.getElementById('sidebar-show');
+  if (!sidebar || !layout || !hideBtn || !showBtn) return;
+
+  const KEY = 'unlu.dcb.sidebar.hidden';
+
+  function apply(hidden) {
+    layout.classList.toggle('sidebar-hidden', hidden);
+    showBtn.classList.toggle('visible', hidden);
+  }
+
+  apply(localStorage.getItem(KEY) === '1');
+
+  hideBtn.addEventListener('click', () => {
+    localStorage.setItem(KEY, '1');
+    apply(true);
+  });
+  showBtn.addEventListener('click', () => {
+    localStorage.removeItem(KEY);
+    apply(false);
+  });
+})();
+
+// Wrap each H2 (and its following content until the next H2) in a <details open>
+// element so users can collapse/expand sections.
+(function () {
+  const main = document.querySelector('main.content');
+  if (!main) return;
+
+  // Collect direct-child H2 headings so we don't touch nested ones (e.g., inside details we'll create)
+  const headings = Array.from(main.children).filter(el => el.tagName === 'H2');
+
+  headings.forEach(h2 => {
+    const details = document.createElement('details');
+    details.open = true;
+    details.className = 'section-collapsible';
+
+    const summary = document.createElement('summary');
+    // Move heading content (incl. anchor) into the summary so anchors keep working
+    summary.innerHTML = h2.innerHTML;
+    if (h2.id) summary.id = h2.id;
+    details.appendChild(summary);
+
+    // Move siblings until next H2 into details
+    const parent = h2.parentNode;
+    let next = h2.nextSibling;
+    parent.replaceChild(details, h2);
+    while (next && !(next.nodeType === 1 && next.tagName === 'H2')) {
+      const node = next;
+      next = next.nextSibling;
+      details.appendChild(node);
+    }
+  });
+
+  // If there's a hash in the URL, ensure the target's <details> is open
+  function openDetailsForHash(hash) {
+    if (!hash) return;
+    const target = document.getElementById(hash.replace(/^#/, ''));
+    if (!target) return;
+    let p = target.closest('details');
+    while (p) { p.open = true; p = p.parentElement && p.parentElement.closest('details'); }
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  openDetailsForHash(window.location.hash);
+  window.addEventListener('hashchange', () => openDetailsForHash(window.location.hash));
+
+  // Wire up "Expand all" / "Collapse all" controls in the inline TOC
+  document.querySelectorAll('.toc-controls [data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const action = btn.getAttribute('data-action');
+      const open = action === 'expand-all';
+      document.querySelectorAll('details.section-collapsible').forEach(d => { d.open = open; });
+    });
+  });
+})();
+
+// Populate prev/next navigation based on the current page's banner-num
+(function () {
+  const pill = document.querySelector('.banner-pill');
+  const nav = document.querySelector('.page-prev-next');
+  if (!pill || !nav) return;
+
+  const key = (pill.textContent || '').trim().toUpperCase();
+
+  // Map banner-num → { prev, next }
+  // Each entry: { href, title } (or null if not present)
+  const MAP = {
+    'TP 0': {
+      prev: null,
+      next: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' }
+    },
+    'TP 1 · PARTE 1': {
+      prev: { href: 'practica-0.html', title: 'TP 0 — Prerrequisitos' },
+      next: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' }
+    },
+    'TP 1 · PARTE 2': {
+      prev: { href: 'practica-1-parte-1.html', title: 'Práctica I · Parte 1' },
+      next: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' }
+    },
+    'TP 2 · PARTE 1': {
+      prev: { href: 'practica-1-parte-2.html', title: 'Práctica I · Parte 2' },
+      next: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' }
+    },
+    'TP 2 · PARTE 2': {
+      prev: { href: 'practica-2-parte-1.html', title: 'Práctica II · Parte 1' },
+      next: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' }
+    },
+    'TP 2 · PARTE 3': {
+      prev: { href: 'practica-2-parte-2.html', title: 'Práctica II · Parte 2' },
+      next: { href: 'practica-2-parte-4.html', title: 'Práctica II · Parte 4' }
+    },
+    'TP 2 · PARTE 4': {
+      prev: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' },
+      next: null
+    }
+  };
+
+  const entry = MAP[key];
+  if (!entry) return;
+
+  const prevLink = nav.querySelector('[data-slot="prev"]');
+  const nextLink = nav.querySelector('[data-slot="next"]');
+  const prevTitle = nav.querySelector('[data-slot="prev-title"]');
+  const nextTitle = nav.querySelector('[data-slot="next-title"]');
+
+  if (entry.prev && prevLink && prevTitle) {
+    prevLink.setAttribute('href', entry.prev.href);
+    prevTitle.textContent = entry.prev.title;
+    prevLink.hidden = false;
+  }
+  if (entry.next && nextLink && nextTitle) {
+    nextLink.setAttribute('href', entry.next.href);
+    nextTitle.textContent = entry.next.title;
+    nextLink.hidden = false;
+  }
+
+  // If neither slot is shown, hide the whole nav
+  if ((!entry.prev) && (!entry.next)) {
+    nav.style.display = 'none';
+  }
+})();
+
+// Open all external links in a new tab (preserves the current page).
+// Internal anchors (#hash), relative links and same-origin links stay in-tab.
+(function () {
+  const here = window.location.hostname;
+  document.querySelectorAll('a[href]').forEach(a => {
+    const href = a.getAttribute('href');
+    if (!href) return;
+    // Skip anchors and pure relative links
+    if (href.startsWith('#') || href.startsWith('/') || !/^https?:\/\//i.test(href)) return;
+    try {
+      const url = new URL(href);
+      if (url.hostname && url.hostname !== here) {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      }
+    } catch (_) {
+      // Malformed URL — ignore
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

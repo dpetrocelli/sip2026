@@ -56,6 +56,12 @@
         <div class="step-name">Observabilidad: logs en Kubernetes</div>
         <div class="step-status">🔓 Entrega 05/05 + 09/05</div>
       </a>
+      <span class="flow-arrow" aria-hidden="true">→</span>
+      <a href="blockchain-overview.html" class="flow-step open" data-status="abierto">
+        <div class="step-num">BLOCKCHAIN</div>
+        <div class="step-name">Pasarela de pago en Sepolia</div>
+        <div class="step-status">🔓 4 clases</div>
+      </a>
     </div>
 
     <h2 style="margin-top: 32px;">Práctica 0 — Prerrequisitos</h2>
@@ -175,6 +181,85 @@
         <div class="tp-meta">
           <span>Entrega: <strong>09/05/2026</strong></span>
           <span>→ Ver TP</span>
+        </div>
+      </a>
+    </div>
+
+    <h2 style="margin-top: 48px;">Módulo Blockchain — Pasarela de Pago</h2>
+    <p style="margin-top: 4px; color: var(--gray); font-size: 14px;">
+      4 clases para integrar pagos en su sistema con un smart contract en Sepolia (testnet de Ethereum).
+      Patrón general que cualquier proyecto del Seminario (VibeCheck, DepFund, RNW, IDEAFY) puede reusar.
+      <strong>Análogo a integrar MercadoPago, pero el rail de pagos es la blockchain.</strong>
+    </p>
+
+    <div class="tp-grid">
+      <a href="blockchain-overview.html" class="tp-card open" style="border-left-color: var(--accent);">
+        <span class="tp-num" style="background: var(--accent);">OVERVIEW</span>
+        <h3>Overview + 5 diagramas hero</h3>
+        <p class="tp-desc">
+          Hub del módulo: cómo se conecta blockchain con lo que ya saben (k3s, Docker, observabilidad),
+          el roadmap de las 4 clases, los 5 diagramas que cubren del ciclo del contrato a la arquitectura
+          híbrida web2+web3, y el contrato base <code>PaymentGateway</code> que se llevan armado.
+        </p>
+        <div class="tp-meta">
+          <span>Hub conceptual</span>
+          <span>→ Ver overview</span>
+        </div>
+      </a>
+
+      <a href="blockchain-clase-1.html" class="tp-card open">
+        <span class="tp-num">BC · CLASE 1</span>
+        <h3>Fundamentos + setup + primer contrato</h3>
+        <p class="tp-desc">
+          MetaMask + Sepolia + faucet, instalación de Foundry, tour de <code>SimpleStorage.sol</code>,
+          tests con <code>forge test</code>, deploy a Sepolia, interactuar con <code>cast</code>,
+          verificar en Etherscan.
+        </p>
+        <div class="tp-meta">
+          <span>Sábado 1</span>
+          <span>→ Ver clase</span>
+        </div>
+      </a>
+
+      <a href="blockchain-clase-2.html" class="tp-card open">
+        <span class="tp-num">BC · CLASE 2</span>
+        <h3>ERC-20 + PaymentGateway + Reentrancy</h3>
+        <p class="tp-desc">
+          ERC-20 (approve + transferFrom), OpenZeppelin, escribir <code>PaymentGateway.sol</code>
+          que cobra USDC en Sepolia, tests con fuzzing, ataque clásico de reentrancy y cómo se cierra
+          con <code>ReentrancyGuard</code>. Deploy del PaymentGateway.
+        </p>
+        <div class="tp-meta">
+          <span>Sábado 2</span>
+          <span>→ Ver clase</span>
+        </div>
+      </a>
+
+      <a href="blockchain-clase-3.html" class="tp-card open">
+        <span class="tp-num">BC · CLASE 3</span>
+        <h3>Frontend + integración + onramp testnet</h3>
+        <p class="tp-desc">
+          Next.js + wagmi + RainbowKit conectado al PaymentGateway, flow approve+pay desde el browser,
+          escuchar eventos <code>Paid</code>, contrato <code>TestnetOnramp.sol</code> que mintea USDC fake
+          para simular pago con tarjeta, deploy a Vercel.
+        </p>
+        <div class="tp-meta">
+          <span>Sábado 3</span>
+          <span>→ Ver clase</span>
+        </div>
+      </a>
+
+      <a href="blockchain-clase-4.html" class="tp-card open">
+        <span class="tp-num">BC · CLASE 4</span>
+        <h3>NFTs gamificados + tokenomics + Slither</h3>
+        <p class="tp-desc">
+          ERC-721 base, Set Bonus NFT pattern (figuritas combinables), tokenomics básica
+          (burn, dividendos, staking, governance), análisis estático con Slither, y cómo plugar
+          el stack completo a tu proyecto elegido.
+        </p>
+        <div class="tp-meta">
+          <span>Sábado 4</span>
+          <span>→ Ver clase</span>
         </div>
       </a>
     </div>
