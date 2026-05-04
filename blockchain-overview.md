@@ -1,6 +1,14 @@
 # Blockchain & Pasarela de Pago — Overview
 
-> **Por qué este módulo**: el TP final del Seminario obliga a que su sistema incorpore una **pasarela de pago basada en blockchain**. Estas 4 clases son el camino corto y técnico para que puedan **integrar pagos reales en Sepolia** (testnet de Ethereum) en su proyecto, sin importar si eligieron VibeCheck, DepFund, RNW o IDEAFY.
+## Contexto — recuerden lo que dice el TPC
+
+> Recuerden que el **core de la asignatura** es el desarrollo de un sistema informático, y que **independientemente del dominio o tipo de sistema que propongan** (e-commerce, plataforma de servicios, marketplace, sistema de reservas, etc.), todos los proyectos deberán **incorporar obligatoriamente una pasarela de pago como parte de su arquitectura**.
+>
+> La pasarela debe contemplar el **registro y validación de transacciones usando blockchain** (simulada o real, según el alcance que defina cada equipo) y modelar correctamente: la conexión entre pagador y receptor, la gestión de transacciones, la confirmación del pago y el registro inmutable de la operación.
+>
+> El **MVP funcional con la red de pagos basada en blockchain** representa el **70 % del criterio de evaluación técnica** del trabajo.
+
+**Estas 4 clases son el camino corto y técnico para llegar ahí**: integrar pagos reales en Sepolia (testnet de Ethereum) en su proyecto, sin importar si eligieron VibeCheck, DepFund, RNW o IDEAFY — o cualquier otro dominio.
 
 > **Analogía rápida**: lo que vamos a hacer es **igual a integrar MercadoPago** en una app — solo que el rail de pago es la blockchain de Ethereum (testnet Sepolia), y el "saldo" del usuario son tokens USDC en su wallet, no pesos en MP.
 
