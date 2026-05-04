@@ -52,8 +52,6 @@ Del archivo `.sol` que escribís, al contrato deployado, al usuario final que lo
 
 ![Ciclo completo](assets/diagramas/01-ciclo-completo.png)
 
-📐 [Editar en draw.io](assets/diagramas/01-ciclo-completo.drawio)
-
 ---
 
 ### 2 · Read vs Write — la distinción crítica
@@ -64,8 +62,6 @@ Del archivo `.sol` que escribís, al contrato deployado, al usuario final que lo
 
 ![Read vs Write](assets/diagramas/02-read-vs-write.png)
 
-📐 [Editar en draw.io](assets/diagramas/02-read-vs-write.drawio)
-
 ---
 
 ### 3 · Qué vive dónde — público vs privado
@@ -73,8 +69,6 @@ Del archivo `.sol` que escribís, al contrato deployado, al usuario final que lo
 Mapa de qué se puede compartir y qué nunca. Lo rojo (private key, frase BIP-39, `.env`) **nunca** sale de su máquina. Lo verde (address, txs, bytecode, storage) es público por diseño — **toda la blockchain es leíble por cualquiera**.
 
 ![Qué vive dónde](assets/diagramas/03-que-vive-donde.png)
-
-📐 [Editar en draw.io](assets/diagramas/03-que-vive-donde.drawio)
 
 ---
 
@@ -85,8 +79,6 @@ Mapa de qué se puede compartir y qué nunca. Lo rojo (private key, frase BIP-39
 > **El contrato es UNA pieza** del sistema, no es todo. Vendría siendo el "servicio de pagos" en una app tradicional. El resto (UI, API, BD, monitoreo) sigue siendo lo de siempre.
 
 ![Arquitectura híbrida](assets/diagramas/04-sistema-real.png)
-
-📐 [Editar en draw.io](assets/diagramas/04-sistema-real.drawio)
 
 ---
 
@@ -99,8 +91,6 @@ Mapa de qué se puede compartir y qué nunca. Lo rojo (private key, frase BIP-39
 > **Insight clave**: el contrato siempre cobra en crypto (USDC). El onramp es solo UX para usuarios sin wallet con fondos. **La lógica del contrato no cambia entre los dos caminos.**
 
 ![Pasarela de pago](assets/diagramas/05-pasarela-de-pago.png)
-
-📐 [Editar en draw.io](assets/diagramas/05-pasarela-de-pago.drawio)
 
 ---
 
