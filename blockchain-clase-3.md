@@ -4,11 +4,13 @@
 
 > **Pre-requisito**: clase 2 completa — su `PaymentGateway.sol` deployado en Sepolia, address conocida, tests pasando.
 
+> **Repo**: hoy creamos un proyecto **separado** del Foundry de clase 1-2. Es un Next.js + wagmi independiente que se conecta al contrato deployado vía RPC. No hay carpeta `src/` compartida.
+
 ---
 
 ## ¿Qué vamos a hacer hoy?
 
-1. **Refresh** de los **diagramas 4 y 5** del overview — arquitectura híbrida + pasarela de pago.
+1. **Refresh** de los **diagramas 2 y 3** del overview — las 3 capas del sistema + pasarela de pago.
 2. **Setup** de un proyecto Next.js + wagmi + viem + RainbowKit.
 3. **Conectar wallet** (MetaMask) con RainbowKit en una sola línea.
 4. **Llamar `pay()`** del PaymentGateway desde el frontend — con el flow `approve` → `pay`.
@@ -26,22 +28,11 @@ Al cierre: cada equipo tiene una dApp en vivo que cualquiera puede usar desde el
 
 Antes de teclear, repasemos los **dos diagramas** del overview que matter para hoy.
 
-### Diagrama 4 — Arquitectura híbrida
+### Diagrama 2 — Las 3 capas del sistema
 
-```
-┌──────────────┐     ┌──────────────┐     ┌─────────────────────┐
-│  Frontend    │ ──▶ │  Backend     │     │  Smart Contract     │
-│  Vercel      │     │  k3s         │     │  Sepolia            │
-│  (Next.js)   │ ──────────────────────▶  │  (PaymentGateway)   │
-└──────────────┘     └──────────────┘     └─────────────────────┘
-       │                                          ▲
-       │   wagmi + viem (RPC)                     │
-       └──────────────────────────────────────────┘
-```
+Repasen el diagrama de [las 3 capas](blockchain-overview.html#2--las-3-capas-mapa-global-del-sistema) en el overview. **Lo nuevo de hoy**: el frontend habla con el contrato directamente vía RPC. El backend Web2 sigue ahí (auth opcional, indexer, BD para datos no críticos), pero **no es el broker** del pago. La firma sale de la wallet del usuario.
 
-**Lo nuevo**: el frontend habla con el contrato directamente vía RPC. El backend Web2 sigue ahí (auth opcional, indexer, BD para datos no críticos), pero **no es el broker** del pago. La firma sale de la wallet del usuario.
-
-### Diagrama 5 — Pasarela de pago, dos caminos
+### Diagrama 3 — Pasarela de pago, dos caminos
 
 | Camino | Flujo | Cuándo aplica |
 |---|---|---|

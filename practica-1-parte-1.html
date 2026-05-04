@@ -8,8 +8,9 @@
 DCB</title>
   <link rel="stylesheet" href="assets/style.css">
   <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -486,27 +487,27 @@ instante: hay JavaScript ejecutándose, requests AJAX que tardan,
 elementos que aparecen tarde. Hay 3 estrategias para sincronizar:</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Estrategia</th>
 <th>Qué hace</th>
 <th>Cuándo usarla</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>time.sleep(N)</code> (sleep duro)</td>
 <td>Esperás N segundos fijos pase lo que pase</td>
 <td><strong>Casi nunca.</strong> Lento si N es grande, frágil si N es
 chico.</td>
 </tr>
-<tr class="even">
+<tr>
 <td><strong>Explicit wait</strong> (<code>WebDriverWait</code> +
 <code>expected_conditions</code>)</td>
 <td>Esperás hasta que <strong>una condición específica</strong> se
 cumpla, con un timeout máximo</td>
 <td><strong>Siempre.</strong> Es el patrón correcto.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Implicit wait</td>
 <td>Configurás un timeout global para “buscar elementos”</td>
 <td>Cómodo pero peligroso — se mezcla raro con explicit waits</td>
@@ -523,37 +524,37 @@ reemplazalo por un <code>WebDriverWait</code> con
 frágiles</h3>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode html"><code class="sourceCode html"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- Frágil: clase auto-generada que cambia con cada deploy de ML --&gt;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;ui-search-result__1xY7Z&quot;</span><span class="dt">&gt;</span>...<span class="dt">&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> class</span><span class="op">=</span><span class="st">&quot;ui-search-result__1xY7Z&quot;</span><span class="dt">&gt;</span>...<span class="dt">&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- Robusto: estructura semántica + atributos data-* --&gt;</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">li</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;ui-search-layout__item&quot;</span><span class="dt">&gt;</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">h2</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;ui-search-item__title&quot;</span><span class="dt">&gt;</span>...<span class="dt">&lt;/</span><span class="kw">h2</span><span class="dt">&gt;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">li</span><span class="ot"> class</span><span class="op">=</span><span class="st">&quot;ui-search-layout__item&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">h2</span><span class="ot"> class</span><span class="op">=</span><span class="st">&quot;ui-search-item__title&quot;</span><span class="dt">&gt;</span>...<span class="dt">&lt;/</span><span class="kw">h2</span><span class="dt">&gt;</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">li</span><span class="dt">&gt;</span></span></code></pre></div>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Tipo de selector</th>
 <th>Robustez</th>
 <th>Cuándo</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>data-testid="..."</code></td>
 <td>⭐⭐⭐ Máxima</td>
 <td>Si el sitio los expone (ML no)</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Estructura semántica (<code>h2.ui-search-item__title</code>)</td>
 <td>⭐⭐ Media-alta</td>
 <td>Patrón principal del TP</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Clase con sufijo random (<code>.ui-search-result__1xY</code>)</td>
 <td>⭐ Baja</td>
 <td><strong>Evitar</strong></td>
 </tr>
-<tr class="even">
+<tr>
 <td>XPath posicional (<code>/div/div[3]/span[2]</code>)</td>
 <td>⭐ Baja</td>
 <td><strong>Evitar</strong></td>
@@ -767,9 +768,9 @@ class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb9-1"><
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">## Integrantes</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>| Nombre | Legajo |</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>|--------|--------|</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>| ...    | ...    |</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Nombre <span class="pp">|</span> Legajo <span class="pp">|</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="pp">|--------|--------|</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ...    <span class="pp">|</span> ...    <span class="pp">|</span></span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stack</span></span>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Lenguaje: Python 3.13 / Node 20 / Java 17</span>
@@ -798,10 +799,10 @@ class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb9-1"><
 <span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>... (qué eligieron y por qué — ej: por qué <span class="in">`WebDriverWait`</span> con timeout 15s, por qué <span class="in">`data-*`</span> no aplicaba)</span>
 <span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparativa Chrome vs Firefox</span></span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>| Aspecto | Chrome | Firefox |</span>
-<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>|---------|--------|---------|</span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>| Tiempo del Hit #3 | ... | ... |</span>
-<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>| Diferencias en selectores | ... | ... |</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Aspecto <span class="pp">|</span> Chrome <span class="pp">|</span> Firefox <span class="pp">|</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a><span class="pp">|---------|--------|---------|</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Tiempo del Hit #3 <span class="pp">|</span> ... <span class="pp">|</span> ... <span class="pp">|</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Diferencias en selectores <span class="pp">|</span> ... <span class="pp">|</span> ... <span class="pp">|</span></span>
 <span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a><span class="fu">## Herramientas de IA usadas</span></span>
 <span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Cursor / Claude / Copilot — para qué la usamos: ...</span>
@@ -837,27 +838,27 @@ el 70 % de las dudas están resueltas ahí.</p>
 Parte 1</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Criterio</th>
 <th>Peso</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Hit #1 — setup, navegación, búsqueda y lectura de títulos</td>
 <td>15 %</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Hit #2 — Browser Factory funcionando contra Chrome
 <strong>y</strong> Firefox sin cambios de código</td>
 <td>25 %</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Hit #3 — filtros aplicados correctamente vía DOM (nuevo + tienda
 oficial) y screenshot</td>
 <td>30 %</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Infra base — calidad de código (waits explícitos, selectores en
 módulo aparte, sin <code>time.sleep</code>) + README/informe/video
 explicativo + <strong>Dockerfile + docker-compose.yml
@@ -1125,7 +1126,28 @@ href="https://www.mercadolibre.com.ar">https://www.mercadolibre.com.ar</a></li>
     },
     'TP 2 · PARTE 4': {
       prev: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' },
-      next: null
+      next: { href: 'blockchain-overview.html', title: 'Blockchain · Overview' }
+    },
+    // ----- Blockchain module -----
+    'BLOCKCHAIN': {
+      prev: { href: 'practica-2-parte-4.html',  title: 'Práctica II · Parte 4' },
+      next: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' }
+    },
+    'BC · CLASE 1': {
+      prev: { href: 'blockchain-overview.html', title: 'Blockchain · Overview' },
+      next: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' }
+    },
+    'BC · CLASE 2': {
+      prev: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' },
+      next: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' }
+    },
+    'BC · CLASE 3': {
+      prev: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' },
+      next: { href: 'blockchain-clase-4.html',  title: 'Clase 4 — NFTs + Slither' }
+    },
+    'BC · CLASE 4': {
+      prev: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' },
+      next: { href: 'index.html',               title: 'Menú principal' }
     }
   };
 

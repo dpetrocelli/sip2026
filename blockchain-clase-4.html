@@ -355,6 +355,13 @@ naturalmente de acá.</p>
 algo de eso no está, paren y completen primero</strong> — sin esa base
 la clase de hoy no tiene dónde apoyarse.</p>
 </blockquote>
+<blockquote>
+<p><strong>Repo</strong>: hoy seguimos en el mismo proyecto Foundry de
+clase 1-2 (<a
+href="https://github.com/dpetrocelli/sip2026-blockchain-clase1">sip2026-blockchain-clase1</a>).
+Agregamos <code>BadgeNFT.sol</code> y los contratos de tokenomics al
+directorio <code>src/</code>.</p>
+</blockquote>
 <hr />
 <h2 id="qué-vamos-a-hacer-hoy">¿Qué vamos a hacer hoy?</h2>
 <ol type="1">
@@ -897,7 +904,7 @@ class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb10-1">
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Pseudo-randomness en SetBonusNFT.mintRandom**: usamos <span class="in">`keccak256(blockhash, sender)`</span> </span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  porque las piezas son cosméticas y el costo de Chainlink VRF no se justifica en testnet.</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  En producción se migra a VRF.</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Burn 1% / tx en MyToken**: warning de slippage en DEX. Mitigación: whitelist de pools.</span></code></pre></div>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Burn 1% / tx en el token del proyecto**: warning de slippage en DEX. Mitigación: whitelist de pools.</span></code></pre></div>
 <blockquote>
 <p>🎯 <strong>Lo que el TP final pide</strong>: corrieron Slither, hay 0
 findings de severidad HIGH, los MEDIUM están justificados en
@@ -1506,7 +1513,28 @@ adelante. Ese es el patrón.</td>
     },
     'TP 2 · PARTE 4': {
       prev: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' },
-      next: null
+      next: { href: 'blockchain-overview.html', title: 'Blockchain · Overview' }
+    },
+    // ----- Blockchain module -----
+    'BLOCKCHAIN': {
+      prev: { href: 'practica-2-parte-4.html',  title: 'Práctica II · Parte 4' },
+      next: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' }
+    },
+    'BC · CLASE 1': {
+      prev: { href: 'blockchain-overview.html', title: 'Blockchain · Overview' },
+      next: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' }
+    },
+    'BC · CLASE 2': {
+      prev: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' },
+      next: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' }
+    },
+    'BC · CLASE 3': {
+      prev: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' },
+      next: { href: 'blockchain-clase-4.html',  title: 'Clase 4 — NFTs + Slither' }
+    },
+    'BC · CLASE 4': {
+      prev: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' },
+      next: { href: 'index.html',               title: 'Menú principal' }
     }
   };
 

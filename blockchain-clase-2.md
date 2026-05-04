@@ -4,6 +4,8 @@
 
 > **Pre-requisito**: la clase 1 cerrada. Tienen MetaMask + Sepolia + Foundry instalado, y un `SimpleStorage` deployado y verificado.
 
+> **Repo**: hoy seguimos en el mismo proyecto Foundry de clase 1 ([sip2026-blockchain-clase1](https://github.com/dpetrocelli/sip2026-blockchain-clase1)). Le agregamos `PaymentGateway.sol` y `ProjectToken.sol` al directorio `src/`.
+
 ---
 
 ## ¿Qué vamos a hacer hoy?
@@ -31,7 +33,7 @@ Dijimos que vamos a integrar pagos en blockchain como integraríamos MercadoPago
 | Webhook que avisa "el pago se procesó" | Evento `Paid(payer, amount, action)` que su indexer consume |
 | Saldo del comprador en pesos | Saldo del comprador en USDC (un ERC-20) |
 | MercadoPago como custodio de los pesos | El contrato `treasury` recibe los USDC directamente |
-| Comisión de MP (~5%) | Gas (~$0.5 en Sepolia, ~$0.01 en Polygon mainnet) |
+| Comisión de MP (~5%) | Gas (gratis en Sepolia con ETH del faucet, ~$0.01 en Polygon mainnet) |
 
 > 🎯 **Clave**: si entendieron MercadoPago como integración HTTP-API, esto es **el mismo modelo mental** pero cambiando los rieles. Lo que cambia: cómo se firman las txs y cómo se mueven los activos.
 
@@ -473,6 +475,50 @@ cast call $USDC_SEPOLIA "balanceOf(address)(uint256)" $TREASURY \
 
 ---
 
+## Parte 9 — Tu propio ERC-20 (token del proyecto)
+
+Hasta acá usaron el USDC oficial de Circle como medio de pago. Pero su proyecto puede emitir **su propio token ERC-20** para representar la "moneda interna": `$VBK` para VibeCheck, `$DPF` para DepFund, `$RNW` para Renovable, `$IDEA` para IDEAFY. Esto les sirve para gamificación, dividendos, o lo que sea que necesite tokenomics propia.
+
+OpenZeppelin lo resuelve en 15 líneas. Creá `src/ProjectToken.sol`:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.24;
+
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+
+/// @title ProjectToken
+/// @notice ERC-20 del equipo. Personalizar nombre/símbolo según proyecto.
+contract ProjectToken is ERC20, Ownable {
+    constructor(string memory name_, string memory symbol_, address owner_)
+        ERC20(name_, symbol_)
+        Ownable(owner_)
+    {}
+
+    /// @notice Emitir tokens. Solo el owner.
+    function mint(address to, uint256 amount) external onlyOwner {
+        _mint(to, amount);
+    }
+}
+```
+
+Deploy del token (cada equipo cambia los strings):
+
+```bash
+forge create src/ProjectToken.sol:ProjectToken \
+  --rpc-url $SEPOLIA_RPC \
+  --private-key $PRIVATE_KEY \
+  --constructor-args "VibeCheck Token" "VBK" $YOUR_ADDRESS \
+  --broadcast
+```
+
+Te devuelve la address del token. Guardala como `$VBK_ADDR` (o `$DPF_ADDR`, etc.). **La van a necesitar en clase 4** para enchufar tokenomics (burn 1%, dividendos USDC, staking, governance) sobre este token.
+
+> **Cómo encaja con `PaymentGateway`**: en clase 4 vamos a sobrescribir el hook `_onPaid()` del gateway para que cada `pay()` haga `mint()` del token del proyecto al payer. Ahí cierra el loop: paga USDC al treasury → el contrato emite tokens del proyecto al usuario.
+
+---
+
 ## Cierre — qué nos llevamos
 
 Después de esta clase tienen:
@@ -482,6 +528,7 @@ Después de esta clase tienen:
 - [ ] El contrato está verificado en Etherscan (cualquiera puede leer el source)
 - [ ] Probaron el flow completo desde `cast`: approve → pay → ver evento
 - [ ] Saben qué es reentrancy y cómo lo cierra OZ con `nonReentrant`
+- [ ] Su propio ERC-20 (`$VBK` / `$DPF` / `$RNW` / `$IDEA`) deployado, listo para clase 4
 
 **En clase 3** vamos a:
 - Reemplazar `cast` por una dApp Next.js + wagmi + RainbowKit.

@@ -49,21 +49,21 @@
     <li><a href="#diagramas-hero" id="toc-diagramas-hero">Diagramas
     hero</a>
     <ul>
-    <li><a href="#0--las-3-capas--mapa-global-del-sistema"
-    id="toc-0--las-3-capas--mapa-global-del-sistema">0 · Las 3 capas —
-    mapa global del sistema</a></li>
     <li><a href="#1--el-ciclo-de-un-smart-contract"
     id="toc-1--el-ciclo-de-un-smart-contract">1 · El ciclo de un smart
     contract</a></li>
-    <li><a href="#2--read-vs-write--la-distinción-crítica"
-    id="toc-2--read-vs-write--la-distinción-crítica">2 · Read vs Write —
-    la distinción crítica</a></li>
-    <li><a href="#3--qué-vive-dónde--público-vs-privado"
-    id="toc-3--qué-vive-dónde--público-vs-privado">3 · Qué vive dónde —
-    público vs privado</a></li>
-    <li><a href="#4--pasarela-de-pago--el-corazón-del-tp"
-    id="toc-4--pasarela-de-pago--el-corazón-del-tp">4 · Pasarela de pago
+    <li><a href="#2--las-3-capas--mapa-global-del-sistema"
+    id="toc-2--las-3-capas--mapa-global-del-sistema">2 · Las 3 capas —
+    mapa global del sistema</a></li>
+    <li><a href="#3--pasarela-de-pago--el-corazón-del-tp"
+    id="toc-3--pasarela-de-pago--el-corazón-del-tp">3 · Pasarela de pago
     — el corazón del TP</a></li>
+    <li><a href="#4--read-vs-write--la-distinción-crítica"
+    id="toc-4--read-vs-write--la-distinción-crítica">4 · Read vs Write —
+    la distinción crítica</a></li>
+    <li><a href="#5--qué-vive-dónde--público-vs-privado"
+    id="toc-5--qué-vive-dónde--público-vs-privado">5 · Qué vive dónde —
+    público vs privado</a></li>
     </ul></li>
     <li><a href="#el-contrato-base-que-se-llevan"
     id="toc-el-contrato-base-que-se-llevan">El contrato base que se
@@ -110,21 +110,21 @@
       <li><a href="#diagramas-hero" id="toc-diagramas-hero">Diagramas
       hero</a>
       <ul>
-      <li><a href="#0--las-3-capas--mapa-global-del-sistema"
-      id="toc-0--las-3-capas--mapa-global-del-sistema">0 · Las 3 capas —
-      mapa global del sistema</a></li>
       <li><a href="#1--el-ciclo-de-un-smart-contract"
       id="toc-1--el-ciclo-de-un-smart-contract">1 · El ciclo de un smart
       contract</a></li>
-      <li><a href="#2--read-vs-write--la-distinción-crítica"
-      id="toc-2--read-vs-write--la-distinción-crítica">2 · Read vs Write
-      — la distinción crítica</a></li>
-      <li><a href="#3--qué-vive-dónde--público-vs-privado"
-      id="toc-3--qué-vive-dónde--público-vs-privado">3 · Qué vive dónde
-      — público vs privado</a></li>
-      <li><a href="#4--pasarela-de-pago--el-corazón-del-tp"
-      id="toc-4--pasarela-de-pago--el-corazón-del-tp">4 · Pasarela de
+      <li><a href="#2--las-3-capas--mapa-global-del-sistema"
+      id="toc-2--las-3-capas--mapa-global-del-sistema">2 · Las 3 capas —
+      mapa global del sistema</a></li>
+      <li><a href="#3--pasarela-de-pago--el-corazón-del-tp"
+      id="toc-3--pasarela-de-pago--el-corazón-del-tp">3 · Pasarela de
       pago — el corazón del TP</a></li>
+      <li><a href="#4--read-vs-write--la-distinción-crítica"
+      id="toc-4--read-vs-write--la-distinción-crítica">4 · Read vs Write
+      — la distinción crítica</a></li>
+      <li><a href="#5--qué-vive-dónde--público-vs-privado"
+      id="toc-5--qué-vive-dónde--público-vs-privado">5 · Qué vive dónde
+      — público vs privado</a></li>
       </ul></li>
       <li><a href="#el-contrato-base-que-se-llevan"
       id="toc-el-contrato-base-que-se-llevan">El contrato base que se
@@ -257,24 +257,8 @@ plugar el patrón a VibeCheck/DepFund/RNW/IDEAFY</td>
 </table>
 <hr />
 <h2 id="diagramas-hero">Diagramas hero</h2>
-<p>Estos 5 diagramas cubren todo el modelo mental. Recurrir a ellos
-durante el desarrollo de su sistema.</p>
-<h3 id="0--las-3-capas--mapa-global-del-sistema">0 · Las 3 capas — mapa
-global del sistema</h3>
-<p>El mapa mental de más alto nivel: <strong>edge / cliente</strong>
-(browser + wallet del usuario, frontend en Vercel) · <strong>web2 infra
-en k3s</strong> (backend, indexer, Postgres, IPFS, Loki/Grafana — todo
-lo que NO es blockchain) · <strong>on-chain en Sepolia</strong>
-(contrato + USDC + state inmutable). Todo lo que ya saben de TP0 (k3s) y
-TP2 (observabilidad) paga acá, en la capa del medio.</p>
-<p><img src="assets/diagramas/06-tres-capas.png"
-alt="Las 3 capas" /></p>
-<blockquote>
-<p><strong>Regla práctica</strong>: si lo pueden romper sin pedirle
-permiso a nadie → es suyo (k3s o Vercel). Si necesitan firma + gas → es
-on-chain.</p>
-</blockquote>
-<hr />
+<p>Estos 5 diagramas cubren todo el modelo mental. El orden va de
+zoom-out → zoom-in → tactical.</p>
 <h3 id="1--el-ciclo-de-un-smart-contract">1 · El ciclo de un smart
 contract</h3>
 <p>Del archivo <code>.sol</code> que escribís, al contrato deployado, al
@@ -285,31 +269,23 @@ contrato).</p>
 <p><img src="assets/diagramas/01-ciclo-completo.png"
 alt="Ciclo completo" /></p>
 <hr />
-<h3 id="2--read-vs-write--la-distinción-crítica">2 · Read vs Write — la
-distinción crítica</h3>
-<p><code>cast call</code> (lectura, gratis, instantánea) vs
-<code>cast send</code> (escritura, firma + gas, espera bloque).
-<strong>Misma sintaxis en Solidity, comportamiento radicalmente
-distinto</strong>.</p>
+<h3 id="2--las-3-capas--mapa-global-del-sistema">2 · Las 3 capas — mapa
+global del sistema</h3>
+<p>El mapa mental de más alto nivel: <strong>edge / cliente</strong>
+(browser + wallet del usuario, frontend en Vercel) · <strong>web2 infra
+en k3s</strong> (backend, indexer, Postgres, IPFS, Loki/Grafana — todo
+lo que NO es blockchain) · <strong>on-chain en Sepolia</strong>
+(contrato + USDC + state inmutable). Todo lo que ya saben de TP0 (k3s) y
+TP2 (observabilidad) paga acá, en la capa del medio.</p>
+<p><img src="assets/diagramas/02-tres-capas.png"
+alt="Las 3 capas" /></p>
 <blockquote>
-<p>Regla mnemotécnica: si la función dice <code>view</code> o
-<code>pure</code> → <code>cast call</code>. Cualquier otra cosa →
-<code>cast send</code>.</p>
+<p><strong>Regla práctica</strong>: si lo pueden romper sin pedirle
+permiso a nadie → es suyo (k3s o Vercel). Si necesitan firma + gas → es
+on-chain.</p>
 </blockquote>
-<p><img src="assets/diagramas/02-read-vs-write.png"
-alt="Read vs Write" /></p>
 <hr />
-<h3 id="3--qué-vive-dónde--público-vs-privado">3 · Qué vive dónde —
-público vs privado</h3>
-<p>Mapa de qué se puede compartir y qué nunca. Lo rojo (private key,
-frase BIP-39, <code>.env</code>) <strong>nunca</strong> sale de su
-máquina. Lo verde (address, txs, bytecode, storage) es público por
-diseño — <strong>toda la blockchain es leíble por
-cualquiera</strong>.</p>
-<p><img src="assets/diagramas/03-que-vive-donde.png"
-alt="Qué vive dónde" /></p>
-<hr />
-<h3 id="4--pasarela-de-pago--el-corazón-del-tp">4 · Pasarela de pago —
+<h3 id="3--pasarela-de-pago--el-corazón-del-tp">3 · Pasarela de pago —
 el corazón del TP</h3>
 <p><strong>Dos caminos</strong>:</p>
 <ul>
@@ -326,8 +302,32 @@ A.</li>
 <strong>La lógica del contrato no cambia entre los dos
 caminos.</strong></p>
 </blockquote>
-<p><img src="assets/diagramas/05-pasarela-de-pago.png"
+<p><img src="assets/diagramas/03-pasarela-de-pago.png"
 alt="Pasarela de pago" /></p>
+<hr />
+<h3 id="4--read-vs-write--la-distinción-crítica">4 · Read vs Write — la
+distinción crítica</h3>
+<p><code>cast call</code> (lectura, gratis, instantánea) vs
+<code>cast send</code> (escritura, firma + gas, espera bloque).
+<strong>Misma sintaxis en Solidity, comportamiento radicalmente
+distinto</strong>.</p>
+<blockquote>
+<p>Regla mnemotécnica: si la función dice <code>view</code> o
+<code>pure</code> → <code>cast call</code>. Cualquier otra cosa →
+<code>cast send</code>.</p>
+</blockquote>
+<p><img src="assets/diagramas/04-read-vs-write.png"
+alt="Read vs Write" /></p>
+<hr />
+<h3 id="5--qué-vive-dónde--público-vs-privado">5 · Qué vive dónde —
+público vs privado</h3>
+<p>Mapa de qué se puede compartir y qué nunca. Lo rojo (private key,
+frase BIP-39, <code>.env</code>) <strong>nunca</strong> sale de su
+máquina. Lo verde (address, txs, bytecode, storage) es público por
+diseño — <strong>toda la blockchain es leíble por
+cualquiera</strong>.</p>
+<p><img src="assets/diagramas/05-que-vive-donde.png"
+alt="Qué vive dónde" /></p>
 <hr />
 <h2 id="el-contrato-base-que-se-llevan">El contrato base que se
 llevan</h2>
@@ -425,14 +425,18 @@ href="https://sepolia.etherscan.io/address/0x1c7D4B196Cb0C7B01d743Fbc6116a902379
 <hr />
 <h2 id="material-relacionado">Material relacionado</h2>
 <ul>
-<li><a href="#">Programa del Seminario</a> — el doc que define el
-TP</li>
+<li><a href="blockchain-clase-1.html">Clase 1 — Fundamentos + setup + tu
+primer contrato</a></li>
+<li><a href="blockchain-clase-2.html">Clase 2 — ERC-20 + PaymentGateway
++ Reentrancy</a></li>
+<li><a href="blockchain-clase-3.html">Clase 3 — Frontend + integración +
+onramp testnet</a></li>
+<li><a href="blockchain-clase-4.html">Clase 4 — NFTs gamificados +
+tokenomics + Slither</a></li>
 <li><a href="practica-0.html">TP 0 — Kubernetes</a></li>
 <li><a href="practica-1-parte-1.html">TP 1 — Selenium
 MercadoLibre</a></li>
 <li><a href="practica-2-parte-1.html">TP 2 — Observabilidad</a></li>
-<li><strong>Próximamente</strong>: las 4 clases de blockchain (links
-cuando estén publicadas).</li>
 </ul>
 
     <nav class="page-prev-next" aria-label="Navegación entre páginas">
@@ -584,7 +588,28 @@ cuando estén publicadas).</li>
     },
     'TP 2 · PARTE 4': {
       prev: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' },
-      next: null
+      next: { href: 'blockchain-overview.html', title: 'Blockchain · Overview' }
+    },
+    // ----- Blockchain module -----
+    'BLOCKCHAIN': {
+      prev: { href: 'practica-2-parte-4.html',  title: 'Práctica II · Parte 4' },
+      next: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' }
+    },
+    'BC · CLASE 1': {
+      prev: { href: 'blockchain-overview.html', title: 'Blockchain · Overview' },
+      next: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' }
+    },
+    'BC · CLASE 2': {
+      prev: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' },
+      next: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' }
+    },
+    'BC · CLASE 3': {
+      prev: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' },
+      next: { href: 'blockchain-clase-4.html',  title: 'Clase 4 — NFTs + Slither' }
+    },
+    'BC · CLASE 4': {
+      prev: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' },
+      next: { href: 'index.html',               title: 'Menú principal' }
     }
   };
 

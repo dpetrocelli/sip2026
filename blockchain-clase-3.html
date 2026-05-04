@@ -111,11 +111,11 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
     id="toc-parte-1--refresh-dónde-encaja-el-frontend">Parte 1 —
     Refresh: dónde encaja el frontend</a>
     <ul>
-    <li><a href="#diagrama-4--arquitectura-híbrida"
-    id="toc-diagrama-4--arquitectura-híbrida">Diagrama 4 — Arquitectura
-    híbrida</a></li>
-    <li><a href="#diagrama-5--pasarela-de-pago-dos-caminos"
-    id="toc-diagrama-5--pasarela-de-pago-dos-caminos">Diagrama 5 —
+    <li><a href="#diagrama-2--las-3-capas-del-sistema"
+    id="toc-diagrama-2--las-3-capas-del-sistema">Diagrama 2 — Las 3
+    capas del sistema</a></li>
+    <li><a href="#diagrama-3--pasarela-de-pago-dos-caminos"
+    id="toc-diagrama-3--pasarela-de-pago-dos-caminos">Diagrama 3 —
     Pasarela de pago, dos caminos</a></li>
     </ul></li>
     <li><a href="#parte-2--setup-del-proyecto-nextjs"
@@ -211,11 +211,11 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       id="toc-parte-1--refresh-dónde-encaja-el-frontend">Parte 1 —
       Refresh: dónde encaja el frontend</a>
       <ul>
-      <li><a href="#diagrama-4--arquitectura-híbrida"
-      id="toc-diagrama-4--arquitectura-híbrida">Diagrama 4 —
-      Arquitectura híbrida</a></li>
-      <li><a href="#diagrama-5--pasarela-de-pago-dos-caminos"
-      id="toc-diagrama-5--pasarela-de-pago-dos-caminos">Diagrama 5 —
+      <li><a href="#diagrama-2--las-3-capas-del-sistema"
+      id="toc-diagrama-2--las-3-capas-del-sistema">Diagrama 2 — Las 3
+      capas del sistema</a></li>
+      <li><a href="#diagrama-3--pasarela-de-pago-dos-caminos"
+      id="toc-diagrama-3--pasarela-de-pago-dos-caminos">Diagrama 3 —
       Pasarela de pago, dos caminos</a></li>
       </ul></li>
       <li><a href="#parte-2--setup-del-proyecto-nextjs"
@@ -307,11 +307,17 @@ cuando el usuario “paga con tarjeta”.</p>
 <code>PaymentGateway.sol</code> deployado en Sepolia, address conocida,
 tests pasando.</p>
 </blockquote>
+<blockquote>
+<p><strong>Repo</strong>: hoy creamos un proyecto
+<strong>separado</strong> del Foundry de clase 1-2. Es un Next.js +
+wagmi independiente que se conecta al contrato deployado vía RPC. No hay
+carpeta <code>src/</code> compartida.</p>
+</blockquote>
 <hr />
 <h2 id="qué-vamos-a-hacer-hoy">¿Qué vamos a hacer hoy?</h2>
 <ol type="1">
-<li><strong>Refresh</strong> de los <strong>diagramas 4 y 5</strong> del
-overview — arquitectura híbrida + pasarela de pago.</li>
+<li><strong>Refresh</strong> de los <strong>diagramas 2 y 3</strong> del
+overview — las 3 capas del sistema + pasarela de pago.</li>
 <li><strong>Setup</strong> de un proyecto Next.js + wagmi + viem +
 RainbowKit.</li>
 <li><strong>Conectar wallet</strong> (MetaMask) con RainbowKit en una
@@ -336,21 +342,16 @@ usar desde el browser.</p>
 dónde encaja el frontend</h2>
 <p>Antes de teclear, repasemos los <strong>dos diagramas</strong> del
 overview que matter para hoy.</p>
-<h3 id="diagrama-4--arquitectura-híbrida">Diagrama 4 — Arquitectura
-híbrida</h3>
-<pre><code>┌──────────────┐     ┌──────────────┐     ┌─────────────────────┐
-│  Frontend    │ ──▶ │  Backend     │     │  Smart Contract     │
-│  Vercel      │     │  k3s         │     │  Sepolia            │
-│  (Next.js)   │ ──────────────────────▶  │  (PaymentGateway)   │
-└──────────────┘     └──────────────┘     └─────────────────────┘
-       │                                          ▲
-       │   wagmi + viem (RPC)                     │
-       └──────────────────────────────────────────┘</code></pre>
-<p><strong>Lo nuevo</strong>: el frontend habla con el contrato
-directamente vía RPC. El backend Web2 sigue ahí (auth opcional, indexer,
-BD para datos no críticos), pero <strong>no es el broker</strong> del
-pago. La firma sale de la wallet del usuario.</p>
-<h3 id="diagrama-5--pasarela-de-pago-dos-caminos">Diagrama 5 — Pasarela
+<h3 id="diagrama-2--las-3-capas-del-sistema">Diagrama 2 — Las 3 capas
+del sistema</h3>
+<p>Repasen el diagrama de <a
+href="blockchain-overview.html#2--las-3-capas-mapa-global-del-sistema">las
+3 capas</a> en el overview. <strong>Lo nuevo de hoy</strong>: el
+frontend habla con el contrato directamente vía RPC. El backend Web2
+sigue ahí (auth opcional, indexer, BD para datos no críticos), pero
+<strong>no es el broker</strong> del pago. La firma sale de la wallet
+del usuario.</p>
+<h3 id="diagrama-3--pasarela-de-pago-dos-caminos">Diagrama 3 — Pasarela
 de pago, dos caminos</h3>
 <table>
 <thead>
@@ -385,13 +386,13 @@ Lemon, MoonPay, Buenbit. En testnet <strong>no existen onramps</strong>
 <h2 id="parte-2--setup-del-proyecto-nextjs">Parte 2 — Setup del proyecto
 Next.js</h2>
 <h3 id="21-crear-el-proyecto">2.1 Crear el proyecto</h3>
-<div class="sourceCode" id="cb2"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> create-next-app@latest paygw-dapp <span class="at">--typescript</span> <span class="at">--tailwind</span> <span class="at">--app</span> <span class="at">--no-src-dir</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> paygw-dapp</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> create-next-app@latest paygw-dapp <span class="at">--typescript</span> <span class="at">--tailwind</span> <span class="at">--app</span> <span class="at">--no-src-dir</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> paygw-dapp</span></code></pre></div>
 <p>Aceptá los defaults (eslint sí, alias <code>@/*</code> sí).</p>
 <h3 id="22-instalar-las-deps-de-web3">2.2 Instalar las deps de Web3</h3>
-<div class="sourceCode" id="cb3"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install wagmi viem @tanstack/react-query @rainbow-me/rainbowkit</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install wagmi viem @tanstack/react-query @rainbow-me/rainbowkit</span></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -434,10 +435,10 @@ dApp. Necesitás un <strong>Project ID</strong> gratis.</p>
 <code>a1b2c3...</code>).</li>
 </ol>
 <p>Pegalo en <code>.env.local</code>:</p>
-<div class="sourceCode" id="cb4"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">NEXT_PUBLIC_WC_PROJECT_ID</span><span class="op">=</span>tu_project_id_acá</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">NEXT_PUBLIC_PAYGW_ADDRESS</span><span class="op">=</span>0xTuPaymentGatewayDeClase2</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="va">NEXT_PUBLIC_USDC_ADDRESS</span><span class="op">=</span>0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">NEXT_PUBLIC_WC_PROJECT_ID</span><span class="op">=</span>tu_project_id_acá</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">NEXT_PUBLIC_PAYGW_ADDRESS</span><span class="op">=</span>0xTuPaymentGatewayDeClase2</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="va">NEXT_PUBLIC_USDC_ADDRESS</span><span class="op">=</span>0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238</span></code></pre></div>
 <blockquote>
 <p>La address del USDC es la oficial de Circle en Sepolia. <strong>No la
 cambien</strong>: es la única que el faucet de Circle reconoce.</p>
@@ -445,15 +446,15 @@ cambien</strong>: es la única que el faucet de Circle reconoce.</p>
 <h3 id="24-configurar-wagmi--rainbowkit">2.4 Configurar wagmi +
 RainbowKit</h3>
 <p>Creá <code>lib/wagmi.ts</code>:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { getDefaultConfig } <span class="im">from</span> <span class="st">&#39;@rainbow-me/rainbowkit&#39;</span><span class="op">;</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { sepolia } <span class="im">from</span> <span class="st">&#39;wagmi/chains&#39;</span><span class="op">;</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> config <span class="op">=</span> <span class="fu">getDefaultConfig</span>({</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  appName<span class="op">:</span> <span class="st">&#39;PayGW SIP&#39;</span><span class="op">,</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  projectId<span class="op">:</span> <span class="bu">process</span><span class="op">.</span><span class="at">env</span><span class="op">.</span><span class="at">NEXT_PUBLIC_WC_PROJECT_ID</span><span class="op">!,</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  chains<span class="op">:</span> [sepolia]<span class="op">,</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  ssr<span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { getDefaultConfig } <span class="im">from</span> <span class="st">&#39;@rainbow-me/rainbowkit&#39;</span><span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { sepolia } <span class="im">from</span> <span class="st">&#39;wagmi/chains&#39;</span><span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> config <span class="op">=</span> <span class="fu">getDefaultConfig</span>({</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  appName<span class="op">:</span> <span class="st">&#39;PayGW SIP&#39;</span><span class="op">,</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  projectId<span class="op">:</span> <span class="bu">process</span><span class="op">.</span><span class="at">env</span><span class="op">.</span><span class="at">NEXT_PUBLIC_WC_PROJECT_ID</span><span class="op">!,</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  chains<span class="op">:</span> [sepolia]<span class="op">,</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  ssr<span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
 <p>Creá <code>app/providers.tsx</code>:</p>
 <pre class="tsx"><code>&#39;use client&#39;;
 import &#39;@rainbow-me/rainbowkit/styles.css&#39;;
@@ -504,8 +505,8 @@ export default function Home() {
   );
 }</code></pre>
 <p>Corré:</p>
-<div class="sourceCode" id="cb9"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> run dev</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> run dev</span></code></pre></div>
 <p>Abrí http://localhost:3000 → click en “Connect Wallet” → MetaMask →
 aprobá.</p>
 <p><strong>Importante</strong>: la wallet tiene que estar en
@@ -517,58 +518,57 @@ aprobá.</p>
 <p>Acá está el corazón de la clase. Vamos por partes.</p>
 <h3 id="41-definir-los-abis">4.1 Definir los ABIs</h3>
 <p>Creá <code>lib/abis.ts</code>:</p>
-<div class="sourceCode" id="cb10"><pre
-class="sourceCode ts"><code class="sourceCode typescript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> PAYGW_ABI <span class="op">=</span> [</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  {</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    type<span class="op">:</span> <span class="st">&#39;function&#39;</span><span class="op">,</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="st">&#39;pay&#39;</span><span class="op">,</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    stateMutability<span class="op">:</span> <span class="st">&#39;nonpayable&#39;</span><span class="op">,</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">:</span> [</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;amount&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;uint256&#39;</span> }<span class="op">,</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;action&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;bytes32&#39;</span> }<span class="op">,</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    ]<span class="op">,</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    outputs<span class="op">:</span> []<span class="op">,</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  {</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    type<span class="op">:</span> <span class="st">&#39;event&#39;</span><span class="op">,</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="st">&#39;Paid&#39;</span><span class="op">,</span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">:</span> [</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;payer&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;address&#39;</span><span class="op">,</span> indexed<span class="op">:</span> <span class="kw">true</span> }<span class="op">,</span></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;amount&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;uint256&#39;</span><span class="op">,</span> indexed<span class="op">:</span> <span class="kw">false</span> }<span class="op">,</span></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;action&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;bytes32&#39;</span><span class="op">,</span> indexed<span class="op">:</span> <span class="kw">true</span> }<span class="op">,</span></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    ]<span class="op">,</span></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>] <span class="im">as</span> <span class="kw">const</span><span class="op">;</span></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> ERC20_ABI <span class="op">=</span> [</span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  {</span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    type<span class="op">:</span> <span class="st">&#39;function&#39;</span><span class="op">,</span></span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="st">&#39;approve&#39;</span><span class="op">,</span></span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    stateMutability<span class="op">:</span> <span class="st">&#39;nonpayable&#39;</span><span class="op">,</span></span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">:</span> [</span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;spender&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;address&#39;</span> }<span class="op">,</span></span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;amount&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;uint256&#39;</span> }<span class="op">,</span></span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    ]<span class="op">,</span></span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    outputs<span class="op">:</span> [{ type<span class="op">:</span> <span class="st">&#39;bool&#39;</span> }]<span class="op">,</span></span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>  {</span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>    type<span class="op">:</span> <span class="st">&#39;function&#39;</span><span class="op">,</span></span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="st">&#39;allowance&#39;</span><span class="op">,</span></span>
-<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    stateMutability<span class="op">:</span> <span class="st">&#39;view&#39;</span><span class="op">,</span></span>
-<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">:</span> [</span>
-<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;owner&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;address&#39;</span> }<span class="op">,</span></span>
-<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;spender&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;address&#39;</span> }<span class="op">,</span></span>
-<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>    ]<span class="op">,</span></span>
-<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>    outputs<span class="op">:</span> [{ type<span class="op">:</span> <span class="st">&#39;uint256&#39;</span> }]<span class="op">,</span></span>
-<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
-<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>  {</span>
-<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>    type<span class="op">:</span> <span class="st">&#39;function&#39;</span><span class="op">,</span></span>
-<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="st">&#39;balanceOf&#39;</span><span class="op">,</span></span>
-<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    stateMutability<span class="op">:</span> <span class="st">&#39;view&#39;</span><span class="op">,</span></span>
-<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">:</span> [{ name<span class="op">:</span> <span class="st">&#39;account&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;address&#39;</span> }]<span class="op">,</span></span>
-<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>    outputs<span class="op">:</span> [{ type<span class="op">:</span> <span class="st">&#39;uint256&#39;</span> }]<span class="op">,</span></span>
-<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
-<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>] <span class="im">as</span> <span class="kw">const</span><span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> PAYGW_ABI <span class="op">=</span> [</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    type<span class="op">:</span> <span class="st">&#39;function&#39;</span><span class="op">,</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="st">&#39;pay&#39;</span><span class="op">,</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    stateMutability<span class="op">:</span> <span class="st">&#39;nonpayable&#39;</span><span class="op">,</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">:</span> [</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;amount&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;uint256&#39;</span> }<span class="op">,</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;action&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;bytes32&#39;</span> }<span class="op">,</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    ]<span class="op">,</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    outputs<span class="op">:</span> []<span class="op">,</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    type<span class="op">:</span> <span class="st">&#39;event&#39;</span><span class="op">,</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="st">&#39;Paid&#39;</span><span class="op">,</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">:</span> [</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;payer&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;address&#39;</span><span class="op">,</span> indexed<span class="op">:</span> <span class="kw">true</span> }<span class="op">,</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;amount&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;uint256&#39;</span><span class="op">,</span> indexed<span class="op">:</span> <span class="kw">false</span> }<span class="op">,</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;action&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;bytes32&#39;</span><span class="op">,</span> indexed<span class="op">:</span> <span class="kw">true</span> }<span class="op">,</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    ]<span class="op">,</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>] <span class="im">as</span> <span class="kw">const</span><span class="op">;</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> ERC20_ABI <span class="op">=</span> [</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    type<span class="op">:</span> <span class="st">&#39;function&#39;</span><span class="op">,</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="st">&#39;approve&#39;</span><span class="op">,</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    stateMutability<span class="op">:</span> <span class="st">&#39;nonpayable&#39;</span><span class="op">,</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">:</span> [</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;spender&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;address&#39;</span> }<span class="op">,</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;amount&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;uint256&#39;</span> }<span class="op">,</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    ]<span class="op">,</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>    outputs<span class="op">:</span> [{ type<span class="op">:</span> <span class="st">&#39;bool&#39;</span> }]<span class="op">,</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    type<span class="op">:</span> <span class="st">&#39;function&#39;</span><span class="op">,</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="st">&#39;allowance&#39;</span><span class="op">,</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    stateMutability<span class="op">:</span> <span class="st">&#39;view&#39;</span><span class="op">,</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">:</span> [</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;owner&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;address&#39;</span> }<span class="op">,</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>      { name<span class="op">:</span> <span class="st">&#39;spender&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;address&#39;</span> }<span class="op">,</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    ]<span class="op">,</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    outputs<span class="op">:</span> [{ type<span class="op">:</span> <span class="st">&#39;uint256&#39;</span> }]<span class="op">,</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    type<span class="op">:</span> <span class="st">&#39;function&#39;</span><span class="op">,</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="st">&#39;balanceOf&#39;</span><span class="op">,</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    stateMutability<span class="op">:</span> <span class="st">&#39;view&#39;</span><span class="op">,</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">:</span> [{ name<span class="op">:</span> <span class="st">&#39;account&#39;</span><span class="op">,</span> type<span class="op">:</span> <span class="st">&#39;address&#39;</span> }]<span class="op">,</span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>    outputs<span class="op">:</span> [{ type<span class="op">:</span> <span class="st">&#39;uint256&#39;</span> }]<span class="op">,</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>] <span class="im">as</span> <span class="kw">const</span><span class="op">;</span></span></code></pre></div>
 <h3 id="42-el-flow-conceptual--approve--pay">4.2 El flow conceptual —
 approve + pay</h3>
 <p>ERC-20 usa el patrón <strong>approve + pull</strong>. El
@@ -861,12 +861,12 @@ contract DeployOnramp is Script {
     }
 }</code></pre>
 <p>Deployá:</p>
-<div class="sourceCode" id="cb17"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> script script/DeployOnramp.s.sol <span class="dt">\</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rpc-url</span> <span class="va">$SEPOLIA_RPC_URL</span> <span class="dt">\</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--account</span> dev <span class="dt">\</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--broadcast</span> <span class="dt">\</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--verify</span> <span class="at">--etherscan-api-key</span> <span class="va">$ETHERSCAN_API_KEY</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">forge</span> script script/DeployOnramp.s.sol <span class="dt">\</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rpc-url</span> <span class="va">$SEPOLIA_RPC_URL</span> <span class="dt">\</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--account</span> dev <span class="dt">\</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--broadcast</span> <span class="dt">\</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--verify</span> <span class="at">--etherscan-api-key</span> <span class="va">$ETHERSCAN_API_KEY</span></span></code></pre></div>
 <p>Anotá las dos addresses (<code>MockUSDC</code> y
 <code>TestnetOnramp</code>).</p>
 <blockquote>
@@ -960,9 +960,9 @@ final tiene que contar exactamente esta historia en su demo.</p>
 <p>Vercel deploya Next.js gratis con <code>git push</code>. Es la URL
 pública que va a evaluar el docente.</p>
 <h3 id="81-pushear-a-github">8.1 Pushear a GitHub</h3>
-<div class="sourceCode" id="cb19"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init <span class="kw">&amp;&amp;</span> <span class="fu">git</span> add . <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">&quot;feat: paygw dapp&quot;</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo create paygw-dapp <span class="at">--public</span> <span class="at">--source</span><span class="op">=</span>. <span class="at">--push</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init <span class="kw">&amp;&amp;</span> <span class="fu">git</span> add . <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">&quot;feat: paygw dapp&quot;</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo create paygw-dapp <span class="at">--public</span> <span class="at">--source</span><span class="op">=</span>. <span class="at">--push</span></span></code></pre></div>
 <h3 id="82-importar-en-vercel">8.2 Importar en Vercel</h3>
 <ol type="1">
 <li><a href="https://vercel.com/new">https://vercel.com/new</a> →
@@ -1248,7 +1248,28 @@ arrancar con <code>NEXT_PUBLIC_</code></td>
     },
     'TP 2 · PARTE 4': {
       prev: { href: 'practica-2-parte-3.html', title: 'Práctica II · Parte 3' },
-      next: null
+      next: { href: 'blockchain-overview.html', title: 'Blockchain · Overview' }
+    },
+    // ----- Blockchain module -----
+    'BLOCKCHAIN': {
+      prev: { href: 'practica-2-parte-4.html',  title: 'Práctica II · Parte 4' },
+      next: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' }
+    },
+    'BC · CLASE 1': {
+      prev: { href: 'blockchain-overview.html', title: 'Blockchain · Overview' },
+      next: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' }
+    },
+    'BC · CLASE 2': {
+      prev: { href: 'blockchain-clase-1.html',  title: 'Clase 1 — Fundamentos + setup' },
+      next: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' }
+    },
+    'BC · CLASE 3': {
+      prev: { href: 'blockchain-clase-2.html',  title: 'Clase 2 — ERC-20 + PaymentGateway' },
+      next: { href: 'blockchain-clase-4.html',  title: 'Clase 4 — NFTs + Slither' }
+    },
+    'BC · CLASE 4': {
+      prev: { href: 'blockchain-clase-3.html',  title: 'Clase 3 — Frontend + onramp' },
+      next: { href: 'index.html',               title: 'Menú principal' }
     }
   };
 
