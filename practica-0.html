@@ -8,9 +8,8 @@
 DCB</title>
   <link rel="stylesheet" href="assets/style.css">
   <style type="text/css">
-html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -412,17 +411,17 @@ sin depender de snap (microk8s) ni de máquinas virtuales (minikube).</p>
 el sistema operativo:</p>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th>Tu sistema</th>
 <th>Qué instalás</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>Linux nativo o WSL2</td>
 <td><strong>k3s</strong> (instalación directa)</td>
 </tr>
-<tr>
+<tr class="even">
 <td>macOS o Windows sin WSL</td>
 <td><strong>k3d</strong> — que es k3s corriendo adentro de Docker</td>
 </tr>
@@ -476,45 +475,45 @@ donde la industria está parada hoy. Eso significa entender la diferencia
 entre:</p>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th>Mundo Docker / docker-compose</th>
 <th>Mundo Kubernetes</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td><code>docker run</code></td>
 <td><code>Pod</code> (la unidad mínima — uno o varios containers que
 comparten red y storage)</td>
 </tr>
-<tr>
+<tr class="even">
 <td><code>restart: always</code> en compose</td>
 <td><code>Deployment</code> (mantiene N réplicas vivas)</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><code>docker run --rm scraper</code></td>
 <td><code>Job</code> (one-off batch que corre hasta completarse)</td>
 </tr>
-<tr>
+<tr class="even">
 <td><code>cron</code> en el host disparando <code>docker run</code></td>
 <td><code>CronJob</code> (cron nativo del cluster)</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><code>volumes:</code> en compose</td>
 <td><code>PersistentVolumeClaim</code> (PVC) — un pedido de
 almacenamiento desacoplado del nodo</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Archivo <code>.env</code> montado</td>
 <td><code>ConfigMap</code> (configuración) + <code>Secret</code> (datos
 sensibles)</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><code>ports:</code> en compose</td>
 <td><code>Service</code> (abstracción de red estable sobre pods que
 pueden morir y revivir)</td>
 </tr>
-<tr>
+<tr class="even">
 <td><code>docker network</code></td>
 <td><code>Namespace</code> + políticas de red</td>
 </tr>
@@ -724,7 +723,7 @@ el panorama 2026</h2>
 el TP:</p>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th>Registry</th>
 <th>Tipo</th>
 <th>Cuándo se elige</th>
@@ -732,14 +731,14 @@ el TP:</p>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td><strong>GitHub Container Registry</strong>
 (<code>ghcr.io</code>)</td>
 <td>Cloud, integrado con GitHub</td>
 <td>Stack basado en GitHub Actions, OSS, ergonomía top</td>
 <td style="text-align: center;">✅ ilimitado</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>Docker Hub</strong> (<code>docker.io</code>)</td>
 <td>Cloud, el original</td>
 <td>Imágenes oficiales para discoverability máxima</td>
@@ -747,53 +746,53 @@ el TP:</p>
 anónimo, 200/6h autenticado — <strong>se siente en CI</strong>, por eso
 para este TP usamos <code>ghcr.io</code></td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Amazon ECR</strong></td>
 <td>Cloud, AWS-native</td>
 <td>Workloads en EKS / ECS / Fargate; necesitás IAM-based auth</td>
 <td style="text-align: center;">❌ pago (pricing por GB-mes +
 transferencia)</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>Google Artifact Registry</strong> (reemplazó GCR)</td>
 <td>Cloud, GCP-native</td>
 <td>GKE / Cloud Run; soporta OCI + Maven + npm en un mismo registry</td>
 <td style="text-align: center;">❌ pago</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Azure Container Registry</strong></td>
 <td>Cloud, Azure-native</td>
 <td>AKS, integración con Azure DevOps</td>
 <td style="text-align: center;">❌ pago (3 tiers: Basic / Standard /
 Premium)</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>GitLab Container Registry</strong></td>
 <td>Cloud o self-hosted</td>
 <td>Stack basado en GitLab CI</td>
 <td style="text-align: center;">✅ con cuenta GitLab</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Harbor</strong></td>
 <td><strong>Self-hosted, OSS</strong> (CNCF graduated)</td>
 <td>El estándar on-prem corporativo: replicación, vulnerability scan,
 RBAC</td>
 <td style="text-align: center;">N/A — vos lo hosteás</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>JFrog Artifactory</strong></td>
 <td>Self-hosted o cloud, enterprise</td>
 <td>Multi-format (Docker + Maven + npm + Helm + Conda + …) en un solo
 lugar</td>
 <td style="text-align: center;">❌ pago (excepto OSS edition)</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Quay.io</strong> (Red Hat)</td>
 <td>Cloud o self-hosted, OSS-friendly</td>
 <td>Open source projects que quieren OSS-aligned hosting</td>
 <td style="text-align: center;">✅ públicas</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>Sonatype Nexus Repository</strong></td>
 <td>Self-hosted</td>
 <td>Alternativa a Artifactory; multi-format</td>
@@ -838,62 +837,62 @@ id="comandos-básicos-de-kubectl-que-vas-a-usar-todo-el-tiempo">Comandos
 básicos de kubectl que vas a usar todo el tiempo</h2>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th>Comando</th>
 <th>Qué hace</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td><code>kubectl get nodes</code></td>
 <td>Lista los nodos del cluster</td>
 </tr>
-<tr>
+<tr class="even">
 <td><code>kubectl get pods</code></td>
 <td>Lista los pods en el namespace actual</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><code>kubectl get pods -A</code></td>
 <td>Lista los pods de TODOS los namespaces</td>
 </tr>
-<tr>
+<tr class="even">
 <td><code>kubectl get jobs</code></td>
 <td>Lista los Jobs (tareas one-off)</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><code>kubectl get cronjobs</code></td>
 <td>Lista los CronJobs (tareas programadas)</td>
 </tr>
-<tr>
+<tr class="even">
 <td><code>kubectl describe pod &lt;nombre&gt;</code></td>
 <td>Muestra detalles + eventos de un pod (útil cuando algo no
 arranca)</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><code>kubectl logs &lt;pod&gt;</code></td>
 <td>Logs del pod</td>
 </tr>
-<tr>
+<tr class="even">
 <td><code>kubectl logs -f &lt;pod&gt;</code></td>
 <td>Logs en streaming</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><code>kubectl logs -l app=mi-app</code></td>
 <td>Logs de todos los pods con el label <code>app=mi-app</code></td>
 </tr>
-<tr>
+<tr class="even">
 <td><code>kubectl apply -f archivo.yaml</code></td>
 <td>Crea/actualiza recursos del archivo</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><code>kubectl delete -f archivo.yaml</code></td>
 <td>Borra los recursos del archivo</td>
 </tr>
-<tr>
+<tr class="even">
 <td><code>kubectl exec -it &lt;pod&gt; -- /bin/sh</code></td>
 <td>Te abre un shell adentro del pod</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><code>kubectl get events --sort-by='.lastTimestamp'</code></td>
 <td>Eventos del cluster ordenados por fecha (golden para debug)</td>
 </tr>
@@ -939,43 +938,43 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href=
 que vas a usar en el Hit #7</h2>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th>Concepto</th>
 <th>Para qué sirve</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td><strong>Pod</strong></td>
 <td>La unidad mínima — uno o más containers que comparten red y
 storage</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>Job</strong></td>
 <td>Una tarea one-off: corre hasta completarse y termina (ideal para el
 scraper one-shot)</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>CronJob</strong></td>
 <td>Una tarea programada: corre cada X tiempo (ideal para “scrapear cada
 hora”)</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>ConfigMap</strong></td>
 <td>Configuración no-secreta inyectada como env vars o archivos (ej:
 <code>BROWSER=chrome</code>, <code>HEADLESS=true</code>)</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Secret</strong></td>
 <td>Lo mismo pero para datos sensibles (en este TP no necesitan, pero
 conviene saber que existe)</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>PersistentVolumeClaim (PVC)</strong></td>
 <td>Pedido de almacenamiento persistente — k3s te asigna espacio en
 disco automático con <code>local-path</code></td>
 </tr>
-<tr>
+<tr class="odd">
 <td><strong>Namespace</strong></td>
 <td>Carpeta lógica del cluster — usen <code>default</code> o creen
 <code>scraper</code> para aislar</td>
@@ -1053,7 +1052,7 @@ id="libros--ordenados-de-primer-contacto-a-producciónavanzado">Libros —
 ordenados de “primer contacto” a “producción/avanzado”</h3>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th>Libro</th>
 <th>Autores</th>
 <th>Editorial / Año</th>
@@ -1061,7 +1060,7 @@ ordenados de “primer contacto” a “producción/avanzado”</h3>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td><a
 href="https://www.oreilly.com/library/view/the-kubernetes-book/9781805806639/">The
 Kubernetes Book (3rd ed)</a></td>
@@ -1069,7 +1068,7 @@ Kubernetes Book (3rd ed)</a></td>
 <td>O’Reilly · 2024</td>
 <td>El más amigable — primer contacto, lectura de fin de semana</td>
 </tr>
-<tr>
+<tr class="even">
 <td><a
 href="https://www.oreilly.com/library/view/kubernetes-up-and/9781098110192/">Kubernetes:
 Up and Running (3rd ed)</a></td>
@@ -1078,7 +1077,7 @@ Lachlan Evenson</td>
 <td>O’Reilly · 2022</td>
 <td>Intro canónica — escrita por quienes diseñaron k8s</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><a
 href="https://www.manning.com/books/kubernetes-in-action-second-edition">Kubernetes
 in Action (2nd ed)</a></td>
@@ -1087,7 +1086,7 @@ in Action (2nd ed)</a></td>
 <td>El <strong>best of class</strong> para deep-dive. ⭐ Recomendación
 principal si solo van a leer uno</td>
 </tr>
-<tr>
+<tr class="even">
 <td><a
 href="https://www.oreilly.com/library/view/kubernetes-patterns-2nd/9781098131678/">Kubernetes
 Patterns (2nd ed)</a></td>
@@ -1096,7 +1095,7 @@ Patterns (2nd ed)</a></td>
 <td>Patterns reutilizables — Cap. 7 (Batch Job), 8 (Periodic Job) son
 <strong>directamente</strong> lo que van a hacer en el Hit #7</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><a
 href="https://www.oreilly.com/library/view/kubernetes-best-practices/9781098142155/">Kubernetes
 Best Practices (2nd ed)</a></td>
@@ -1105,7 +1104,7 @@ Best Practices (2nd ed)</a></td>
 <td>Operación en producción: RBAC, observabilidad, GitOps,
 networking</td>
 </tr>
-<tr>
+<tr class="even">
 <td><a href="https://www.manning.com/books/cloud-native-patterns">Cloud
 Native Patterns</a></td>
 <td>Cornelia Davis</td>
@@ -1113,14 +1112,14 @@ Native Patterns</a></td>
 <td>Patrones cloud-native independientes de k8s — útil para entender el
 “por qué” detrás de los manifiestos</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><a href="https://www.manning.com/books/gitops-and-kubernetes">GitOps
 and Kubernetes</a></td>
 <td>Billy Yuen, Alexander Matyushentsev, Todd Ekenstam, Jesse Suen</td>
 <td>Manning · 2021</td>
 <td>Si después quieren hacer GitOps con Argo CD / Flux</td>
 </tr>
-<tr>
+<tr class="even">
 <td><a
 href="https://www.oreilly.com/library/view/programming-kubernetes/9781492047094/">Programming
 Kubernetes</a></td>
@@ -1128,7 +1127,7 @@ Kubernetes</a></td>
 <td>O’Reilly · 2019</td>
 <td>Cuando quieran escribir Operators / CRDs propios</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><a
 href="https://www.oreilly.com/library/view/cka-study-guide/9781098140502/">CKA
 Study Guide (2nd ed)</a></td>
