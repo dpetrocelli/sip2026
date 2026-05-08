@@ -66,12 +66,6 @@
 - Pegá el error completo en el **foro de la materia** antes del viernes 23:59. Yo o algún compañero contestamos.
 - **No esperes al sábado a la mañana** — si Foundry no compila por una versión rara de glibc, no se arregla en 5 minutos.
 
-### Detalles del aula
-
-- **Fecha**: sábado.
-- **Llevar**: notebook cargada, cargador, auriculares por si laburamos en grupos.
-- **Wifi del aula**: puede caerse. Si tenés datos en el celu, cargalo previendo tethering puntual para faucets / `forge install`.
-
 ---
 
 ## ¿Qué vamos a hacer hoy?
