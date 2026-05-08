@@ -4,7 +4,7 @@
 
 > **Pre-requisito**: clase 2 completa — su `PaymentGateway.sol` deployado en Sepolia, address conocida, tests pasando.
 
-> **Repo**: hoy creamos un proyecto **separado** del Foundry de clase 1-2. Es un Next.js + wagmi independiente que se conecta al contrato deployado vía RPC. No hay carpeta `src/` compartida.
+> **Repo**: en el monorepo del módulo, la clase 3 tiene **dos carpetas**: [`clase-3/contracts`](https://github.com/dpetrocelli/sip2026-blockchain/tree/main/clase-3/contracts) (Foundry — `TestnetOnramp.sol` + `MockUSDC`) y [`clase-3/dapp`](https://github.com/dpetrocelli/sip2026-blockchain/tree/main/clase-3/dapp) (Next.js + wagmi + RainbowKit). El frontend habla con el contrato vía RPC; no comparten `src/`.
 
 > 🎯 **Lo que te vas a llevar al final de hoy**:
 > - [ ] Una dApp Next.js + wagmi + RainbowKit corriendo en `localhost:3000`

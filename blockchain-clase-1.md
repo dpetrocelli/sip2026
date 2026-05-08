@@ -54,8 +54,8 @@
   ```
 - [ ] **9. Repo de la clase clonado y compilando**
   ```bash
-  git clone https://github.com/dpetrocelli/sip2026-blockchain-clase1.git
-  cd sip2026-blockchain-clase1
+  git clone https://github.com/dpetrocelli/sip2026-blockchain.git
+  cd sip2026-blockchain/clase-1
   forge install
   forge build           # tiene que terminar con "Compiler run successful!"
   ```
@@ -204,8 +204,8 @@ Te da highlighting, autocompletado y errores inline.
 Armé un repo con todo listo. Lo clonan, compilan, testean.
 
 ```bash
-git clone https://github.com/dpetrocelli/sip2026-blockchain-clase1.git
-cd sip2026-blockchain-clase1
+git clone https://github.com/dpetrocelli/sip2026-blockchain.git
+cd sip2026-blockchain/clase-1
 forge install                # baja deps (forge-std)
 forge build                  # compila
 ```

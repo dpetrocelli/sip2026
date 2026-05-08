@@ -4,7 +4,7 @@
 
 > **Pre-requisitos**: clases 1, 2 y 3 hechas. Tienen `PaymentGateway` deployado en Sepolia, su token ERC-20 (`$VBK` / `$DPF` / `$RNW` / `$IDEA`), y un frontend con MetaMask conectado. **Si algo de eso no está, paren y completen primero** — sin esa base la clase de hoy no tiene dónde apoyarse.
 
-> **Repo**: hoy seguimos en el mismo proyecto Foundry de clase 1-2 ([sip2026-blockchain-clase1](https://github.com/dpetrocelli/sip2026-blockchain-clase1)). Agregamos `BadgeNFT.sol` y los contratos de tokenomics al directorio `src/`.
+> **Repo**: la clase tiene su carpeta lista en el monorepo del módulo: [`sip2026-blockchain/clase-4`](https://github.com/dpetrocelli/sip2026-blockchain/tree/main/clase-4). Trae `BadgeNFT.sol`, `PaymentGatewayWithBadge.sol`, tests (9 pasando) y script de deploy.
 
 > 🎯 **Lo que te vas a llevar al final de hoy** (cierre del módulo):
 > - [ ] `BadgeNFT.sol` (ERC-721 con Set Bonus pattern) deployado en Sepolia

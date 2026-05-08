@@ -4,7 +4,7 @@
 
 > **Pre-requisito**: la clase 1 cerrada. Tienen MetaMask + Sepolia + Foundry instalado, y un `SimpleStorage` deployado y verificado.
 
-> **Repo**: hoy seguimos en el mismo proyecto Foundry de clase 1 ([sip2026-blockchain-clase1](https://github.com/dpetrocelli/sip2026-blockchain-clase1)). Le agregamos `PaymentGateway.sol` y `ProjectToken.sol` al directorio `src/`.
+> **Repo**: la clase ya tiene su carpeta lista en el monorepo del módulo: [`sip2026-blockchain/clase-2`](https://github.com/dpetrocelli/sip2026-blockchain/tree/main/clase-2). Trae `PaymentGateway.sol`, `ProjectToken.sol`, tests y script de deploy. Si vienen de clase 1, basta con `cd ../clase-2` desde el repo clonado.
 
 > 🎯 **Lo que te vas a llevar al final de hoy**:
 > - [ ] Entendés ERC-20 (especialmente `approve` + `transferFrom`)

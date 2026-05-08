@@ -305,10 +305,13 @@ cuando el usuario “paga con tarjeta”.</p>
 tests pasando.</p>
 </blockquote>
 <blockquote>
-<p><strong>Repo</strong>: hoy creamos un proyecto
-<strong>separado</strong> del Foundry de clase 1-2. Es un Next.js +
-wagmi independiente que se conecta al contrato deployado vía RPC. No hay
-carpeta <code>src/</code> compartida.</p>
+<p><strong>Repo</strong>: en el monorepo del módulo, la clase 3 tiene
+<strong>dos carpetas</strong>: <a
+href="https://github.com/dpetrocelli/sip2026-blockchain/tree/main/clase-3/contracts"><code>clase-3/contracts</code></a>
+(Foundry — <code>TestnetOnramp.sol</code> + <code>MockUSDC</code>) y <a
+href="https://github.com/dpetrocelli/sip2026-blockchain/tree/main/clase-3/dapp"><code>clase-3/dapp</code></a>
+(Next.js + wagmi + RainbowKit). El frontend habla con el contrato vía
+RPC; no comparten <code>src/</code>.</p>
 </blockquote>
 <blockquote>
 <p>🎯 <strong>Lo que te vas a llevar al final de hoy</strong>:</p>
