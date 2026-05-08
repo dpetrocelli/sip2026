@@ -2,14 +2,75 @@
 
 > **Objetivo de la clase**: que al final de las 4 hs tengan **un contrato propio deployado en Sepolia** (testnet pública de Ethereum), interactúen con él desde la terminal y lo vean en Etherscan. Es la base sobre la que en clase 2 vamos a montar la pasarela de pago.
 
-> **Pre-requisito**: las TPs anteriores (k3s, Selenium, observabilidad) ya las tienen. **No asumimos nada de Solidity ni blockchain previo**.
-
 > 🎯 **Lo que te vas a llevar al final de hoy**:
 > - [ ] MetaMask con wallet de dev + Sepolia activa + ETH de faucet
 > - [ ] Foundry instalado (`forge`, `cast`, `anvil`) y verificado
 > - [ ] Un contrato `SimpleStorage` deployado en Sepolia con address propia
 > - [ ] Sabés interactuar con él desde `cast` (lectura + escritura)
 > - [ ] El código fuente verificado y público en Etherscan
+
+---
+
+## ⚠️ Prerequisitos — traélo HECHO antes del sábado
+
+> **Esto es lo único que les pido para la clase 1.** Si llegan con esto andando, las 4 hs nos alcanzan para deployar el contrato. Si llegan en cero, vamos a perder media clase peleando con instalaciones y se atrasa todo el módulo. **No es opcional.**
+
+### Conocimientos previos asumidos
+
+- TPs anteriores entregadas (k3s, Selenium, observabilidad) — la pasarela se va a integrar sobre ese stack.
+- Manejo básico de terminal Linux/macOS (`cd`, `ls`, `git`, variables de entorno).
+- **No asumimos nada de Solidity ni blockchain previo.** Eso lo damos en la clase.
+
+### Checklist de setup (estimado: 30–45 min total)
+
+- [ ] **1. Sistema operativo compatible**
+  - Linux o macOS: nativo, todo funciona.
+  - Windows: **obligatorio WSL2 con Ubuntu**. Foundry no corre en PowerShell. Si todavía no tenés WSL, instalalo *esta semana*: `wsl --install -d Ubuntu` desde PowerShell admin.
+- [ ] **2. Git + un editor decente**
+  - `git --version` debe responder.
+  - VS Code recomendado (`code --version`). Si usás otro, perfecto.
+- [ ] **3. Node.js 20+ instalado** (`node -v` ≥ v20). Lo vamos a usar fuerte en clase 3 y conviene tenerlo desde ya.
+- [ ] **4. MetaMask instalado en el navegador**
+  - https://metamask.io/download/ — Chrome / Brave / Firefox / Edge.
+  - **Creá una wallet NUEVA solo para la cursada** (no uses una con plata real).
+  - Anotá la frase de 12 palabras en papel. **No le saques foto ni la mandes por chat.**
+- [ ] **5. Red Sepolia activada en MetaMask**
+  - Selector de redes → "Show test networks" ON → elegí **Sepolia**.
+- [ ] **6. ETH de faucet en Sepolia (≥ 0.1 SepoliaETH)**
+  - https://www.alchemy.com/faucets/ethereum-sepolia (pide login, evita bots) o https://sepoliafaucet.com.
+  - Pegá tu address de MetaMask, esperá 30 s, refrescá.
+  - **Hacelo el viernes a más tardar** — algunos faucets tienen cooldown de 24 hs y rate limit por IP del aula.
+- [ ] **7. Foundry instalado y verificado**
+  ```bash
+  curl -L https://foundry.paradigm.xyz | bash
+  source ~/.bashrc      # o ~/.zshrc
+  foundryup
+  forge --version       # debe responder forge 1.x.x
+  cast --version
+  ```
+- [ ] **8. Extensión Solidity de VS Code** (opcional pero recomendada)
+  ```bash
+  code --install-extension juanblanco.solidity
+  ```
+- [ ] **9. Repo de la clase clonado y compilando**
+  ```bash
+  git clone https://github.com/dpetrocelli/sip2026-blockchain-clase1.git
+  cd sip2026-blockchain-clase1
+  forge install
+  forge build           # tiene que terminar con "Compiler run successful!"
+  ```
+  Si el repo aún no está público, lo subo durante la semana — avísenme por el foro y lo destrabo.
+
+### Si algo falla
+
+- Pegá el error completo en el **foro de la materia** antes del viernes 23:59. Yo o algún compañero contestamos.
+- **No esperes al sábado a la mañana** — si Foundry no compila por una versión rara de glibc, no se arregla en 5 minutos.
+
+### Detalles del aula
+
+- **Fecha**: sábado.
+- **Llevar**: notebook cargada, cargador, auriculares por si laburamos en grupos.
+- **Wifi del aula**: puede caerse. Si tenés datos en el celu, cargalo previendo tethering puntual para faucets / `forge install`.
 
 ---
 
