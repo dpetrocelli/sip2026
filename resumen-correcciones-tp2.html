@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Correcciones TP2 — SIP 2026</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3347;
+      --text: #e2e4f0;
+      --text-muted: #8890b0;
+      --green: #4ade80;
+      --green-bg: #14291e;
+      --blue: #60a5fa;
+      --blue-bg: #0f1e38;
+      --yellow: #fbbf24;
+      --yellow-bg: #2a2006;
+      --red: #f87171;
+      --red-bg: #2a0f0f;
+      --orange: #fb923c;
+      --orange-bg: #2a1500;
+      --accent: #818cf8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    /* Header */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    header .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+    header .meta {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* Section titles */
+    h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin: 2.5rem 0 1rem;
+    }
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Score badges */
+    .badge {
+      display: inline-block;
+      padding: 0.2em 0.6em;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .badge-green  { background: var(--green-bg);  color: var(--green);  border: 1px solid #1e4d30; }
+    .badge-blue   { background: var(--blue-bg);   color: var(--blue);   border: 1px solid #1a3a6e; }
+    .badge-yellow { background: var(--yellow-bg); color: var(--yellow); border: 1px solid #4a3900; }
+    .badge-red    { background: var(--red-bg);    color: var(--red);    border: 1px solid #4a1a1a; }
+    .badge-orange { background: var(--orange-bg); color: var(--orange); border: 1px solid #4a2500; }
+
+    /* Summary table */
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: var(--surface);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .summary-table th {
+      background: var(--surface2);
+      padding: 0.65rem 1rem;
+      text-align: left;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .summary-table td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .summary-table tr:last-child td { border-bottom: none; }
+    .summary-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .summary-table .score-cell { text-align: center; }
+    .summary-table .group-name { font-weight: 600; }
+    .summary-table .members { color: var(--text-muted); font-size: 0.8rem; line-height: 1.4; }
+
+    /* Group cards */
+    .group-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    .group-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .group-card-header .left { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .group-card-header .right { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .group-card-body { padding: 1.25rem; }
+
+    /* Part score row */
+    .parts-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .part-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.65rem 0.75rem;
+      text-align: center;
+    }
+    .part-box .part-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 0.3rem;
+    }
+    .part-box .part-score {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+    .part-box .part-note {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+
+    /* Hit breakdown */
+    .hits-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+    }
+    .hits-table th {
+      text-align: left;
+      padding: 0.35rem 0.5rem;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+    }
+    .hits-table td {
+      padding: 0.35rem 0.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: top;
+    }
+    .hits-table td.score { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .hits-table tr.total td { border-top: 1px solid var(--border); font-weight: 600; border-bottom: none; }
+
+    /* Notes list */
+    .note-section { margin-bottom: 1rem; }
+    .note-section .note-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+    }
+    ul.notes {
+      list-style: none;
+      padding: 0;
+    }
+    ul.notes li {
+      padding: 0.3rem 0 0.3rem 1.2rem;
+      position: relative;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      color: var(--text);
+    }
+    ul.notes li:last-child { border-bottom: none; }
+    ul.notes li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--text-muted);
+    }
+    ul.notes.strengths li::before { color: var(--green); }
+    ul.notes.gaps li::before { color: var(--red); }
+
+    /* Part separator */
+    .part-section { margin-bottom: 1.5rem; }
+    .part-section-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+      padding-bottom: 0.3rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Bloqueante banner */
+    .bloqueante-banner {
+      background: var(--red-bg);
+      border: 1px solid #4a1a1a;
+      border-radius: 6px;
+      padding: 0.65rem 1rem;
+      font-size: 0.82rem;
+      color: var(--red);
+      margin-bottom: 0.75rem;
+    }
+
+    /* Pending banner */
+    .pending-banner {
+      background: var(--yellow-bg);
+      border: 1px solid #4a3900;
+      border-radius: 6px;
+      padding: 0.65rem 1rem;
+      font-size: 0.82rem;
+      color: var(--yellow);
+      margin-bottom: 0.75rem;
+    }
+
+    /* Divider */
+    hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+    /* Footer */
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-align: center;
+    }
+
+    /* Utility */
+    .text-green  { color: var(--green); }
+    .text-blue   { color: var(--blue); }
+    .text-yellow { color: var(--yellow); }
+    .text-red    { color: var(--red); }
+    .text-orange { color: var(--orange); }
+    .text-muted  { color: var(--text-muted); }
+    .font-mono   { font-family: 'Menlo', 'Consolas', monospace; font-size: 0.85em; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    @media (max-width: 680px) {
+      .parts-row { grid-template-columns: repeat(2, 1fr); }
+      .two-col { grid-template-columns: 1fr; }
+      .group-card-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="label">Seminario de Integración Profesional · UNLu · 2026</div>
+    <h1>TP2 — Observabilidad en Kubernetes</h1>
+    <div class="meta">
+      Corrección: 2026-05-09 &nbsp;·&nbsp; Corrector: M. Rapaport &nbsp;·&nbsp;
+      4 grupos &nbsp;·&nbsp; 4 partes &nbsp;·&nbsp;
+      Loki · EFK · OpenTelemetry · ADR magisterial
+    </div>
+  </header>
+
+  <!-- ===== RESUMEN GLOBAL ===== -->
+  <h2>Resumen de notas</h2>
+
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th>Grupo</th>
+        <th>Integrantes</th>
+        <th class="score-cell">P1 Loki</th>
+        <th class="score-cell">P2 EFK</th>
+        <th class="score-cell">P3 OTel</th>
+        <th class="score-cell">P4 ADR</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="group-name">Group ONE</div>
+          <div class="members font-mono">GonzaEC/TP2-SIP</div>
+        </td>
+        <td class="members">
+          Anito, Cristian · Soto, Roberto · Claros, Federico ·
+          Romero, Nicolas · Buzzo Marcelo, Rocco · Echeverria Crenna, Gonzalo
+        </td>
+        <td class="score-cell"><span class="badge badge-green">9.7</span></td>
+        <td class="score-cell"><span class="badge badge-green">9.7</span></td>
+        <td class="score-cell"><span class="badge badge-blue">7.4</span></td>
+        <td class="score-cell"><span class="badge badge-yellow">~9.3 *</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="group-name">Systeam</div>
+          <div class="members font-mono">UlisesCasal/SIP-Selenium-Systeam</div>
+        </td>
+        <td class="members">
+          Hoffmann, Axel · Babino, Abril · Avila, Tobias ·
+          Collazo, Naiara · Nomico, Mateo · Casal, Ulises
+        </td>
+        <td class="score-cell"><span class="badge badge-green">9.7</span></td>
+        <td class="score-cell"><span class="badge badge-green">9.6</span></td>
+        <td class="score-cell"><span class="badge badge-blue">8.0</span></td>
+        <td class="score-cell"><span class="badge badge-red">0 ⛔</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="group-name">Proxy Team</div>
+          <div class="members font-mono">correamiq/Testing-Selenium-ProxyTeam</div>
+        </td>
+        <td class="members">
+          Ponti, Mateo Daniel · Scialchi, Luciano Agustin ·
+          Romero Monteagudo, Valentín Joel · Cacciatore, Bautista · Correa, Miqueas
+        </td>
+        <td class="score-cell"><span class="badge badge-blue">8.1</span></td>
+        <td class="score-cell"><span class="badge badge-blue">8.0</span></td>
+        <td class="score-cell"><span class="badge badge-green">9.5</span></td>
+        <td class="score-cell"><span class="badge badge-red">0 ⛔</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="group-name">CFZ++</div>
+          <div class="members font-mono">GustavoContardi/TP1-Selenium · /TP2</div>
+        </td>
+        <td class="members">
+          Saracho, Franco Mateo · Ausqui, Mateo · Zander, Matt ·
+          Contardi, Gustavo · Huici, Nicolas
+        </td>
+        <td class="score-cell"><span class="badge badge-blue">7.9</span></td>
+        <td class="score-cell"><span class="badge badge-blue">8.6</span></td>
+        <td class="score-cell"><span class="badge badge-red">0 ⛔</span></td>
+        <td class="score-cell"><span class="badge badge-red">0 ⛔</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0.6rem;">
+    * P4 Group ONE pendiente de defensa oral. Nota proyectada ~9.3 antes de defensa.
+    &nbsp;⛔ = bloqueante activo, nota = 0, reapertura posible si se entrega antes de la defensa.
+  </p>
+
+  <hr>
+
+  <!-- ===== GROUP ONE ===== -->
+  <h2>Detalle por grupo</h2>
+
+  <div class="group-card">
+    <div class="group-card-header">
+      <div class="left">
+        <h3>Group ONE</h3>
+        <span class="text-muted font-mono" style="font-size:0.8rem;">GonzaEC/TP2-SIP</span>
+      </div>
+      <div class="right">
+        <span class="badge badge-green">P1: 9.7</span>
+        <span class="badge badge-green">P2: 9.7</span>
+        <span class="badge badge-blue">P3: 7.4</span>
+        <span class="badge badge-yellow">P4: ~9.3 (pend.)</span>
+      </div>
+    </div>
+    <div class="group-card-body">
+
+      <!-- P1 -->
+      <div class="part-section">
+        <div class="part-section-title">Parte 1 — Loki + Promtail + Grafana &nbsp;<span class="badge badge-green">97 / 100 · 10.2 c/bonus</span></div>
+        <div class="two-col">
+          <table class="hits-table">
+            <thead><tr><th>Sección</th><th class="score">Pts</th><th class="score">Máx</th></tr></thead>
+            <tbody>
+              <tr><td>Hit #1 — Loki + Promtail + Grafana</td><td class="score">20</td><td class="score">20</td></tr>
+              <tr><td>Hit #2 — Labels Kubernetes</td><td class="score">15</td><td class="score">15</td></tr>
+              <tr><td>Hit #3 — JSON estructurado</td><td class="score">20</td><td class="score">20</td></tr>
+              <tr><td>Hit #4 — LogQL cookbook</td><td class="score">15</td><td class="score">15</td></tr>
+              <tr><td>Hit #5 — Dashboard as-code</td><td class="score">17</td><td class="score">20</td></tr>
+              <tr><td>ADR 0007</td><td class="score">10</td><td class="score">10</td></tr>
+              <tr><td>Bonus — Alertas</td><td class="score">+5</td><td class="score">+5</td></tr>
+              <tr class="total"><td>Total</td><td class="score text-green">102</td><td class="score">100+5</td></tr>
+            </tbody>
+          </table>
+          <div>
+            <div class="note-section">
+              <div class="note-title">Fortalezas</div>
+              <ul class="notes strengths">
+                <li>Alertas Discord implementadas y verificadas (+5 bonus)</li>
+                <li>Dashboard con panel de logs en tiempo real incluido</li>
+                <li>ADR 0007 completo con alternativas y razonamiento del equipo</li>
+              </ul>
+            </div>
+            <div class="note-section">
+              <div class="note-title">Gaps</div>
+              <ul class="notes gaps">
+                <li>Dashboard: faltan 3 pts menores en contenido (−3 en Hit #5)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P2 -->
+      <div class="part-section">
+        <div class="part-section-title">Parte 2 — EFK (ECK + Fluent Bit + Kibana) &nbsp;<span class="badge badge-green">97 / 100 · 10.2 c/bonus</span></div>
+        <div class="two-col">
+          <table class="hits-table">
+            <thead><tr><th>Sección</th><th class="score">Pts</th><th class="score">Máx</th></tr></thead>
+            <tbody>
+              <tr><td>Hit #1 — ECK + ES + Kibana</td><td class="score">20</td><td class="score">20</td></tr>
+              <tr><td>Hit #2 — Fluent Bit pipeline</td><td class="score">20</td><td class="score">20</td></tr>
+              <tr><td>Hit #3 — ILM + index template</td><td class="score">15</td><td class="score">15</td></tr>
+              <tr><td>Hit #4 — KQL cookbook</td><td class="score">15</td><td class="score">15</td></tr>
+              <tr><td>Hit #5 — Dashboard NDJSON</td><td class="score">18</td><td class="score">20</td></tr>
+              <tr><td>ADR 0009</td><td class="score">9</td><td class="score">10</td></tr>
+              <tr><td>Bonus — Alertas Kibana</td><td class="score">+5</td><td class="score">+5</td></tr>
+              <tr class="total"><td>Total</td><td class="score text-green">102</td><td class="score">100+5</td></tr>
+            </tbody>
+          </table>
+          <div>
+            <div class="note-section">
+              <div class="note-title">Fortalezas</div>
+              <ul class="notes strengths">
+                <li>Alertas Kibana con connector Discord (+5 bonus)</li>
+                <li>Dashboard NDJSON completo e importado as-code</li>
+                <li>ILM con 3 fases y retención 7d alineada a Loki</li>
+              </ul>
+            </div>
+            <div class="note-section">
+              <div class="note-title">Gaps</div>
+              <ul class="notes gaps">
+                <li>ADR 0009: ELv2 mencionada pero OpenSearch no nombrado explícitamente (−1)</li>
+                <li>Dashboard: leve gap de contenido (−2 en Hit #5)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P3 -->
+      <div class="part-section">
+        <div class="part-section-title">Parte 3 — OpenTelemetry Collector + SDK &nbsp;<span class="badge badge-blue">74 / 100</span></div>
+        <div class="two-col">
+          <table class="hits-table">
+            <thead><tr><th>Sección</th><th class="score">Pts</th><th class="score">Máx</th></tr></thead>
+            <tbody>
+              <tr><td>Hit #1 — OTel Operator</td><td class="score">10</td><td class="score">10</td></tr>
+              <tr><td>Hit #2 — Collector DaemonSet</td><td class="score">15</td><td class="score">15</td></tr>
+              <tr><td>Hit #3 — Fan-out Loki + ES</td><td class="score">25</td><td class="score">25</td></tr>
+              <tr><td>Hit #4 — Promtail + FB a 0</td><td class="score">15</td><td class="score">15</td></tr>
+              <tr><td>Hit #5 — SDK Java (≠ Python)</td><td class="score">14</td><td class="score">20</td></tr>
+              <tr><td>ADR 0010</td><td class="score">6</td><td class="score">15</td></tr>
+              <tr><td>Bonus — Traces Jaeger</td><td class="score">+4</td><td class="score">+5</td></tr>
+              <tr class="total"><td>Total</td><td class="score text-blue">85 → 74 s/bonus</td><td class="score">100+5</td></tr>
+            </tbody>
+          </table>
+          <div>
+            <div class="note-section">
+              <div class="note-title">Fortalezas</div>
+              <ul class="notes strengths">
+                <li>Fan-out con log_id matching demostrado en ambos backends</li>
+                <li>Jaeger con spans visibles (4/5 bonus)</li>
+                <li>Collector contrib, DaemonSet, k8sattributes correcto</li>
+              </ul>
+            </div>
+            <div class="note-section">
+              <div class="note-title">Gaps</div>
+              <ul class="notes gaps">
+                <li>SDK Java en lugar de Python: −5 pts en criterios requirements-otel.txt/otel_setup.py</li>
+                <li>ADR 0010 muy débil (6/15): sin lock-in Grafana/Elastic, sin adopción OTLP por vendors SaaS</li>
+                <li>log_id via UUID processor ≠ trace_id del SDK (−1 pt en Hit #5)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P4 -->
+      <div class="part-section">
+        <div class="part-section-title">Parte 4 — ADR magisterial + comparativa &nbsp;<span class="badge badge-yellow">~93 / 100 pend. defensa</span></div>
+        <div class="pending-banner">
+          Corrección provisoria — defensa oral pendiente (5 pts). ADR 0012: ~3850 palabras ✓. Nota proyectada ~9.3/10.
+        </div>
+        <div class="two-col">
+          <table class="hits-table">
+            <thead><tr><th>Sección</th><th class="score">Pts</th><th class="score">Máx</th></tr></thead>
+            <tbody>
+              <tr><td>Hit #1 — Mediciones empíricas</td><td class="score">13</td><td class="score">15</td></tr>
+              <tr><td>Hit #2 — Decision matrix 5×5</td><td class="score">15</td><td class="score">15</td></tr>
+              <tr><td>Hit #3 — ADR 0012 (~3850 palabras)</td><td class="score">47</td><td class="score">50</td></tr>
+              <tr><td>Hit #4 — Vendor lock-in essay</td><td class="score">13</td><td class="score">15</td></tr>
+              <tr><td>Defensa oral</td><td class="score">—</td><td class="score">5</td></tr>
+              <tr class="total"><td>Total (sin defensa)</td><td class="score text-yellow">88</td><td class="score">95</td></tr>
+            </tbody>
+          </table>
+          <div>
+            <div class="note-section">
+              <div class="note-title">Fortalezas</div>
+              <ul class="notes strengths">
+                <li>ADR 0012 con 3850 palabras, 8 secciones bien desarrolladas</li>
+                <li>Decision matrix 5×5 completa con veredictos y caveats</li>
+                <li>Measurements.md con M1-M5 presentes</li>
+              </ul>
+            </div>
+            <div class="note-section">
+              <div class="note-title">Gaps</div>
+              <ul class="notes gaps">
+                <li>ADR 0012 §7 no menciona ADR 0010 (que no existe)</li>
+                <li>Vendor lock-in essay: falta cierre honesto sobre OTel (−1 pt)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== SYSTEAM ===== -->
+  <div class="group-card">
+    <div class="group-card-header">
+      <div class="left">
+        <h3>Systeam</h3>
+        <span class="text-muted font-mono" style="font-size:0.8rem;">UlisesCasal/SIP-Selenium-Systeam</span>
+      </div>
+      <div class="right">
+        <span class="badge badge-green">P1: 9.7</span>
+        <span class="badge badge-green">P2: 9.6</span>
+        <span class="badge badge-blue">P3: 8.0</span>
+        <span class="badge badge-red">P4: 0 ⛔</span>
+      </div>
+    </div>
+    <div class="group-card-body">
+
+      <!-- P1 -->
+      <div class="part-section">
+        <div class="part-section-title">Parte 1 — Loki + Promtail + Grafana &nbsp;<span class="badge badge-green">97 / 100 · 10.2 c/bonus</span></div>
+        <div class="two-col">
+          <table class="hits-table">
+            <thead><tr><th>Sección</th><th class="score">Pts</th><th class="score">Máx</th></tr></thead>
+            <tbody>
+              <tr><td>Hits #1–#5</td><td class="score">97</td><td class="score">100</td></tr>
+              <tr><td>Bonus — Alertas</td><td class="score">+5</td><td class="score">+5</td></tr>
+              <tr class="total"><td>Total</td><td class="score text-green">102</td><td class="score">100+5</td></tr>
+            </tbody>
+          </table>
+          <div>
+            <div class="note-section">
+              <div class="note-title">Gap menor</div>
+              <ul class="notes gaps">
+                <li>No hay <code>grafana-secret.yaml</code> con placeholder commiteado (−3 pts en estructura)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P2 -->
+      <div class="part-section">
+        <div class="part-section-title">Parte 2 — EFK &nbsp;<span class="badge badge-green">96 / 100</span></div>
+        <div class="two-col">
+          <table class="hits-table">
+            <thead><tr><th>Sección</th><th class="score">Pts</th><th class="score">Máx</th></tr></thead>
+            <tbody>
+              <tr><td>Hit #1 — ECK + ES + Kibana</td><td class="score">20</td><td class="score">20</td></tr>
+              <tr><td>Hit #2 — Fluent Bit pipeline</td><td class="score">20</td><td class="score">20</td></tr>
+              <tr><td>Hit #3 — ILM</td><td class="score">15</td><td class="score">15</td></tr>
+              <tr><td>Hit #4 — KQL cookbook</td><td class="score">14</td><td class="score">15</td></tr>
+              <tr><td>Hit #5 — Dashboard NDJSON</td><td class="score">18</td><td class="score">20</td></tr>
+              <tr><td>ADR 0009</td><td class="score">9</td><td class="score">10</td></tr>
+              <tr class="total"><td>Total</td><td class="score text-green">96</td><td class="score">100</td></tr>
+            </tbody>
+          </table>
+          <div>
+            <div class="note-section">
+              <div class="note-title">Gaps</div>
+              <ul class="notes gaps">
+                <li>ADR 0009: placeholders <code>&lt;medir&gt;</code> en latencia de query (no se completó la medición)</li>
+                <li>KQL cookbook: sin comparativa KQL vs LogQL (−1)</li>
+                <li>Dashboard: gap menor de contenido (−2)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P3 -->
+      <div class="part-section">
+        <div class="part-section-title">Parte 3 — OpenTelemetry &nbsp;<span class="badge badge-blue">80 / 100 · 8.4 c/bonus</span></div>
+        <div class="two-col">
+          <table class="hits-table">
+            <thead><tr><th>Sección</th><th class="score">Pts</th><th class="score">Máx</th></tr></thead>
+            <tbody>
+              <tr><td>Hits #1–#4</td><td class="score">65</td><td class="score">65</td></tr>
+              <tr><td>Hit #5 — SDK JS (≠ Python)</td><td class="score">15</td><td class="score">20</td></tr>
+              <tr><td>ADR 0010</td><td class="score">0</td><td class="score">15</td></tr>
+              <tr><td>Bonus — Jaeger (parcial)</td><td class="score">+4</td><td class="score">+5</td></tr>
+              <tr class="total"><td>Total</td><td class="score text-blue">80 (+4 bonus)</td><td class="score">100+5</td></tr>
+            </tbody>
+          </table>
+          <div>
+            <div class="note-section">
+              <div class="note-title">Fortalezas</div>
+              <ul class="notes strengths">
+                <li>Fan-out completo con trace_id real del SDK JS</li>
+                <li>Jaeger con spans visibles (4/5 bonus)</li>
+              </ul>
+            </div>
+            <div class="note-section">
+              <div class="note-title">Gaps</div>
+              <ul class="notes gaps">
+                <li>ADR 0010 ausente (0/15) — único ADR faltante del TP</li>
+                <li>SDK JS en lugar de Python: −5 pts en criterios Python-específicos</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P4 -->
+      <div class="part-section">
+        <div class="part-section-title">Parte 4 — ADR magisterial &nbsp;<span class="badge badge-red">0 / 10 ⛔</span></div>
+        <div class="bloqueante-banner">
+          <strong>Bloqueante B3:</strong> <code>docs/adr/0012-stack-de-observabilidad-final.md</code> no existe.
+          El directorio <code>docs/observability-final/</code> tampoco existe.
+          Reapertura posible si se entrega antes de la defensa.
+        </div>
+        <div class="note-section">
+          <div class="note-title">Contexto</div>
+          <ul class="notes">
+            <li>Partes 1, 2, 3 son técnicamente sólidas (9.7 / 9.6 / 8.0). La Parte 4 es escritura pura.</li>
+            <li>Con la infraestructura que tienen, pueden tomar M1-M5 en &lt;1h y escribir el ADR 0012 en 1 día.</li>
+            <li>El ADR 0009 (con datos reales y ELv2) es la plantilla perfecta para el estilo requerido.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== PROXY TEAM ===== -->
+  <div class="group-card">
+    <div class="group-card-header">
+      <div class="left">
+        <h3>Proxy Team</h3>
+        <span class="text-muted font-mono" style="font-size:0.8rem;">correamiq/Testing-Selenium-ProxyTeam</span>
+      </div>
+      <div class="right">
+        <span class="badge badge-blue">P1: 8.1</span>
+        <span class="badge badge-blue">P2: 8.0</span>
+        <span class="badge badge-green">P3: 9.5</span>
+        <span class="badge badge-red">P4: 0 ⛔</span>
+      </div>
+    </div>
+    <div class="group-card-body">
+
+      <!-- P1 -->
+      <div class="part-section">
+        <div class="part-section-title">Parte 1 — Loki + Promtail + Grafana &nbsp;<span class="badge badge-blue">81 / 100</span></div>
+        <div class="two-col">
+          <table class="hits-table">
+            <thead><tr><th>Sección</th><th class="score">Pts</th><th class="score">Máx</th></tr></thead>
+            <tbody>
+              <tr><td>Hit #1 — Stack + deploy</td><td class="score">19</td><td class="score">20</td></tr>
+              <tr><td>Hit #2 — Labels + evidencia</td><td class="score">13</td><td class="score">15</td></tr>
+              <tr><td>Hit #3 — JSON estructurado</td><td class="score">20</td><td class="score">20</td></tr>
+              <tr><td>Hit #4 — LogQL cookbook</td><td class="score">13</td><td class="score">15</td></tr>
+              <tr><td>Hit #5 — Dashboard as-code</td><td class="score">16</td><td class="score">20</td></tr>
+              <tr><td>ADR 0007</td><td class="score">0</td><td class="score">10</td></tr>
+              <tr class="total"><td>Total</td><td class="score text-blue">81</td><td class="score">100</td></tr>
+            </tbody>
+          </table>
+          <div>
+            <div class="note-section">
+              <div class="note-title">Fortalezas</div>
+              <ul class="notes strengths">
+                <li>Todos los criterios técnicos correctos (versiones, retención, labels)</li>
+                <li>JSON migration con before/after evidenciada</li>
+              </ul>
+            </div>
+            <div class="note-section">
+              <div class="note-title">Gaps</div>
+              <ul class="notes gaps">
+                <li>ADR 0007 ausente (−10 pts) — único gap de documentación</li>
+                <li>Screenshots insuficientes: sin Grafana Explore, sin queries ejecutadas, sin dashboard con datos</li>
+                <li>Dashboard: sin panel tipo Logs en tiempo real</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P2 -->
+      <div class="part-section">
+        <div class="part-section-title">Parte 2 — EFK &nbsp;<span class="badge badge-blue">80 / 100</span></div>
+        <div class="two-col">
+          <table class="hits-table">
+            <thead><tr><th>Sección</th><th class="score">Pts</th><th class="score">Máx</th></tr></thead>
+            <tbody>
+              <tr><td>Hit #1 — ECK + ES + Kibana</td><td class="score">20</td><td class="score">20</td></tr>
+              <tr><td>Hit #2 — Fluent Bit pipeline</td><td class="score">19</td><td class="score">20</td></tr>
+              <tr><td>Hit #3 — ILM</td><td class="score">15</td><td class="score">15</td></tr>
+              <tr><td>Hit #4 — KQL cookbook</td><td class="score">14</td><td class="score">15</td></tr>
+              <tr><td>Hit #5 — Dashboard NDJSON</td><td class="score">3</td><td class="score">20</td></tr>
+              <tr><td>ADR 0009</td><td class="score">9</td><td class="score">10</td></tr>
+              <tr class="total"><td>Total</td><td class="score text-blue">80</td><td class="score">100</td></tr>
+            </tbody>
+          </table>
+          <div>
+            <div class="note-section">
+              <div class="note-title">Gaps</div>
+              <ul class="notes gaps">
+                <li><code>scraper-overview.ndjson</code> es un placeholder textual explícito (3/20)</li>
+                <li>install.sh no llama a la Saved Objects API</li>
+                <li>ADR 0009: OpenSearch no nombrado (solo "alternativas OSS") (−1)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P3 -->
+      <div class="part-section">
+        <div class="part-section-title">Parte 3 — OpenTelemetry &nbsp;<span class="badge badge-green">95 / 100</span></div>
+        <div class="two-col">
+          <table class="hits-table">
+            <thead><tr><th>Sección</th><th class="score">Pts</th><th class="score">Máx</th></tr></thead>
+            <tbody>
+              <tr><td>Hit #1 — OTel Operator</td><td class="score">10</td><td class="score">10</td></tr>
+              <tr><td>Hit #2 — Collector DaemonSet</td><td class="score">15</td><td class="score">15</td></tr>
+              <tr><td>Hit #3 — Fan-out Loki + ES</td><td class="score">25</td><td class="score">25</td></tr>
+              <tr><td>Hit #4 — Agentes a 0</td><td class="score">15</td><td class="score">15</td></tr>
+              <tr><td>Hit #5 — SDK Python</td><td class="score">19</td><td class="score">20</td></tr>
+              <tr><td>ADR 0010</td><td class="score">11</td><td class="score">15</td></tr>
+              <tr class="total"><td>Total</td><td class="score text-green">95</td><td class="score">100</td></tr>
+            </tbody>
+          </table>
+          <div>
+            <div class="note-section">
+              <div class="note-title">Fortalezas</div>
+              <ul class="notes strengths">
+                <li>SDK Python completo: otel_setup.py + requirements-otel.txt 1.30.0 ✓</li>
+                <li>Fan-out demostrado con log_id matching en ambos backends</li>
+                <li>ConfigMap + fieldRef: status.hostIP correctamente implementado</li>
+              </ul>
+            </div>
+            <div class="note-section">
+              <div class="note-title">Gaps</div>
+              <ul class="notes gaps">
+                <li>ADR 0010: sin vendors OTLP (Datadog/New Relic/Dynatrace/Splunk) (−3) y sin ref a P4 (−1)</li>
+                <li>span_id sin evidencia visual en screenshots (−1)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P4 -->
+      <div class="part-section">
+        <div class="part-section-title">Parte 4 — ADR magisterial &nbsp;<span class="badge badge-red">0 / 10 ⛔</span></div>
+        <div class="bloqueante-banner">
+          <strong>Bloqueante B4:</strong> ADR 0012 existe pero tiene ~1,100 palabras (mínimo: 1,500).
+          Nota proyectada si se completa: ~9.5/10. Reapertura posible antes de la defensa.
+        </div>
+        <div class="note-section">
+          <div class="note-title">Qué agregar al ADR 0012</div>
+          <ul class="notes">
+            <li>§2 Alternativas: expandir Datadog y Splunk (actualmente ~2 líneas c/u)</li>
+            <li>§4 Trade-offs: agregar al menos 1 más con formato "renunciamos a X porque Y, mitigación: Z"</li>
+            <li>§5 Evidencia: citar los valores numéricos de measurements.md directamente en el texto</li>
+            <li>§6 Evolución: expandir cada horizonte con trigger específico y riesgo si no se actúa</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== CFZ++ ===== -->
+  <div class="group-card">
+    <div class="group-card-header">
+      <div class="left">
+        <h3>CFZ++</h3>
+        <span class="text-muted font-mono" style="font-size:0.8rem;">GustavoContardi/TP1-Selenium · subcarpeta /TP2</span>
+      </div>
+      <div class="right">
+        <span class="badge badge-blue">P1: 7.9</span>
+        <span class="badge badge-blue">P2: 8.6</span>
+        <span class="badge badge-red">P3: 0 ⛔</span>
+        <span class="badge badge-red">P4: 0 ⛔</span>
+      </div>
+    </div>
+    <div class="group-card-body">
+
+      <!-- P1 -->
+      <div class="part-section">
+        <div class="part-section-title">Parte 1 — Loki + Promtail + Grafana &nbsp;<span class="badge badge-blue">79 / 100</span></div>
+        <div class="two-col">
+          <table class="hits-table">
+            <thead><tr><th>Sección</th><th class="score">Pts</th><th class="score">Máx</th></tr></thead>
+            <tbody>
+              <tr><td>Hit #1 — Stack + deploy</td><td class="score">17</td><td class="score">20</td></tr>
+              <tr><td>Hit #2 — Labels + evidencia</td><td class="score">13</td><td class="score">15</td></tr>
+              <tr><td>Hit #3 — JSON estructurado</td><td class="score">20</td><td class="score">20</td></tr>
+              <tr><td>Hit #4 — LogQL cookbook</td><td class="score">13</td><td class="score">15</td></tr>
+              <tr><td>Hit #5 — Dashboard as-code</td><td class="score">16</td><td class="score">20</td></tr>
+              <tr><td>ADR 0007</td><td class="score">0</td><td class="score">10</td></tr>
+              <tr class="total"><td>Total</td><td class="score text-blue">79</td><td class="score">100</td></tr>
+            </tbody>
+          </table>
+          <div>
+            <div class="note-section">
+              <div class="note-title">Nota</div>
+              <ul class="notes gaps">
+                <li>Stack Loki en <code>hit1/observability/</code> (no estándar) — funcional pero −2 pts en estructura</li>
+                <li>ADR 0007 ausente (−10 pts)</li>
+                <li>Dashboard sin panel Logs en tiempo real; sin screenshots de queries ejecutadas</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P2 -->
+      <div class="part-section">
+        <div class="part-section-title">Parte 2 — EFK &nbsp;<span class="badge badge-blue">86 / 100</span></div>
+        <div class="two-col">
+          <table class="hits-table">
+            <thead><tr><th>Sección</th><th class="score">Pts</th><th class="score">Máx</th></tr></thead>
+            <tbody>
+              <tr><td>Hit #1 — ECK + ES + Kibana</td><td class="score">20</td><td class="score">20</td></tr>
+              <tr><td>Hit #2 — Fluent Bit pipeline</td><td class="score">20</td><td class="score">20</td></tr>
+              <tr><td>Hit #3 — ILM + warm phase</td><td class="score">15</td><td class="score">15</td></tr>
+              <tr><td>Hit #4 — KQL cookbook</td><td class="score">14</td><td class="score">15</td></tr>
+              <tr><td>Hit #5 — Dashboard NDJSON</td><td class="score">7</td><td class="score">20</td></tr>
+              <tr><td>ADR 0009</td><td class="score">10</td><td class="score">10</td></tr>
+              <tr class="total"><td>Total</td><td class="score text-blue">86</td><td class="score">100</td></tr>
+            </tbody>
+          </table>
+          <div>
+            <div class="note-section">
+              <div class="note-title">Fortalezas</div>
+              <ul class="notes strengths">
+                <li>ADR 0009 perfecto (10/10): ELv2, OpenSearch, tabla comparativa con datos reales</li>
+                <li>ILM con warm phase (shrink + force merge) — más completa que lo requerido</li>
+                <li>install.sh llama a Saved Objects API con kbn-xsrf: true</li>
+              </ul>
+            </div>
+            <div class="note-section">
+              <div class="note-title">Gaps</div>
+              <ul class="notes gaps">
+                <li><code>scraper-overview.ndjson</code> es placeholder — install.sh importa solo el index-pattern (7/20)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P3 -->
+      <div class="part-section">
+        <div class="part-section-title">Parte 3 — OpenTelemetry &nbsp;<span class="badge badge-red">0 / 10 ⛔</span></div>
+        <div class="bloqueante-banner">
+          <strong>Bloqueante B3:</strong> El directorio <code>TP2/otel/</code> no existe. Parte 3 no iniciada.
+        </div>
+        <div class="note-section">
+          <div class="note-title">Qué entregar</div>
+          <ul class="notes">
+            <li><code>otel/install.sh</code> con OTel Operator 0.74.x + CR DaemonSet contrib + escalado a 0</li>
+            <li><code>otel/manifests/collector-agent.yaml</code>: pipeline filelog → k8sattributes → batch → [loki, elasticsearch]</li>
+            <li><code>otel/scraper-instrumentation/otel_setup.py</code>: LoggerProvider + BatchLogRecordProcessor + OTLPLogExporter</li>
+            <li><code>docs/adr/0010-instrumentacion-vendor-neutral.md</code></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- P4 -->
+      <div class="part-section">
+        <div class="part-section-title">Parte 4 — ADR magisterial &nbsp;<span class="badge badge-red">0 / 10 ⛔</span></div>
+        <div class="bloqueante-banner">
+          <strong>Bloqueantes B1 + B3:</strong> P3 no aprobada + ADR 0012 no existe.
+          La Parte 4 depende de que la Parte 3 esté completa (los 3 stacks corriendo para tomar M1-M5).
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ===== OBSERVACIONES TRANSVERSALES ===== -->
+  <h2>Observaciones transversales</h2>
+
+  <div class="group-card">
+    <div class="group-card-body">
+      <div class="two-col">
+        <div>
+          <div class="note-section">
+            <div class="note-title">Dashboard NDJSON — patrón recurrente</div>
+            <ul class="notes gaps">
+              <li>3 de 4 grupos dejaron <code>scraper-overview.ndjson</code> como placeholder o index-pattern incompleto</li>
+              <li>El proceso es directo: crear el dashboard en Kibana → Saved Objects → Export con "Include related objects" → guardar como NDJSON</li>
+              <li>El import via <code>POST /api/saved_objects/_import</code> con <code>kbn-xsrf: true</code> lo tienen varios grupos — solo falta el archivo correcto</li>
+            </ul>
+          </div>
+          <div class="note-section">
+            <div class="note-title">ADR 0007 — Loki</div>
+            <ul class="notes gaps">
+              <li>2 de 4 grupos no entregaron el ADR 0007 (Proxy Team, CFZ++)</li>
+              <li>La implementación es correcta en ambos — es un gap de documentación puro</li>
+              <li>Con el README y la config ya existentes, se escribe en 30 minutos</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="note-section">
+            <div class="note-title">ADR 0012 — bloqueante P4</div>
+            <ul class="notes gaps">
+              <li>Systeam y CFZ++: ADR 0012 no existe → P4 = 0</li>
+              <li>Proxy Team: ADR 0012 existe pero ~1,100 palabras (mínimo: 1,500) → P4 = 0</li>
+              <li>Solo Group ONE entregó P4 con ADR completo (~3,850 palabras)</li>
+            </ul>
+          </div>
+          <div class="note-section">
+            <div class="note-title">Evidencia fotográfica</div>
+            <ul class="notes gaps">
+              <li>Patrón común: ANTES/DESPUES screenshots de formato de log, pero sin Grafana Explore, sin queries ejecutadas, sin dashboard con datos</li>
+              <li>Los screenshots son la diferencia entre un 8.0 y un 9.5 en P1 y P2</li>
+            </ul>
+          </div>
+          <div class="note-section">
+            <div class="note-title">OpenSearch en ADR 0009</div>
+            <ul class="notes strengths">
+              <li>CFZ++ nombra OpenSearch explícitamente (10/10)</li>
+              <li>Group ONE y Systeam mencionan ELv2 pero sin nombrar OpenSearch como fork (9/10)</li>
+              <li>Proxy Team menciona "alternativas OSS" sin nombrar OpenSearch (9/10)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Seminario de Integración Profesional · UNLu · 2026 &nbsp;·&nbsp; Corrector: M. Rapaport &nbsp;·&nbsp; 2026-05-09
+  </footer>
+
+</div>
+</body>
+</html>
